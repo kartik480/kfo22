@@ -59,6 +59,7 @@ public class DirectorMyEmpLinksActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+        super.onBackPressed();
         // Navigate back to Director Employee Links Activity
         Intent intent = new Intent(this, DirectorEmpLinksActivity.class);
         passUserDataToIntent(intent);

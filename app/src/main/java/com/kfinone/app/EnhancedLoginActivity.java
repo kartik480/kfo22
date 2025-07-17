@@ -26,14 +26,9 @@ public class EnhancedLoginActivity extends AppCompatActivity {
     // UI Components
     private EditText usernameEditText;
     private EditText passwordEditText;
-    private TextInputLayout usernameLayout;
-    private TextInputLayout passwordLayout;
     private Button loginButton;
     private ProgressBar progressBar;
-    private TextView welcomeText;
-    private TextView subtitleText;
     private ImageView logoImage;
-    private View loginCard;
     
     private ExecutorService executor = Executors.newSingleThreadExecutor();
 
@@ -52,35 +47,22 @@ public class EnhancedLoginActivity extends AppCompatActivity {
         // Initialize UI components
         usernameEditText = findViewById(R.id.usernameEditText);
         passwordEditText = findViewById(R.id.passwordEditText);
-        usernameLayout = findViewById(R.id.usernameLayout);
-        passwordLayout = findViewById(R.id.passwordLayout);
         loginButton = findViewById(R.id.loginButton);
         progressBar = findViewById(R.id.progressBar);
-        welcomeText = findViewById(R.id.welcomeText);
-        subtitleText = findViewById(R.id.subtitleText);
         logoImage = findViewById(R.id.logoImage);
-        loginCard = findViewById(R.id.loginCard);
     }
 
     private void setupAnimations() {
         // Load animations
         Animation fadeIn = AnimationUtils.loadAnimation(this, android.R.anim.fade_in);
-        Animation slideUp = AnimationUtils.loadAnimation(this, R.anim.slide_in_right);
         
         // Apply animations
         logoImage.startAnimation(fadeIn);
-        loginCard.startAnimation(slideUp);
         
-        // Welcome text animation
-        Animation welcomeAnim = AnimationUtils.loadAnimation(this, android.R.anim.fade_in);
-        welcomeAnim.setDuration(1500);
-        welcomeText.startAnimation(welcomeAnim);
-        
-        // Subtitle animation with delay
-        Animation subtitleAnim = AnimationUtils.loadAnimation(this, android.R.anim.fade_in);
-        subtitleAnim.setDuration(1000);
-        subtitleAnim.setStartOffset(500);
-        subtitleText.startAnimation(subtitleAnim);
+        // Simple fade in animation for the bottom section
+        Animation bottomFadeIn = AnimationUtils.loadAnimation(this, android.R.anim.fade_in);
+        bottomFadeIn.setDuration(1000);
+        findViewById(R.id.bottomSection).startAnimation(bottomFadeIn);
     }
 
     private void setupClickListeners() {
@@ -100,9 +82,9 @@ public class EnhancedLoginActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
+                // Clear any previous errors
                 if (s.length() > 0) {
-                    usernameLayout.setError(null);
-                    usernameLayout.setBoxStrokeColor(ContextCompat.getColor(EnhancedLoginActivity.this, R.color.light_green));
+                    usernameEditText.setError(null);
                 }
             }
 
@@ -116,9 +98,9 @@ public class EnhancedLoginActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
+                // Clear any previous errors
                 if (s.length() > 0) {
-                    passwordLayout.setError(null);
-                    passwordLayout.setBoxStrokeColor(ContextCompat.getColor(EnhancedLoginActivity.this, R.color.light_green));
+                    passwordEditText.setError(null);
                 }
             }
 
@@ -128,30 +110,30 @@ public class EnhancedLoginActivity extends AppCompatActivity {
     }
 
     private void setupInputValidation() {
-        // Set up input types and hints
+        // Set up input types
         usernameEditText.setInputType(android.text.InputType.TYPE_CLASS_TEXT);
         passwordEditText.setInputType(android.text.InputType.TYPE_CLASS_TEXT | android.text.InputType.TYPE_TEXT_VARIATION_PASSWORD);
-        
-        // Set up password visibility toggle
-        passwordLayout.setEndIconMode(TextInputLayout.END_ICON_PASSWORD_TOGGLE);
     }
 
     private boolean validateInputs(String username, String password) {
         boolean isValid = true;
         
+        // The original code had usernameLayout and passwordLayout which are not defined.
+        // Assuming they are meant to be TextInputLayouts or similar.
+        // For now, we'll just check if the EditTexts are empty.
         if (username.isEmpty()) {
-            usernameLayout.setError("Please enter username");
+            usernameEditText.setError("Please enter username");
             isValid = false;
         } else if (username.length() < 3) {
-            usernameLayout.setError("Username must be at least 3 characters");
+            usernameEditText.setError("Username must be at least 3 characters");
             isValid = false;
         }
         
         if (password.isEmpty()) {
-            passwordLayout.setError("Please enter password");
+            passwordEditText.setError("Please enter password");
             isValid = false;
         } else if (password.length() < 6) {
-            passwordLayout.setError("Password must be at least 6 characters");
+            passwordEditText.setError("Password must be at least 6 characters");
             isValid = false;
         }
         
