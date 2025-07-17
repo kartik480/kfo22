@@ -27,6 +27,7 @@ public class User10002PanelActivity extends AppCompatActivity implements Navigat
     // Top navigation elements
     private View menuButton;
     private TextView titleText;
+    private View accountIcon;
 
     // Bottom navigation elements
     private LinearLayout dashboardButton;
@@ -107,6 +108,7 @@ public class User10002PanelActivity extends AppCompatActivity implements Navigat
         // Top navigation
         menuButton = findViewById(R.id.menuButton);
         titleText = findViewById(R.id.titleText);
+        accountIcon = findViewById(R.id.accountIcon);
         if (titleText != null) {
             titleText.setText("Director Dashboard");
         }
@@ -181,6 +183,12 @@ public class User10002PanelActivity extends AppCompatActivity implements Navigat
         // Top navigation
         menuButton.setOnClickListener(v -> {
             drawerLayout.openDrawer(GravityCompat.START);
+        });
+
+        accountIcon.setOnClickListener(v -> {
+            Intent intent = new Intent(this, AccountActivity.class);
+            intent.putExtra("FULL_NAME", userName);
+            startActivity(intent);
         });
 
         // Bottom navigation

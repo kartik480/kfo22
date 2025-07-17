@@ -226,12 +226,17 @@ public class EnhancedLoginActivity extends AppCompatActivity {
                         
                         // Check if this is user 10002
                         boolean isUser10002 = "10002".equals(username);
+                        
+                        Log.d(TAG, "Username: " + username + ", isUser10002: " + isUser10002);
+                        Log.d(TAG, "User ID from server: " + userId);
+                        Log.d(TAG, "Full response: " + responseBody);
 
                         runOnUiThread(() -> {
                             try {
                                 showSuccessMessage("Login successful!");
                                 
-                                if (isUser10002) {
+                                if (isUser10002 || "10002".equals(userId)) {
+                                    Log.d(TAG, "Navigating to User10002PanelActivity");
                                     // Navigate to new enhanced panel for user 10002
                                     Intent intent = new Intent(EnhancedLoginActivity.this, User10002PanelActivity.class);
                                     intent.putExtra("USERNAME", displayName);
