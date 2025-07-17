@@ -480,6 +480,16 @@
             android:exported="false"
             android:label="Director Portfolio Management"
             android:parentActivityName=".User10002PanelActivity" />
+        <activity
+            android:name=".DirectorMyEmpLinksActivity"
+            android:exported="false"
+            android:label="Director My Employee Links"
+            android:parentActivityName=".DirectorEmpLinksActivity" />
+        <activity
+            android:name=".DirectorTeamEmpLinksActivity"
+            android:exported="false"
+            android:label="Director Team Employee Links"
+            android:parentActivityName=".DirectorEmpLinksActivity" />
     </application>
 
 </manifest>

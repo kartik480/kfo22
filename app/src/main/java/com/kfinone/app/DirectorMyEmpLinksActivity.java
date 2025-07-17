@@ -9,10 +9,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-public class DirectorEmpLinksActivity extends AppCompatActivity {
-
-    private LinearLayout myEmpLinksButton;
-    private LinearLayout teamEmpLinksButton;
+public class DirectorMyEmpLinksActivity extends AppCompatActivity {
     
     private String userId;
     private String userName;
@@ -22,7 +19,7 @@ public class DirectorEmpLinksActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_director_emp_links);
+        setContentView(R.layout.activity_director_my_emp_links);
 
         // Get user data from intent
         Intent intent = getIntent();
@@ -33,28 +30,7 @@ public class DirectorEmpLinksActivity extends AppCompatActivity {
             lastName = intent.getStringExtra("LAST_NAME");
         }
 
-        initializeViews();
-        setupClickListeners();
         setupToolbar();
-    }
-
-    private void initializeViews() {
-        myEmpLinksButton = findViewById(R.id.myEmpLinksButton);
-        teamEmpLinksButton = findViewById(R.id.teamEmpLinksButton);
-    }
-
-    private void setupClickListeners() {
-        myEmpLinksButton.setOnClickListener(v -> {
-            Intent intent = new Intent(this, DirectorMyEmpLinksActivity.class);
-            passUserDataToIntent(intent);
-            startActivity(intent);
-        });
-
-        teamEmpLinksButton.setOnClickListener(v -> {
-            Intent intent = new Intent(this, DirectorTeamEmpLinksActivity.class);
-            passUserDataToIntent(intent);
-            startActivity(intent);
-        });
     }
 
     private void setupToolbar() {
@@ -62,7 +38,7 @@ public class DirectorEmpLinksActivity extends AppCompatActivity {
         if (toolbar != null) {
             setSupportActionBar(toolbar);
             if (getSupportActionBar() != null) {
-                getSupportActionBar().setTitle("Director Employee Links");
+                getSupportActionBar().setTitle("Director My Employee Links");
                 getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             }
         }
@@ -83,8 +59,8 @@ public class DirectorEmpLinksActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        // Navigate back to Director panel
-        Intent intent = new Intent(this, User10002PanelActivity.class);
+        // Navigate back to Director Employee Links Activity
+        Intent intent = new Intent(this, DirectorEmpLinksActivity.class);
         passUserDataToIntent(intent);
         startActivity(intent);
         finish();
