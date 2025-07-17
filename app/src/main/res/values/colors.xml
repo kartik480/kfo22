@@ -32,4 +32,8 @@
     <color name="text_secondary">#757575</color>
     <color name="surface_white">#FFFFFF</color>
     <color name="background_light">#FAFAFA</color>
+    
+    <!-- Director Panel Colors -->
+    <color name="light_pink">#FFE4E1</color>
+    <color name="light_pink_dark">#FFB6C1</color>
 </resources>

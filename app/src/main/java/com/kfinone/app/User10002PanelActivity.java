@@ -78,9 +78,6 @@ public class User10002PanelActivity extends AppCompatActivity implements Navigat
     private MaterialCardView portfolioBox;
     private MaterialCardView addInsuranceBox;
 
-    // Floating Action Button
-    private FloatingActionButton fab;
-
     // User data
     private String userId;
     private String userName;
@@ -98,6 +95,20 @@ public class User10002PanelActivity extends AppCompatActivity implements Navigat
         loadDashboardData();
         updateWelcomeMessage();
         setupAnimations();
+
+        // Set all Executive Analytics values to 0
+        if (totalEmpCount != null) totalEmpCount.setText("0");
+        if (totalSdsaCount != null) totalSdsaCount.setText("0");
+        if (totalPartnerCount != null) totalPartnerCount.setText("0");
+        if (totalPortfolioCount != null) totalPortfolioCount.setText("0");
+        if (totalAgentCount != null) totalAgentCount.setText("0");
+        if (totalPayoutCount != null) totalPayoutCount.setText("0");
+        if (totalEmpChange != null) totalEmpChange.setText("0");
+        if (totalSdsaChange != null) totalSdsaChange.setText("0");
+        if (totalPartnerChange != null) totalPartnerChange.setText("0");
+        if (totalPortfolioChange != null) totalPortfolioChange.setText("0");
+        if (totalAgentChange != null) totalAgentChange.setText("0");
+        if (totalPayoutChange != null) totalPayoutChange.setText("0");
     }
 
     private void initializeViews() {
@@ -161,9 +172,6 @@ public class User10002PanelActivity extends AppCompatActivity implements Navigat
         bankersBox = findViewById(R.id.bankersBox);
         portfolioBox = findViewById(R.id.portfolioBox);
         addInsuranceBox = findViewById(R.id.addInsuranceBox);
-
-        // Floating Action Button
-        fab = findViewById(R.id.fab);
 
         // Set up navigation view
         navigationView.setNavigationItemSelectedListener(this);
@@ -326,11 +334,6 @@ public class User10002PanelActivity extends AppCompatActivity implements Navigat
 
         addInsuranceBox.setOnClickListener(v -> {
             Toast.makeText(this, "Add Insurance - Coming Soon", Toast.LENGTH_SHORT).show();
-        });
-
-        // Floating Action Button
-        fab.setOnClickListener(v -> {
-            Toast.makeText(this, "Quick Action", Toast.LENGTH_SHORT).show();
         });
     }
 

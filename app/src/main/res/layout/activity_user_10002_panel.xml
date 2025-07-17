@@ -33,7 +33,7 @@
                     android:layout_width="32dp"
                     android:layout_height="32dp"
                     android:src="@drawable/ic_menu"
-                    android:tint="#FFFFFF"
+                    android:tint="#2C3E50"
                     android:layout_marginEnd="16dp"
                     android:background="?android:attr/selectableItemBackgroundBorderless"
                     android:padding="4dp" />
@@ -47,7 +47,7 @@
                     android:text="Director Dashboard"
                     android:textSize="18sp"
                     android:textStyle="bold"
-                    android:textColor="#FFFFFF"
+                    android:textColor="#2C3E50"
                     android:fontFamily="sans-serif-medium" />
 
                 <!-- Account Icon -->
@@ -56,7 +56,7 @@
                     android:layout_width="32dp"
                     android:layout_height="32dp"
                     android:src="@drawable/ic_profile"
-                    android:tint="#FFFFFF"
+                    android:tint="#2C3E50"
                     android:layout_marginStart="16dp"
                     android:background="?android:attr/selectableItemBackgroundBorderless"
                     android:padding="4dp" />
@@ -83,7 +83,7 @@
                         android:layout_marginBottom="20dp"
                         app:cardCornerRadius="16dp"
                         app:cardElevation="4dp"
-                        app:cardBackgroundColor="#4A90E2">
+                        app:cardBackgroundColor="@color/light_pink">
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -98,7 +98,7 @@
                                 android:text="Welcome, User 10002!"
                                 android:textSize="24sp"
                                 android:textStyle="bold"
-                                android:textColor="#FFFFFF"
+                                android:textColor="#2C3E50"
                                 android:fontFamily="sans-serif-medium"
                                 android:layout_marginBottom="8dp" />
 
@@ -108,7 +108,7 @@
                                 android:layout_height="wrap_content"
                                 android:text="User ID: 10002 | Enhanced Access | Last Login: Today"
                                 android:textSize="14sp"
-                                android:textColor="#E0E0E0"
+                                android:textColor="#5D5D5D"
                                 android:layout_marginBottom="8dp" />
 
                             <TextView
@@ -117,7 +117,7 @@
                                 android:layout_height="wrap_content"
                                 android:text="Enhanced Dashboard - Premium Features Available"
                                 android:textSize="12sp"
-                                android:textColor="#BDBDBD"
+                                android:textColor="#7A7A7A"
                                 android:textStyle="italic" />
 
                         </LinearLayout>
@@ -210,7 +210,7 @@
                                         android:id="@+id/totalEmpCount"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
-                                        android:text="156"
+                                        android:text="0"
                                         android:textSize="20sp"
                                         android:textStyle="bold"
                                         android:textColor="#2C3E50"
@@ -275,7 +275,7 @@
                                         android:id="@+id/totalSdsaCount"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
-                                        android:text="89"
+                                        android:text="0"
                                         android:textSize="20sp"
                                         android:textStyle="bold"
                                         android:textColor="#2C3E50"
@@ -349,7 +349,7 @@
                                         android:id="@+id/totalPartnerCount"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
-                                        android:text="45"
+                                        android:text="0"
                                         android:textSize="20sp"
                                         android:textStyle="bold"
                                         android:textColor="#2C3E50"
@@ -414,7 +414,7 @@
                                         android:id="@+id/totalPortfolioCount"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
-                                        android:text="234"
+                                        android:text="0"
                                         android:textSize="20sp"
                                         android:textStyle="bold"
                                         android:textColor="#2C3E50"
@@ -488,7 +488,7 @@
                                         android:id="@+id/totalAgentCount"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
-                                        android:text="67"
+                                        android:text="0"
                                         android:textSize="20sp"
                                         android:textStyle="bold"
                                         android:textColor="#2C3E50"
@@ -553,7 +553,7 @@
                                         android:id="@+id/totalPayoutCount"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
-                                        android:text="12"
+                                        android:text="0"
                                         android:textSize="20sp"
                                         android:textStyle="bold"
                                         android:textColor="#2C3E50"
@@ -1176,17 +1176,6 @@
             </LinearLayout>
 
         </LinearLayout>
-
-        <!-- Floating Action Button -->
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/fab"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|end"
-            android:layout_margin="16dp"
-            android:src="@drawable/ic_add"
-            app:backgroundTint="@color/light_green"
-            app:tint="#FFFFFF" />
 
     </FrameLayout>
 
