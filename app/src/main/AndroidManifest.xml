@@ -17,7 +17,7 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
-            android:name=".LoginActivity"
+            android:name=".EnhancedLoginActivity"
             android:exported="true"
             android:theme="@style/Theme.KfinOneApp">
             <intent-filter>
@@ -25,6 +25,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".LoginActivity"
+            android:exported="false"
+            android:theme="@style/Theme.KfinOneApp" />
         <activity
             android:name=".MainActivity"
             android:exported="false"
@@ -204,6 +208,10 @@
             android:name=".SpecialPanelActivity"
             android:exported="false"
             android:label="Special Panel" />
+        <activity
+            android:name=".User10002PanelActivity"
+            android:exported="false"
+            android:label="Enhanced Dashboard" />
         <activity
             android:name=".EmployeePanelActivity"
             android:exported="false"
