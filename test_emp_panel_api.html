@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Employee Panel API</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .result {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 5px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 12px;
+        }
+        .success {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        .loading {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        .status-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 5px;
+        }
+        .status-success { background-color: #28a745; }
+        .status-error { background-color: #dc3545; }
+        .status-loading { background-color: #ffc107; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 Test Employee Panel API</h1>
+        
+        <div class="test-section">
+            <h3>Test Employee Panel Users API</h3>
+            <p>This test fetches users from tbl_user with specific designations (Chief Business Officer, Regional Business Head, Director) from tbl_designation.</p>
+            <button onclick="testEmpPanelAPI()">Test Employee Panel API</button>
+            <div id="empPanelResult" class="result" style="display: none;"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>Test Database Connection</h3>
+            <p>Test if the database connection is working properly.</p>
+            <button onclick="testDatabaseConnection()">Test Database Connection</button>
+            <div id="dbResult" class="result" style="display: none;"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>Check Designation Table</h3>
+            <p>Check what designations exist in the tbl_designation table.</p>
+            <button onclick="checkDesignationTable()">Check Designation Table</button>
+            <div id="designationResult" class="result" style="display: none;"></div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'https://emp.kfinone.com/mobile/api/';
+
+        function showResult(elementId, content, type = 'success') {
+            const element = document.getElementById(elementId);
+            element.style.display = 'block';
+            element.className = `result ${type}`;
+            element.innerHTML = content;
+        }
+
+        function showLoading(elementId) {
+            const element = document.getElementById(elementId);
+            element.style.display = 'block';
+            element.className = 'result loading';
+            element.innerHTML = '<span class="status-indicator status-loading"></span>Loading...';
+        }
+
+        async function testEmpPanelAPI() {
+            showLoading('empPanelResult');
+            
+            try {
+                const response = await fetch(API_BASE + 'fetch_emp_panel_users.php');
+                const data = await response.json();
+                
+                let resultHtml = '';
+                
+                if (data.status === 'success') {
+                    resultHtml += `<span class="status-indicator status-success"></span><strong>✅ SUCCESS!</strong>\n`;
+                    resultHtml += `Message: ${data.message}\n`;
+                    resultHtml += `Total Users Found: ${data.count}\n\n`;
+                    
+                    if (data.data && data.data.length > 0) {
+                        resultHtml += '<table>\n';
+                        resultHtml += '<tr><th>ID</th><th>Full Name</th><th>Employee No</th><th>Mobile</th><th>Email</th><th>Designation</th></tr>\n';
+                        
+                        data.data.forEach(user => {
+                            resultHtml += `<tr>
+                                <td>${user.id}</td>
+                                <td>${user.fullName}</td>
+                                <td>${user.employee_no || 'N/A'}</td>
+                                <td>${user.mobile || 'N/A'}</td>
+                                <td>${user.email_id || 'N/A'}</td>
+                                <td>${user.designation_name}</td>
+                            </tr>\n`;
+                        });
+                        
+                        resultHtml += '</table>';
+                    } else {
+                        resultHtml += 'No users found with the specified designations.';
+                    }
+                } else {
+                    resultHtml += `<span class="status-indicator status-error"></span><strong>❌ ERROR!</strong>\n`;
+                    resultHtml += `Message: ${data.message}`;
+                }
+                
+                showResult('empPanelResult', resultHtml, data.status === 'success' ? 'success' : 'error');
+                
+            } catch (error) {
+                showResult('empPanelResult', 
+                    `<span class="status-indicator status-error"></span><strong>❌ ERROR!</strong>\nFailed to fetch data: ${error.message}`, 
+                    'error'
+                );
+            }
+        }
+
+        async function testDatabaseConnection() {
+            showLoading('dbResult');
+            
+            try {
+                const response = await fetch(API_BASE + 'test_db_connection.php');
+                const data = await response.json();
+                
+                let resultHtml = '';
+                
+                if (data.success) {
+                    resultHtml += `<span class="status-indicator status-success"></span><strong>✅ Database Connection Successful!</strong>\n`;
+                    resultHtml += `Message: ${data.message}\n`;
+                    resultHtml += `Table Exists: ${data.table_exists ? 'Yes' : 'No'}\n`;
+                    resultHtml += `User Count: ${data.user_count}\n\n`;
+                    
+                    if (data.columns) {
+                        resultHtml += '<strong>Table Structure:</strong>\n';
+                        data.columns.forEach(col => {
+                            resultHtml += `- ${col.Field} (${col.Type})\n`;
+                        });
+                        resultHtml += '\n';
+                    }
+                    
+                    if (data.sample_users) {
+                        resultHtml += '<strong>Sample Users:</strong>\n';
+                        data.sample_users.forEach(user => {
+                            resultHtml += `- ID: ${user.id}, Username: ${user.username}\n`;
+                        });
+                    }
+                } else {
+                    resultHtml += `<span class="status-indicator status-error"></span><strong>❌ Database Connection Failed!</strong>\n`;
+                    resultHtml += `Message: ${data.message}`;
+                }
+                
+                showResult('dbResult', resultHtml, data.success ? 'success' : 'error');
+                
+            } catch (error) {
+                showResult('dbResult', 
+                    `<span class="status-indicator status-error"></span><strong>❌ ERROR!</strong>\nFailed to test database: ${error.message}`, 
+                    'error'
+                );
+            }
+        }
+
+        async function checkDesignationTable() {
+            showLoading('designationResult');
+            
+            try {
+                // Create a simple test to check designation table
+                const response = await fetch(API_BASE + 'get_designation_list.php');
+                const data = await response.json();
+                
+                let resultHtml = '';
+                
+                if (data.status === 'success') {
+                    resultHtml += `<span class="status-indicator status-success"></span><strong>✅ Designation Table Check Successful!</strong>\n`;
+                    resultHtml += `Total Designations: ${data.data ? data.data.length : 0}\n\n`;
+                    
+                    if (data.data && data.data.length > 0) {
+                        resultHtml += '<strong>Available Designations:</strong>\n';
+                        data.data.forEach(desig => {
+                            resultHtml += `- ${desig.designation_name}\n`;
+                        });
+                        resultHtml += '\n';
+                        
+                        // Check for our target designations
+                        const targetDesignations = ['Chief Business Officer', 'Regional Business Head', 'Director'];
+                        const foundDesignations = data.data.filter(desig => 
+                            targetDesignations.includes(desig.designation_name)
+                        );
+                        
+                        resultHtml += '<strong>Target Designations Found:</strong>\n';
+                        if (foundDesignations.length > 0) {
+                            foundDesignations.forEach(desig => {
+                                resultHtml += `✅ ${desig.designation_name}\n`;
+                            });
+                        } else {
+                            resultHtml += '❌ None of the target designations found in the database.\n';
+                            resultHtml += 'Target designations: Chief Business Officer, Regional Business Head, Director\n';
+                        }
+                    } else {
+                        resultHtml += 'No designations found in the database.';
+                    }
+                } else {
+                    resultHtml += `<span class="status-indicator status-error"></span><strong>❌ Designation Table Check Failed!</strong>\n`;
+                    resultHtml += `Message: ${data.message || 'Unknown error'}`;
+                }
+                
+                showResult('designationResult', resultHtml, data.status === 'success' ? 'success' : 'error');
+                
+            } catch (error) {
+                showResult('designationResult', 
+                    `<span class="status-indicator status-error"></span><strong>❌ ERROR!</strong>\nFailed to check designation table: ${error.message}`, 
+                    'error'
+                );
+            }
+        }
+    </script>
+</body>
+</html> 

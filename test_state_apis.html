@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test State APIs</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        h1, h2 {
+            color: #333;
+            text-align: center;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .success-btn {
+            background-color: #28a745;
+        }
+        .success-btn:hover {
+            background-color: #1e7e34;
+        }
+        input[type="text"] {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin: 5px;
+            width: 200px;
+        }
+        .result {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 4px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .state-item {
+            background: #e9ecef;
+            margin: 5px 0;
+            padding: 10px;
+            border-radius: 4px;
+            border-left: 4px solid #007bff;
+        }
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Test State APIs</h1>
+        
+        <!-- Step 1: Fetch States -->
+        <div class="section">
+            <h2>1. Fetch All States</h2>
+            <p>This fetches all states from <code>tbl_state</code> table.</p>
+            <button onclick="fetchStates()">Fetch All States</button>
+            <div id="fetchResult" class="result" style="display: none;"></div>
+        </div>
+        
+        <!-- Step 2: Add State -->
+        <div class="section">
+            <h2>2. Add New State</h2>
+            <p>This adds a new state to <code>tbl_state</code> table.</p>
+            <div class="form-group">
+                <label for="newStateName">New State Name:</label>
+                <input type="text" id="newStateName" placeholder="Enter state name">
+                <button class="success-btn" onclick="addState()">Add State</button>
+            </div>
+            <div id="addResult" class="result" style="display: none;"></div>
+        </div>
+        
+        <!-- Step 3: Test Complete Flow -->
+        <div class="section">
+            <h2>3. Test Complete Flow</h2>
+            <p>This tests the complete flow: fetch states, add state, then fetch again.</p>
+            <button onclick="testCompleteFlow()">Test Complete Flow</button>
+            <div id="flowResult" class="result" style="display: none;"></div>
+        </div>
+    </div>
+
+    <script>
+        const BASE_URL = 'https://emp.kfinone.com/mobile/api/';
+        
+        async function fetchStates() {
+            const resultDiv = document.getElementById('fetchResult');
+            resultDiv.style.display = 'block';
+            resultDiv.innerHTML = 'Fetching states...';
+            resultDiv.className = 'result';
+            
+            try {
+                const response = await fetch(BASE_URL + 'get_states.php', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    resultDiv.className = 'result success';
+                    resultDiv.innerHTML = `✅ Success! Found ${data.states.length} states\n\n`;
+                    
+                    if (data.states.length > 0) {
+                        data.states.forEach((state, index) => {
+                            const itemDiv = document.createElement('div');
+                            itemDiv.className = 'state-item';
+                            itemDiv.innerHTML = `${index + 1}. ${state}`;
+                            resultDiv.appendChild(itemDiv);
+                        });
+                    } else {
+                        resultDiv.innerHTML += 'No states found in the database.';
+                    }
+                } else {
+                    resultDiv.className = 'result error';
+                    resultDiv.innerHTML = `❌ Error: ${data.error || 'Unknown error'}`;
+                }
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.innerHTML = `❌ Network Error: ${error.message}`;
+            }
+        }
+        
+        async function addState() {
+            const stateName = document.getElementById('newStateName').value.trim();
+            const resultDiv = document.getElementById('addResult');
+            
+            if (!stateName) {
+                alert('Please enter a state name');
+                return;
+            }
+            
+            resultDiv.style.display = 'block';
+            resultDiv.innerHTML = 'Adding state...';
+            resultDiv.className = 'result';
+            
+            try {
+                const response = await fetch(BASE_URL + 'add_state.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        state_name: stateName
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    resultDiv.className = 'result success';
+                    resultDiv.innerHTML = `✅ Success! State added successfully\n\n`;
+                    resultDiv.innerHTML += `ID: ${data.data.id}\n`;
+                    resultDiv.innerHTML += `State Name: ${data.data.state_name}\n`;
+                    resultDiv.innerHTML += `Status: ${data.data.status}\n`;
+                    
+                    // Clear the input
+                    document.getElementById('newStateName').value = '';
+                } else {
+                    resultDiv.className = 'result error';
+                    resultDiv.innerHTML = `❌ Error: ${data.error || 'Unknown error'}`;
+                }
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.innerHTML = `❌ Network Error: ${error.message}`;
+            }
+        }
+        
+        async function testCompleteFlow() {
+            const resultDiv = document.getElementById('flowResult');
+            resultDiv.style.display = 'block';
+            resultDiv.innerHTML = 'Testing complete flow...\n\n';
+            resultDiv.className = 'result';
+            
+            try {
+                // Step 1: Fetch states
+                resultDiv.innerHTML += 'Step 1: Fetching states...\n';
+                const fetchResponse = await fetch(BASE_URL + 'get_states.php');
+                const fetchData = await fetchResponse.json();
+                
+                if (fetchData.success) {
+                    resultDiv.innerHTML += `✅ Found ${fetchData.states.length} states\n\n`;
+                    
+                    // Step 2: Add a test state
+                    resultDiv.innerHTML += 'Step 2: Adding test state...\n';
+                    const testState = 'Test State ' + new Date().getTime();
+                    
+                    const addResponse = await fetch(BASE_URL + 'add_state.php', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            state_name: testState
+                        })
+                    });
+                    
+                    const addData = await addResponse.json();
+                    
+                    if (addData.success) {
+                        resultDiv.innerHTML += `✅ Added state: ${testState}\n\n`;
+                        
+                        // Step 3: Fetch states again
+                        resultDiv.innerHTML += 'Step 3: Fetching states again...\n';
+                        const fetchResponse2 = await fetch(BASE_URL + 'get_states.php');
+                        const fetchData2 = await fetchResponse2.json();
+                        
+                        if (fetchData2.success) {
+                            resultDiv.innerHTML += `✅ Found ${fetchData2.states.length} states\n`;
+                            
+                            // Check if our test state is in the list
+                            const foundState = fetchData2.states.find(state => state === testState);
+                            if (foundState) {
+                                resultDiv.innerHTML += `✅ Test state found in list!\n`;
+                                resultDiv.className = 'result success';
+                            } else {
+                                resultDiv.innerHTML += `❌ Test state not found in list\n`;
+                                resultDiv.className = 'result error';
+                            }
+                        } else {
+                            resultDiv.innerHTML += `❌ Error fetching states: ${fetchData2.error}\n`;
+                            resultDiv.className = 'result error';
+                        }
+                    } else {
+                        resultDiv.innerHTML += `❌ Error adding state: ${addData.error}\n`;
+                        resultDiv.className = 'result error';
+                    }
+                } else {
+                    resultDiv.innerHTML += `❌ Error fetching states: ${fetchData.error}\n`;
+                    resultDiv.className = 'result error';
+                }
+            } catch (error) {
+                resultDiv.innerHTML += `❌ Network Error: ${error.message}\n`;
+                resultDiv.className = 'result error';
+            }
+        }
+        
+        // Auto-fetch states on page load
+        window.onload = function() {
+            fetchStates();
+        };
+    </script>
+</body>
+</html> 

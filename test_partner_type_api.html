@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Partner Type API Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .section { margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 5px; }
+        .success { background-color: #d4edda; border-color: #c3e6cb; }
+        .error { background-color: #f8d7da; border-color: #f5c6cb; }
+        .info { background-color: #d1ecf1; border-color: #bee5eb; }
+        button { padding: 10px 15px; margin: 5px; cursor: pointer; }
+        pre { background-color: #f8f9fa; padding: 10px; border-radius: 3px; overflow-x: auto; }
+        .partner-type-item { 
+            background: #fff; 
+            padding: 10px; 
+            margin: 5px 0; 
+            border: 1px solid #ddd; 
+            border-radius: 3px; 
+        }
+    </style>
+</head>
+<body>
+    <h1>Partner Type API Test</h1>
+    
+    <div class="section info">
+        <h2>Test Partner Type API</h2>
+        <p>This will fetch partner types from tbl_partner_type table:</p>
+        <button onclick="testPartnerTypeAPI()">Test Partner Type API</button>
+        <div id="apiResult"></div>
+    </div>
+    
+    <div class="section info">
+        <h2>Partner Types List</h2>
+        <div id="partnerTypesList"></div>
+    </div>
+
+    <script>
+        const BASE_URL = 'https://emp.kfinone.com/mobile/api/';
+        
+        async function testPartnerTypeAPI() {
+            const resultDiv = document.getElementById('apiResult');
+            const listDiv = document.getElementById('partnerTypesList');
+            
+            resultDiv.innerHTML = '<p>Fetching partner types...</p>';
+            listDiv.innerHTML = '';
+            
+            try {
+                const response = await fetch(BASE_URL + 'get_partner_type_list.php', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    resultDiv.innerHTML = `<div class="success">
+                        <p>✅ Successfully loaded ${data.count} partner types</p>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    </div>`;
+                    
+                    // Display partner types in a nice list
+                    let listHTML = '<h3>Available Partner Types:</h3>';
+                    data.data.forEach((type, index) => {
+                        listHTML += `
+                            <div class="partner-type-item">
+                                <strong>ID:</strong> ${type.id} | 
+                                <strong>Name:</strong> ${type.name}
+                            </div>
+                        `;
+                    });
+                    listDiv.innerHTML = listHTML;
+                    
+                } else {
+                    resultDiv.innerHTML = `<div class="error">
+                        <p>❌ Error: ${data.error || 'Unknown error'}</p>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    </div>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">
+                    <p>❌ Network error: ${error.message}</p>
+                </div>`;
+            }
+        }
+        
+        // Auto-load on page load
+        window.onload = function() {
+            testPartnerTypeAPI();
+        };
+    </script>
+</body>
+</html> 

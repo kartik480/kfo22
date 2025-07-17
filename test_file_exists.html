@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test File Existence and Errors</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .test-section {
+            margin-bottom: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #fafafa;
+        }
+        .test-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .url {
+            background-color: #e8f4fd;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: monospace;
+            margin-bottom: 10px;
+            word-break: break-all;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-right: 10px;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        .result {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 4px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .success {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        .loading {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 Test File Existence and Errors</h1>
+        
+        <div class="test-section">
+            <div class="test-title">1. Test Simple PHP File (Should Work)</div>
+            <div class="url">https://emp.kfinone.com/mobile/api/test_simple.php</div>
+            <button onclick="testSimplePhp()">Test Simple PHP</button>
+            <div id="simplePhpResult" class="result" style="display: none;"></div>
+        </div>
+        
+        <div class="test-section">
+            <div class="test-title">2. Test Final API File (Check if exists)</div>
+            <div class="url">https://emp.kfinone.com/mobile/api/get_active_users_final.php</div>
+            <button onclick="testFinalApi()">Test Final API</button>
+            <div id="finalApiResult" class="result" style="display: none;"></div>
+        </div>
+        
+        <div class="test-section">
+            <div class="test-title">3. Test Simple Users API (Should work)</div>
+            <div class="url">https://emp.kfinone.com/mobile/api/get_active_users_simple.php</div>
+            <button onclick="testSimpleUsers()">Test Simple Users</button>
+            <div id="simpleUsersResult" class="result" style="display: none;"></div>
+        </div>
+        
+        <div class="test-section">
+            <div class="test-title">4. Check Directory Listing</div>
+            <div class="url">https://emp.kfinone.com/mobile/api/</div>
+            <button onclick="checkDirectory()">Check Directory</button>
+            <div id="directoryResult" class="result" style="display: none;"></div>
+        </div>
+    </div>
+
+    <script>
+        async function testSimplePhp() {
+            const resultDiv = document.getElementById('simplePhpResult');
+            resultDiv.style.display = 'block';
+            resultDiv.className = 'result loading';
+            resultDiv.textContent = 'Testing simple PHP...';
+            
+            try {
+                const response = await fetch('https://emp.kfinone.com/mobile/api/test_simple.php');
+                const responseText = await response.text();
+                
+                if (response.ok) {
+                    resultDiv.className = 'result success';
+                    resultDiv.textContent = `✅ Simple PHP works\nStatus: ${response.status}\nResponse:\n${responseText}`;
+                } else {
+                    resultDiv.className = 'result error';
+                    resultDiv.textContent = `❌ Simple PHP Error\nStatus: ${response.status}\nStatus Text: ${response.statusText}\nResponse:\n${responseText}`;
+                }
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.textContent = `❌ Network Error: ${error.message}`;
+            }
+        }
+        
+        async function testFinalApi() {
+            const resultDiv = document.getElementById('finalApiResult');
+            resultDiv.style.display = 'block';
+            resultDiv.className = 'result loading';
+            resultDiv.textContent = 'Testing final API...';
+            
+            try {
+                const response = await fetch('https://emp.kfinone.com/mobile/api/get_active_users_final.php');
+                const responseText = await response.text();
+                
+                if (response.ok) {
+                    resultDiv.className = 'result success';
+                    resultDiv.textContent = `✅ Final API works\nStatus: ${response.status}\nResponse:\n${responseText}`;
+                } else {
+                    resultDiv.className = 'result error';
+                    resultDiv.textContent = `❌ Final API Error\nStatus: ${response.status}\nStatus Text: ${response.statusText}\nResponse:\n${responseText}`;
+                }
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.textContent = `❌ Network Error: ${error.message}`;
+            }
+        }
+        
+        async function testSimpleUsers() {
+            const resultDiv = document.getElementById('simpleUsersResult');
+            resultDiv.style.display = 'block';
+            resultDiv.className = 'result loading';
+            resultDiv.textContent = 'Testing simple users API...';
+            
+            try {
+                const response = await fetch('https://emp.kfinone.com/mobile/api/get_active_users_simple.php');
+                const responseText = await response.text();
+                
+                if (response.ok) {
+                    resultDiv.className = 'result success';
+                    resultDiv.textContent = `✅ Simple Users API works\nStatus: ${response.status}\nResponse:\n${responseText}`;
+                } else {
+                    resultDiv.className = 'result error';
+                    resultDiv.textContent = `❌ Simple Users API Error\nStatus: ${response.status}\nStatus Text: ${response.statusText}\nResponse:\n${responseText}`;
+                }
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.textContent = `❌ Network Error: ${error.message}`;
+            }
+        }
+        
+        async function checkDirectory() {
+            const resultDiv = document.getElementById('directoryResult');
+            resultDiv.style.display = 'block';
+            resultDiv.className = 'result loading';
+            resultDiv.textContent = 'Checking directory...';
+            
+            try {
+                const response = await fetch('https://emp.kfinone.com/mobile/api/');
+                const responseText = await response.text();
+                
+                resultDiv.className = 'result success';
+                resultDiv.textContent = `✅ Directory accessible\nStatus: ${response.status}\nResponse:\n${responseText}`;
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.textContent = `❌ Directory Error: ${error.message}`;
+            }
+        }
+        
+        // Auto-test on page load
+        window.onload = function() {
+            console.log('🧪 Auto-testing file existence...');
+            testSimplePhp();
+        };
+    </script>
+</body>
+</html> 

@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Calling Status Options API</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        .api-info {
+            background-color: #e9ecef;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .sql-query {
+            background-color: #f8f9fa;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: monospace;
+            margin: 10px 0;
+            border-left: 4px solid #007bff;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .response {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 15px;
+            margin-top: 10px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            max-height: 600px;
+            overflow-y: auto;
+        }
+        .success {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        .status-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        .status-table th, .status-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        .status-table th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        .status-table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .status-badge {
+            background-color: #28a745;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .dropdown-preview {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .dropdown-item {
+            padding: 8px 12px;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+        }
+        .dropdown-item:hover {
+            background-color: #f8f9fa;
+        }
+        .dropdown-item:last-child {
+            border-bottom: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test Calling Status Options API</h1>
+    
+    <div class="container">
+        <h2>API Information</h2>
+        <div class="api-info">
+            <strong>API URL:</strong> https://emp.kfinone.com/mobile/api/get_calling_status_options.php<br>
+            <strong>Table:</strong> tbl_partner_calling_status<br>
+            <strong>Filter:</strong> status = 1 (Active calling statuses)<br>
+            <strong>Method:</strong> GET<br>
+            <strong>Purpose:</strong> Fetch calling status options for dropdown/list in Add Calling Status panel
+        </div>
+        
+        <div class="sql-query">
+            <strong>SQL Query:</strong><br>
+            SELECT id, calling_status, status, created_at, updated_at<br>
+            FROM tbl_partner_calling_status<br>
+            WHERE status = 1<br>
+            ORDER BY calling_status ASC
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>Test Commands</h2>
+        <button onclick="testCallingStatusAPI()">🧪 Test Calling Status API</button>
+        <button onclick="checkTableStructure()">🔍 Check Table Structure</button>
+        <button onclick="addSampleCallingStatuses()">➕ Add Sample Calling Statuses</button>
+        <button onclick="clearResults()">🗑️ Clear Results</button>
+        <div id="response" class="response"></div>
+    </div>
+
+    <div class="container">
+        <h2>Dropdown Preview</h2>
+        <div class="dropdown-preview">
+            <h3>📋 How it will appear in the Android app dropdown:</h3>
+            <div id="dropdownPreview">
+                <div class="dropdown-item">Loading calling statuses...</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'https://emp.kfinone.com/mobile/api/';
+        
+        async function makeRequest(url, options = {}) {
+            try {
+                const response = await fetch(url, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        ...options.headers
+                    },
+                    ...options
+                });
+                
+                const data = await response.text();
+                let jsonData;
+                try {
+                    jsonData = JSON.parse(data);
+                } catch (e) {
+                    return { 
+                        success: false, 
+                        error: 'Invalid JSON response', 
+                        raw: data,
+                        status: response.status
+                    };
+                }
+                
+                return {
+                    success: response.ok,
+                    status: response.status,
+                    data: jsonData,
+                    raw: data
+                };
+            } catch (error) {
+                return {
+                    success: false,
+                    error: error.message,
+                    raw: error.toString()
+                };
+            }
+        }
+
+        async function testCallingStatusAPI() {
+            const responseDiv = document.getElementById('response');
+            responseDiv.innerHTML = '🧪 Testing calling status options API...';
+            responseDiv.className = 'response';
+            
+            const result = await makeRequest(API_BASE + 'get_calling_status_options.php');
+            
+            if (result.success && result.data.success) {
+                const statuses = result.data.data;
+                const totalCount = result.data.total_count;
+                responseDiv.className = 'response success';
+                
+                let html = `✅ Calling Status API Working!\n\n`;
+                html += `📊 API Response:\n`;
+                html += `Status: ${result.status}\n`;
+                html += `Total Calling Statuses: ${totalCount}\n\n`;
+                
+                if (statuses.length > 0) {
+                    html += `<table class="status-table">`;
+                    html += `<tr><th>ID</th><th>Calling Status</th><th>Status</th><th>Created At</th><th>Updated At</th></tr>`;
+                    
+                    statuses.forEach(status => {
+                        html += `<tr>`;
+                        html += `<td>${status.id}</td>`;
+                        html += `<td><strong>${status.calling_status}</strong></td>`;
+                        html += `<td><span class="status-badge">Active (${status.status})</span></td>`;
+                        html += `<td>${status.created_at}</td>`;
+                        html += `<td>${status.updated_at}</td>`;
+                        html += `</tr>`;
+                    });
+                    
+                    html += `</table>`;
+                    
+                    // Update dropdown preview
+                    updateDropdownPreview(statuses);
+                } else {
+                    html += `⚠️ No calling statuses found in database\n`;
+                    updateDropdownPreview([]);
+                }
+                
+                responseDiv.innerHTML = html;
+            } else {
+                responseDiv.className = 'response error';
+                responseDiv.innerHTML = `❌ API Error:\nStatus: ${result.status}\nError: ${result.data?.error || result.error}\n\nRaw Response:\n${result.raw}`;
+                updateDropdownPreview([]);
+            }
+        }
+
+        function updateDropdownPreview(statuses) {
+            const dropdownPreview = document.getElementById('dropdownPreview');
+            
+            if (statuses.length === 0) {
+                dropdownPreview.innerHTML = '<div class="dropdown-item">No calling statuses available</div>';
+                return;
+            }
+            
+            let html = '';
+            statuses.forEach(status => {
+                html += `<div class="dropdown-item">${status.calling_status}</div>`;
+            });
+            
+            dropdownPreview.innerHTML = html;
+        }
+
+        async function checkTableStructure() {
+            const responseDiv = document.getElementById('response');
+            responseDiv.innerHTML = '🔍 Checking tbl_partner_calling_status table structure...';
+            responseDiv.className = 'response';
+            
+            const result = await makeRequest(API_BASE + 'debug_calling_status_table.php');
+            
+            if (result.success) {
+                responseDiv.className = 'response success';
+                responseDiv.innerHTML = `✅ Table Structure Check:\n\n${JSON.stringify(result.data, null, 2)}`;
+            } else {
+                responseDiv.className = 'response error';
+                responseDiv.innerHTML = `❌ Table Check Failed:\n${result.data?.error || result.error}`;
+            }
+        }
+
+        async function addSampleCallingStatuses() {
+            const responseDiv = document.getElementById('response');
+            responseDiv.innerHTML = '➕ Adding sample calling statuses...';
+            responseDiv.className = 'response';
+            
+            const result = await makeRequest(API_BASE + 'setup_calling_status_table.php');
+            
+            if (result.success) {
+                responseDiv.className = 'response success';
+                responseDiv.innerHTML = `✅ Sample Calling Statuses Added:\n\n${JSON.stringify(result.data, null, 2)}`;
+            } else {
+                responseDiv.className = 'response error';
+                responseDiv.innerHTML = `❌ Failed to Add Sample Statuses:\n${result.data?.error || result.error}`;
+            }
+        }
+
+        function clearResults() {
+            document.getElementById('response').innerHTML = '';
+            document.getElementById('response').className = 'response';
+        }
+
+        // Auto-test on page load
+        window.onload = function() {
+            setTimeout(() => {
+                testCallingStatusAPI();
+            }, 1000);
+        };
+    </script>
+</body>
+</html> 

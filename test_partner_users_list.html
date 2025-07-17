@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Partner Users List API</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .test-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+        }
+        .test-button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            margin: 10px 5px;
+        }
+        .test-button:hover {
+            background-color: #0056b3;
+        }
+        .result {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 6px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .success {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        .info {
+            background-color: #d1ecf1;
+            border: 1px solid #bee5eb;
+            color: #0c5460;
+        }
+        .partner-card {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .partner-name {
+            font-weight: bold;
+            font-size: 16px;
+            color: #2c3e50;
+            margin-bottom: 8px;
+        }
+        .partner-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 8px;
+            font-size: 12px;
+        }
+        .detail-item {
+            display: flex;
+            justify-content: space-between;
+        }
+        .detail-label {
+            font-weight: bold;
+            color: #666;
+        }
+        .detail-value {
+            color: #333;
+        }
+        .status-active {
+            color: #28a745;
+            font-weight: bold;
+        }
+        .status-inactive {
+            color: #dc3545;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 Test Partner Users List API</h1>
+        
+        <div class="test-section">
+            <h2>📊 API Information</h2>
+            <p><strong>Endpoint:</strong> <code>https://emp.kfinone.com/mobile/api/get_partner_users_list.php</code></p>
+            <p><strong>Method:</strong> GET</p>
+            <p><strong>Description:</strong> Fetches all partner users from tbl_partner_users table with all specified columns</p>
+            <p><strong>Expected Response:</strong> JSON with status, data array, message, and count</p>
+        </div>
+
+        <div class="test-section">
+            <h2>🔍 Test API Connection</h2>
+            <p>Test the basic API connection and response format.</p>
+            <button class="test-button" onclick="testApiConnection()">Test API Connection</button>
+            <div id="connectionResult"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>📋 Test Partner Users Data</h2>
+            <p>Fetch and display all partner users data in a formatted view.</p>
+            <button class="test-button" onclick="testPartnerUsersData()">Fetch Partner Users</button>
+            <div id="dataResult"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>📈 Test Statistics</h2>
+            <p>Test the statistics calculation (total, active, inactive counts).</p>
+            <button class="test-button" onclick="testStatistics()">Calculate Statistics</button>
+            <div id="statsResult"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>🔍 Test Search Functionality</h2>
+            <p>Test search functionality across partner user fields.</p>
+            <input type="text" id="searchInput" placeholder="Enter search term..." style="padding: 8px; margin-right: 10px; border: 1px solid #ddd; border-radius: 4px;">
+            <button class="test-button" onclick="testSearch()">Search</button>
+            <div id="searchResult"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>🎯 Test Filter Functionality</h2>
+            <p>Test filtering by status (All, Active, Inactive).</p>
+            <button class="test-button" onclick="testFilter('all')">Show All</button>
+            <button class="test-button" onclick="testFilter('active')">Active Only</button>
+            <button class="test-button" onclick="testFilter('inactive')">Inactive Only</button>
+            <div id="filterResult"></div>
+        </div>
+    </div>
+
+    <script>
+        const BASE_URL = 'https://emp.kfinone.com/mobile/api/';
+        let partnerUsersData = [];
+
+        async function testApiConnection() {
+            const resultDiv = document.getElementById('connectionResult');
+            resultDiv.innerHTML = '<div class="result info">Testing API connection...</div>';
+            
+            try {
+                const response = await fetch(BASE_URL + 'get_partner_users_list.php');
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    resultDiv.innerHTML = `
+                        <div class="result success">
+✅ API Connection Successful!
+
+Response Status: ${data.status}
+Message: ${data.message}
+Total Records: ${data.count}
+Response Time: ${response.headers.get('date') || 'N/A'}
+                        </div>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `
+                        <div class="result error">
+❌ API Connection Failed!
+
+Status: ${data.status}
+Message: ${data.message}
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="result error">
+❌ API Connection Error!
+
+Error: ${error.message}
+                    </div>
+                `;
+            }
+        }
+
+        async function testPartnerUsersData() {
+            const resultDiv = document.getElementById('dataResult');
+            resultDiv.innerHTML = '<div class="result info">Fetching partner users data...</div>';
+            
+            try {
+                const response = await fetch(BASE_URL + 'get_partner_users_list.php');
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    partnerUsersData = data.data;
+                    
+                    if (partnerUsersData.length === 0) {
+                        resultDiv.innerHTML = `
+                            <div class="result info">
+📭 No Partner Users Found
+
+The API returned an empty data array. This could mean:
+- The tbl_partner_users table doesn't exist
+- The table exists but has no data
+- There's an issue with the database connection
+                            </div>
+                        `;
+                    } else {
+                        let html = `
+                            <div class="result success">
+✅ Partner Users Data Retrieved Successfully!
+
+Total Records: ${partnerUsersData.length}
+
+📋 Sample Records (showing first 3):
+                        `;
+                        
+                        // Show first 3 records in detail
+                        partnerUsersData.slice(0, 3).forEach((user, index) => {
+                            html += `
+                                <div class="partner-card">
+                                    <div class="partner-name">${index + 1}. ${user.full_name || 'N/A'}</div>
+                                    <div class="partner-details">
+                                        <div class="detail-item">
+                                            <span class="detail-label">ID:</span>
+                                            <span class="detail-value">${user.id}</span>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span class="detail-label">Username:</span>
+                                            <span class="detail-value">${user.username}</span>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span class="detail-label">Phone:</span>
+                                            <span class="detail-value">${user.phone_number}</span>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span class="detail-label">Email:</span>
+                                            <span class="detail-value">${user.email_id}</span>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span class="detail-label">Company:</span>
+                                            <span class="detail-value">${user.company_name}</span>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span class="detail-label">Department:</span>
+                                            <span class="detail-value">${user.department}</span>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span class="detail-label">Designation:</span>
+                                            <span class="detail-value">${user.designation}</span>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span class="detail-label">Employee No:</span>
+                                            <span class="detail-value">${user.employee_no}</span>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span class="detail-label">Branch State:</span>
+                                            <span class="detail-value">${user.branchstate}</span>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span class="detail-label">Branch Location:</span>
+                                            <span class="detail-value">${user.branchloaction}</span>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span class="detail-label">Bank Name:</span>
+                                            <span class="detail-value">${user.bank_name}</span>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span class="detail-label">Account Type:</span>
+                                            <span class="detail-value">${user.account_type}</span>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span class="detail-label">Status:</span>
+                                            <span class="detail-value ${user.status === '1' || user.status === 'Active' ? 'status-active' : 'status-inactive'}">${user.status}</span>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span class="detail-label">Created At:</span>
+                                            <span class="detail-value">${user.created_at}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                        });
+                        
+                        html += '</div>';
+                        resultDiv.innerHTML = html;
+                    }
+                } else {
+                    resultDiv.innerHTML = `
+                        <div class="result error">
+❌ Failed to Fetch Partner Users Data!
+
+Status: ${data.status}
+Message: ${data.message}
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="result error">
+❌ Error Fetching Partner Users Data!
+
+Error: ${error.message}
+                    </div>
+                `;
+            }
+        }
+
+        async function testStatistics() {
+            const resultDiv = document.getElementById('statsResult');
+            
+            if (partnerUsersData.length === 0) {
+                resultDiv.innerHTML = `
+                    <div class="result info">
+📊 Please fetch partner users data first using the "Fetch Partner Users" button above.
+                    </div>
+                `;
+                return;
+            }
+            
+            const total = partnerUsersData.length;
+            const active = partnerUsersData.filter(user => 
+                user.status === '1' || user.status === 'Active'
+            ).length;
+            const inactive = total - active;
+            
+            resultDiv.innerHTML = `
+                <div class="result success">
+📊 Partner Users Statistics
+
+Total Partner Users: ${total}
+Active Partner Users: ${active}
+Inactive Partner Users: ${inactive}
+Active Percentage: ${((active / total) * 100).toFixed(1)}%
+Inactive Percentage: ${((inactive / total) * 100).toFixed(1)}%
+                </div>
+            `;
+        }
+
+        function testSearch() {
+            const resultDiv = document.getElementById('searchResult');
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            
+            if (partnerUsersData.length === 0) {
+                resultDiv.innerHTML = `
+                    <div class="result info">
+🔍 Please fetch partner users data first using the "Fetch Partner Users" button above.
+                    </div>
+                `;
+                return;
+            }
+            
+            if (!searchTerm) {
+                resultDiv.innerHTML = `
+                    <div class="result info">
+🔍 Please enter a search term.
+                    </div>
+                `;
+                return;
+            }
+            
+            const filteredUsers = partnerUsersData.filter(user => 
+                (user.full_name && user.full_name.toLowerCase().includes(searchTerm)) ||
+                (user.email_id && user.email_id.toLowerCase().includes(searchTerm)) ||
+                (user.phone_number && user.phone_number.includes(searchTerm)) ||
+                (user.username && user.username.toLowerCase().includes(searchTerm)) ||
+                (user.company_name && user.company_name.toLowerCase().includes(searchTerm)) ||
+                (user.department && user.department.toLowerCase().includes(searchTerm)) ||
+                (user.designation && user.designation.toLowerCase().includes(searchTerm))
+            );
+            
+            if (filteredUsers.length === 0) {
+                resultDiv.innerHTML = `
+                    <div class="result info">
+🔍 No partner users found matching "${searchTerm}"
+                    </div>
+                `;
+            } else {
+                let html = `
+                    <div class="result success">
+🔍 Search Results for "${searchTerm}"
+
+Found ${filteredUsers.length} matching partner user(s):
+                `;
+                
+                filteredUsers.forEach((user, index) => {
+                    html += `
+                        <div class="partner-card">
+                            <div class="partner-name">${index + 1}. ${user.full_name || 'N/A'}</div>
+                            <div class="partner-details">
+                                <div class="detail-item">
+                                    <span class="detail-label">Username:</span>
+                                    <span class="detail-value">${user.username}</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="detail-label">Phone:</span>
+                                    <span class="detail-value">${user.phone_number}</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="detail-label">Email:</span>
+                                    <span class="detail-value">${user.email_id}</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="detail-label">Company:</span>
+                                    <span class="detail-value">${user.company_name}</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="detail-label">Status:</span>
+                                    <span class="detail-value ${user.status === '1' || user.status === 'Active' ? 'status-active' : 'status-inactive'}">${user.status}</span>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                html += '</div>';
+                resultDiv.innerHTML = html;
+            }
+        }
+
+        function testFilter(filterType) {
+            const resultDiv = document.getElementById('filterResult');
+            
+            if (partnerUsersData.length === 0) {
+                resultDiv.innerHTML = `
+                    <div class="result info">
+🎯 Please fetch partner users data first using the "Fetch Partner Users" button above.
+                    </div>
+                `;
+                return;
+            }
+            
+            let filteredUsers;
+            let filterTitle;
+            
+            switch (filterType) {
+                case 'active':
+                    filteredUsers = partnerUsersData.filter(user => 
+                        user.status === '1' || user.status === 'Active'
+                    );
+                    filterTitle = 'Active Partner Users';
+                    break;
+                case 'inactive':
+                    filteredUsers = partnerUsersData.filter(user => 
+                        user.status === '0' || user.status === 'Inactive'
+                    );
+                    filterTitle = 'Inactive Partner Users';
+                    break;
+                default:
+                    filteredUsers = partnerUsersData;
+                    filterTitle = 'All Partner Users';
+            }
+            
+            let html = `
+                <div class="result success">
+🎯 ${filterTitle}
+
+Found ${filteredUsers.length} partner user(s):
+                `;
+            
+            if (filteredUsers.length > 0) {
+                filteredUsers.slice(0, 5).forEach((user, index) => {
+                    html += `
+                        <div class="partner-card">
+                            <div class="partner-name">${index + 1}. ${user.full_name || 'N/A'}</div>
+                            <div class="partner-details">
+                                <div class="detail-item">
+                                    <span class="detail-label">Username:</span>
+                                    <span class="detail-value">${user.username}</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="detail-label">Phone:</span>
+                                    <span class="detail-value">${user.phone_number}</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="detail-label">Email:</span>
+                                    <span class="detail-value">${user.email_id}</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="detail-label">Status:</span>
+                                    <span class="detail-value ${user.status === '1' || user.status === 'Active' ? 'status-active' : 'status-inactive'}">${user.status}</span>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                if (filteredUsers.length > 5) {
+                    html += `<p><em>... and ${filteredUsers.length - 5} more partner users</em></p>`;
+                }
+            }
+            
+            html += '</div>';
+            resultDiv.innerHTML = html;
+        }
+    </script>
+</body>
+</html> 

@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Add Policy API</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #333;
+        }
+        input, textarea, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        textarea {
+            height: 100px;
+            resize: vertical;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .submit-btn {
+            background-color: #28a745;
+        }
+        .submit-btn:hover {
+            background-color: #218838;
+        }
+        .result {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .success {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        .loading {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+        }
+        .summary {
+            background-color: #e2e3e5;
+            border: 1px solid #d6d8db;
+            color: #383d41;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .sample-data {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Test Add Policy API</h1>
+        
+        <div class="summary">
+            <h3>📋 Test Summary</h3>
+            <p>This test verifies that the Policy Management panel can add new policies to the <code>tbl_policy</code> table with the following columns:</p>
+            <ul>
+                <li><strong>vendor_bank_id</strong> - Foreign key to tbl_vendor_bank (resolved from vendor_bank_name)</li>
+                <li><strong>loan_type_id</strong> - Foreign key to tbl_loan_type (resolved from loan_type_name)</li>
+                <li><strong>image</strong> - Policy image filename or path</li>
+                <li><strong>content</strong> - Policy content/description</li>
+            </ul>
+            <p>The API automatically resolves vendor bank and loan type names to their respective IDs.</p>
+        </div>
+
+        <div class="test-section">
+            <h3>🧪 Test Add Policy API</h3>
+            
+            <form id="policyForm">
+                <div class="form-group">
+                    <label for="vendorBankName">Vendor Bank Name:</label>
+                    <select id="vendorBankName" required>
+                        <option value="">Select Vendor Bank</option>
+                        <option value="HDFC Bank">HDFC Bank</option>
+                        <option value="ICICI Bank">ICICI Bank</option>
+                        <option value="SBI Bank">SBI Bank</option>
+                        <option value="Axis Bank">Axis Bank</option>
+                        <option value="Kotak Bank">Kotak Bank</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="loanTypeName">Loan Type Name:</label>
+                    <select id="loanTypeName" required>
+                        <option value="">Select Loan Type</option>
+                        <option value="Personal Loan">Personal Loan</option>
+                        <option value="Home Loan">Home Loan</option>
+                        <option value="Business Loan">Business Loan</option>
+                        <option value="Vehicle Loan">Vehicle Loan</option>
+                        <option value="Education Loan">Education Loan</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="image">Image Filename:</label>
+                    <input type="text" id="image" placeholder="e.g., policy_document.pdf" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="content">Content:</label>
+                    <textarea id="content" placeholder="Enter policy content/description..." required></textarea>
+                </div>
+
+                <button type="button" class="submit-btn" onclick="testAddPolicyAPI()">Submit Policy</button>
+                <button type="button" onclick="loadSampleData()">Load Sample Data</button>
+                <button type="button" onclick="clearForm()">Clear Form</button>
+            </form>
+
+            <div id="addPolicyResult" class="result"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>📊 API Information</h3>
+            <p><strong>Endpoint:</strong> <code>https://emp.kfinone.com/mobile/api/add_policy.php</code></p>
+            <p><strong>Method:</strong> POST</p>
+            <p><strong>Content-Type:</strong> application/json</p>
+            <p><strong>Table:</strong> <code>tbl_policy</code></p>
+            <p><strong>Expected Request:</strong></p>
+            <pre>{
+  "vendor_bank_name": "HDFC Bank",
+  "loan_type_name": "Personal Loan",
+  "image": "policy_document.pdf",
+  "content": "Policy description..."
+}</pre>
+            <p><strong>Expected Response:</strong></p>
+            <pre>{
+  "status": "success",
+  "message": "Policy added successfully",
+  "data": {
+    "id": "1",
+    "vendor_bank_id": "1",
+    "loan_type_id": "1",
+    "image": "policy_document.pdf",
+    "content": "Policy description...",
+    "vendor_bank_name": "HDFC Bank",
+    "loan_type": "Personal Loan"
+  }
+}</pre>
+        </div>
+
+        <div class="test-section">
+            <h3>📱 Android App Integration</h3>
+            <p>The PolicyActivity will:</p>
+            <ul>
+                <li>Collect form data when user clicks Submit</li>
+                <li>Send POST request to this API</li>
+                <li>Show loading state during submission</li>
+                <li>Display success/error messages</li>
+                <li>Clear form and refresh policy list on success</li>
+                <li>Handle validation errors from server</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        async function testAddPolicyAPI() {
+            const resultDiv = document.getElementById('addPolicyResult');
+            resultDiv.className = 'result loading';
+            resultDiv.textContent = 'Submitting policy...';
+
+            // Get form data
+            const vendorBankName = document.getElementById('vendorBankName').value;
+            const loanTypeName = document.getElementById('loanTypeName').value;
+            const image = document.getElementById('image').value;
+            const content = document.getElementById('content').value;
+
+            // Validation
+            if (!vendorBankName || !loanTypeName || !image || !content) {
+                resultDiv.className = 'result error';
+                resultDiv.textContent = '❌ ERROR: Please fill in all fields';
+                return;
+            }
+
+            const requestBody = {
+                vendor_bank_name: vendorBankName,
+                loan_type_name: loanTypeName,
+                image: image,
+                content: content
+            };
+
+            try {
+                const response = await fetch('https://emp.kfinone.com/mobile/api/add_policy.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(requestBody)
+                });
+
+                const data = await response.json();
+                
+                if (response.ok && data.status === 'success') {
+                    resultDiv.className = 'result success';
+                    
+                    let resultText = `✅ SUCCESS: ${data.message}\n\n`;
+                    resultText += '📋 Added Policy Details:\n';
+                    resultText += '='.repeat(50) + '\n\n';
+                    resultText += `ID: ${data.data.id}\n`;
+                    resultText += `Vendor Bank ID: ${data.data.vendor_bank_id}\n`;
+                    resultText += `Loan Type ID: ${data.data.loan_type_id}\n`;
+                    resultText += `Image: ${data.data.image}\n`;
+                    resultText += `Content: ${data.data.content}\n`;
+                    resultText += `Vendor Bank Name: ${data.data.vendor_bank_name}\n`;
+                    resultText += `Loan Type: ${data.data.loan_type}\n\n`;
+                    
+                    resultText += '📄 Full API Response:\n';
+                    resultText += '='.repeat(50) + '\n';
+                    resultText += JSON.stringify(data, null, 2);
+                    
+                    resultDiv.textContent = resultText;
+                } else {
+                    resultDiv.className = 'result error';
+                    resultDiv.textContent = `❌ ERROR: ${data.message || 'Unknown error'}\n\nResponse: ${JSON.stringify(data, null, 2)}`;
+                }
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.textContent = `❌ NETWORK ERROR: ${error.message}`;
+            }
+        }
+
+        function loadSampleData() {
+            document.getElementById('vendorBankName').value = 'HDFC Bank';
+            document.getElementById('loanTypeName').value = 'Personal Loan';
+            document.getElementById('image').value = 'personal_loan_policy.pdf';
+            document.getElementById('content').value = 'Personal loan policy with competitive interest rates and flexible repayment options. This policy offers quick approval and minimal documentation requirements.';
+        }
+
+        function clearForm() {
+            document.getElementById('policyForm').reset();
+            document.getElementById('addPolicyResult').textContent = '';
+            document.getElementById('addPolicyResult').className = 'result';
+        }
+
+        // Auto-load sample data on page load
+        window.onload = function() {
+            setTimeout(loadSampleData, 1000);
+        };
+    </script>
+</body>
+</html> 

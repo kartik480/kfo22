@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="60dp"
+    android:orientation="horizontal"
+    android:background="#FFFFFF"
+    android:paddingHorizontal="12dp"
+    android:gravity="center_vertical"
+    android:layout_marginBottom="4dp"
+    android:elevation="1dp">
+
+    <!-- Username -->
+    <TextView
+        android:id="@+id/usernameText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="EMP001"
+        android:textSize="10sp"
+        android:textColor="#2C3E50"
+        android:gravity="center"
+        android:maxLines="2"
+        android:ellipsize="end" />
+
+    <!-- Full Name -->
+    <TextView
+        android:id="@+id/fullNameText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1.5"
+        android:text="Employee Name"
+        android:textSize="10sp"
+        android:textColor="#2C3E50"
+        android:gravity="center"
+        android:maxLines="2"
+        android:ellipsize="end" />
+
+    <!-- Mobile -->
+    <TextView
+        android:id="@+id/mobileText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1.2"
+        android:text="9876543210"
+        android:textSize="10sp"
+        android:textColor="#2C3E50"
+        android:gravity="center"
+        android:maxLines="2"
+        android:ellipsize="end" />
+
+    <!-- Email -->
+    <TextView
+        android:id="@+id/emailText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1.5"
+        android:text="email@kfinone.com"
+        android:textSize="9sp"
+        android:textColor="#2C3E50"
+        android:gravity="center"
+        android:maxLines="2"
+        android:ellipsize="end" />
+
+    <!-- Reporting To -->
+    <TextView
+        android:id="@+id/reportingToText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1.2"
+        android:text="Manager Name"
+        android:textSize="9sp"
+        android:textColor="#2C3E50"
+        android:gravity="center"
+        android:maxLines="2"
+        android:ellipsize="end" />
+
+    <!-- Designation (hidden but used for data) -->
+    <TextView
+        android:id="@+id/designationText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="0"
+        android:visibility="gone" />
+
+    <!-- Action -->
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.8"
+        android:orientation="horizontal"
+        android:gravity="center">
+
+        <Button
+            android:id="@+id/editButton"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:text="✏️"
+            android:textSize="8sp"
+            android:background="@drawable/circle_background"
+            android:minWidth="0dp"
+            android:minHeight="0dp"
+            android:padding="0dp"
+            android:layout_marginEnd="2dp" />
+
+        <Button
+            android:id="@+id/deleteButton"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:text="🗑️"
+            android:textSize="8sp"
+            android:background="@drawable/circle_background"
+            android:minWidth="0dp"
+            android:minHeight="0dp"
+            android:padding="0dp" />
+
+    </LinearLayout>
+
+</LinearLayout> 

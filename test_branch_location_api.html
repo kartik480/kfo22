@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Branch Location API</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .info {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            border-left: 4px solid #2196f3;
+        }
+        .feature-list {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+        .feature-list li {
+            margin: 5px 0;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .test-button {
+            background: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            margin: 5px;
+        }
+        .test-button:hover {
+            background: #45a049;
+        }
+        .response {
+            background: #f9f9f9;
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin-top: 10px;
+            border-radius: 4px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .success {
+            background: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .form-group {
+            margin: 10px 0;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 Test Branch Location API</h1>
+        
+        <div class="info">
+            <strong>API Details:</strong>
+            <ul class="feature-list">
+                <li>Endpoint: https://emp.kfinone.com/mobile/api/get_branch_location_list.php</li>
+                <li>Method: GET</li>
+                <li>Table: tbl_branch_location</li>
+                <li>Columns: id, branch_location, branch_state_id, status, created_at</li>
+                <li>Response Format: JSON with status, message, data, count</li>
+            </ul>
+        </div>
+
+        <div class="test-section">
+            <h2>📊 GET Branch Location List Test</h2>
+            <p>Test fetching all branch locations for the list box.</p>
+            <button class="test-button" onclick="testGetBranchLocationList()">Test GET Branch Location List</button>
+            <div id="getBranchLocationResult"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>📋 Branch Location Table Display</h2>
+            <p>Display all branch locations in a formatted table.</p>
+            <button class="test-button" onclick="displayBranchLocationTable()">Display Branch Location Table</button>
+            <div id="tableDisplayResult"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>🔍 Column Validation Test</h2>
+            <p>Test if all required columns are present in the response.</p>
+            <button class="test-button" onclick="testColumnValidation()">Test Column Validation</button>
+            <div id="columnValidationResult"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>🗂️ Data Structure Test</h2>
+            <p>Test the data structure and column mapping.</p>
+            <button class="test-button" onclick="testDataStructure()">Test Data Structure</button>
+            <div id="dataStructureResult"></div>
+        </div>
+    </div>
+
+    <script>
+        const GET_API_URL = 'https://emp.kfinone.com/mobile/api/get_branch_location_list.php';
+
+        async function testGetBranchLocationList() {
+            const resultDiv = document.getElementById('getBranchLocationResult');
+            resultDiv.innerHTML = 'Testing GET Branch Location List...';
+            resultDiv.className = 'response';
+
+            try {
+                const response = await fetch(GET_API_URL);
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    const summary = {
+                        'Status': data.status,
+                        'Message': data.message,
+                        'Total Branch Locations': data.count,
+                        'Sample Data': data.data.slice(0, 3)
+                    };
+                    
+                    resultDiv.innerHTML = JSON.stringify(summary, null, 2);
+                    resultDiv.className = 'response success';
+                } else {
+                    resultDiv.innerHTML = `API Error: ${data.message}`;
+                    resultDiv.className = 'response error';
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `Error: ${error.message}`;
+                resultDiv.className = 'response error';
+            }
+        }
+
+        async function displayBranchLocationTable() {
+            const resultDiv = document.getElementById('tableDisplayResult');
+            resultDiv.innerHTML = 'Loading branch location table...';
+            resultDiv.className = 'response';
+
+            try {
+                const response = await fetch(GET_API_URL);
+                const data = await response.json();
+                
+                if (data.status === 'success' && data.data.length > 0) {
+                    let tableHTML = `
+                        <h3>Branch Location List (${data.count} records)</h3>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Branch Location</th>
+                                    <th>Branch State ID</th>
+                                    <th>Status</th>
+                                    <th>Created At</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                    `;
+                    
+                    data.data.forEach(item => {
+                        tableHTML += `
+                            <tr>
+                                <td>${item.id}</td>
+                                <td>${item.branch_location}</td>
+                                <td>${item.branch_state_id || 'N/A'}</td>
+                                <td>${item.status}</td>
+                                <td>${item.created_at}</td>
+                            </tr>
+                        `;
+                    });
+                    
+                    tableHTML += '</tbody></table>';
+                    resultDiv.innerHTML = tableHTML;
+                    resultDiv.className = 'response success';
+                } else {
+                    resultDiv.innerHTML = `No branch locations found: ${data.message}`;
+                    resultDiv.className = 'response error';
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `Error: ${error.message}`;
+                resultDiv.className = 'response error';
+            }
+        }
+
+        async function testColumnValidation() {
+            const resultDiv = document.getElementById('columnValidationResult');
+            resultDiv.innerHTML = 'Testing validation scenarios...';
+            resultDiv.className = 'response';
+
+            try {
+                const response = await fetch(GET_API_URL);
+                const data = await response.json();
+                
+                if (data.status === 'success' && data.data.length > 0) {
+                    const requiredColumns = ['id', 'branch_location', 'branch_state_id', 'status', 'created_at'];
+                    const sampleRecord = data.data[0];
+                    const availableColumns = Object.keys(sampleRecord);
+                    
+                    const validation = {
+                        'Required Columns': requiredColumns,
+                        'Available Columns': availableColumns,
+                        'Missing Columns': requiredColumns.filter(col => !availableColumns.includes(col)),
+                        'Extra Columns': availableColumns.filter(col => !requiredColumns.includes(col)),
+                        'Validation Status': requiredColumns.every(col => availableColumns.includes(col)) ? 'PASS' : 'FAIL'
+                    };
+                    
+                    resultDiv.innerHTML = JSON.stringify(validation, null, 2);
+                    resultDiv.className = validation['Validation Status'] === 'PASS' ? 'response success' : 'response error';
+                } else {
+                    resultDiv.innerHTML = 'No data available for validation';
+                    resultDiv.className = 'response error';
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `Error: ${error.message}`;
+                resultDiv.className = 'response error';
+            }
+        }
+
+        async function testDataStructure() {
+            const resultDiv = document.getElementById('dataStructureResult');
+            resultDiv.innerHTML = 'Testing...';
+            resultDiv.className = 'response';
+
+            try {
+                const response = await fetch(GET_API_URL);
+                const data = await response.json();
+                
+                if (data.status === 'success' && data.data.length > 0) {
+                    const sampleRecord = data.data[0];
+                    const structure = {
+                        'Sample Record': sampleRecord,
+                        'Available Fields': Object.keys(sampleRecord),
+                        'Data Types': Object.fromEntries(
+                            Object.entries(sampleRecord).map(([key, value]) => [key, typeof value])
+                        )
+                    };
+                    
+                    resultDiv.innerHTML = JSON.stringify(structure, null, 2);
+                    resultDiv.className = 'response success';
+                } else {
+                    resultDiv.innerHTML = 'No data available for structure analysis';
+                    resultDiv.className = 'response error';
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `Error: ${error.message}`;
+                resultDiv.className = 'response error';
+            }
+        }
+    </script>
+</body>
+</html> 

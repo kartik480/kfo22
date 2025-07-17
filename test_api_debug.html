@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Debug Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .response {
+            margin-top: 15px;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .success {
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+    </style>
+</head>
+<body>
+    <h1>API Debug Test</h1>
+    
+    <div class="section">
+        <h2>1. Test Old API (get_partner_users_list_compatible.php)</h2>
+        <button onclick="testOldAPI()">Test Old API</button>
+        <div id="oldApiResponse" class="response"></div>
+    </div>
+
+    <div class="section">
+        <h2>2. Test New API (get_partner_users_complete.php)</h2>
+        <button onclick="testNewAPI()">Test New API</button>
+        <div id="newApiResponse" class="response"></div>
+    </div>
+
+    <div class="section">
+        <h2>3. Check Table Structure</h2>
+        <button onclick="checkTableStructure()">Check Table</button>
+        <div id="tableResponse" class="response"></div>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'https://emp.kfinone.com/mobile/api/';
+        
+        async function testOldAPI() {
+            const responseDiv = document.getElementById('oldApiResponse');
+            responseDiv.textContent = 'Testing old API...';
+            responseDiv.className = 'response';
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}get_partner_users_list_compatible.php`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const responseText = await response.text();
+                responseDiv.textContent = `Status: ${response.status}\nResponse: ${responseText}`;
+                responseDiv.className = `response ${response.ok ? 'success' : 'error'}`;
+            } catch (error) {
+                responseDiv.textContent = `Error: ${error.message}`;
+                responseDiv.className = 'response error';
+            }
+        }
+
+        async function testNewAPI() {
+            const responseDiv = document.getElementById('newApiResponse');
+            responseDiv.textContent = 'Testing new API...';
+            responseDiv.className = 'response';
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}get_partner_users_complete.php`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const responseText = await response.text();
+                responseDiv.textContent = `Status: ${response.status}\nResponse: ${responseText}`;
+                responseDiv.className = `response ${response.ok ? 'success' : 'error'}`;
+            } catch (error) {
+                responseDiv.textContent = `Error: ${error.message}`;
+                responseDiv.className = 'response error';
+            }
+        }
+
+        async function checkTableStructure() {
+            const responseDiv = document.getElementById('tableResponse');
+            responseDiv.textContent = 'Checking table structure...';
+            responseDiv.className = 'response';
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}check_partner_users_table.php`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const data = await response.json();
+                responseDiv.textContent = JSON.stringify(data, null, 2);
+                responseDiv.className = `response ${data.success ? 'success' : 'error'}`;
+            } catch (error) {
+                responseDiv.textContent = `Error: ${error.message}`;
+                responseDiv.className = 'response error';
+            }
+        }
+
+        // Auto-run tests on page load
+        window.onload = function() {
+            setTimeout(() => testOldAPI(), 1000);
+            setTimeout(() => testNewAPI(), 2000);
+            setTimeout(() => checkTableStructure(), 3000);
+        };
+    </script>
+</body>
+</html> 

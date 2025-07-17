@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Branch State Dropdown - KfinOne</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2C3E50;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .test-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+        }
+        .test-section h2 {
+            color: #34495E;
+            margin-top: 0;
+        }
+        .status {
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+            font-weight: bold;
+        }
+        .status.loading {
+            background-color: #FFF3CD;
+            color: #856404;
+            border: 1px solid #FFEAA7;
+        }
+        .status.success {
+            background-color: #D4EDDA;
+            color: #155724;
+            border: 1px solid #C3E6CB;
+        }
+        .status.error {
+            background-color: #F8D7DA;
+            color: #721C24;
+            border: 1px solid #F5C6CB;
+        }
+        .result {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 10px 0;
+            font-family: monospace;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .dropdown-test {
+            margin: 20px 0;
+        }
+        select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .info {
+            background-color: #E3F2FD;
+            border: 1px solid #BBDEFB;
+            color: #1565C0;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Test Branch State Dropdown - KfinOne</h1>
+        
+        <div class="info">
+            <strong>Purpose:</strong> Test the branch state dropdown functionality for the Add Employee Details panel<br>
+            <strong>API:</strong> https://emp.kfinone.com/mobile/api/fetch_branch_states.php<br>
+            <strong>Table:</strong> tbl_branch_state<br>
+            <strong>Column:</strong> branch_state_name
+        </div>
+
+        <div class="test-section">
+            <h2>1. API Response Test</h2>
+            <div id="api-status" class="status loading">Testing API connection...</div>
+            <button onclick="testAPI()">Test API</button>
+            <div id="api-result" class="result" style="display: none;"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>2. Dropdown Test</h2>
+            <div id="dropdown-status" class="status loading">Loading dropdown data...</div>
+            <div class="dropdown-test">
+                <label for="branchStateDropdown"><strong>Select Branch State:</strong></label>
+                <select id="branchStateDropdown">
+                    <option value="">Loading...</option>
+                </select>
+            </div>
+            <div id="dropdown-result" class="result" style="display: none;"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>3. Data Validation</h2>
+            <div id="validation-status" class="status loading">Validating data...</div>
+            <div id="validation-result" class="result" style="display: none;"></div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'https://emp.kfinone.com/mobile/api/fetch_branch_states.php';
+        
+        async function testAPI() {
+            const statusDiv = document.getElementById('api-status');
+            const resultDiv = document.getElementById('api-result');
+            
+            statusDiv.className = 'status loading';
+            statusDiv.textContent = 'Testing API connection...';
+            resultDiv.style.display = 'none';
+            
+            try {
+                const response = await fetch(API_URL);
+                const data = await response.json();
+                
+                statusDiv.className = 'status success';
+                statusDiv.textContent = `API Test Successful - Status: ${response.status}`;
+                
+                resultDiv.style.display = 'block';
+                resultDiv.textContent = JSON.stringify(data, null, 2);
+                
+                // Test dropdown functionality
+                if (data.success && data.data) {
+                    loadDropdown(data.data);
+                    validateData(data.data);
+                }
+                
+            } catch (error) {
+                statusDiv.className = 'status error';
+                statusDiv.textContent = `API Test Failed: ${error.message}`;
+                
+                resultDiv.style.display = 'block';
+                resultDiv.textContent = `Error: ${error.message}`;
+            }
+        }
+        
+        function loadDropdown(states) {
+            const statusDiv = document.getElementById('dropdown-status');
+            const dropdown = document.getElementById('branchStateDropdown');
+            const resultDiv = document.getElementById('dropdown-result');
+            
+            try {
+                // Clear existing options
+                dropdown.innerHTML = '';
+                
+                // Add default option
+                const defaultOption = document.createElement('option');
+                defaultOption.value = '';
+                defaultOption.textContent = 'Select Branch State';
+                dropdown.appendChild(defaultOption);
+                
+                // Add state options
+                states.forEach(state => {
+                    const option = document.createElement('option');
+                    option.value = state.branch_state_name;
+                    option.textContent = state.branch_state_name;
+                    dropdown.appendChild(option);
+                });
+                
+                statusDiv.className = 'status success';
+                statusDiv.textContent = `Dropdown loaded successfully with ${states.length} states`;
+                
+                resultDiv.style.display = 'block';
+                resultDiv.textContent = `Loaded ${states.length} branch states:\n${states.map(s => s.branch_state_name).join('\n')}`;
+                
+            } catch (error) {
+                statusDiv.className = 'status error';
+                statusDiv.textContent = `Dropdown loading failed: ${error.message}`;
+                
+                resultDiv.style.display = 'block';
+                resultDiv.textContent = `Error: ${error.message}`;
+            }
+        }
+        
+        function validateData(states) {
+            const statusDiv = document.getElementById('validation-status');
+            const resultDiv = document.getElementById('validation-result');
+            
+            try {
+                const validation = {
+                    totalCount: states.length,
+                    hasData: states.length > 0,
+                    allHaveName: states.every(s => s.branch_state_name && s.branch_state_name.trim() !== ''),
+                    uniqueNames: new Set(states.map(s => s.branch_state_name)).size === states.length,
+                    sampleStates: states.slice(0, 5).map(s => s.branch_state_name)
+                };
+                
+                statusDiv.className = 'status success';
+                statusDiv.textContent = `Data validation completed`;
+                
+                resultDiv.style.display = 'block';
+                resultDiv.textContent = JSON.stringify(validation, null, 2);
+                
+            } catch (error) {
+                statusDiv.className = 'status error';
+                statusDiv.textContent = `Data validation failed: ${error.message}`;
+                
+                resultDiv.style.display = 'block';
+                resultDiv.textContent = `Error: ${error.message}`;
+            }
+        }
+        
+        // Auto-run test on page load
+        window.addEventListener('load', () => {
+            setTimeout(testAPI, 1000);
+        });
+    </script>
+</body>
+</html> 

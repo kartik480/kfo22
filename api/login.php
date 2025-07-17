@@ -1,0 +1,81 @@
+<?php
+header('Content-Type: application/json');
+header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Methods: POST');
+header('Access-Control-Allow-Headers: Content-Type');
+
+// Include database configuration
+require_once 'db_config.php';
+
+$response = array();
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Get JSON input
+    $input = json_decode(file_get_contents('php://input'), true);
+    
+    if (!$input) {
+        $response['success'] = false;
+        $response['message'] = 'Invalid JSON input.';
+        echo json_encode($response);
+        exit;
+    }
+    
+    $username = isset($input['username']) ? trim($input['username']) : '';
+    $password = isset($input['password']) ? trim($input['password']) : '';
+
+    if (empty($username) || empty($password)) {
+        $response['success'] = false;
+        $response['message'] = 'Username and password are required.';
+        echo json_encode($response);
+        exit;
+    }
+
+    try {
+        $conn = getConnection();
+        
+        // First, let's check if the user exists
+        $stmt = $conn->prepare('SELECT * FROM tbl_user WHERE username = :username LIMIT 1');
+        $stmt->bindParam(':username', $username);
+        $stmt->execute();
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+        if ($user) {
+            // User exists, now check password
+            if ($user['password'] === $password) {
+                $response['success'] = true;
+                $response['message'] = 'Login successful.';
+                $response['user'] = array(
+                    'id' => $user['id'],
+                    'username' => $user['username'],
+                    'firstName' => $user['firstName'] ?? '',
+                    'lastName' => $user['lastName'] ?? ''
+                );
+                
+                // Check if this is the special user (ID 8)
+                if ($user['id'] == 8) {
+                    $response['is_special_user'] = true;
+                    $response['special_message'] = 'Welcome to your special panel!';
+                } else {
+                    $response['is_special_user'] = false;
+                }
+            } else {
+                $response['success'] = false;
+                $response['message'] = 'Invalid password.';
+            }
+        } else {
+            $response['success'] = false;
+            $response['message'] = 'User not found.';
+        }
+        
+        closeConnection($conn);
+    } catch (Exception $e) {
+        $response['success'] = false;
+        $response['message'] = 'Database error: ' . $e->getMessage();
+    }
+} else {
+    $response['success'] = false;
+    $response['message'] = 'Invalid request method.';
+}
+
+echo json_encode($response);
+?> 

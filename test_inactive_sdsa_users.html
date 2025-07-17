@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inactive SDSA Users Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        h1, h2 {
+            color: #333;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .response {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 15px;
+            margin-top: 10px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .success {
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+        .loading {
+            color: #007bff;
+        }
+        .user-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        .user-table th, .user-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        .user-table th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        .user-table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .status-badge {
+            background-color: #dc3545;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .api-info {
+            background-color: #e9ecef;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .sql-query {
+            background-color: #f8f9fa;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: monospace;
+            margin: 10px 0;
+            border-left: 4px solid #007bff;
+        }
+    </style>
+</head>
+<body>
+    <h1>Inactive SDSA Users Test</h1>
+    
+    <div class="container">
+        <h2>API Information</h2>
+        <div class="api-info">
+            <strong>API URL:</strong> https://emp.kfinone.com/mobile/api/get_inactive_sdsa_users.php<br>
+            <strong>Table:</strong> tbl_sdsa_users<br>
+            <strong>Filter:</strong> status = 0 (Inactive users)<br>
+            <strong>Method:</strong> GET
+        </div>
+        
+        <div class="sql-query">
+            <strong>SQL Query:</strong><br>
+            SELECT id, name, email, phone, status, created_at, updated_at<br>
+            FROM tbl_sdsa_users<br>
+            WHERE status = 0<br>
+            ORDER BY name ASC
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>Test Commands</h2>
+        <button onclick="testInactiveSdsaAPI()">🧪 Test Inactive SDSA API</button>
+        <button onclick="checkTableStructure()">🔍 Check Table Structure</button>
+        <button onclick="addSampleInactiveUsers()">➕ Add Sample Inactive Users</button>
+        <div id="response" class="response"></div>
+    </div>
+
+    <div class="container">
+        <h2>Expected Response Format</h2>
+        <div class="sql-query">
+            {<br>
+            &nbsp;&nbsp;"success": true,<br>
+            &nbsp;&nbsp;"message": "Inactive SDSA users fetched successfully.",<br>
+            &nbsp;&nbsp;"data": [<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;{<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"id": 1,<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"name": "John Doe",<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"email": "john@example.com",<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"phone": "1234567890",<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"status": 0,<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"created_at": "2024-01-01 10:00:00",<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"updated_at": "2024-01-01 10:00:00"<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;}<br>
+            &nbsp;&nbsp;],<br>
+            &nbsp;&nbsp;"total_count": 1<br>
+            }
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'https://emp.kfinone.com/mobile/api/';
+        
+        async function makeRequest(url, options = {}) {
+            try {
+                const response = await fetch(url, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        ...options.headers
+                    },
+                    ...options
+                });
+                
+                const data = await response.text();
+                let jsonData;
+                try {
+                    jsonData = JSON.parse(data);
+                } catch (e) {
+                    return { 
+                        success: false, 
+                        error: 'Invalid JSON response', 
+                        raw: data,
+                        status: response.status
+                    };
+                }
+                
+                return {
+                    success: response.ok,
+                    status: response.status,
+                    data: jsonData,
+                    raw: data
+                };
+            } catch (error) {
+                return {
+                    success: false,
+                    error: error.message,
+                    raw: error.toString()
+                };
+            }
+        }
+
+        async function testInactiveSdsaAPI() {
+            const responseDiv = document.getElementById('response');
+            responseDiv.innerHTML = '🧪 Testing inactive SDSA users API...';
+            
+            const result = await makeRequest(API_BASE + 'get_inactive_sdsa_users.php');
+            
+            if (result.success && result.data.success) {
+                const users = result.data.data;
+                const totalCount = result.data.total_count;
+                responseDiv.className = 'response success';
+                
+                let html = `✅ Inactive SDSA API Working!\n\n`;
+                html += `📊 API Response:\n`;
+                html += `Status: ${result.status}\n`;
+                html += `Total Inactive Users: ${totalCount}\n\n`;
+                
+                if (users.length > 0) {
+                    html += `<table class="user-table">`;
+                    html += `<tr><th>ID</th><th>Name</th><th>Email</th><th>Phone</th><th>Status</th><th>Created</th></tr>`;
+                    
+                    users.forEach(user => {
+                        html += `<tr>`;
+                        html += `<td>${user.id}</td>`;
+                        html += `<td>${user.name}</td>`;
+                        html += `<td>${user.email}</td>`;
+                        html += `<td>${user.phone}</td>`;
+                        html += `<td><span class="status-badge">Inactive (${user.status})</span></td>`;
+                        html += `<td>${user.created_at}</td>`;
+                        html += `</tr>`;
+                    });
+                    
+                    html += `</table>`;
+                } else {
+                    html += `⚠️ No inactive SDSA users found in database\n`;
+                }
+                
+                responseDiv.innerHTML = html;
+            } else {
+                responseDiv.className = 'response error';
+                responseDiv.innerHTML = `❌ Inactive SDSA API Failed!\n\nStatus: ${result.status}\nError: ${result.data?.error || result.error}\n\nRaw Response:\n${result.raw}`;
+            }
+        }
+
+        async function checkTableStructure() {
+            const responseDiv = document.getElementById('response');
+            responseDiv.innerHTML = '🔍 Checking tbl_sdsa_users table structure...';
+            
+            // Create a simple debug API call
+            const result = await makeRequest(API_BASE + 'debug_sdsa_users_table.php');
+            
+            if (result.success && result.data.success) {
+                const data = result.data;
+                responseDiv.className = 'response success';
+                
+                let html = `✅ Table Structure Check:\n\n`;
+                html += `Table Exists: ${data.table_exists ? 'Yes' : 'No'}\n`;
+                html += `Total Records: ${data.total_count}\n`;
+                html += `Inactive Records: ${data.inactive_count}\n\n`;
+                
+                if (data.table_structure && data.table_structure.length > 0) {
+                    html += `📋 Table Structure:\n`;
+                    data.table_structure.forEach(column => {
+                        html += `- ${column.Field} (${column.Type}) ${column.Null === 'NO' ? 'NOT NULL' : 'NULL'}\n`;
+                    });
+                    html += `\n`;
+                }
+                
+                if (data.sample_data && data.sample_data.length > 0) {
+                    html += `📊 Sample Data:\n`;
+                    data.sample_data.forEach((row, index) => {
+                        html += `${index + 1}. ${JSON.stringify(row)}\n`;
+                    });
+                }
+                
+                responseDiv.innerHTML = html;
+            } else {
+                responseDiv.className = 'response error';
+                responseDiv.innerHTML = `❌ Table Structure Check Failed!\n\nStatus: ${result.status}\nError: ${result.data?.error || result.error}`;
+            }
+        }
+
+        async function addSampleInactiveUsers() {
+            const responseDiv = document.getElementById('response');
+            responseDiv.innerHTML = '➕ Adding sample inactive SDSA users...';
+            
+            const result = await makeRequest(API_BASE + 'add_sample_inactive_sdsa_users.php');
+            
+            if (result.success && result.data.success) {
+                const data = result.data;
+                responseDiv.className = 'response success';
+                
+                let html = `✅ Sample Inactive SDSA Users Added!\n\n`;
+                html += `📊 Results:\n`;
+                html += `- Inserted: ${data.inserted_count} new users\n`;
+                html += `- Skipped: ${data.skipped_count} duplicates\n`;
+                html += `- Total Inactive: ${data.total_inactive_count}\n`;
+                html += `- Table Created: ${data.table_created ? 'Yes' : 'No'}\n\n`;
+                html += `💬 Message: ${data.message}`;
+                
+                responseDiv.innerHTML = html;
+            } else {
+                responseDiv.className = 'response error';
+                responseDiv.innerHTML = `❌ Failed to Add Sample Users!\n\nStatus: ${result.status}\nError: ${result.data?.error || result.error}`;
+            }
+        }
+
+        // Auto-run test on page load
+        window.onload = function() {
+            testInactiveSdsaAPI();
+        };
+    </script>
+</body>
+</html> 

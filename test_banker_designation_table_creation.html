@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Banker Designation Table Creation & Testing</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .section { margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 5px; }
+        .success { background-color: #d4edda; border-color: #c3e6cb; }
+        .error { background-color: #f8d7da; border-color: #f5c6cb; }
+        .info { background-color: #d1ecf1; border-color: #bee5eb; }
+        button { padding: 10px 15px; margin: 5px; cursor: pointer; }
+        pre { background-color: #f8f9fa; padding: 10px; border-radius: 3px; overflow-x: auto; }
+    </style>
+</head>
+<body>
+    <h1>Banker Designation Table Creation & Testing</h1>
+    
+    <div class="section info">
+        <h2>Step 1: Create Table</h2>
+        <p>First, let's create the tbl_banker_designation table:</p>
+        <button onclick="createTable()">Create Table</button>
+        <div id="createTableResult"></div>
+    </div>
+    
+    <div class="section info">
+        <h2>Step 2: Test Get Banker Designations</h2>
+        <p>Test the get_banker_designation_list.php API:</p>
+        <button onclick="testGetDesignations()">Get Designations</button>
+        <div id="getDesignationsResult"></div>
+    </div>
+    
+    <div class="section info">
+        <h2>Step 3: Test Add Banker Designation</h2>
+        <p>Test adding a new banker designation:</p>
+        <input type="text" id="newDesignation" placeholder="Enter designation name" style="padding: 8px; margin: 5px;">
+        <button onclick="testAddDesignation()">Add Designation</button>
+        <div id="addDesignationResult"></div>
+    </div>
+    
+    <div class="section info">
+        <h2>Step 4: Test Again After Adding</h2>
+        <p>Test getting designations again to see the new one:</p>
+        <button onclick="testGetDesignationsAgain()">Get Designations Again</button>
+        <div id="getDesignationsAgainResult"></div>
+    </div>
+
+    <script>
+        const BASE_URL = 'https://emp.kfinone.com/mobile/api/';
+        
+        async function createTable() {
+            const resultDiv = document.getElementById('createTableResult');
+            resultDiv.innerHTML = '<p>Creating table...</p>';
+            
+            try {
+                const response = await fetch(BASE_URL + 'create_banker_designation_table.php', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    resultDiv.innerHTML = `<div class="success"><p>✅ ${data.message}</p></div>`;
+                } else {
+                    resultDiv.innerHTML = `<div class="error"><p>❌ Error: ${data.error}</p></div>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error"><p>❌ Network error: ${error.message}</p></div>`;
+            }
+        }
+        
+        async function testGetDesignations() {
+            const resultDiv = document.getElementById('getDesignationsResult');
+            resultDiv.innerHTML = '<p>Fetching designations...</p>';
+            
+            try {
+                const response = await fetch(BASE_URL + 'get_banker_designation_list.php', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    let html = `<div class="success"><p>✅ Successfully loaded ${data.count} designations:</p>`;
+                    html += '<pre>' + JSON.stringify(data, null, 2) + '</pre></div>';
+                    resultDiv.innerHTML = html;
+                } else {
+                    resultDiv.innerHTML = `<div class="error"><p>❌ Error: ${data.error}</p></div>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error"><p>❌ Network error: ${error.message}</p></div>`;
+            }
+        }
+        
+        async function testAddDesignation() {
+            const designationName = document.getElementById('newDesignation').value.trim();
+            if (!designationName) {
+                alert('Please enter a designation name');
+                return;
+            }
+            
+            const resultDiv = document.getElementById('addDesignationResult');
+            resultDiv.innerHTML = '<p>Adding designation...</p>';
+            
+            try {
+                const response = await fetch(BASE_URL + 'add_banker_designation.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        designation_name: designationName
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    resultDiv.innerHTML = `<div class="success"><p>✅ ${data.message}</p><pre>${JSON.stringify(data, null, 2)}</pre></div>`;
+                } else {
+                    resultDiv.innerHTML = `<div class="error"><p>❌ Error: ${data.error}</p></div>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error"><p>❌ Network error: ${error.message}</p></div>`;
+            }
+        }
+        
+        async function testGetDesignationsAgain() {
+            const resultDiv = document.getElementById('getDesignationsAgainResult');
+            resultDiv.innerHTML = '<p>Fetching designations again...</p>';
+            
+            try {
+                const response = await fetch(BASE_URL + 'get_banker_designation_list.php', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    let html = `<div class="success"><p>✅ Successfully loaded ${data.count} designations (including newly added):</p>`;
+                    html += '<pre>' + JSON.stringify(data, null, 2) + '</pre></div>';
+                    resultDiv.innerHTML = html;
+                } else {
+                    resultDiv.innerHTML = `<div class="error"><p>❌ Error: ${data.error}</p></div>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error"><p>❌ Network error: ${error.message}</p></div>`;
+            }
+        }
+    </script>
+</body>
+</html> 

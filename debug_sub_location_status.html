@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug Sub Location Status</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        h1, h2 {
+            color: #333;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .result {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 4px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 12px;
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+        }
+        .status-item {
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+            margin-bottom: 10px;
+        }
+        .status-item:last-child {
+            border-bottom: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>Debug Sub Location Status</h1>
+    
+    <div class="container">
+        <h2>Check Raw API Response</h2>
+        <p>This will show the exact status values being returned from the API.</p>
+        
+        <button onclick="debugStatus()">Debug Status Values</button>
+        
+        <div id="debugResult" class="result" style="display: none;"></div>
+    </div>
+
+    <script>
+        const BASE_URL = 'https://emp.kfinone.com/mobile/api/';
+        
+        async function debugStatus() {
+            try {
+                const response = await fetch(BASE_URL + 'get_sub_locations_with_relations.php', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    let debugHtml = '<h3>Raw API Response:</h3>';
+                    debugHtml += `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+                    
+                    debugHtml += '<h3>Status Analysis:</h3>';
+                    if (data.sub_locations.length === 0) {
+                        debugHtml += '<p>No sub locations found.</p>';
+                    } else {
+                        data.sub_locations.forEach((subLoc, index) => {
+                            debugHtml += `
+                                <div class="status-item">
+                                    <strong>Sub Location ${index + 1}:</strong><br>
+                                    - ID: ${subLoc.id}<br>
+                                    - Name: ${subLoc.sub_location}<br>
+                                    - Raw Status: "${subLoc.status}"<br>
+                                    - Status Type: ${typeof subLoc.status}<br>
+                                    - Status Length: ${subLoc.status.length}<br>
+                                    - Status === 'Active': ${subLoc.status === 'Active'}<br>
+                                    - Status === 'active': ${subLoc.status === 'active'}<br>
+                                    - Status === 'Inactive': ${subLoc.status === 'Inactive'}<br>
+                                    - Status === 'inactive': ${subLoc.status === 'inactive'}<br>
+                                </div>
+                            `;
+                        });
+                    }
+                    
+                    document.getElementById('debugResult').innerHTML = debugHtml;
+                    document.getElementById('debugResult').style.display = 'block';
+                } else {
+                    document.getElementById('debugResult').innerHTML = `<h3>Error:</h3><pre>${JSON.stringify(data, null, 2)}</pre>`;
+                    document.getElementById('debugResult').style.display = 'block';
+                }
+            } catch (error) {
+                document.getElementById('debugResult').innerHTML = `<h3>Network Error:</h3><pre>${error.message}</pre>`;
+                document.getElementById('debugResult').style.display = 'block';
+            }
+        }
+    </script>
+</body>
+</html> 

@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Policy APIs Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ccc; border-radius: 5px; }
+        button { padding: 10px 15px; margin: 5px; background: #4CAF50; color: white; border: none; border-radius: 3px; cursor: pointer; }
+        button:hover { background: #45a049; }
+        .result { margin-top: 10px; padding: 10px; background: #f9f9f9; border-radius: 3px; white-space: pre-wrap; }
+        .error { background: #ffebee; color: #c62828; }
+        .success { background: #e8f5e8; color: #2e7d32; }
+        input { padding: 5px; margin: 5px; border: 1px solid #ccc; border-radius: 3px; }
+    </style>
+</head>
+<body>
+    <h1>Policy Management APIs Test</h1>
+    
+    <div class="test-section">
+        <h3>1. Test Fetch Loan Types</h3>
+        <button onclick="testFetchLoanTypes()">Fetch Loan Types</button>
+        <div id="loanTypesResult" class="result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h3>2. Test Fetch Vendor Banks</h3>
+        <button onclick="testFetchVendorBanks()">Fetch Vendor Banks</button>
+        <div id="vendorBanksResult" class="result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h3>3. Test Fetch Policies</h3>
+        <button onclick="testFetchPolicies()">Fetch All Policies</button>
+        <div id="policiesResult" class="result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h3>4. Test Add Policy</h3>
+        <input type="number" id="loanTypeId" placeholder="Loan Type ID" style="width: 100px;">
+        <input type="number" id="vendorBankId" placeholder="Vendor Bank ID" style="width: 120px;">
+        <input type="text" id="policyContent" placeholder="Policy Content" style="width: 200px;">
+        <button onclick="testAddPolicy()">Add Policy</button>
+        <div id="addPolicyResult" class="result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h3>5. Test Delete Policy</h3>
+        <input type="number" id="deletePolicyId" placeholder="Enter Policy ID to delete" style="padding: 5px; margin-right: 10px;">
+        <button onclick="testDeletePolicy()">Delete Policy</button>
+        <div id="deletePolicyResult" class="result"></div>
+    </div>
+
+    <script>
+        const baseUrl = 'http://localhost/kfindb/';
+        
+        async function makeRequest(url, method = 'GET', data = null) {
+            try {
+                const options = {
+                    method: method,
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    }
+                };
+                
+                if (data && method === 'POST') {
+                    const formData = new URLSearchParams();
+                    for (const [key, value] of Object.entries(data)) {
+                        formData.append(key, value);
+                    }
+                    options.body = formData.toString();
+                }
+                
+                const response = await fetch(url, options);
+                const result = await response.text();
+                return result;
+            } catch (error) {
+                return `Error: ${error.message}`;
+            }
+        }
+        
+        function displayResult(elementId, result, isError = false) {
+            const element = document.getElementById(elementId);
+            element.textContent = result;
+            element.className = `result ${isError ? 'error' : 'success'}`;
+        }
+        
+        async function testFetchLoanTypes() {
+            const result = await makeRequest(baseUrl + 'fetch_loan_types.php');
+            displayResult('loanTypesResult', result);
+        }
+        
+        async function testFetchVendorBanks() {
+            const result = await makeRequest(baseUrl + 'fetch_vendor_banks.php');
+            displayResult('vendorBanksResult', result);
+        }
+        
+        async function testFetchPolicies() {
+            const result = await makeRequest(baseUrl + 'fetch_policies.php');
+            displayResult('policiesResult', result);
+        }
+        
+        async function testAddPolicy() {
+            const loanTypeId = document.getElementById('loanTypeId').value;
+            const vendorBankId = document.getElementById('vendorBankId').value;
+            const content = document.getElementById('policyContent').value;
+            
+            if (!loanTypeId || !vendorBankId || !content) {
+                displayResult('addPolicyResult', 'Please fill all fields', true);
+                return;
+            }
+            
+            const policyData = {
+                loan_type_id: loanTypeId,
+                vendor_bank_id: vendorBankId,
+                file_uri: 'test_file.pdf',
+                content: content
+            };
+            
+            const result = await makeRequest(baseUrl + 'add_policy.php', 'POST', policyData);
+            displayResult('addPolicyResult', result);
+        }
+        
+        async function testDeletePolicy() {
+            const policyId = document.getElementById('deletePolicyId').value;
+            if (!policyId) {
+                displayResult('deletePolicyResult', 'Please enter a policy ID', true);
+                return;
+            }
+            
+            const result = await makeRequest(baseUrl + 'delete_policy.php', 'POST', {
+                policy_id: policyId
+            });
+            displayResult('deletePolicyResult', result);
+        }
+    </script>
+</body>
+</html> 

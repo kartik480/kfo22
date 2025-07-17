@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug & Fix HTTP 500 Error</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        .debug-button {
+            background-color: #dc3545;
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            width: 100%;
+            margin: 10px 0;
+        }
+        .debug-button:hover {
+            background-color: #c82333;
+        }
+        .debug-button:disabled {
+            background-color: #6c757d;
+            cursor: not-allowed;
+        }
+        .status {
+            padding: 15px;
+            border-radius: 4px;
+            margin: 10px 0;
+            font-weight: bold;
+            text-align: center;
+        }
+        .success {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        .warning {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+        }
+        .info {
+            background-color: #d1ecf1;
+            border: 1px solid #bee5eb;
+            color: #0c5460;
+        }
+        .response {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 15px;
+            margin-top: 10px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+        .step {
+            margin: 10px 0;
+            padding: 8px;
+            border-radius: 4px;
+            background-color: #f8f9fa;
+        }
+        .step.success {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+        }
+        .step.error {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+        }
+        .step.info {
+            background-color: #d1ecf1;
+            border: 1px solid #bee5eb;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔧 Debug & Fix HTTP 500 Error</h1>
+    
+    <div class="container">
+        <div class="status warning" id="status">
+            ⚠️ HTTP 500 Error detected - Running comprehensive debug and fix
+        </div>
+        
+        <button class="debug-button" onclick="runDebugAndFix()" id="debugButton">
+            🔍 RUN DEBUG & FIX NOW
+        </button>
+        
+        <div id="response" class="response"></div>
+    </div>
+
+    <script>
+        const API_BASE = 'https://emp.kfinone.com/mobile/api/';
+        
+        async function makeRequest(url, options = {}) {
+            try {
+                const response = await fetch(url, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        ...options.headers
+                    },
+                    ...options
+                });
+                
+                const data = await response.text();
+                let jsonData;
+                try {
+                    jsonData = JSON.parse(data);
+                } catch (e) {
+                    return { 
+                        success: false, 
+                        error: 'Invalid JSON response', 
+                        raw: data,
+                        status: response.status
+                    };
+                }
+                
+                return {
+                    success: response.ok,
+                    status: response.status,
+                    data: jsonData,
+                    raw: data
+                };
+            } catch (error) {
+                return {
+                    success: false,
+                    error: error.message,
+                    raw: error.toString()
+                };
+            }
+        }
+
+        function addStep(message, type = 'info') {
+            const responseDiv = document.getElementById('response');
+            const stepDiv = document.createElement('div');
+            stepDiv.className = `step ${type}`;
+            stepDiv.textContent = message;
+            responseDiv.appendChild(stepDiv);
+            responseDiv.scrollTop = responseDiv.scrollHeight;
+        }
+
+        async function runDebugAndFix() {
+            const debugButton = document.getElementById('debugButton');
+            const responseDiv = document.getElementById('response');
+            const statusDiv = document.getElementById('status');
+            
+            // Clear previous results
+            responseDiv.innerHTML = '';
+            debugButton.disabled = true;
+            
+            addStep('🚀 Starting comprehensive debug and fix...', 'info');
+            
+            try {
+                // Step 1: Run comprehensive debug
+                addStep('📊 Step 1: Running comprehensive debug...', 'info');
+                
+                const debugResult = await makeRequest(API_BASE + 'debug_inactive_sdsa_500.php');
+                
+                if (!debugResult.success) {
+                    throw new Error(`Debug failed: ${debugResult.data?.error || debugResult.error}`);
+                }
+                
+                const debugInfo = debugResult.data.debug_info;
+                const summary = debugResult.data.summary;
+                
+                addStep('✅ Debug completed successfully', 'success');
+                
+                // Step 2: Show debug results
+                addStep('📋 Step 2: Analyzing debug results...', 'info');
+                
+                if (debugInfo.database_connected) {
+                    addStep('✅ Database connection: OK', 'success');
+                } else {
+                    addStep('❌ Database connection: FAILED', 'error');
+                }
+                
+                if (debugInfo.table_exists) {
+                    addStep('✅ Table tbl_sdsa_users: EXISTS', 'success');
+                } else {
+                    addStep('⚠️ Table tbl_sdsa_users: DOES NOT EXIST', 'error');
+                }
+                
+                if (debugInfo.table_created) {
+                    addStep('✅ Table created: SUCCESS', 'success');
+                }
+                
+                if (debugInfo.sample_data_added) {
+                    addStep(`✅ Sample data added: ${debugInfo.inserted_count} users`, 'success');
+                }
+                
+                if (debugInfo.test_query_success) {
+                    addStep(`✅ Test query: SUCCESS (${debugInfo.inactive_users_count} inactive users)`, 'success');
+                } else {
+                    addStep(`❌ Test query: FAILED - ${debugInfo.test_query_error}`, 'error');
+                }
+                
+                // Step 3: Test the actual API
+                addStep('🧪 Step 3: Testing the actual API...', 'info');
+                
+                const apiResult = await makeRequest(API_BASE + 'get_inactive_sdsa_users.php');
+                
+                if (apiResult.success && apiResult.data.success) {
+                    const users = apiResult.data.data;
+                    addStep(`✅ API working: ${users.length} inactive users loaded`, 'success');
+                    
+                    // Show sample users
+                    addStep('📍 Sample inactive users:', 'info');
+                    users.slice(0, 3).forEach(user => {
+                        addStep(`   - ${user.name} (${user.email})`, 'info');
+                    });
+                } else {
+                    addStep(`❌ API still failing: ${apiResult.data?.error || apiResult.error}`, 'error');
+                }
+                
+                // Step 4: Summary
+                addStep('📊 Step 4: Final Summary', 'info');
+                addStep(`Total users in database: ${summary.total_users}`, 'info');
+                addStep(`Inactive users: ${summary.inactive_users}`, 'info');
+                addStep(`Database connected: ${summary.database_connected ? 'Yes' : 'No'}`, 'info');
+                addStep(`Table exists: ${summary.table_exists ? 'Yes' : 'No'}`, 'info');
+                addStep(`Test query working: ${summary.test_query_working ? 'Yes' : 'No'}`, 'info');
+                
+                // Final status
+                if (apiResult.success && apiResult.data.success) {
+                    statusDiv.className = 'status success';
+                    statusDiv.textContent = '✅ HTTP 500 Error Fixed! Inactive SDSA API is working!';
+                    addStep('🎉 SUCCESS: HTTP 500 error has been fixed!', 'success');
+                } else {
+                    statusDiv.className = 'status error';
+                    statusDiv.textContent = '❌ HTTP 500 Error still exists';
+                    addStep('❌ FAILED: HTTP 500 error still exists', 'error');
+                }
+                
+            } catch (error) {
+                statusDiv.className = 'status error';
+                statusDiv.textContent = '❌ Debug failed';
+                addStep(`❌ Error: ${error.message}`, 'error');
+            } finally {
+                // Re-enable button after 3 seconds
+                setTimeout(() => {
+                    debugButton.disabled = false;
+                }, 3000);
+            }
+        }
+
+        // Auto-run debug on page load
+        window.onload = function() {
+            setTimeout(() => {
+                runDebugAndFix();
+            }, 1000);
+        };
+    </script>
+</body>
+</html> 

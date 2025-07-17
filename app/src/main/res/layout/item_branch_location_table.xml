@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="8dp"
+    android:background="@drawable/table_row_background"
+    android:layout_marginBottom="1dp"
+    android:minHeight="48dp">
+
+    <!-- ID Column -->
+    <TextView
+        android:id="@+id/tvId"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.5"
+        android:textSize="11sp"
+        android:textColor="@android:color/black"
+        android:maxLines="1"
+        android:ellipsize="end"
+        android:padding="4dp"
+        android:gravity="center"
+        android:background="@android:color/transparent"/>
+
+    <!-- Location Column -->
+    <TextView
+        android:id="@+id/tvLocation"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1.5"
+        android:textSize="11sp"
+        android:textColor="@android:color/black"
+        android:maxLines="2"
+        android:ellipsize="end"
+        android:padding="4dp"
+        android:gravity="center_vertical"
+        android:background="@android:color/transparent"/>
+
+    <!-- State Column -->
+    <TextView
+        android:id="@+id/tvState"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:textSize="11sp"
+        android:textColor="@android:color/black"
+        android:maxLines="2"
+        android:ellipsize="end"
+        android:padding="4dp"
+        android:gravity="center_vertical"
+        android:background="@android:color/transparent"/>
+
+    <!-- Created Date Column -->
+    <TextView
+        android:id="@+id/tvCreatedDate"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:textSize="11sp"
+        android:textColor="@android:color/black"
+        android:maxLines="2"
+        android:ellipsize="end"
+        android:padding="4dp"
+        android:gravity="center_vertical"
+        android:background="@android:color/transparent"/>
+
+
+
+    <!-- Status Column -->
+    <TextView
+        android:id="@+id/tvStatus"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.8"
+        android:textSize="11sp"
+        android:textColor="@android:color/black"
+        android:maxLines="1"
+        android:ellipsize="end"
+        android:padding="4dp"
+        android:gravity="center"
+        android:background="@android:color/transparent"/>
+
+</LinearLayout> 

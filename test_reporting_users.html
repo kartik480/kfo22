@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Reporting Users API</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .container { max-width: 800px; margin: 0 auto; }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ccc; border-radius: 5px; }
+        .result { background: #f5f5f5; padding: 10px; margin: 10px 0; border-radius: 5px; white-space: pre-wrap; }
+        button { padding: 10px 20px; margin: 5px; cursor: pointer; background: #007bff; color: white; border: none; border-radius: 3px; }
+        button:hover { background: #0056b3; }
+        .user-item { margin: 5px 0; padding: 5px; background: #e9ecef; border-radius: 3px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 Test Reporting Users API</h1>
+        <p>This page tests the <code>fetch_sdsa_reporting_users.php</code> API to help debug the reporting dropdown issue.</p>
+        
+        <div class="test-section">
+            <h3>Step 1: Test Current API</h3>
+            <button onclick="testCurrentAPI()">Test Current API</button>
+            <div id="currentResult" class="result"></div>
+        </div>
+        
+        <div class="test-section">
+            <h3>Step 2: Check Database Directly</h3>
+            <button onclick="checkDatabase()">Check Database</button>
+            <div id="dbResult" class="result"></div>
+        </div>
+        
+        <div class="test-section">
+            <h3>Step 3: Analysis</h3>
+            <div id="analysis" class="result"></div>
+        </div>
+    </div>
+
+    <script>
+        function testCurrentAPI() {
+            document.getElementById('currentResult').innerHTML = 'Testing API...';
+            
+            fetch('fetch_sdsa_reporting_users.php')
+                .then(response => response.json())
+                .then(data => {
+                    let result = 'API Response:\n';
+                    result += 'Status: ' + data.status + '\n';
+                    result += 'Message: ' + data.message + '\n';
+                    result += 'Count: ' + data.count + '\n\n';
+                    
+                    if (data.data && data.data.length > 0) {
+                        result += 'Users found:\n';
+                        data.data.forEach((user, index) => {
+                            result += `${index + 1}. ID: ${user.id} - ${user.name}\n`;
+                        });
+                    } else {
+                        result += 'No users found in the response.\n';
+                    }
+                    
+                    document.getElementById('currentResult').innerHTML = result;
+                    
+                    // Update analysis
+                    updateAnalysis(data);
+                })
+                .catch(error => {
+                    document.getElementById('currentResult').innerHTML = 'Error: ' + error.message;
+                });
+        }
+        
+        function checkDatabase() {
+            document.getElementById('dbResult').innerHTML = 'Checking database...';
+            
+            // This would need a separate PHP endpoint to check the database directly
+            // For now, we'll show what we expect
+            let result = 'Expected Database Check:\n';
+            result += '1. Total users in tbl_user table\n';
+            result += '2. Users by status (Active, Inactive, NULL, etc.)\n';
+            result += '3. Users with empty names\n';
+            result += '4. Users that should appear in reporting dropdown\n';
+            result += '5. Users that are being excluded and why\n\n';
+            result += 'To run this check, you would need to access the debug script directly.\n';
+            
+            document.getElementById('dbResult').innerHTML = result;
+        }
+        
+        function updateAnalysis(data) {
+            let analysis = 'Analysis:\n';
+            
+            if (data.status === 'success') {
+                analysis += '✅ API call successful\n';
+                analysis += `📊 Found ${data.count} users for reporting dropdown\n`;
+                
+                if (data.count === 5) {
+                    analysis += '⚠️  Only 5 users found, but you expect 6\n';
+                    analysis += 'Possible reasons:\n';
+                    analysis += '1. One user has status = "Inactive"\n';
+                    analysis += '2. One user has empty firstName or lastName\n';
+                    analysis += '3. One user has NULL firstName or lastName\n';
+                    analysis += '4. Database connection issues\n\n';
+                    analysis += 'Next steps:\n';
+                    analysis += '1. Check the database directly to see all users\n';
+                    analysis += '2. Verify the status of all 6 users\n';
+                    analysis += '3. Check for empty or NULL name fields\n';
+                } else if (data.count === 6) {
+                    analysis += '✅ All 6 users found - issue may be resolved!\n';
+                } else {
+                    analysis += `❓ Unexpected count: ${data.count} users\n`;
+                }
+            } else {
+                analysis += '❌ API call failed\n';
+                analysis += 'Error: ' + data.message + '\n';
+            }
+            
+            document.getElementById('analysis').innerHTML = analysis;
+        }
+        
+        // Auto-run the test when page loads
+        window.onload = function() {
+            testCurrentAPI();
+        };
+    </script>
+</body>
+</html> 

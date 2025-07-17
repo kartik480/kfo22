@@ -1,0 +1,173 @@
+{
+	"info": {
+		"_postman_id": "kfinone-api-testing",
+		"name": "KfinOne API Testing",
+		"description": "Collection for testing KfinOne panel APIs",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Test Simple PHP",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://emp.kfinone.com/mobile/api/test_simple.php",
+					"protocol": "https",
+					"host": [
+						"emp",
+						"kfinone",
+						"com"
+					],
+					"path": [
+						"mobile",
+						"api",
+						"test_simple.php"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Test Database Connection",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://emp.kfinone.com/mobile/api/test_database_connection.php",
+					"protocol": "https",
+					"host": [
+						"emp",
+						"kfinone",
+						"com"
+					],
+					"path": [
+						"mobile",
+						"api",
+						"test_database_connection.php"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Active Users (Simple)",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://emp.kfinone.com/mobile/api/get_active_users_simple.php",
+					"protocol": "https",
+					"host": [
+						"emp",
+						"kfinone",
+						"com"
+					],
+					"path": [
+						"mobile",
+						"api",
+						"get_active_users_simple.php"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Active Users (Final)",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://emp.kfinone.com/mobile/api/get_active_users_final.php",
+					"protocol": "https",
+					"host": [
+						"emp",
+						"kfinone",
+						"com"
+					],
+					"path": [
+						"mobile",
+						"api",
+						"get_active_users_final.php"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update User Status",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"userId\": \"1\",\n    \"status\": \"Inactive\"\n}"
+				},
+				"url": {
+					"raw": "https://emp.kfinone.com/mobile/api/update_user_status.php",
+					"protocol": "https",
+					"host": [
+						"emp",
+						"kfinone",
+						"com"
+					],
+					"path": [
+						"mobile",
+						"api",
+						"update_user_status.php"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "KfinOne Active Users",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://emp.kfinone.com/mobile/api/fetch_kfinone_active_users.php",
+					"protocol": "https",
+					"host": [
+						"emp",
+						"kfinone",
+						"com"
+					],
+					"path": [
+						"mobile",
+						"api",
+						"fetch_kfinone_active_users.php"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Active Emp List",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://emp.kfinone.com/mobile/api/fetch_active_emp_list.php",
+					"protocol": "https",
+					"host": [
+						"emp",
+						"kfinone",
+						"com"
+					],
+					"path": [
+						"mobile",
+						"api",
+						"fetch_active_emp_list.php"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+} 

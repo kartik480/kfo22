@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Bankers List Dropdown APIs</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        .api-info {
+            background-color: #e9ecef;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .dropdown-section {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 15px;
+            margin: 10px 0;
+        }
+        .dropdown-section h3 {
+            margin-top: 0;
+            color: #495057;
+        }
+        select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            margin: 5px 0;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .response {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 15px;
+            margin-top: 10px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .success {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        .dropdown-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        .dropdown-table th, .dropdown-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        .dropdown-table th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        .dropdown-table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .status-badge {
+            background-color: #28a745;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .panel-preview {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test Bankers List Dropdown APIs</h1>
+    
+    <div class="container">
+        <h2>API Information</h2>
+        <div class="api-info">
+            <strong>Panel:</strong> KfinOne Panel - Bankers List<br>
+            <strong>Purpose:</strong> Test all dropdown APIs for the Bankers List panel<br>
+            <strong>Base URL:</strong> https://emp.kfinone.com/mobile/api/
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>Dropdown APIs</h2>
+        
+        <div class="dropdown-section">
+            <h3>🏦 Vendor Bank Dropdown</h3>
+            <div class="api-info">
+                <strong>API:</strong> fetch_vendor_banks.php<br>
+                <strong>Table:</strong> tbl_vendor_bank<br>
+                <strong>Column:</strong> vendor_bank_name
+            </div>
+            <button onclick="testVendorBanks()">🧪 Test Vendor Banks</button>
+            <select id="vendorBankDropdown">
+                <option value="">Loading vendor banks...</option>
+            </select>
+            <div id="vendorBankResponse" class="response"></div>
+        </div>
+
+        <div class="dropdown-section">
+            <h3>💰 Loan Type Dropdown</h3>
+            <div class="api-info">
+                <strong>API:</strong> fetch_loan_types.php<br>
+                <strong>Table:</strong> tbl_loan_type<br>
+                <strong>Column:</strong> loan_type
+            </div>
+            <button onclick="testLoanTypes()">🧪 Test Loan Types</button>
+            <select id="loanTypeDropdown">
+                <option value="">Loading loan types...</option>
+            </select>
+            <div id="loanTypeResponse" class="response"></div>
+        </div>
+
+        <div class="dropdown-section">
+            <h3>🗺️ Branch State Dropdown</h3>
+            <div class="api-info">
+                <strong>API:</strong> fetch_branch_states.php<br>
+                <strong>Table:</strong> tbl_branch_state<br>
+                <strong>Column:</strong> branch_state_name
+            </div>
+            <button onclick="testBranchStates()">🧪 Test Branch States</button>
+            <select id="branchStateDropdown">
+                <option value="">Loading branch states...</option>
+            </select>
+            <div id="branchStateResponse" class="response"></div>
+        </div>
+
+        <div class="dropdown-section">
+            <h3>📍 Branch Location Dropdown</h3>
+            <div class="api-info">
+                <strong>API:</strong> fetch_branch_locations.php<br>
+                <strong>Table:</strong> tbl_branch_location<br>
+                <strong>Column:</strong> branch_location
+            </div>
+            <button onclick="testBranchLocations()">🧪 Test Branch Locations</button>
+            <select id="branchLocationDropdown">
+                <option value="">Loading branch locations...</option>
+            </select>
+            <div id="branchLocationResponse" class="response"></div>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>Panel Preview</h2>
+        <div class="panel-preview">
+            <h3>📋 How it will appear in the Android app:</h3>
+            <div style="background-color: white; padding: 15px; border-radius: 4px; border: 1px solid #ddd;">
+                <h4>Bankers List Panel</h4>
+                <div style="margin: 10px 0;">
+                    <label><strong>Select Vendor Bank:</strong></label>
+                    <select id="previewVendorBank" style="width: 100%; padding: 8px; margin: 5px 0;">
+                        <option value="">Select Vendor Bank</option>
+                    </select>
+                </div>
+                <div style="margin: 10px 0;">
+                    <label><strong>Loan Type:</strong></label>
+                    <select id="previewLoanType" style="width: 100%; padding: 8px; margin: 5px 0;">
+                        <option value="">Select Loan Type</option>
+                    </select>
+                </div>
+                <div style="margin: 10px 0;">
+                    <label><strong>Select State:</strong></label>
+                    <select id="previewBranchState" style="width: 100%; padding: 8px; margin: 5px 0;">
+                        <option value="">Select State</option>
+                    </select>
+                </div>
+                <div style="margin: 10px 0;">
+                    <label><strong>Select Location:</strong></label>
+                    <select id="previewBranchLocation" style="width: 100%; padding: 8px; margin: 5px 0;">
+                        <option value="">Select Location</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>Test Commands</h2>
+        <button onclick="testAllDropdowns()">🧪 Test All Dropdowns</button>
+        <button onclick="clearAllResults()">🗑️ Clear All Results</button>
+        <div id="allResults" class="response"></div>
+    </div>
+
+    <script>
+        const API_BASE = 'https://emp.kfinone.com/mobile/api/';
+        
+        async function makeRequest(url, options = {}) {
+            try {
+                const response = await fetch(url, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        ...options.headers
+                    },
+                    ...options
+                });
+                
+                const data = await response.text();
+                let jsonData;
+                try {
+                    jsonData = JSON.parse(data);
+                } catch (e) {
+                    return { 
+                        success: false, 
+                        error: 'Invalid JSON response', 
+                        raw: data,
+                        status: response.status
+                    };
+                }
+                
+                return {
+                    success: response.ok,
+                    status: response.status,
+                    data: jsonData,
+                    raw: data
+                };
+            } catch (error) {
+                return {
+                    success: false,
+                    error: error.message,
+                    raw: error.toString()
+                };
+            }
+        }
+
+        async function testVendorBanks() {
+            const responseDiv = document.getElementById('vendorBankResponse');
+            const dropdown = document.getElementById('vendorBankDropdown');
+            const previewDropdown = document.getElementById('previewVendorBank');
+            
+            responseDiv.innerHTML = '🧪 Testing vendor banks API...';
+            responseDiv.className = 'response';
+            
+            const result = await makeRequest(API_BASE + 'fetch_vendor_banks.php');
+            
+            if (result.success && result.data.success) {
+                const banks = result.data.data;
+                const totalCount = result.data.total_count;
+                responseDiv.className = 'response success';
+                
+                let html = `✅ Vendor Banks API Working!\n\n`;
+                html += `📊 API Response:\n`;
+                html += `Status: ${result.status}\n`;
+                html += `Total Vendor Banks: ${totalCount}\n\n`;
+                
+                if (banks.length > 0) {
+                    html += `<table class="dropdown-table">`;
+                    html += `<tr><th>ID</th><th>Vendor Bank Name</th><th>Status</th></tr>`;
+                    
+                    banks.forEach(bank => {
+                        html += `<tr>`;
+                        html += `<td>${bank.id}</td>`;
+                        html += `<td><strong>${bank.vendor_bank_name}</strong></td>`;
+                        html += `<td><span class="status-badge">Active (${bank.status})</span></td>`;
+                        html += `</tr>`;
+                    });
+                    
+                    html += `</table>`;
+                    
+                    // Update dropdowns
+                    updateDropdown(dropdown, banks, 'vendor_bank_name');
+                    updateDropdown(previewDropdown, banks, 'vendor_bank_name');
+                } else {
+                    html += `⚠️ No vendor banks found in database\n`;
+                }
+                
+                responseDiv.innerHTML = html;
+            } else {
+                responseDiv.className = 'response error';
+                responseDiv.innerHTML = `❌ API Error:\nStatus: ${result.status}\nError: ${result.data?.error || result.error}`;
+            }
+        }
+
+        async function testLoanTypes() {
+            const responseDiv = document.getElementById('loanTypeResponse');
+            const dropdown = document.getElementById('loanTypeDropdown');
+            const previewDropdown = document.getElementById('previewLoanType');
+            
+            responseDiv.innerHTML = '🧪 Testing loan types API...';
+            responseDiv.className = 'response';
+            
+            const result = await makeRequest(API_BASE + 'fetch_loan_types.php');
+            
+            if (result.success && result.data.success) {
+                const loanTypes = result.data.data;
+                const totalCount = result.data.total_count;
+                responseDiv.className = 'response success';
+                
+                let html = `✅ Loan Types API Working!\n\n`;
+                html += `📊 API Response:\n`;
+                html += `Status: ${result.status}\n`;
+                html += `Total Loan Types: ${totalCount}\n\n`;
+                
+                if (loanTypes.length > 0) {
+                    html += `<table class="dropdown-table">`;
+                    html += `<tr><th>ID</th><th>Loan Type</th><th>Status</th></tr>`;
+                    
+                    loanTypes.forEach(loanType => {
+                        html += `<tr>`;
+                        html += `<td>${loanType.id}</td>`;
+                        html += `<td><strong>${loanType.loan_type}</strong></td>`;
+                        html += `<td><span class="status-badge">Active (${loanType.status})</span></td>`;
+                        html += `</tr>`;
+                    });
+                    
+                    html += `</table>`;
+                    
+                    // Update dropdowns
+                    updateDropdown(dropdown, loanTypes, 'loan_type');
+                    updateDropdown(previewDropdown, loanTypes, 'loan_type');
+                } else {
+                    html += `⚠️ No loan types found in database\n`;
+                }
+                
+                responseDiv.innerHTML = html;
+            } else {
+                responseDiv.className = 'response error';
+                responseDiv.innerHTML = `❌ API Error:\nStatus: ${result.status}\nError: ${result.data?.error || result.error}`;
+            }
+        }
+
+        async function testBranchStates() {
+            const responseDiv = document.getElementById('branchStateResponse');
+            const dropdown = document.getElementById('branchStateDropdown');
+            const previewDropdown = document.getElementById('previewBranchState');
+            
+            responseDiv.innerHTML = '🧪 Testing branch states API...';
+            responseDiv.className = 'response';
+            
+            const result = await makeRequest(API_BASE + 'fetch_branch_states.php');
+            
+            if (result.success && result.data.success) {
+                const states = result.data.data;
+                const totalCount = result.data.total_count;
+                responseDiv.className = 'response success';
+                
+                let html = `✅ Branch States API Working!\n\n`;
+                html += `📊 API Response:\n`;
+                html += `Status: ${result.status}\n`;
+                html += `Total Branch States: ${totalCount}\n\n`;
+                
+                if (states.length > 0) {
+                    html += `<table class="dropdown-table">`;
+                    html += `<tr><th>ID</th><th>Branch State Name</th><th>Status</th></tr>`;
+                    
+                    states.forEach(state => {
+                        html += `<tr>`;
+                        html += `<td>${state.id}</td>`;
+                        html += `<td><strong>${state.branch_state_name}</strong></td>`;
+                        html += `<td><span class="status-badge">Active (${state.status})</span></td>`;
+                        html += `</tr>`;
+                    });
+                    
+                    html += `</table>`;
+                    
+                    // Update dropdowns
+                    updateDropdown(dropdown, states, 'branch_state_name');
+                    updateDropdown(previewDropdown, states, 'branch_state_name');
+                } else {
+                    html += `⚠️ No branch states found in database\n`;
+                }
+                
+                responseDiv.innerHTML = html;
+            } else {
+                responseDiv.className = 'response error';
+                responseDiv.innerHTML = `❌ API Error:\nStatus: ${result.status}\nError: ${result.data?.error || result.error}`;
+            }
+        }
+
+        async function testBranchLocations() {
+            const responseDiv = document.getElementById('branchLocationResponse');
+            const dropdown = document.getElementById('branchLocationDropdown');
+            const previewDropdown = document.getElementById('previewBranchLocation');
+            
+            responseDiv.innerHTML = '🧪 Testing branch locations API...';
+            responseDiv.className = 'response';
+            
+            const result = await makeRequest(API_BASE + 'fetch_branch_locations.php');
+            
+            if (result.success && result.data.success) {
+                const locations = result.data.data;
+                const totalCount = result.data.total_count;
+                responseDiv.className = 'response success';
+                
+                let html = `✅ Branch Locations API Working!\n\n`;
+                html += `📊 API Response:\n`;
+                html += `Status: ${result.status}\n`;
+                html += `Total Branch Locations: ${totalCount}\n\n`;
+                
+                if (locations.length > 0) {
+                    html += `<table class="dropdown-table">`;
+                    html += `<tr><th>ID</th><th>Branch Location</th><th>Status</th></tr>`;
+                    
+                    locations.forEach(location => {
+                        html += `<tr>`;
+                        html += `<td>${location.id}</td>`;
+                        html += `<td><strong>${location.branch_location}</strong></td>`;
+                        html += `<td><span class="status-badge">Active (${location.status})</span></td>`;
+                        html += `</tr>`;
+                    });
+                    
+                    html += `</table>`;
+                    
+                    // Update dropdowns
+                    updateDropdown(dropdown, locations, 'branch_location');
+                    updateDropdown(previewDropdown, locations, 'branch_location');
+                } else {
+                    html += `⚠️ No branch locations found in database\n`;
+                }
+                
+                responseDiv.innerHTML = html;
+            } else {
+                responseDiv.className = 'response error';
+                responseDiv.innerHTML = `❌ API Error:\nStatus: ${result.status}\nError: ${result.data?.error || result.error}`;
+            }
+        }
+
+        function updateDropdown(dropdownElement, data, fieldName) {
+            dropdownElement.innerHTML = '<option value="">Select an option</option>';
+            data.forEach(item => {
+                const option = document.createElement('option');
+                option.value = item.id;
+                option.textContent = item[fieldName];
+                dropdownElement.appendChild(option);
+            });
+        }
+
+        async function testAllDropdowns() {
+            const resultsDiv = document.getElementById('allResults');
+            resultsDiv.innerHTML = '🧪 Testing all dropdown APIs...';
+            resultsDiv.className = 'response';
+            
+            const apis = [
+                { name: 'Vendor Banks', url: 'fetch_vendor_banks.php' },
+                { name: 'Loan Types', url: 'fetch_loan_types.php' },
+                { name: 'Branch States', url: 'fetch_branch_states.php' },
+                { name: 'Branch Locations', url: 'fetch_branch_locations.php' }
+            ];
+            
+            let allResults = [];
+            
+            for (const api of apis) {
+                try {
+                    const result = await makeRequest(API_BASE + api.url);
+                    allResults.push({
+                        name: api.name,
+                        success: result.success && result.data.success,
+                        count: result.data?.data?.length || 0,
+                        error: result.data?.error || result.error
+                    });
+                } catch (e) {
+                    allResults.push({
+                        name: api.name,
+                        success: false,
+                        count: 0,
+                        error: e.message
+                    });
+                }
+            }
+            
+            let html = `📊 All Dropdown APIs Test Results:\n\n`;
+            
+            allResults.forEach(result => {
+                if (result.success) {
+                    html += `✅ ${result.name}: ${result.count} items loaded\n`;
+                } else {
+                    html += `❌ ${result.name}: ${result.error}\n`;
+                }
+            });
+            
+            const successCount = allResults.filter(r => r.success).length;
+            const totalCount = allResults.length;
+            
+            html += `\n📈 Summary: ${successCount}/${totalCount} APIs working`;
+            
+            if (successCount === totalCount) {
+                resultsDiv.className = 'response success';
+                html += `\n🎉 All dropdown APIs are working perfectly!`;
+            } else {
+                resultsDiv.className = 'response error';
+                html += `\n⚠️ Some APIs need attention.`;
+            }
+            
+            resultsDiv.innerHTML = html;
+        }
+
+        function clearAllResults() {
+            const responseDivs = [
+                'vendorBankResponse', 'loanTypeResponse', 
+                'branchStateResponse', 'branchLocationResponse', 'allResults'
+            ];
+            
+            responseDivs.forEach(id => {
+                const div = document.getElementById(id);
+                if (div) {
+                    div.innerHTML = '';
+                    div.className = 'response';
+                }
+            });
+        }
+
+        // Auto-test all dropdowns on page load
+        window.onload = function() {
+            setTimeout(() => {
+                testAllDropdowns();
+            }, 1000);
+        };
+    </script>
+</body>
+</html> 

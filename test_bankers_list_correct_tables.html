@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bankers List - Correct Tables Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        h2 {
+            color: #555;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 10px;
+            margin-top: 30px;
+        }
+        .test-section {
+            margin-bottom: 30px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        .api-info {
+            background-color: #e7f3ff;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .api-url {
+            background-color: #e9ecef;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: monospace;
+            margin: 10px 0;
+            word-break: break-all;
+        }
+        .result {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 4px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .success {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        .loading {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        button:disabled {
+            background-color: #6c757d;
+            cursor: not-allowed;
+        }
+        .summary {
+            background-color: #e7f3ff;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+        .status {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 3px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .status.success {
+            background-color: #28a745;
+            color: white;
+        }
+        .status.error {
+            background-color: #dc3545;
+            color: white;
+        }
+        .status.loading {
+            background-color: #ffc107;
+            color: #212529;
+        }
+        .table-info {
+            background-color: #fff3cd;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+            border-left: 4px solid #ffc107;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🏦 Bankers List - Correct Tables Test</h1>
+        
+        <div class="summary">
+            <h3>Test Summary</h3>
+            <p>This page verifies that the APIs are using the correct tables and columns:</p>
+            <ul>
+                <li><strong>States:</strong> <span id="state-status" class="status loading">Testing...</span> (tbl_branch_state.branch_state_name)</li>
+                <li><strong>Locations:</strong> <span id="location-status" class="status loading">Testing...</span> (tbl_branch_location.branch_location)</li>
+            </ul>
+        </div>
+
+        <div class="test-section">
+            <h2>1. States Dropdown - tbl_branch_state</h2>
+            <div class="api-info">
+                <strong>Table:</strong> tbl_branch_state<br>
+                <strong>Column:</strong> branch_state_name<br>
+                <strong>Expected:</strong> Should fetch from tbl_branch_state table using branch_state_name column
+            </div>
+            <div class="api-url">API URL: https://emp.kfinone.com/mobile/api/fetch_branch_states.php</div>
+            <button onclick="testStates()">Test States API</button>
+            <div id="state-result" class="result loading">Click the button to test...</div>
+        </div>
+
+        <div class="test-section">
+            <h2>2. Locations Dropdown - tbl_branch_location</h2>
+            <div class="api-info">
+                <strong>Table:</strong> tbl_branch_location<br>
+                <strong>Column:</strong> branch_location<br>
+                <strong>Expected:</strong> Should fetch from tbl_branch_location table using branch_location column
+            </div>
+            <div class="api-url">API URL: https://emp.kfinone.com/mobile/api/fetch_branch_locations.php</div>
+            <button onclick="testLocations()">Test Locations API</button>
+            <div id="location-result" class="result loading">Click the button to test...</div>
+        </div>
+
+        <div class="test-section">
+            <h2>3. Test Both APIs</h2>
+            <button onclick="testBothAPIs()">Test Both APIs</button>
+            <div id="both-result" class="result loading">Click the button to test both APIs...</div>
+        </div>
+
+        <div class="table-info">
+            <h3>📋 Table Information</h3>
+            <p><strong>tbl_branch_state:</strong> Contains branch state names in the branch_state_name column</p>
+            <p><strong>tbl_branch_location:</strong> Contains branch location names in the branch_location column</p>
+            <p>These are the correct tables that should be used for the dropdowns, not the sample data.</p>
+        </div>
+    </div>
+
+    <script>
+        function updateStatus(elementId, status, message) {
+            const element = document.getElementById(elementId);
+            element.className = `status ${status}`;
+            element.textContent = message;
+        }
+
+        function showResult(elementId, content, isSuccess) {
+            const element = document.getElementById(elementId);
+            element.className = `result ${isSuccess ? 'success' : 'error'}`;
+            element.textContent = content;
+        }
+
+        async function testAPI(url, resultId, statusId, expectedColumn) {
+            try {
+                updateStatus(statusId, 'loading', 'Testing...');
+                showResult(resultId, 'Testing...', true);
+                
+                const response = await fetch(url);
+                const responseText = await response.text();
+                
+                let isSuccess = response.ok;
+                let resultContent = `Status: ${response.status} ${response.statusText}\n\nResponse:\n${responseText}`;
+                
+                if (response.ok) {
+                    try {
+                        const jsonData = JSON.parse(responseText);
+                        if (jsonData.success) {
+                            // Check if the data contains the expected column
+                            if (jsonData.data && jsonData.data.length > 0) {
+                                const firstItem = jsonData.data[0];
+                                if (firstItem.hasOwnProperty(expectedColumn)) {
+                                    updateStatus(statusId, 'success', 'Working');
+                                    resultContent += `\n\n✅ API is working correctly!\n`;
+                                    resultContent += `✅ Using correct column: ${expectedColumn}\n`;
+                                    resultContent += `✅ Found ${jsonData.data.length} items\n`;
+                                    resultContent += `✅ Sample data: ${firstItem[expectedColumn]}`;
+                                } else {
+                                    updateStatus(statusId, 'error', 'Wrong Column');
+                                    resultContent += `\n\n❌ API returned data but using wrong column!\n`;
+                                    resultContent += `Expected: ${expectedColumn}\n`;
+                                    resultContent += `Found: ${Object.keys(firstItem).join(', ')}`;
+                                    isSuccess = false;
+                                }
+                            } else {
+                                updateStatus(statusId, 'success', 'Working (Empty)');
+                                resultContent += `\n\n✅ API is working but table is empty\n`;
+                                resultContent += `Expected column: ${expectedColumn}`;
+                            }
+                        } else {
+                            updateStatus(statusId, 'error', 'Failed');
+                            resultContent += `\n\n❌ API returned success: false\nError: ${jsonData.message || 'Unknown error'}`;
+                            isSuccess = false;
+                        }
+                    } catch (e) {
+                        updateStatus(statusId, 'error', 'Invalid JSON');
+                        resultContent += `\n\n❌ Invalid JSON response`;
+                        isSuccess = false;
+                    }
+                } else {
+                    updateStatus(statusId, 'error', 'HTTP Error');
+                    resultContent += `\n\n❌ HTTP Error: ${response.status}`;
+                    isSuccess = false;
+                }
+                
+                showResult(resultId, resultContent, isSuccess);
+                
+            } catch (error) {
+                updateStatus(statusId, 'error', 'Network Error');
+                showResult(resultId, `❌ Network Error: ${error.message}`, false);
+            }
+        }
+
+        function testStates() {
+            testAPI('https://emp.kfinone.com/mobile/api/fetch_branch_states.php', 'state-result', 'state-status', 'branch_state_name');
+        }
+
+        function testLocations() {
+            testAPI('https://emp.kfinone.com/mobile/api/fetch_branch_locations.php', 'location-result', 'location-status', 'branch_location');
+        }
+
+        async function testBothAPIs() {
+            const bothResult = document.getElementById('both-result');
+            bothResult.className = 'result loading';
+            bothResult.textContent = 'Testing both APIs...\n\n';
+            
+            const apis = [
+                { name: 'States', url: 'https://emp.kfinone.com/mobile/api/fetch_branch_states.php', column: 'branch_state_name' },
+                { name: 'Locations', url: 'https://emp.kfinone.com/mobile/api/fetch_branch_locations.php', column: 'branch_location' }
+            ];
+            
+            let allResults = '';
+            let successCount = 0;
+            
+            for (const api of apis) {
+                allResults += `\n--- Testing ${api.name} (${api.column}) ---\n`;
+                try {
+                    const response = await fetch(api.url);
+                    const responseText = await response.text();
+                    
+                    if (response.ok) {
+                        try {
+                            const jsonData = JSON.parse(responseText);
+                            if (jsonData.success) {
+                                if (jsonData.data && jsonData.data.length > 0) {
+                                    const firstItem = jsonData.data[0];
+                                    if (firstItem.hasOwnProperty(api.column)) {
+                                        allResults += `✅ ${api.name}: SUCCESS (${jsonData.data.length} items, using ${api.column})\n`;
+                                        successCount++;
+                                    } else {
+                                        allResults += `❌ ${api.name}: FAILED - Wrong column (expected ${api.column}, got ${Object.keys(firstItem).join(', ')})\n`;
+                                    }
+                                } else {
+                                    allResults += `✅ ${api.name}: SUCCESS (table empty, using ${api.column})\n`;
+                                    successCount++;
+                                }
+                            } else {
+                                allResults += `❌ ${api.name}: FAILED - ${jsonData.message || 'Unknown error'}\n`;
+                            }
+                        } catch (e) {
+                            allResults += `❌ ${api.name}: FAILED - Invalid JSON\n`;
+                        }
+                    } else {
+                        allResults += `❌ ${api.name}: FAILED - HTTP ${response.status}\n`;
+                    }
+                } catch (error) {
+                    allResults += `❌ ${api.name}: FAILED - Network Error\n`;
+                }
+            }
+            
+            allResults += `\n--- Summary ---\n`;
+            allResults += `✅ Working: ${successCount}/${apis.length}\n`;
+            allResults += `❌ Failed: ${apis.length - successCount}/${apis.length}\n`;
+            
+            if (successCount === apis.length) {
+                allResults += `\n🎉 Both APIs are working with correct tables and columns!`;
+                bothResult.className = 'result success';
+            } else {
+                allResults += `\n⚠️ Some APIs need attention.`;
+                bothResult.className = 'result error';
+            }
+            
+            bothResult.textContent = allResults;
+        }
+
+        // Auto-test both APIs on page load
+        window.onload = function() {
+            setTimeout(testBothAPIs, 1000);
+        };
+    </script>
+</body>
+</html> 

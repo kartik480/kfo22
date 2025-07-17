@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="12dp"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="4dp"
+    app:cardBackgroundColor="#FFFFFF">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="16dp">
+
+        <!-- Type Indicator -->
+        <View
+            android:id="@+id/typeIndicator"
+            android:layout_width="6dp"
+            android:layout_height="match_parent"
+            android:background="#3498DB"
+            android:layout_marginEnd="16dp" />
+
+        <!-- Icon Image Container -->
+        <LinearLayout
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:background="#F8F9FA"
+            android:layout_marginEnd="16dp"
+            android:padding="8dp">
+
+            <ImageView
+                android:id="@+id/iconImageView"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:src="@drawable/ic_settings"
+                android:tint="#7F8C8D"
+                android:scaleType="centerInside" />
+
+        </LinearLayout>
+
+        <!-- Content -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <!-- Icon Name -->
+            <TextView
+                android:id="@+id/iconNameText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Icon Name"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="#2C3E50"
+                android:fontFamily="sans-serif-medium"
+                android:layout_marginBottom="6dp" />
+
+            <!-- Icon Type Badge -->
+            <TextView
+                android:id="@+id/iconTypeText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Manage Icon"
+                android:textSize="11sp"
+                android:textColor="#FFFFFF"
+                android:fontFamily="sans-serif-medium"
+                android:background="#3498DB"
+                android:paddingHorizontal="8dp"
+                android:paddingVertical="2dp"
+                android:layout_marginBottom="8dp" />
+
+            <!-- Icon Description -->
+            <TextView
+                android:id="@+id/iconDescriptionText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Icon description goes here"
+                android:textSize="14sp"
+                android:textColor="#34495E"
+                android:fontFamily="sans-serif"
+                android:maxLines="3"
+                android:ellipsize="end"
+                android:lineSpacingExtra="2dp" />
+
+        </LinearLayout>
+
+        <!-- Permission Status -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="end">
+
+                    <TextView
+            android:id="@+id/permissionStatusText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="✓ Granted"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:textColor="#27AE60"
+            android:fontFamily="sans-serif-medium"
+            android:background="#E8F5E8"
+            android:paddingHorizontal="10dp"
+            android:paddingVertical="6dp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</com.google.android.material.card.MaterialCardView> 

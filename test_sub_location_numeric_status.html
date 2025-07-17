@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Sub Location Numeric Status</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input, select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .status-active {
+            background-color: #28a745;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            cursor: pointer;
+        }
+        .status-inactive {
+            background-color: #dc3545;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            cursor: pointer;
+        }
+        .sub-location-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            border: 1px solid #ddd;
+            margin-bottom: 10px;
+            border-radius: 4px;
+            background-color: #f9f9f9;
+        }
+        .sub-location-info {
+            flex: 1;
+        }
+        .sub-location-name {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .sub-location-details {
+            font-size: 14px;
+            color: #666;
+        }
+        .status-badge {
+            margin-left: 10px;
+        }
+        .response {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 15px;
+            margin-top: 15px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .error {
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+        .success {
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+        }
+        .loading {
+            color: #007bff;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test Sub Location Numeric Status Handling</h1>
+    <p>This page tests the sub-location APIs with numeric status values (1 = Active, 0 = Inactive)</p>
+
+    <div class="container">
+        <div class="section">
+            <h2>1. Add New Sub Location</h2>
+            <form id="addForm">
+                <div class="form-group">
+                    <label for="subLocationName">Sub Location Name:</label>
+                    <input type="text" id="subLocationName" name="subLocationName" required>
+                </div>
+                <div class="form-group">
+                    <label for="stateSelect">State:</label>
+                    <select id="stateSelect" name="stateSelect" required>
+                        <option value="">Select State</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="locationSelect">Location:</label>
+                    <select id="locationSelect" name="locationSelect" required>
+                        <option value="">Select Location</option>
+                    </select>
+                </div>
+                <button type="submit">Add Sub Location</button>
+            </form>
+            <div id="addResponse" class="response" style="display: none;"></div>
+        </div>
+
+        <div class="section">
+            <h2>2. Fetch All Sub Locations</h2>
+            <button onclick="fetchSubLocations()">Fetch Sub Locations</button>
+            <div id="fetchResponse" class="response" style="display: none;"></div>
+            <div id="subLocationsList"></div>
+        </div>
+
+        <div class="section">
+            <h2>3. Test Status Toggle</h2>
+            <p>Click on any status badge below to toggle between Active (1) and Inactive (0)</p>
+            <div id="toggleTestList"></div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'https://emp.kfinone.com/mobile/api/';
+
+        // Load states and locations on page load
+        window.onload = function() {
+            loadStates();
+            loadLocations();
+        };
+
+        async function loadStates() {
+            try {
+                const response = await fetch(API_BASE + 'simple_get_states.php');
+                const data = await response.json();
+                
+                if (data.success) {
+                    const stateSelect = document.getElementById('stateSelect');
+                    data.states.forEach(state => {
+                        const option = document.createElement('option');
+                        option.value = state.state_name;
+                        option.textContent = state.state_name;
+                        stateSelect.appendChild(option);
+                    });
+                }
+            } catch (error) {
+                console.error('Error loading states:', error);
+            }
+        }
+
+        async function loadLocations() {
+            try {
+                const response = await fetch(API_BASE + 'get_locations_with_states.php');
+                const data = await response.json();
+                
+                if (data.success) {
+                    const locationSelect = document.getElementById('locationSelect');
+                    data.locations.forEach(location => {
+                        const option = document.createElement('option');
+                        option.value = location.location;
+                        option.textContent = `${location.location} (${location.state_name})`;
+                        locationSelect.appendChild(option);
+                    });
+                }
+            } catch (error) {
+                console.error('Error loading locations:', error);
+            }
+        }
+
+        document.getElementById('addForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const responseDiv = document.getElementById('addResponse');
+            
+            responseDiv.style.display = 'block';
+            responseDiv.className = 'response loading';
+            responseDiv.textContent = 'Adding sub location...';
+            
+            try {
+                const response = await fetch(API_BASE + 'add_sub_location_with_relations.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        sub_location: formData.get('subLocationName'),
+                        state: formData.get('stateSelect'),
+                        location: formData.get('locationSelect')
+                    })
+                });
+                
+                const data = await response.json();
+                
+                responseDiv.className = 'response ' + (data.success ? 'success' : 'error');
+                responseDiv.textContent = JSON.stringify(data, null, 2);
+                
+                if (data.success) {
+                    this.reset();
+                    fetchSubLocations(); // Refresh the list
+                }
+            } catch (error) {
+                responseDiv.className = 'response error';
+                responseDiv.textContent = 'Error: ' + error.message;
+            }
+        });
+
+        async function fetchSubLocations() {
+            const responseDiv = document.getElementById('fetchResponse');
+            const listDiv = document.getElementById('subLocationsList');
+            
+            responseDiv.style.display = 'block';
+            responseDiv.className = 'response loading';
+            responseDiv.textContent = 'Fetching sub locations...';
+            
+            try {
+                const response = await fetch(API_BASE + 'get_sub_locations_with_relations.php');
+                const data = await response.json();
+                
+                responseDiv.className = 'response ' + (data.success ? 'success' : 'error');
+                responseDiv.textContent = JSON.stringify(data, null, 2);
+                
+                if (data.success) {
+                    displaySubLocations(data.sub_locations);
+                }
+            } catch (error) {
+                responseDiv.className = 'response error';
+                responseDiv.textContent = 'Error: ' + error.message;
+            }
+        }
+
+        function displaySubLocations(subLocations) {
+            const listDiv = document.getElementById('subLocationsList');
+            const toggleListDiv = document.getElementById('toggleTestList');
+            
+            listDiv.innerHTML = '<h3>All Sub Locations:</h3>';
+            toggleListDiv.innerHTML = '<h3>Status Toggle Test:</h3>';
+            
+            subLocations.forEach(subLoc => {
+                // Display in main list
+                const item = document.createElement('div');
+                item.className = 'sub-location-item';
+                item.innerHTML = `
+                    <div class="sub-location-info">
+                        <div class="sub-location-name">${subLoc.sub_location}</div>
+                        <div class="sub-location-details">
+                            State: ${subLoc.state_name} | Location: ${subLoc.location_name} | 
+                            Status: ${subLoc.status} (Value: ${subLoc.status_value})
+                        </div>
+                    </div>
+                `;
+                listDiv.appendChild(item);
+                
+                // Display in toggle test list
+                const toggleItem = document.createElement('div');
+                toggleItem.className = 'sub-location-item';
+                const statusClass = subLoc.status === 'Active' ? 'status-active' : 'status-inactive';
+                toggleItem.innerHTML = `
+                    <div class="sub-location-info">
+                        <div class="sub-location-name">${subLoc.sub_location}</div>
+                        <div class="sub-location-details">
+                            State: ${subLoc.state_name} | Location: ${subLoc.location_name}
+                        </div>
+                    </div>
+                    <span class="status-badge ${statusClass}" onclick="toggleStatus(${subLoc.id}, '${subLoc.status}')">
+                        ${subLoc.status} (${subLoc.status_value})
+                    </span>
+                `;
+                toggleListDiv.appendChild(toggleItem);
+            });
+        }
+
+        async function toggleStatus(id, currentStatus) {
+            const newStatus = currentStatus === 'Active' ? 'Inactive' : 'Active';
+            
+            try {
+                const response = await fetch(API_BASE + 'toggle_sub_location_status.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        id: id,
+                        status: newStatus
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    alert(`Status updated successfully! New status: ${data.data.status} (Value: ${data.data.status_value})`);
+                    fetchSubLocations(); // Refresh the list
+                } else {
+                    alert('Error: ' + data.error);
+                }
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
+        }
+    </script>
+</body>
+</html> 

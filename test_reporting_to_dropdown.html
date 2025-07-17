@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test ReportingTo Dropdown API</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background: #fafafa;
+        }
+        .test-section h3 {
+            color: #007bff;
+            margin-top: 0;
+        }
+        .result {
+            background: #f8f9fa;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border-left: 4px solid #007bff;
+            white-space: pre-wrap;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .error {
+            border-left-color: #dc3545;
+            background: #f8d7da;
+            color: #721c24;
+        }
+        .success {
+            border-left-color: #28a745;
+            background: #d4edda;
+            color: #155724;
+        }
+        button {
+            padding: 10px 20px;
+            margin: 5px;
+            cursor: pointer;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .user-item {
+            margin: 8px 0;
+            padding: 10px;
+            background: #e9ecef;
+            border-radius: 4px;
+            border-left: 3px solid #007bff;
+        }
+        .user-id {
+            font-weight: bold;
+            color: #007bff;
+        }
+        .user-name {
+            font-weight: bold;
+            color: #333;
+        }
+        .user-details {
+            color: #666;
+            font-size: 12px;
+        }
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px 0;
+            padding: 15px;
+            background: #e9ecef;
+            border-radius: 5px;
+        }
+        .stat-item {
+            text-align: center;
+        }
+        .stat-number {
+            font-size: 24px;
+            font-weight: bold;
+            color: #007bff;
+        }
+        .stat-label {
+            font-size: 12px;
+            color: #666;
+        }
+        .loading {
+            text-align: center;
+            color: #007bff;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 Test ReportingTo Dropdown API</h1>
+        <p>This page tests the new <code>fetch_reporting_to_dropdown.php</code> API for the SDSA Details panel.</p>
+        
+        <div class="test-section">
+            <h3>📊 API Test Results</h3>
+            <button onclick="testNewAPI()">Test New API</button>
+            <button onclick="testOldAPI()">Test Old API (Comparison)</button>
+            <button onclick="clearResults()">Clear Results</button>
+            <div id="apiResult" class="result">Click "Test New API" to start...</div>
+        </div>
+        
+        <div class="test-section">
+            <h3>📈 Statistics</h3>
+            <div id="stats" class="stats">
+                <div class="stat-item">
+                    <div class="stat-number" id="totalUsers">-</div>
+                    <div class="stat-label">Total Users</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="processedUsers">-</div>
+                    <div class="stat-label">Processed</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="skippedUsers">-</div>
+                    <div class="stat-label">Skipped</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="responseTime">-</div>
+                    <div class="stat-label">Response (ms)</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="test-section">
+            <h3>👥 User List</h3>
+            <div id="userList"></div>
+        </div>
+        
+        <div class="test-section">
+            <h3>🔧 Technical Details</h3>
+            <div id="technicalDetails" class="result"></div>
+        </div>
+    </div>
+
+    <script>
+        let apiResults = {};
+        
+        async function testNewAPI() {
+            const resultDiv = document.getElementById('apiResult');
+            const userListDiv = document.getElementById('userList');
+            const technicalDiv = document.getElementById('technicalDetails');
+            
+            resultDiv.innerHTML = '<div class="loading">Testing new API...</div>';
+            resultDiv.className = 'result';
+            userListDiv.innerHTML = '';
+            technicalDiv.innerHTML = '';
+            
+            const startTime = performance.now();
+            
+            try {
+                const response = await fetch('fetch_reporting_to_dropdown.php');
+                const endTime = performance.now();
+                const responseTime = Math.round(endTime - startTime);
+                
+                const data = await response.json();
+                
+                // Store results
+                apiResults.new = {
+                    data: data,
+                    responseTime: responseTime,
+                    status: response.status
+                };
+                
+                // Display results
+                displayResults(data, responseTime, 'new');
+                
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">Error testing new API: ${error.message}</div>`;
+                resultDiv.className = 'result error';
+            }
+        }
+        
+        async function testOldAPI() {
+            const resultDiv = document.getElementById('apiResult');
+            resultDiv.innerHTML = '<div class="loading">Testing old API...</div>';
+            
+            const startTime = performance.now();
+            
+            try {
+                const response = await fetch('fetch_sdsa_reporting_users.php');
+                const endTime = performance.now();
+                const responseTime = Math.round(endTime - startTime);
+                
+                const data = await response.json();
+                
+                // Store results
+                apiResults.old = {
+                    data: data,
+                    responseTime: responseTime,
+                    status: response.status
+                };
+                
+                // Display comparison
+                displayComparison();
+                
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">Error testing old API: ${error.message}</div>`;
+                resultDiv.className = 'result error';
+            }
+        }
+        
+        function displayResults(data, responseTime, type) {
+            const resultDiv = document.getElementById('apiResult');
+            const userListDiv = document.getElementById('userList');
+            const technicalDiv = document.getElementById('technicalDetails');
+            
+            // Update stats
+            document.getElementById('totalUsers').textContent = data.count || 0;
+            document.getElementById('processedUsers').textContent = data.processed || 0;
+            document.getElementById('skippedUsers').textContent = data.skipped || 0;
+            document.getElementById('responseTime').textContent = responseTime;
+            
+            // Display main result
+            let resultText = `API Response (${type === 'new' ? 'New' : 'Old'}):\n`;
+            resultText += `Status: ${data.status}\n`;
+            resultText += `Message: ${data.message}\n`;
+            resultText += `Count: ${data.count}\n`;
+            resultText += `Response Time: ${responseTime}ms\n`;
+            
+            if (data.timestamp) {
+                resultText += `Timestamp: ${data.timestamp}\n`;
+            }
+            
+            if (data.processed !== undefined) {
+                resultText += `Processed: ${data.processed}\n`;
+                resultText += `Skipped: ${data.skipped}\n`;
+            }
+            
+            resultDiv.innerHTML = resultText;
+            resultDiv.className = data.status === 'success' ? 'result success' : 'result error';
+            
+            // Display user list
+            if (data.data && data.data.length > 0) {
+                let userListHTML = '<h4>Users Found:</h4>';
+                data.data.forEach((user, index) => {
+                    userListHTML += `
+                        <div class="user-item">
+                            <div class="user-id">ID: ${user.id}</div>
+                            <div class="user-name">${user.name}</div>
+                            <div class="user-details">
+                                First Name: ${user.firstName} | Last Name: ${user.lastName}
+                                ${user.status ? `| Status: ${user.status}` : ''}
+                            </div>
+                        </div>
+                    `;
+                });
+                userListDiv.innerHTML = userListHTML;
+            } else {
+                userListDiv.innerHTML = '<p>No users found.</p>';
+            }
+            
+            // Display technical details
+            if (data.query_info) {
+                technicalDiv.innerHTML = `Technical Details:\n` +
+                    `Total Rows from DB: ${data.query_info.total_rows}\n` +
+                    `SQL Query: ${data.query_info.sql}`;
+            }
+        }
+        
+        function displayComparison() {
+            const resultDiv = document.getElementById('apiResult');
+            
+            if (!apiResults.new || !apiResults.old) {
+                resultDiv.innerHTML = '<div class="error">Please test both APIs first</div>';
+                return;
+            }
+            
+            let comparisonText = 'API Comparison:\n\n';
+            comparisonText += 'NEW API:\n';
+            comparisonText += `- Status: ${apiResults.new.data.status}\n`;
+            comparisonText += `- Count: ${apiResults.new.data.count}\n`;
+            comparisonText += `- Response Time: ${apiResults.new.responseTime}ms\n`;
+            comparisonText += `- Processed: ${apiResults.new.data.processed || 'N/A'}\n`;
+            comparisonText += `- Skipped: ${apiResults.new.data.skipped || 'N/A'}\n\n`;
+            
+            comparisonText += 'OLD API:\n';
+            comparisonText += `- Status: ${apiResults.old.data.status}\n`;
+            comparisonText += `- Count: ${apiResults.old.data.count}\n`;
+            comparisonText += `- Response Time: ${apiResults.old.responseTime}ms\n`;
+            comparisonText += `- Processed: ${apiResults.old.data.processed || 'N/A'}\n`;
+            comparisonText += `- Skipped: ${apiResults.old.data.skipped || 'N/A'}\n\n`;
+            
+            comparisonText += 'DIFFERENCES:\n';
+            comparisonText += `- Count Difference: ${apiResults.new.data.count - apiResults.old.data.count}\n`;
+            comparisonText += `- Response Time Difference: ${apiResults.new.responseTime - apiResults.old.responseTime}ms\n`;
+            
+            resultDiv.innerHTML = comparisonText;
+            resultDiv.className = 'result';
+        }
+        
+        function clearResults() {
+            document.getElementById('apiResult').innerHTML = 'Click "Test New API" to start...';
+            document.getElementById('userList').innerHTML = '';
+            document.getElementById('technicalDetails').innerHTML = '';
+            document.getElementById('totalUsers').textContent = '-';
+            document.getElementById('processedUsers').textContent = '-';
+            document.getElementById('skippedUsers').textContent = '-';
+            document.getElementById('responseTime').textContent = '-';
+            apiResults = {};
+        }
+        
+        // Auto-test when page loads
+        window.onload = function() {
+            setTimeout(testNewAPI, 1000);
+        };
+    </script>
+</body>
+</html> 

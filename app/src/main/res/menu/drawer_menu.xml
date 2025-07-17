@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_home"
+            android:icon="@drawable/ic_home"
+            android:title="Home" />
+        <item
+            android:id="@+id/nav_profile"
+            android:icon="@drawable/ic_profile"
+            android:title="Profile" />
+        <item
+            android:id="@+id/nav_settings"
+            android:icon="@drawable/ic_settings"
+            android:title="Settings" />
+    </group>
+
+    <item android:title="Master Data">
+        <menu>
+            <item
+                android:id="@+id/nav_emp_master"
+                android:icon="@drawable/ic_people"
+                android:title="Emp Master" />
+            <item
+                android:id="@+id/nav_location_master"
+                android:icon="@drawable/ic_location"
+                android:title="Location Master" />
+            <item
+                android:id="@+id/nav_sdsa_master"
+                android:icon="@drawable/ic_business"
+                android:title="SDSA Master" />
+            <item
+                android:id="@+id/nav_dsa_code_master"
+                android:icon="@drawable/ic_code"
+                android:title="DSA Code Master" />
+            <item
+                android:id="@+id/nav_bank_master"
+                android:icon="@drawable/ic_bank"
+                android:title="Bank Master" />
+            <item
+                android:id="@+id/nav_partner_master"
+                android:icon="@drawable/ic_business"
+                android:title="Partner Master" />
+        </menu>
+    </item>
+
+    <item android:title="Tools">
+        <menu>
+            <item
+                android:id="@+id/nav_agent_master"
+                android:icon="@drawable/ic_agent"
+                android:title="Agents" />
+            <item
+                android:id="@+id/nav_dsa_name"
+                android:icon="@drawable/ic_dsa"
+                android:title="DSA Name" />
+            <item
+                android:id="@+id/nav_loan_types"
+                android:icon="@drawable/ic_loan"
+                android:title="Type of Loans" />
+            <item
+                android:id="@+id/nav_bankers"
+                android:icon="@drawable/ic_bank"
+                android:title="Bankers" />
+            <item
+                android:id="@+id/nav_emp_links"
+                android:icon="@drawable/ic_link"
+                android:title="Emp Links" />
+            <item
+                android:id="@+id/nav_payout"
+                android:icon="@drawable/ic_payment"
+                android:title="Payout" />
+            <item
+                android:id="@+id/nav_policy"
+                android:icon="@drawable/ic_policy"
+                android:title="Policy" />
+            <item
+                android:id="@+id/nav_document_upload"
+                android:icon="@drawable/ic_upload"
+                android:title="Document Upload" />
+        </menu>
+    </item>
+
+    <item android:title="Special Panels">
+        <menu>
+            <item
+                android:id="@+id/nav_special_panel"
+                android:icon="@drawable/ic_more"
+                android:title="Special Panel" />
+            <item
+                android:id="@+id/nav_dsa_code_list"
+                android:icon="@drawable/ic_code"
+                android:title="DSA Code List" />
+            <item
+                android:id="@+id/nav_bankers_panel"
+                android:icon="@drawable/ic_bank"
+                android:title="Bankers Panel" />
+            <item
+                android:id="@+id/nav_portfolio_panel"
+                android:icon="@drawable/ic_file"
+                android:title="Portfolio Panel" />
+            <item
+                android:id="@+id/nav_insurance_panel"
+                android:icon="@drawable/ic_policy"
+                android:title="Insurance Panel" />
+            <item
+                android:id="@+id/nav_doc_check_list"
+                android:icon="@drawable/ic_file"
+                android:title="Document Check List" />
+        </menu>
+    </item>
+
+    <item android:title="More">
+        <menu>
+            <item
+                android:id="@+id/nav_more"
+                android:icon="@drawable/ic_more"
+                android:title="More Options" />
+        </menu>
+    </item>
+
+    <item android:title="Support">
+        <menu>
+            <item
+                android:id="@+id/nav_help"
+                android:icon="@drawable/ic_help"
+                android:title="Help Center" />
+            <item
+                android:id="@+id/nav_feedback"
+                android:icon="@drawable/ic_feedback"
+                android:title="Send Feedback" />
+            <item
+                android:id="@+id/nav_about"
+                android:icon="@drawable/ic_info"
+                android:title="About" />
+            <item
+                android:id="@+id/nav_logout"
+                android:icon="@drawable/ic_logout"
+                android:title="Logout" />
+        </menu>
+    </item>
+</menu> 

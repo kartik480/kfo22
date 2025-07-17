@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Add Partner API</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+        }
+        h2 {
+            color: #34495e;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 5px;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        .result {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 15px;
+            margin-top: 10px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .success {
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        textarea {
+            height: 80px;
+            resize: vertical;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test Add Partner API Endpoints</h1>
+
+    <!-- Test Dropdown Data Loading -->
+    <div class="container">
+        <h2>Test Dropdown Data Loading</h2>
+        <button onclick="testPartnerTypes()">Test Partner Types</button>
+        <button onclick="testBranchStates()">Test Branch States</button>
+        <button onclick="testBranchLocations()">Test Branch Locations</button>
+        <button onclick="testBanks()">Test Banks</button>
+        <button onclick="testAccountTypes()">Test Account Types</button>
+        <div id="dropdownResult" class="result"></div>
+    </div>
+
+    <!-- Test Add Partner -->
+    <div class="container">
+        <h2>Test Add Partner</h2>
+        <form id="partnerForm">
+            <div class="form-group">
+                <label for="email">Email *</label>
+                <input type="email" id="email" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password *</label>
+                <input type="password" id="password" required>
+            </div>
+            <div class="form-group">
+                <label for="firstName">First Name *</label>
+                <input type="text" id="firstName" required>
+            </div>
+            <div class="form-group">
+                <label for="lastName">Last Name *</label>
+                <input type="text" id="lastName" required>
+            </div>
+            <div class="form-group">
+                <label for="aliasName">Alias Name</label>
+                <input type="text" id="aliasName">
+            </div>
+            <div class="form-group">
+                <label for="phoneNo">Phone Number *</label>
+                <input type="tel" id="phoneNo" required>
+            </div>
+            <div class="form-group">
+                <label for="alternativePhone">Alternative Phone</label>
+                <input type="tel" id="alternativePhone">
+            </div>
+            <div class="form-group">
+                <label for="officeAddress">Office Address</label>
+                <textarea id="officeAddress"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="residentialAddress">Residential Address</label>
+                <textarea id="residentialAddress"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="aadhaarNumber">Aadhaar Number</label>
+                <input type="text" id="aadhaarNumber" maxlength="12">
+            </div>
+            <div class="form-group">
+                <label for="panNumber">PAN Number</label>
+                <input type="text" id="panNumber" maxlength="10">
+            </div>
+            <div class="form-group">
+                <label for="accountNumber">Account Number</label>
+                <input type="text" id="accountNumber">
+            </div>
+            <div class="form-group">
+                <label for="ifscCode">IFSC Code</label>
+                <input type="text" id="ifscCode" maxlength="11">
+            </div>
+            <button type="button" onclick="testAddPartner()">Test Add Partner</button>
+        </form>
+        <div id="addPartnerResult" class="result"></div>
+    </div>
+
+    <script>
+        const BASE_URL = 'https://emp.kfinone.com/mobile/api/';
+
+        function showResult(elementId, data, isError = false) {
+            const element = document.getElementById(elementId);
+            element.textContent = JSON.stringify(data, null, 2);
+            element.className = 'result ' + (isError ? 'error' : 'success');
+        }
+
+        async function testPartnerTypes() {
+            try {
+                const response = await fetch(BASE_URL + 'get_partner_type_list.php');
+                const data = await response.json();
+                showResult('dropdownResult', data);
+            } catch (error) {
+                showResult('dropdownResult', { error: error.message }, true);
+            }
+        }
+
+        async function testBranchStates() {
+            try {
+                const response = await fetch(BASE_URL + 'get_branch_states_dropdown.php');
+                const data = await response.json();
+                showResult('dropdownResult', data);
+            } catch (error) {
+                showResult('dropdownResult', { error: error.message }, true);
+            }
+        }
+
+        async function testBranchLocations() {
+            try {
+                const response = await fetch(BASE_URL + 'get_branch_locations_dropdown.php');
+                const data = await response.json();
+                showResult('dropdownResult', data);
+            } catch (error) {
+                showResult('dropdownResult', { error: error.message }, true);
+            }
+        }
+
+        async function testBanks() {
+            try {
+                const response = await fetch(BASE_URL + 'get_bank_list.php');
+                const data = await response.json();
+                showResult('dropdownResult', data);
+            } catch (error) {
+                showResult('dropdownResult', { error: error.message }, true);
+            }
+        }
+
+        async function testAccountTypes() {
+            try {
+                const response = await fetch(BASE_URL + 'get_account_type_list.php');
+                const data = await response.json();
+                showResult('dropdownResult', data);
+            } catch (error) {
+                showResult('dropdownResult', { error: error.message }, true);
+            }
+        }
+
+        async function testAddPartner() {
+            try {
+                const formData = {
+                    email: document.getElementById('email').value,
+                    password: document.getElementById('password').value,
+                    first_name: document.getElementById('firstName').value,
+                    last_name: document.getElementById('lastName').value,
+                    alias_name: document.getElementById('aliasName').value,
+                    phone_no: document.getElementById('phoneNo').value,
+                    alternative_phone_no: document.getElementById('alternativePhone').value,
+                    partner_type_id: '1', // Default value for testing
+                    branch_state_id: '1', // Default value for testing
+                    branch_location_id: '1', // Default value for testing
+                    bank_id: '1', // Default value for testing
+                    account_type_id: '1', // Default value for testing
+                    office_address: document.getElementById('officeAddress').value,
+                    residential_address: document.getElementById('residentialAddress').value,
+                    aadhaar_number: document.getElementById('aadhaarNumber').value,
+                    pan_number: document.getElementById('panNumber').value,
+                    account_number: document.getElementById('accountNumber').value,
+                    ifsc_code: document.getElementById('ifscCode').value,
+                    pan_card_upload: '',
+                    aadhaar_card_upload: '',
+                    photo_upload: '',
+                    bank_proof_upload: ''
+                };
+
+                const response = await fetch(BASE_URL + 'add_partner.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                const data = await response.json();
+                showResult('addPartnerResult', data, !data.success);
+            } catch (error) {
+                showResult('addPartnerResult', { error: error.message }, true);
+            }
+        }
+
+        // Auto-fill form with test data
+        function fillTestData() {
+            document.getElementById('email').value = 'test@example.com';
+            document.getElementById('password').value = 'password123';
+            document.getElementById('firstName').value = 'John';
+            document.getElementById('lastName').value = 'Doe';
+            document.getElementById('aliasName').value = 'JD';
+            document.getElementById('phoneNo').value = '9876543210';
+            document.getElementById('alternativePhone').value = '9876543211';
+            document.getElementById('officeAddress').value = '123 Office Street, City';
+            document.getElementById('residentialAddress').value = '456 Home Street, City';
+            document.getElementById('aadhaarNumber').value = '123456789012';
+            document.getElementById('panNumber').value = 'ABCDE1234F';
+            document.getElementById('accountNumber').value = '1234567890';
+            document.getElementById('ifscCode').value = 'ABCD0001234';
+        }
+
+        // Add a button to fill test data
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('partnerForm');
+            const fillButton = document.createElement('button');
+            fillButton.type = 'button';
+            fillButton.textContent = 'Fill Test Data';
+            fillButton.onclick = fillTestData;
+            form.insertBefore(fillButton, form.firstChild);
+        });
+    </script>
+</body>
+</html> 

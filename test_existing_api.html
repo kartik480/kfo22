@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Existing APIs</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .result {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 5px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 12px;
+        }
+        .success {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        .loading {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 Test Existing APIs</h1>
+        
+        <div class="test-section">
+            <h3>Test Existing API: fetch_sdsa_reporting_users.php</h3>
+            <p>This API is already being used in your app.</p>
+            <button onclick="testExistingAPI()">Test Existing API</button>
+            <div id="existingResult" class="result" style="display: none;"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>Test New API: fetch_emp_panel_users.php</h3>
+            <p>This is the new API we need to upload.</p>
+            <button onclick="testNewAPI()">Test New API</button>
+            <div id="newResult" class="result" style="display: none;"></div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'https://emp.kfinone.com/mobile/api/';
+
+        function showResult(elementId, content, type = 'success') {
+            const element = document.getElementById(elementId);
+            element.style.display = 'block';
+            element.className = `result ${type}`;
+            element.innerHTML = content;
+        }
+
+        function showLoading(elementId) {
+            const element = document.getElementById(elementId);
+            element.style.display = 'block';
+            element.className = 'result loading';
+            element.innerHTML = '🔄 Testing...';
+        }
+
+        async function testExistingAPI() {
+            showLoading('existingResult');
+            
+            try {
+                const response = await fetch(API_BASE + 'fetch_sdsa_reporting_users.php');
+                const data = await response.json();
+                
+                let resultHtml = '';
+                
+                if (data.status === 'success') {
+                    resultHtml += `✅ Existing API is working!\n`;
+                    resultHtml += `Message: ${data.message}\n`;
+                    resultHtml += `Users found: ${data.count || data.data?.length || 0}\n`;
+                    
+                    if (data.data && data.data.length > 0) {
+                        resultHtml += `\nSample users:\n`;
+                        data.data.slice(0, 3).forEach(user => {
+                            resultHtml += `- ${user.name || user.fullName}\n`;
+                        });
+                    }
+                } else {
+                    resultHtml += `❌ Existing API failed\n`;
+                    resultHtml += `Message: ${data.message || 'Unknown error'}`;
+                }
+                
+                showResult('existingResult', resultHtml, data.status === 'success' ? 'success' : 'error');
+                
+            } catch (error) {
+                showResult('existingResult', 
+                    `❌ Existing API test failed: ${error.message}`, 
+                    'error'
+                );
+            }
+        }
+
+        async function testNewAPI() {
+            showLoading('newResult');
+            
+            try {
+                const response = await fetch(API_BASE + 'fetch_emp_panel_users.php');
+                const data = await response.json();
+                
+                let resultHtml = '';
+                
+                if (data.status === 'success') {
+                    resultHtml += `✅ New API is working!\n`;
+                    resultHtml += `Message: ${data.message}\n`;
+                    resultHtml += `Employees found: ${data.count}\n`;
+                    
+                    if (data.data && data.data.length > 0) {
+                        resultHtml += `\nSample employees:\n`;
+                        data.data.slice(0, 3).forEach(emp => {
+                            resultHtml += `- ${emp.fullName} (${emp.designation_name})\n`;
+                        });
+                    }
+                } else {
+                    resultHtml += `❌ New API failed\n`;
+                    resultHtml += `Message: ${data.message || 'Unknown error'}`;
+                }
+                
+                showResult('newResult', resultHtml, data.status === 'success' ? 'success' : 'error');
+                
+            } catch (error) {
+                showResult('newResult', 
+                    `❌ New API test failed: ${error.message}`, 
+                    'error'
+                );
+            }
+        }
+    </script>
+</body>
+</html> 

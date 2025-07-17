@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sub Location Table Debug</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        h1, h2 {
+            color: #333;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .response {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 15px;
+            margin-top: 10px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .success {
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+        .warning {
+            background-color: #fff3cd;
+            border-color: #ffeaa7;
+            color: #856404;
+        }
+        .loading {
+            color: #007bff;
+        }
+        .table-info {
+            background-color: #e9ecef;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .column-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+            gap: 10px;
+            margin: 10px 0;
+        }
+        .column-item {
+            background-color: #f8f9fa;
+            padding: 8px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Sub Location Table Debug</h1>
+    
+    <div class="container">
+        <h2>Debug Sub Location Table</h2>
+        <button onclick="debugSubLocationTable()">Debug Sub Location Table</button>
+        <button onclick="testOriginalAPI()">Test Original Sub Location API</button>
+        <button onclick="createSubLocationTable()">Create Sub Location Table</button>
+        <div id="debugResponse" class="response"></div>
+    </div>
+
+    <div class="container">
+        <h2>Quick Fix Options</h2>
+        <div class="table-info">
+            <h3>If table doesn't exist:</h3>
+            <button onclick="createSubLocationTable()">Create tbl_sub_location Table</button>
+            <button onclick="addSampleSubLocations()">Add Sample Sub Locations</button>
+        </div>
+        
+        <div class="table-info">
+            <h3>If table exists but has wrong structure:</h3>
+            <button onclick="fixSubLocationTable()">Fix Table Structure</button>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'https://emp.kfinone.com/mobile/api/';
+        
+        async function makeRequest(url, options = {}) {
+            try {
+                const response = await fetch(url, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        ...options.headers
+                    },
+                    ...options
+                });
+                
+                const data = await response.text();
+                let jsonData;
+                try {
+                    jsonData = JSON.parse(data);
+                } catch (e) {
+                    return { 
+                        success: false, 
+                        error: 'Invalid JSON response', 
+                        raw: data,
+                        status: response.status
+                    };
+                }
+                
+                return {
+                    success: response.ok,
+                    status: response.status,
+                    data: jsonData,
+                    raw: data
+                };
+            } catch (error) {
+                return {
+                    success: false,
+                    error: error.message,
+                    raw: error.toString()
+                };
+            }
+        }
+
+        async function debugSubLocationTable() {
+            const responseDiv = document.getElementById('debugResponse');
+            responseDiv.innerHTML = '<div class="loading">Debugging sub location table...</div>';
+            
+            const result = await makeRequest(API_BASE + 'debug_sub_location_table.php');
+            
+            if (result.success && result.data.success) {
+                const data = result.data;
+                responseDiv.className = 'response success';
+                
+                let html = `✅ Sub Location Table Debug Results:\n\n`;
+                html += `Table Exists: ${data.table_exists ? 'Yes' : 'No'}\n`;
+                html += `Total Records: ${data.total_count}\n\n`;
+                
+                if (data.table_structure && data.table_structure.length > 0) {
+                    html += `Table Structure:\n`;
+                    data.table_structure.forEach(column => {
+                        html += `- ${column.Field} (${column.Type}) ${column.Null === 'NO' ? 'NOT NULL' : 'NULL'}\n`;
+                    });
+                    html += `\n`;
+                }
+                
+                if (data.sample_data && data.sample_data.length > 0) {
+                    html += `Sample Data:\n`;
+                    data.sample_data.forEach((row, index) => {
+                        html += `${index + 1}. ${JSON.stringify(row)}\n`;
+                    });
+                    html += `\n`;
+                }
+                
+                if (data.related_tables && data.related_tables.length > 0) {
+                    html += `Related Tables:\n`;
+                    data.related_tables.forEach(table => {
+                        html += `- ${table}\n`;
+                    });
+                }
+                
+                responseDiv.innerHTML = html;
+            } else {
+                responseDiv.className = 'response error';
+                responseDiv.innerHTML = `❌ Debug Failed!\n\nStatus: ${result.status}\nError: ${result.data?.error || result.error}\n\nRaw Response:\n${result.raw}`;
+            }
+        }
+
+        async function testOriginalAPI() {
+            const responseDiv = document.getElementById('debugResponse');
+            responseDiv.innerHTML = '<div class="loading">Testing original sub location API...</div>';
+            
+            const result = await makeRequest(API_BASE + 'get_sub_locations.php');
+            
+            if (result.success && result.data.success) {
+                responseDiv.className = 'response success';
+                const subLocations = result.data.data;
+                responseDiv.innerHTML = `✅ Original API Working!\n\nSub Locations Count: ${subLocations.length}\n\nSub Locations:\n${subLocations.map(loc => loc.subLocationName).join(', ')}`;
+            } else {
+                responseDiv.className = 'response error';
+                responseDiv.innerHTML = `❌ Original API Failed!\n\nStatus: ${result.status}\nError: ${result.data?.error || result.error}\n\nRaw Response:\n${result.raw}`;
+            }
+        }
+
+        async function createSubLocationTable() {
+            const responseDiv = document.getElementById('debugResponse');
+            responseDiv.innerHTML = '<div class="loading">Creating sub location table...</div>';
+            
+            const result = await makeRequest(API_BASE + 'setup_sub_location_table.php');
+            
+            if (result.success && result.data.success) {
+                responseDiv.className = 'response success';
+                responseDiv.innerHTML = `✅ Sub Location Table Created!\n\n${result.data.message}`;
+            } else {
+                responseDiv.className = 'response error';
+                responseDiv.innerHTML = `❌ Failed to Create Table!\n\nStatus: ${result.status}\nError: ${result.data?.error || result.error}\n\nRaw Response:\n${result.raw}`;
+            }
+        }
+
+        async function addSampleSubLocations() {
+            const responseDiv = document.getElementById('debugResponse');
+            responseDiv.innerHTML = '<div class="loading">Adding sample sub locations...</div>';
+            
+            const result = await makeRequest(API_BASE + 'add_sample_sub_locations.php');
+            
+            if (result.success && result.data.success) {
+                responseDiv.className = 'response success';
+                responseDiv.innerHTML = `✅ Sample Sub Locations Added!\n\n${result.data.message}`;
+            } else {
+                responseDiv.className = 'response error';
+                responseDiv.innerHTML = `❌ Failed to Add Sample Data!\n\nStatus: ${result.status}\nError: ${result.data?.error || result.error}\n\nRaw Response:\n${result.raw}`;
+            }
+        }
+
+        async function fixSubLocationTable() {
+            const responseDiv = document.getElementById('debugResponse');
+            responseDiv.innerHTML = '<div class="loading">Fixing table structure...</div>';
+            
+            const result = await makeRequest(API_BASE + 'fix_sub_location_table.php');
+            
+            if (result.success && result.data.success) {
+                responseDiv.className = 'response success';
+                responseDiv.innerHTML = `✅ Table Structure Fixed!\n\n${result.data.message}`;
+            } else {
+                responseDiv.className = 'response error';
+                responseDiv.innerHTML = `❌ Failed to Fix Table!\n\nStatus: ${result.status}\nError: ${result.data?.error || result.error}\n\nRaw Response:\n${result.raw}`;
+            }
+        }
+
+        // Auto-run debug on page load
+        window.onload = function() {
+            debugSubLocationTable();
+        };
+    </script>
+</body>
+</html> 

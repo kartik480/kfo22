@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Bank APIs</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .test-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .test-section h2 {
+            color: #555;
+            margin-top: 0;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .response {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 15px;
+            margin-top: 15px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .success {
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+        .bank-list {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 15px;
+            margin-top: 15px;
+        }
+        .bank-item {
+            padding: 8px;
+            border-bottom: 1px solid #dee2e6;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .bank-item:last-child {
+            border-bottom: none;
+        }
+        .bank-name {
+            font-weight: bold;
+        }
+        .bank-id {
+            color: #6c757d;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Test Bank APIs</h1>
+        
+        <div class="test-section">
+            <h2>1. Test GET Bank List API</h2>
+            <p>This will fetch all bank names from the tbl_bank table.</p>
+            <button onclick="testGetBankList()">Test GET Bank List</button>
+            <div id="getBankListResponse" class="response"></div>
+            <div id="bankListDisplay" class="bank-list" style="display: none;"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>2. Test POST Add Bank API</h2>
+            <p>This will add a new bank to the tbl_bank table.</p>
+            
+            <form id="addBankForm">
+                <div class="form-group">
+                    <label for="bankName">Bank Name:</label>
+                    <input type="text" id="bankName" placeholder="Enter bank name" required>
+                </div>
+                <button type="button" onclick="testAddBank()">Test Add Bank</button>
+            </form>
+            
+            <div id="addBankResponse" class="response"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>3. Test API Endpoint Status</h2>
+            <button onclick="testApiStatus()">Check API Status</button>
+            <div id="statusResponse" class="response"></div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'https://emp.kfinone.com/mobile/api/';
+        
+        const APIs = {
+            getBankList: 'get_bank_list.php',
+            addBank: 'add_bank.php'
+        };
+
+        async function testGetBankList() {
+            const responseDiv = document.getElementById('getBankListResponse');
+            const bankListDiv = document.getElementById('bankListDisplay');
+            responseDiv.innerHTML = 'Loading...';
+            responseDiv.className = 'response';
+            bankListDiv.style.display = 'none';
+
+            try {
+                const response = await fetch(`${API_BASE_URL}${APIs.getBankList}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                const responseText = await response.text();
+                const responseData = JSON.parse(responseText);
+
+                if (response.ok && responseData.status === 'success') {
+                    responseDiv.className = 'response success';
+                    responseDiv.innerHTML = `✅ Success!\n\nStatus: ${response.status}\nBanks Found: ${responseData.count}\n\nResponse:\n${JSON.stringify(responseData, null, 2)}`;
+                    
+                    // Display bank list in a nice format
+                    if (responseData.data && responseData.data.length > 0) {
+                        bankListDiv.innerHTML = '<h3>Bank List:</h3>';
+                        responseData.data.forEach((bankName, index) => {
+                            const bankItem = document.createElement('div');
+                            bankItem.className = 'bank-item';
+                            bankItem.innerHTML = `
+                                <span class="bank-name">${bankName}</span>
+                                <span class="bank-id">#${index + 1}</span>
+                            `;
+                            bankListDiv.appendChild(bankItem);
+                        });
+                        bankListDiv.style.display = 'block';
+                    }
+                } else {
+                    responseDiv.className = 'response error';
+                    responseDiv.innerHTML = `❌ Error!\n\nStatus: ${response.status}\nError: ${responseData.message || 'Unknown error'}\n\nResponse:\n${JSON.stringify(responseData, null, 2)}`;
+                }
+            } catch (error) {
+                responseDiv.className = 'response error';
+                responseDiv.innerHTML = `❌ Network Error!\n\nError: ${error.message}\n\nThis might indicate:\n- API endpoint doesn't exist\n- Server is down\n- Network connectivity issues`;
+            }
+        }
+
+        async function testAddBank() {
+            const responseDiv = document.getElementById('addBankResponse');
+            const bankName = document.getElementById('bankName').value.trim();
+            
+            if (!bankName) {
+                responseDiv.className = 'response error';
+                responseDiv.innerHTML = '❌ Error: Please enter a bank name';
+                return;
+            }
+            
+            responseDiv.innerHTML = 'Loading...';
+            responseDiv.className = 'response';
+
+            try {
+                const response = await fetch(`${API_BASE_URL}${APIs.addBank}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        bank_name: bankName
+                    })
+                });
+
+                const responseText = await response.text();
+                const responseData = JSON.parse(responseText);
+
+                if (response.ok && responseData.status === 'success') {
+                    responseDiv.className = 'response success';
+                    responseDiv.innerHTML = `✅ Success!\n\nStatus: ${response.status}\nMessage: ${responseData.message}\n\nResponse:\n${JSON.stringify(responseData, null, 2)}`;
+                    
+                    // Clear the form
+                    document.getElementById('bankName').value = '';
+                    
+                    // Refresh the bank list
+                    setTimeout(() => {
+                        testGetBankList();
+                    }, 1000);
+                } else {
+                    responseDiv.className = 'response error';
+                    responseDiv.innerHTML = `❌ Error!\n\nStatus: ${response.status}\nError: ${responseData.message || 'Unknown error'}\n\nResponse:\n${JSON.stringify(responseData, null, 2)}`;
+                }
+            } catch (error) {
+                responseDiv.className = 'response error';
+                responseDiv.innerHTML = `❌ Network Error!\n\nError: ${error.message}\n\nThis might indicate:\n- API endpoint doesn't exist\n- Server is down\n- Network connectivity issues`;
+            }
+        }
+
+        async function testApiStatus() {
+            const responseDiv = document.getElementById('statusResponse');
+            responseDiv.innerHTML = 'Checking...';
+            responseDiv.className = 'response';
+
+            const results = [];
+
+            for (const [name, endpoint] of Object.entries(APIs)) {
+                try {
+                    const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+                        method: 'HEAD'
+                    });
+
+                    if (response.ok) {
+                        results.push(`✅ ${name}: Available (${response.status})`);
+                    } else {
+                        results.push(`❌ ${name}: Error (${response.status})`);
+                    }
+                } catch (error) {
+                    results.push(`❌ ${name}: Not Found - ${error.message}`);
+                }
+            }
+
+            responseDiv.innerHTML = 'API Status Check:\n\n' + results.join('\n');
+            
+            const successCount = results.filter(r => r.includes('✅')).length;
+            const totalCount = results.length;
+            
+            if (successCount === totalCount) {
+                responseDiv.className = 'response success';
+                responseDiv.innerHTML += `\n\n🎉 All ${totalCount} APIs are available!`;
+            } else {
+                responseDiv.className = 'response error';
+                responseDiv.innerHTML += `\n\n⚠️ ${successCount}/${totalCount} APIs are available. ${totalCount - successCount} APIs have issues.`;
+            }
+        }
+
+        // Auto-test on page load
+        window.onload = function() {
+            console.log('Bank APIs Test Page Loaded');
+            console.log('API Base URL:', API_BASE_URL);
+            console.log('Available APIs:', Object.keys(APIs));
+        };
+    </script>
+</body>
+</html> 

@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Production Database Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        h2 {
+            color: #555;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 10px;
+            margin-top: 30px;
+        }
+        .test-section {
+            margin-bottom: 30px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        .db-info {
+            background-color: #e7f3ff;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 10px 0;
+            border-left: 4px solid #007bff;
+        }
+        .api-url {
+            background-color: #e9ecef;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: monospace;
+            margin: 10px 0;
+            word-break: break-all;
+        }
+        .result {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 4px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .success {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        .loading {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        button:disabled {
+            background-color: #6c757d;
+            cursor: not-allowed;
+        }
+        .summary {
+            background-color: #e7f3ff;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+        .status {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 3px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .status.success {
+            background-color: #28a745;
+            color: white;
+        }
+        .status.error {
+            background-color: #dc3545;
+            color: white;
+        }
+        .status.loading {
+            background-color: #ffc107;
+            color: #212529;
+        }
+        .production-badge {
+            background-color: #dc3545;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 3px;
+            font-size: 10px;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🏦 Production Database Test <span class="production-badge">PRODUCTION</span></h1>
+        
+        <div class="db-info">
+            <h3>📊 Database Configuration</h3>
+            <p><strong>Server:</strong> p3plzcpnl508816.prod.phx3.secureserver.net</p>
+            <p><strong>Database:</strong> emp_kfinone</p>
+            <p><strong>Username:</strong> emp_kfinone</p>
+            <p><strong>Status:</strong> <span id="db-status" class="status loading">Testing...</span></p>
+        </div>
+
+        <div class="summary">
+            <h3>Test Summary</h3>
+            <p>This page tests all Bankers List dropdown APIs with the production database:</p>
+            <ul>
+                <li><strong>Vendor Banks:</strong> <span id="vendor-status" class="status loading">Testing...</span></li>
+                <li><strong>Loan Types:</strong> <span id="loan-status" class="status loading">Testing...</span></li>
+                <li><strong>States:</strong> <span id="state-status" class="status loading">Testing...</span></li>
+                <li><strong>Locations:</strong> <span id="location-status" class="status loading">Testing...</span></li>
+            </ul>
+        </div>
+
+        <div class="test-section">
+            <h2>1. Vendor Banks - tbl_vendor_bank</h2>
+            <div class="api-url">API URL: https://emp.kfinone.com/mobile/api/fetch_vendor_banks.php</div>
+            <button onclick="testVendorBanks()">Test Vendor Banks API</button>
+            <div id="vendor-result" class="result loading">Click the button to test...</div>
+        </div>
+
+        <div class="test-section">
+            <h2>2. Loan Types - tbl_loan_type</h2>
+            <div class="api-url">API URL: https://emp.kfinone.com/mobile/api/fetch_loan_types.php</div>
+            <button onclick="testLoanTypes()">Test Loan Types API</button>
+            <div id="loan-result" class="result loading">Click the button to test...</div>
+        </div>
+
+        <div class="test-section">
+            <h2>3. States - tbl_branch_state</h2>
+            <div class="api-url">API URL: https://emp.kfinone.com/mobile/api/fetch_branch_states.php</div>
+            <button onclick="testStates()">Test States API</button>
+            <div id="state-result" class="result loading">Click the button to test...</div>
+        </div>
+
+        <div class="test-section">
+            <h2>4. Locations - tbl_branch_location</h2>
+            <div class="api-url">API URL: https://emp.kfinone.com/mobile/api/fetch_branch_locations.php</div>
+            <button onclick="testLocations()">Test Locations API</button>
+            <div id="location-result" class="result loading">Click the button to test...</div>
+        </div>
+
+        <div class="test-section">
+            <h2>5. Test All APIs</h2>
+            <button onclick="testAllAPIs()">Test All APIs</button>
+            <div id="all-result" class="result loading">Click the button to test all APIs...</div>
+        </div>
+    </div>
+
+    <script>
+        function updateStatus(elementId, status, message) {
+            const element = document.getElementById(elementId);
+            element.className = `status ${status}`;
+            element.textContent = message;
+        }
+
+        function showResult(elementId, content, isSuccess) {
+            const element = document.getElementById(elementId);
+            element.className = `result ${isSuccess ? 'success' : 'error'}`;
+            element.textContent = content;
+        }
+
+        async function testAPI(url, resultId, statusId, tableName, columnName) {
+            try {
+                updateStatus(statusId, 'loading', 'Testing...');
+                showResult(resultId, 'Testing...', true);
+                
+                const response = await fetch(url);
+                const responseText = await response.text();
+                
+                let isSuccess = response.ok;
+                let resultContent = `Status: ${response.status} ${response.statusText}\n\nResponse:\n${responseText}`;
+                
+                if (response.ok) {
+                    try {
+                        const jsonData = JSON.parse(responseText);
+                        if (jsonData.success) {
+                            if (jsonData.data && jsonData.data.length > 0) {
+                                const firstItem = jsonData.data[0];
+                                if (firstItem.hasOwnProperty(columnName)) {
+                                    updateStatus(statusId, 'success', 'Working');
+                                    resultContent += `\n\n✅ API is working with production database!\n`;
+                                    resultContent += `✅ Table: ${tableName}\n`;
+                                    resultContent += `✅ Column: ${columnName}\n`;
+                                    resultContent += `✅ Found ${jsonData.data.length} items\n`;
+                                    resultContent += `✅ Sample data: ${firstItem[columnName]}`;
+                                } else {
+                                    updateStatus(statusId, 'error', 'Wrong Column');
+                                    resultContent += `\n\n❌ API returned data but using wrong column!\n`;
+                                    resultContent += `Expected: ${columnName}\n`;
+                                    resultContent += `Found: ${Object.keys(firstItem).join(', ')}`;
+                                    isSuccess = false;
+                                }
+                            } else {
+                                updateStatus(statusId, 'success', 'Working (Empty)');
+                                resultContent += `\n\n✅ API is working with production database but table is empty\n`;
+                                resultContent += `Table: ${tableName}\n`;
+                                resultContent += `Column: ${columnName}`;
+                            }
+                        } else {
+                            updateStatus(statusId, 'error', 'Failed');
+                            resultContent += `\n\n❌ API returned success: false\nError: ${jsonData.message || 'Unknown error'}`;
+                            isSuccess = false;
+                        }
+                    } catch (e) {
+                        updateStatus(statusId, 'error', 'Invalid JSON');
+                        resultContent += `\n\n❌ Invalid JSON response`;
+                        isSuccess = false;
+                    }
+                } else {
+                    updateStatus(statusId, 'error', 'HTTP Error');
+                    resultContent += `\n\n❌ HTTP Error: ${response.status}`;
+                    isSuccess = false;
+                }
+                
+                showResult(resultId, resultContent, isSuccess);
+                
+            } catch (error) {
+                updateStatus(statusId, 'error', 'Network Error');
+                showResult(resultId, `❌ Network Error: ${error.message}`, false);
+            }
+        }
+
+        function testVendorBanks() {
+            testAPI('https://emp.kfinone.com/mobile/api/fetch_vendor_banks.php', 'vendor-result', 'vendor-status', 'tbl_vendor_bank', 'vendor_bank_name');
+        }
+
+        function testLoanTypes() {
+            testAPI('https://emp.kfinone.com/mobile/api/fetch_loan_types.php', 'loan-result', 'loan-status', 'tbl_loan_type', 'loan_type');
+        }
+
+        function testStates() {
+            testAPI('https://emp.kfinone.com/mobile/api/fetch_branch_states.php', 'state-result', 'state-status', 'tbl_branch_state', 'branch_state_name');
+        }
+
+        function testLocations() {
+            testAPI('https://emp.kfinone.com/mobile/api/fetch_branch_locations.php', 'location-result', 'location-status', 'tbl_branch_location', 'branch_location');
+        }
+
+        async function testAllAPIs() {
+            const allResult = document.getElementById('all-result');
+            allResult.className = 'result loading';
+            allResult.textContent = 'Testing all APIs with production database...\n\n';
+            
+            const apis = [
+                { name: 'Vendor Banks', url: 'https://emp.kfinone.com/mobile/api/fetch_vendor_banks.php', table: 'tbl_vendor_bank', column: 'vendor_bank_name' },
+                { name: 'Loan Types', url: 'https://emp.kfinone.com/mobile/api/fetch_loan_types.php', table: 'tbl_loan_type', column: 'loan_type' },
+                { name: 'States', url: 'https://emp.kfinone.com/mobile/api/fetch_branch_states.php', table: 'tbl_branch_state', column: 'branch_state_name' },
+                { name: 'Locations', url: 'https://emp.kfinone.com/mobile/api/fetch_branch_locations.php', table: 'tbl_branch_location', column: 'branch_location' }
+            ];
+            
+            let allResults = '';
+            let successCount = 0;
+            
+            for (const api of apis) {
+                allResults += `\n--- Testing ${api.name} (${api.table}.${api.column}) ---\n`;
+                try {
+                    const response = await fetch(api.url);
+                    const responseText = await response.text();
+                    
+                    if (response.ok) {
+                        try {
+                            const jsonData = JSON.parse(responseText);
+                            if (jsonData.success) {
+                                if (jsonData.data && jsonData.data.length > 0) {
+                                    const firstItem = jsonData.data[0];
+                                    if (firstItem.hasOwnProperty(api.column)) {
+                                        allResults += `✅ ${api.name}: SUCCESS (${jsonData.data.length} items from ${api.table})\n`;
+                                        successCount++;
+                                    } else {
+                                        allResults += `❌ ${api.name}: FAILED - Wrong column (expected ${api.column})\n`;
+                                    }
+                                } else {
+                                    allResults += `✅ ${api.name}: SUCCESS (table empty, using ${api.table})\n`;
+                                    successCount++;
+                                }
+                            } else {
+                                allResults += `❌ ${api.name}: FAILED - ${jsonData.message || 'Unknown error'}\n`;
+                            }
+                        } catch (e) {
+                            allResults += `❌ ${api.name}: FAILED - Invalid JSON\n`;
+                        }
+                    } else {
+                        allResults += `❌ ${api.name}: FAILED - HTTP ${response.status}\n`;
+                    }
+                } catch (error) {
+                    allResults += `❌ ${api.name}: FAILED - Network Error\n`;
+                }
+            }
+            
+            allResults += `\n--- Summary ---\n`;
+            allResults += `✅ Working: ${successCount}/${apis.length}\n`;
+            allResults += `❌ Failed: ${apis.length - successCount}/${apis.length}\n`;
+            
+            if (successCount === apis.length) {
+                allResults += `\n🎉 All APIs are working with production database!`;
+                allResult.className = 'result success';
+                updateStatus('db-status', 'success', 'Connected');
+            } else {
+                allResults += `\n⚠️ Some APIs need attention.`;
+                allResult.className = 'result error';
+                updateStatus('db-status', 'error', 'Issues Found');
+            }
+            
+            allResult.textContent = allResults;
+        }
+
+        // Auto-test all APIs on page load
+        window.onload = function() {
+            setTimeout(testAllAPIs, 1000);
+        };
+    </script>
+</body>
+</html> 

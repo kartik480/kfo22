@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account Type APIs Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .response {
+            margin-top: 15px;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            white-space: pre-wrap;
+            font-family: monospace;
+        }
+        .success {
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+    </style>
+</head>
+<body>
+    <h1>Account Type APIs Test</h1>
+    
+    <div class="section">
+        <h2>1. Check Account Type Table</h2>
+        <button onclick="checkAccountTypeTable()">Check Table Structure</button>
+        <div id="checkTableResponse" class="response"></div>
+    </div>
+
+    <div class="section">
+        <h2>2. Add Account Type</h2>
+        <div class="form-group">
+            <label for="accountTypeInput">Account Type Name:</label>
+            <input type="text" id="accountTypeInput" placeholder="Enter account type name">
+        </div>
+        <button onclick="addAccountType()">Add Account Type</button>
+        <div id="addAccountTypeResponse" class="response"></div>
+    </div>
+
+    <div class="section">
+        <h2>3. Get Account Type List</h2>
+        <button onclick="getAccountTypeList()">Get Account Types</button>
+        <div id="getAccountTypeListResponse" class="response"></div>
+    </div>
+
+    <div class="section">
+        <h2>4. Delete Account Type</h2>
+        <div class="form-group">
+            <label for="deleteAccountTypeInput">Account Type Name to Delete:</label>
+            <input type="text" id="deleteAccountTypeInput" placeholder="Enter account type name to delete">
+        </div>
+        <button onclick="deleteAccountType()">Delete Account Type</button>
+        <div id="deleteAccountTypeResponse" class="response"></div>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'https://emp.kfinone.com/mobile/api/';
+        
+        const APIs = {
+            checkTable: 'check_account_type_table.php',
+            addAccountType: 'add_account_type.php',
+            getAccountTypeList: 'get_account_type_list.php',
+            deleteAccountType: 'delete_account_type.php'
+        };
+
+        async function checkAccountTypeTable() {
+            const responseDiv = document.getElementById('checkTableResponse');
+            responseDiv.textContent = 'Checking table structure...';
+            responseDiv.className = 'response';
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}${APIs.checkTable}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const data = await response.json();
+                responseDiv.textContent = JSON.stringify(data, null, 2);
+                responseDiv.className = `response ${data.success ? 'success' : 'error'}`;
+            } catch (error) {
+                responseDiv.textContent = `Error: ${error.message}`;
+                responseDiv.className = 'response error';
+            }
+        }
+
+        async function addAccountType() {
+            const accountType = document.getElementById('accountTypeInput').value.trim();
+            const responseDiv = document.getElementById('addAccountTypeResponse');
+            
+            if (!accountType) {
+                responseDiv.textContent = 'Please enter an account type name';
+                responseDiv.className = 'response error';
+                return;
+            }
+            
+            responseDiv.textContent = 'Adding account type...';
+            responseDiv.className = 'response';
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}${APIs.addAccountType}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        account_type: accountType
+                    })
+                });
+                
+                const data = await response.json();
+                responseDiv.textContent = JSON.stringify(data, null, 2);
+                responseDiv.className = `response ${data.success ? 'success' : 'error'}`;
+                
+                if (data.success) {
+                    document.getElementById('accountTypeInput').value = '';
+                }
+            } catch (error) {
+                responseDiv.textContent = `Error: ${error.message}`;
+                responseDiv.className = 'response error';
+            }
+        }
+
+        async function getAccountTypeList() {
+            const responseDiv = document.getElementById('getAccountTypeListResponse');
+            responseDiv.textContent = 'Loading account types...';
+            responseDiv.className = 'response';
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}${APIs.getAccountTypeList}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const data = await response.json();
+                responseDiv.textContent = JSON.stringify(data, null, 2);
+                responseDiv.className = `response ${data.success ? 'success' : 'error'}`;
+            } catch (error) {
+                responseDiv.textContent = `Error: ${error.message}`;
+                responseDiv.className = 'response error';
+            }
+        }
+
+        async function deleteAccountType() {
+            const accountType = document.getElementById('deleteAccountTypeInput').value.trim();
+            const responseDiv = document.getElementById('deleteAccountTypeResponse');
+            
+            if (!accountType) {
+                responseDiv.textContent = 'Please enter an account type name to delete';
+                responseDiv.className = 'response error';
+                return;
+            }
+            
+            responseDiv.textContent = 'Deleting account type...';
+            responseDiv.className = 'response';
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}${APIs.deleteAccountType}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        account_type: accountType
+                    })
+                });
+                
+                const data = await response.json();
+                responseDiv.textContent = JSON.stringify(data, null, 2);
+                responseDiv.className = `response ${data.success ? 'success' : 'error'}`;
+                
+                if (data.success) {
+                    document.getElementById('deleteAccountTypeInput').value = '';
+                }
+            } catch (error) {
+                responseDiv.textContent = `Error: ${error.message}`;
+                responseDiv.className = 'response error';
+            }
+        }
+    </script>
+</body>
+</html> 

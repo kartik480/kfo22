@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Department APIs</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        .button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+        }
+        .button:hover {
+            background-color: #0056b3;
+        }
+        .button.success {
+            background-color: #28a745;
+        }
+        .button.success:hover {
+            background-color: #218838;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 4px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 14px;
+        }
+        .success {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        .loading {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+        }
+        .input-group {
+            margin: 15px 0;
+        }
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .input-group input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .section h3 {
+            margin-top: 0;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Test Department APIs</h1>
+        
+        <div class="section">
+            <h3>Get Departments</h3>
+            <button class="button" onclick="getDepartments()">Get Departments</button>
+        </div>
+        
+        <div class="section">
+            <h3>Add Department</h3>
+            <div class="input-group">
+                <label for="departmentName">Department Name:</label>
+                <input type="text" id="departmentName" placeholder="Enter department name">
+            </div>
+            <button class="button success" onclick="addDepartment()">Add Department</button>
+        </div>
+        
+        <button class="button" onclick="clearResults()">Clear Results</button>
+        
+        <div id="result" class="result" style="display: none;"></div>
+    </div>
+
+    <script>
+        function getDepartments() {
+            const resultDiv = document.getElementById('result');
+            resultDiv.style.display = 'block';
+            resultDiv.className = 'result loading';
+            resultDiv.textContent = 'Fetching departments...';
+            
+            fetch('https://emp.kfinone.com/mobile/api/get_departments.php')
+                .then(response => {
+                    console.log('Response status:', response.status);
+                    return response.json();
+                })
+                .then(data => {
+                    resultDiv.className = 'result success';
+                    
+                    let output = '=== GET DEPARTMENTS ===\n\n';
+                    
+                    if (data.status === 'success') {
+                        output += `Status: ${data.status}\n`;
+                        output += `Message: ${data.message}\n\n`;
+                        output += `Total Departments: ${data.summary.total_departments}\n\n`;
+                        
+                        if (data.debug) {
+                            output += '=== DEBUG INFO ===\n';
+                            output += `Available Columns: ${data.debug.available_columns.join(', ')}\n`;
+                            output += `Selected Columns: ${data.debug.selected_columns.join(', ')}\n`;
+                            output += `Query Used: ${data.debug.query_used}\n\n`;
+                        }
+                        
+                        output += '=== DEPARTMENTS LIST ===\n';
+                        if (data.data.length > 0) {
+                            data.data.forEach((dept, index) => {
+                                output += `\nDepartment ${index + 1}:\n`;
+                                Object.keys(dept).forEach(key => {
+                                    output += `  ${key}: ${dept[key]}\n`;
+                                });
+                            });
+                        } else {
+                            output += 'No departments found.\n';
+                        }
+                        
+                    } else {
+                        output += `Error: ${data.message}\n`;
+                        resultDiv.className = 'result error';
+                    }
+                    
+                    resultDiv.textContent = output;
+                })
+                .catch(error => {
+                    resultDiv.className = 'result error';
+                    resultDiv.textContent = 'Error: ' + error.message + '\n\nThis might be a network error or the API file is not uploaded yet.';
+                });
+        }
+        
+        function addDepartment() {
+            const departmentName = document.getElementById('departmentName').value.trim();
+            
+            if (!departmentName) {
+                alert('Please enter a department name');
+                return;
+            }
+            
+            const resultDiv = document.getElementById('result');
+            resultDiv.style.display = 'block';
+            resultDiv.className = 'result loading';
+            resultDiv.textContent = 'Adding department...';
+            
+            const data = {
+                departmentName: departmentName
+            };
+            
+            fetch('https://emp.kfinone.com/mobile/api/add_department.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => {
+                console.log('Response status:', response.status);
+                return response.json();
+            })
+            .then(data => {
+                resultDiv.className = 'result success';
+                
+                let output = '=== ADD DEPARTMENT ===\n\n';
+                
+                if (data.status === 'success') {
+                    output += `Status: ${data.status}\n`;
+                    output += `Message: ${data.message}\n\n`;
+                    
+                    if (data.data) {
+                        output += '=== ADDED DEPARTMENT ===\n';
+                        Object.keys(data.data).forEach(key => {
+                            output += `${key}: ${data.data[key]}\n`;
+                        });
+                    }
+                    
+                    // Clear input
+                    document.getElementById('departmentName').value = '';
+                    
+                } else {
+                    output += `Error: ${data.message}\n`;
+                    resultDiv.className = 'result error';
+                }
+                
+                resultDiv.textContent = output;
+            })
+            .catch(error => {
+                resultDiv.className = 'result error';
+                resultDiv.textContent = 'Error: ' + error.message + '\n\nThis might be a network error or the API file is not uploaded yet.';
+            });
+        }
+        
+        function clearResults() {
+            const resultDiv = document.getElementById('result');
+            resultDiv.style.display = 'none';
+            resultDiv.textContent = '';
+        }
+    </script>
+</body>
+</html> 

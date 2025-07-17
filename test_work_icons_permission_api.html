@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Work Icons Permission API</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .api-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+        }
+        .api-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #333;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .response {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 4px;
+            white-space: pre-wrap;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .success {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        .info {
+            background-color: #d1ecf1;
+            border: 1px solid #bee5eb;
+            color: #0c5460;
+        }
+        .icon-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .icon-card {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            background: white;
+        }
+        .icon-name {
+            font-weight: bold;
+            font-size: 16px;
+            margin-bottom: 8px;
+        }
+        .icon-description {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+        .icon-image {
+            width: 48px;
+            height: 48px;
+            background-color: #f0f0f0;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 8px;
+        }
+        .icon-status {
+            font-size: 12px;
+            color: #28a745;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Test Work Icons Permission API</h1>
+            <p>Testing the work icons permission functionality</p>
+        </div>
+
+        <div class="api-section">
+            <div class="api-title">1. Get Work Icons</div>
+            <button onclick="getWorkIcons()">Fetch Work Icons</button>
+            <button onclick="clearResponse('getResponse')">Clear Response</button>
+            <div id="getResponse" class="response" style="display: none;"></div>
+        </div>
+
+        <div class="api-section">
+            <div class="api-title">2. Update Work Icon Permission</div>
+            <div style="margin-bottom: 15px;">
+                <label>Icon ID: <input type="text" id="iconId" placeholder="Enter icon ID"></label><br><br>
+                <label>User ID: <input type="text" id="userId" placeholder="Enter user ID"></label><br><br>
+                <label>Has Permission: 
+                    <select id="hasPermission">
+                        <option value="Yes">Yes</option>
+                        <option value="No">No</option>
+                    </select>
+                </label>
+            </div>
+            <button onclick="updateWorkIconPermission()">Update Permission</button>
+            <button onclick="clearResponse('updateResponse')">Clear Response</button>
+            <div id="updateResponse" class="response" style="display: none;"></div>
+        </div>
+
+        <div id="iconsDisplay" class="icon-grid" style="display: none;"></div>
+    </div>
+
+    <script>
+        async function getWorkIcons() {
+            try {
+                const response = await fetch('https://emp.kfinone.com/mobile/api/get_work_icons_for_permission.php', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
+                
+                const result = await response.text();
+                console.log('Raw response:', result);
+                
+                try {
+                    const jsonResult = JSON.parse(result);
+                    if (jsonResult.status === 'success') {
+                        showResponse('getResponse', `Success: ${jsonResult.message}\n\nTotal Icons: ${jsonResult.summary.total_icons}\nActive Icons: ${jsonResult.summary.active_icons}\nInactive Icons: ${jsonResult.summary.inactive_icons}\n\nData: ${JSON.stringify(jsonResult.data, null, 2)}`, 'success');
+                        displayIcons(jsonResult.data);
+                    } else {
+                        showResponse('getResponse', `Error: ${jsonResult.message}`, 'error');
+                    }
+                } catch (parseError) {
+                    showResponse('getResponse', `Response parsing error: ${parseError.message}\n\nRaw response: ${result}`, 'error');
+                }
+            } catch (error) {
+                showResponse('getResponse', `Network error: ${error.message}`, 'error');
+            }
+        }
+
+        async function updateWorkIconPermission() {
+            const iconId = document.getElementById('iconId').value.trim();
+            const userId = document.getElementById('userId').value.trim();
+            const hasPermission = document.getElementById('hasPermission').value;
+            
+            if (!iconId || !userId) {
+                showResponse('updateResponse', 'Please fill in all required fields.', 'error');
+                return;
+            }
+            
+            const requestData = {
+                iconId: iconId,
+                userId: userId,
+                hasPermission: hasPermission
+            };
+            
+            try {
+                const response = await fetch('https://emp.kfinone.com/mobile/api/update_work_icon_permission.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(requestData)
+                });
+                
+                const result = await response.text();
+                console.log('Raw response:', result);
+                
+                try {
+                    const jsonResult = JSON.parse(result);
+                    if (jsonResult.status === 'success') {
+                        showResponse('updateResponse', `Success: ${jsonResult.message}\n\nData: ${JSON.stringify(jsonResult.data, null, 2)}`, 'success');
+                    } else {
+                        showResponse('updateResponse', `Error: ${jsonResult.message}`, 'error');
+                    }
+                } catch (parseError) {
+                    showResponse('updateResponse', `Response parsing error: ${parseError.message}\n\nRaw response: ${result}`, 'error');
+                }
+            } catch (error) {
+                showResponse('updateResponse', `Network error: ${error.message}`, 'error');
+            }
+        }
+
+        function displayIcons(icons) {
+            const displayDiv = document.getElementById('iconsDisplay');
+            displayDiv.style.display = 'grid';
+            
+            displayDiv.innerHTML = '<h3>Work Icons Display:</h3>';
+            
+            icons.forEach(icon => {
+                const iconCard = document.createElement('div');
+                iconCard.className = 'icon-card';
+                iconCard.innerHTML = `
+                    <div class="icon-image">⚙️</div>
+                    <div class="icon-name">${icon.icon_name || 'N/A'}</div>
+                    <div class="icon-description">${icon.icon_description || 'No description'}</div>
+                    <div class="icon-status">Status: ${icon.status || 'Active'}</div>
+                    <div style="font-size: 12px; color: #666;">ID: ${icon.id}</div>
+                `;
+                displayDiv.appendChild(iconCard);
+            });
+        }
+        
+        function showResponse(elementId, message, type) {
+            const responseDiv = document.getElementById(elementId);
+            responseDiv.textContent = message;
+            responseDiv.className = `response ${type}`;
+            responseDiv.style.display = 'block';
+        }
+        
+        function clearResponse(elementId) {
+            const responseDiv = document.getElementById(elementId);
+            responseDiv.style.display = 'none';
+        }
+        
+        // Add some sample data for testing
+        document.addEventListener('DOMContentLoaded', function() {
+            // You can set default values here for testing
+            // document.getElementById('iconId').value = '1';
+            // document.getElementById('userId').value = '1';
+        });
+    </script>
+</body>
+</html> 

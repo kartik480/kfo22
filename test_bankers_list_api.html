@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bankers List API Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        h2 {
+            color: #555;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 10px;
+            margin-top: 30px;
+        }
+        .test-section {
+            margin-bottom: 30px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        .api-info {
+            background-color: #e7f3ff;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .api-url {
+            background-color: #e9ecef;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: monospace;
+            margin: 10px 0;
+            word-break: break-all;
+        }
+        .result {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 4px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .success {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        .loading {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        button:disabled {
+            background-color: #6c757d;
+            cursor: not-allowed;
+        }
+        .summary {
+            background-color: #e7f3ff;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+        .status {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 3px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .status.success {
+            background-color: #28a745;
+            color: white;
+        }
+        .status.error {
+            background-color: #dc3545;
+            color: white;
+        }
+        .status.loading {
+            background-color: #ffc107;
+            color: #212529;
+        }
+        .filter-section {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .filter-section input, .filter-section select {
+            padding: 8px;
+            margin: 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            width: 200px;
+        }
+        .banker-card {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 10px 0;
+        }
+        .banker-card h4 {
+            margin: 0 0 10px 0;
+            color: #007bff;
+        }
+        .banker-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            font-size: 14px;
+        }
+        .banker-info span {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🏦 Bankers List API Test</h1>
+        
+        <div class="summary">
+            <h3>Test Summary</h3>
+            <p>This page tests the bankers list API with proper joins and filters:</p>
+            <ul>
+                <li><strong>Main Table:</strong> tbl_bankers</li>
+                <li><strong>Joins:</strong> tbl_vendor_bank, tbl_loan_type, tbl_branch_state, tbl_branch_location</li>
+                <li><strong>Filters:</strong> vendor_bank, loan_type, state, location</li>
+                <li><strong>Status:</strong> <span id="api-status" class="status loading">Testing...</span></li>
+            </ul>
+        </div>
+
+        <div class="test-section">
+            <h2>1. Test All Bankers (Showcase)</h2>
+            <div class="api-info">
+                <strong>Purpose:</strong> Fetch all bankers without any filters for showcase<br>
+                <strong>Expected:</strong> Should return all bankers with joined data from related tables
+            </div>
+            <div class="api-url">API URL: https://emp.kfinone.com/mobile/api/fetch_bankers_by_filters.php</div>
+            <button onclick="testAllBankers()">Test All Bankers</button>
+            <div id="all-bankers-result" class="result loading">Click the button to test...</div>
+        </div>
+
+        <div class="test-section">
+            <h2>2. Test Filtered Bankers</h2>
+            <div class="api-info">
+                <strong>Purpose:</strong> Test filtering bankers based on selected dropdown options<br>
+                <strong>Instructions:</strong> Fill in the filters below and click test
+            </div>
+            <div class="filter-section">
+                <label>Vendor Bank:</label>
+                <input type="text" id="filter-vendor-bank" placeholder="Enter vendor bank name">
+                <br>
+                <label>Loan Type:</label>
+                <input type="text" id="filter-loan-type" placeholder="Enter loan type">
+                <br>
+                <label>State:</label>
+                <input type="text" id="filter-state" placeholder="Enter state name">
+                <br>
+                <label>Location:</label>
+                <input type="text" id="filter-location" placeholder="Enter location name">
+                <br>
+                <button onclick="testFilteredBankers()">Test Filtered Bankers</button>
+            </div>
+            <div id="filtered-bankers-result" class="result loading">Fill filters and click test...</div>
+        </div>
+
+        <div class="test-section">
+            <h2>3. Test Individual Filters</h2>
+            <div class="api-info">
+                <strong>Purpose:</strong> Test each filter individually to verify they work correctly
+            </div>
+            <button onclick="testVendorBankFilter()">Test Vendor Bank Filter</button>
+            <button onclick="testLoanTypeFilter()">Test Loan Type Filter</button>
+            <button onclick="testStateFilter()">Test State Filter</button>
+            <button onclick="testLocationFilter()">Test Location Filter</button>
+            <div id="individual-filters-result" class="result loading">Click any filter button to test...</div>
+        </div>
+
+        <div class="test-section">
+            <h2>4. Display Bankers in Cards</h2>
+            <div class="api-info">
+                <strong>Purpose:</strong> Show how the data would appear in the Android app
+            </div>
+            <button onclick="displayBankersInCards()">Display Bankers in Cards</button>
+            <div id="bankers-cards" style="margin-top: 15px;"></div>
+        </div>
+    </div>
+
+    <script>
+        function updateStatus(elementId, status, message) {
+            const element = document.getElementById(elementId);
+            element.className = `status ${status}`;
+            element.textContent = message;
+        }
+
+        function showResult(elementId, content, isSuccess) {
+            const element = document.getElementById(elementId);
+            element.className = `result ${isSuccess ? 'success' : 'error'}`;
+            element.textContent = content;
+        }
+
+        async function testAPI(url, resultId, description) {
+            try {
+                showResult(resultId, 'Testing...', true);
+                
+                const response = await fetch(url);
+                const responseText = await response.text();
+                
+                let isSuccess = response.ok;
+                let resultContent = `${description}\n`;
+                resultContent += `Status: ${response.status} ${response.statusText}\n\nResponse:\n${responseText}`;
+                
+                if (response.ok) {
+                    try {
+                        const jsonData = JSON.parse(responseText);
+                        if (jsonData.success) {
+                            resultContent += `\n\n✅ API is working correctly!\n`;
+                            resultContent += `✅ Total Count: ${jsonData.total_count || 'N/A'}\n`;
+                            resultContent += `✅ Filtered Count: ${jsonData.filtered_count || jsonData.data.length}\n`;
+                            resultContent += `✅ Filters Applied: ${JSON.stringify(jsonData.filters_applied || {})}\n`;
+                            
+                            if (jsonData.data && jsonData.data.length > 0) {
+                                resultContent += `✅ Sample Banker:\n`;
+                                const sample = jsonData.data[0];
+                                resultContent += `   Name: ${sample.banker_name}\n`;
+                                resultContent += `   Vendor Bank: ${sample.vendor_bank}\n`;
+                                resultContent += `   Loan Type: ${sample.loan_type}\n`;
+                                resultContent += `   State: ${sample.state}\n`;
+                                resultContent += `   Location: ${sample.location}\n`;
+                            }
+                        } else {
+                            resultContent += `\n\n❌ API returned success: false\nError: ${jsonData.message || 'Unknown error'}`;
+                            isSuccess = false;
+                        }
+                    } catch (e) {
+                        resultContent += `\n\n❌ Invalid JSON response`;
+                        isSuccess = false;
+                    }
+                } else {
+                    resultContent += `\n\n❌ HTTP Error: ${response.status}`;
+                    isSuccess = false;
+                }
+                
+                showResult(resultId, resultContent, isSuccess);
+                
+            } catch (error) {
+                showResult(resultId, `❌ Network Error: ${error.message}`, false);
+            }
+        }
+
+        function testAllBankers() {
+            testAPI('https://emp.kfinone.com/mobile/api/fetch_bankers_by_filters.php', 'all-bankers-result', 'Testing: Fetch all bankers (showcase mode)');
+        }
+
+        function testFilteredBankers() {
+            const vendorBank = document.getElementById('filter-vendor-bank').value;
+            const loanType = document.getElementById('filter-loan-type').value;
+            const state = document.getElementById('filter-state').value;
+            const location = document.getElementById('filter-location').value;
+            
+            let url = 'https://emp.kfinone.com/mobile/api/fetch_bankers_by_filters.php?';
+            const params = [];
+            
+            if (vendorBank) params.push(`vendor_bank=${encodeURIComponent(vendorBank)}`);
+            if (loanType) params.push(`loan_type=${encodeURIComponent(loanType)}`);
+            if (state) params.push(`state=${encodeURIComponent(state)}`);
+            if (location) params.push(`location=${encodeURIComponent(location)}`);
+            
+            url += params.join('&');
+            
+            const description = `Testing: Filtered bankers with filters - Vendor Bank: "${vendorBank}", Loan Type: "${loanType}", State: "${state}", Location: "${location}"`;
+            testAPI(url, 'filtered-bankers-result', description);
+        }
+
+        function testVendorBankFilter() {
+            testAPI('https://emp.kfinone.com/mobile/api/fetch_bankers_by_filters.php?vendor_bank=HDFC%20Bank', 'individual-filters-result', 'Testing: Vendor Bank filter (HDFC Bank)');
+        }
+
+        function testLoanTypeFilter() {
+            testAPI('https://emp.kfinone.com/mobile/api/fetch_bankers_by_filters.php?loan_type=Personal%20Loan', 'individual-filters-result', 'Testing: Loan Type filter (Personal Loan)');
+        }
+
+        function testStateFilter() {
+            testAPI('https://emp.kfinone.com/mobile/api/fetch_bankers_by_filters.php?state=Maharashtra', 'individual-filters-result', 'Testing: State filter (Maharashtra)');
+        }
+
+        function testLocationFilter() {
+            testAPI('https://emp.kfinone.com/mobile/api/fetch_bankers_by_filters.php?location=Mumbai', 'individual-filters-result', 'Testing: Location filter (Mumbai)');
+        }
+
+        async function displayBankersInCards() {
+            const cardsContainer = document.getElementById('bankers-cards');
+            cardsContainer.innerHTML = '<div class="loading">Loading bankers...</div>';
+            
+            try {
+                const response = await fetch('https://emp.kfinone.com/mobile/api/fetch_bankers_by_filters.php');
+                const jsonData = await response.json();
+                
+                if (jsonData.success && jsonData.data) {
+                    cardsContainer.innerHTML = '';
+                    
+                    // Limit to first 10 bankers for display
+                    const bankersToShow = jsonData.data.slice(0, 10);
+                    
+                    bankersToShow.forEach(banker => {
+                        const card = document.createElement('div');
+                        card.className = 'banker-card';
+                        card.innerHTML = `
+                            <h4>${banker.banker_name || 'N/A'}</h4>
+                            <div class="banker-info">
+                                <div><span>Vendor Bank:</span> ${banker.vendor_bank || 'N/A'}</div>
+                                <div><span>Loan Type:</span> ${banker.loan_type || 'N/A'}</div>
+                                <div><span>State:</span> ${banker.state || 'N/A'}</div>
+                                <div><span>Location:</span> ${banker.location || 'N/A'}</div>
+                                <div><span>Designation:</span> ${banker.banker_designation || 'N/A'}</div>
+                                <div><span>Phone:</span> ${banker.Phone_number || 'N/A'}</div>
+                                <div><span>Email:</span> ${banker.email_id || 'N/A'}</div>
+                                <div><span>Visiting Card:</span> ${banker.visiting_card || 'N/A'}</div>
+                            </div>
+                        `;
+                        cardsContainer.appendChild(card);
+                    });
+                    
+                    if (jsonData.data.length > 10) {
+                        const moreText = document.createElement('div');
+                        moreText.innerHTML = `<p style="text-align: center; color: #666;">... and ${jsonData.data.length - 10} more bankers</p>`;
+                        cardsContainer.appendChild(moreText);
+                    }
+                } else {
+                    cardsContainer.innerHTML = '<div class="error">No bankers found or API error</div>';
+                }
+            } catch (error) {
+                cardsContainer.innerHTML = `<div class="error">Error: ${error.message}</div>`;
+            }
+        }
+
+        // Auto-test on page load
+        window.onload = function() {
+            setTimeout(() => {
+                testAllBankers();
+                updateStatus('api-status', 'success', 'Ready');
+            }, 1000);
+        };
+    </script>
+</body>
+</html> 

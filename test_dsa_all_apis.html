@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test All DSA APIs</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .test-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .test-section h2 {
+            color: #555;
+            margin-top: 0;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .response {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 15px;
+            margin-top: 15px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .success {
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+        .api-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .api-card {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 15px;
+            background-color: #fafafa;
+        }
+        .api-card h3 {
+            margin-top: 0;
+            color: #333;
+        }
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        .status-unknown { background-color: #6c757d; }
+        .status-success { background-color: #28a745; }
+        .status-error { background-color: #dc3545; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Test All DSA-Related APIs</h1>
+        
+        <div class="test-section">
+            <h2>1. Main DSA List API</h2>
+            <p>Test the main DSA list API that fetches DSA records.</p>
+            <button onclick="testDsaListApi()">Test GET All DSA Records</button>
+            <button onclick="testDsaListFiltered()">Test POST Filtered DSA Records</button>
+            <div id="dsaListResponse" class="response"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>2. Dropdown APIs</h2>
+            <p>Test all dropdown APIs used by the DSA List panel.</p>
+            <div class="api-grid">
+                <div class="api-card">
+                    <h3><span class="status-indicator status-unknown" id="vendorBankStatus"></span>Vendor Banks</h3>
+                    <button onclick="testVendorBanksDropdown()">Test Vendor Banks</button>
+                    <div id="vendorBanksResponse" class="response"></div>
+                </div>
+                
+                <div class="api-card">
+                    <h3><span class="status-indicator status-unknown" id="loanTypesStatus"></span>Loan Types</h3>
+                    <button onclick="testLoanTypesDropdown()">Test Loan Types</button>
+                    <div id="loanTypesResponse" class="response"></div>
+                </div>
+                
+                <div class="api-card">
+                    <h3><span class="status-indicator status-unknown" id="branchStatesStatus"></span>Branch States</h3>
+                    <button onclick="testBranchStatesDropdown()">Test Branch States</button>
+                    <div id="branchStatesResponse" class="response"></div>
+                </div>
+                
+                <div class="api-card">
+                    <h3><span class="status-indicator status-unknown" id="branchLocationsStatus"></span>Branch Locations</h3>
+                    <button onclick="testBranchLocationsDropdown()">Test Branch Locations</button>
+                    <div id="branchLocationsResponse" class="response"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h2>3. Test All APIs at Once</h2>
+            <p>Test all APIs to check their status.</p>
+            <button onclick="testAllApis()">Test All APIs</button>
+            <div id="allApisResponse" class="response"></div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'https://emp.kfinone.com/mobile/api/';
+        
+        const APIs = {
+            dsaList: 'get_dsa_list.php',
+            vendorBanks: 'get_vendor_banks_for_dropdown.php',
+            loanTypes: 'get_loan_types_for_dropdown.php',
+            branchStates: 'get_branch_states_for_dropdown.php',
+            branchLocations: 'get_branch_locations_for_dropdown.php'
+        };
+
+        async function testDsaListApi() {
+            const responseDiv = document.getElementById('dsaListResponse');
+            responseDiv.innerHTML = 'Loading...';
+            responseDiv.className = 'response';
+
+            try {
+                const response = await fetch(`${API_BASE_URL}${APIs.dsaList}`, {
+                    method: 'GET',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+
+                const responseText = await response.text();
+                const responseData = JSON.parse(responseText);
+
+                if (response.ok && responseData.success) {
+                    responseDiv.className = 'response success';
+                    responseDiv.innerHTML = `✅ Success!\n\nStatus: ${response.status}\nRecords Found: ${responseData.count}\n\nResponse:\n${JSON.stringify(responseData, null, 2)}`;
+                } else {
+                    responseDiv.className = 'response error';
+                    responseDiv.innerHTML = `❌ Error!\n\nStatus: ${response.status}\nError: ${responseData.error || 'Unknown error'}\n\nResponse:\n${JSON.stringify(responseData, null, 2)}`;
+                }
+            } catch (error) {
+                responseDiv.className = 'response error';
+                responseDiv.innerHTML = `❌ Network Error!\n\nError: ${error.message}`;
+            }
+        }
+
+        async function testDsaListFiltered() {
+            const responseDiv = document.getElementById('dsaListResponse');
+            responseDiv.innerHTML = 'Loading...';
+            responseDiv.className = 'response';
+
+            const filters = {
+                vendor_bank: 'Test Bank',
+                loan_type: 'Personal Loan'
+            };
+
+            try {
+                const response = await fetch(`${API_BASE_URL}${APIs.dsaList}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(filters)
+                });
+
+                const responseText = await response.text();
+                const responseData = JSON.parse(responseText);
+
+                if (response.ok && responseData.success) {
+                    responseDiv.className = 'response success';
+                    responseDiv.innerHTML = `✅ Success!\n\nStatus: ${response.status}\nFilters Applied: ${JSON.stringify(filters)}\nRecords Found: ${responseData.count}\n\nResponse:\n${JSON.stringify(responseData, null, 2)}`;
+                } else {
+                    responseDiv.className = 'response error';
+                    responseDiv.innerHTML = `❌ Error!\n\nStatus: ${response.status}\nError: ${responseData.error || 'Unknown error'}\n\nResponse:\n${JSON.stringify(responseData, null, 2)}`;
+                }
+            } catch (error) {
+                responseDiv.className = 'response error';
+                responseDiv.innerHTML = `❌ Network Error!\n\nError: ${error.message}`;
+            }
+        }
+
+        async function testVendorBanksDropdown() {
+            const responseDiv = document.getElementById('vendorBanksResponse');
+            const statusIndicator = document.getElementById('vendorBankStatus');
+            responseDiv.innerHTML = 'Loading...';
+            responseDiv.className = 'response';
+            statusIndicator.className = 'status-indicator status-unknown';
+
+            try {
+                const response = await fetch(`${API_BASE_URL}${APIs.vendorBanks}`, {
+                    method: 'GET',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+
+                const responseText = await response.text();
+                const responseData = JSON.parse(responseText);
+
+                if (response.ok && responseData.success) {
+                    responseDiv.className = 'response success';
+                    statusIndicator.className = 'status-indicator status-success';
+                    responseDiv.innerHTML = `✅ Success!\n\nStatus: ${response.status}\nVendor Banks Found: ${responseData.count}\n\nResponse:\n${JSON.stringify(responseData, null, 2)}`;
+                } else {
+                    responseDiv.className = 'response error';
+                    statusIndicator.className = 'status-indicator status-error';
+                    responseDiv.innerHTML = `❌ Error!\n\nStatus: ${response.status}\nError: ${responseData.error || 'Unknown error'}\n\nResponse:\n${JSON.stringify(responseData, null, 2)}`;
+                }
+            } catch (error) {
+                responseDiv.className = 'response error';
+                statusIndicator.className = 'status-indicator status-error';
+                responseDiv.innerHTML = `❌ Network Error!\n\nError: ${error.message}`;
+            }
+        }
+
+        async function testLoanTypesDropdown() {
+            const responseDiv = document.getElementById('loanTypesResponse');
+            const statusIndicator = document.getElementById('loanTypesStatus');
+            responseDiv.innerHTML = 'Loading...';
+            responseDiv.className = 'response';
+            statusIndicator.className = 'status-indicator status-unknown';
+
+            try {
+                const response = await fetch(`${API_BASE_URL}${APIs.loanTypes}`, {
+                    method: 'GET',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+
+                const responseText = await response.text();
+                const responseData = JSON.parse(responseText);
+
+                if (response.ok && responseData.success) {
+                    responseDiv.className = 'response success';
+                    statusIndicator.className = 'status-indicator status-success';
+                    responseDiv.innerHTML = `✅ Success!\n\nStatus: ${response.status}\nLoan Types Found: ${responseData.count}\n\nResponse:\n${JSON.stringify(responseData, null, 2)}`;
+                } else {
+                    responseDiv.className = 'response error';
+                    statusIndicator.className = 'status-indicator status-error';
+                    responseDiv.innerHTML = `❌ Error!\n\nStatus: ${response.status}\nError: ${responseData.error || 'Unknown error'}\n\nResponse:\n${JSON.stringify(responseData, null, 2)}`;
+                }
+            } catch (error) {
+                responseDiv.className = 'response error';
+                statusIndicator.className = 'status-indicator status-error';
+                responseDiv.innerHTML = `❌ Network Error!\n\nError: ${error.message}`;
+            }
+        }
+
+        async function testBranchStatesDropdown() {
+            const responseDiv = document.getElementById('branchStatesResponse');
+            const statusIndicator = document.getElementById('branchStatesStatus');
+            responseDiv.innerHTML = 'Loading...';
+            responseDiv.className = 'response';
+            statusIndicator.className = 'status-indicator status-unknown';
+
+            try {
+                const response = await fetch(`${API_BASE_URL}${APIs.branchStates}`, {
+                    method: 'GET',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+
+                const responseText = await response.text();
+                const responseData = JSON.parse(responseText);
+
+                if (response.ok && responseData.success) {
+                    responseDiv.className = 'response success';
+                    statusIndicator.className = 'status-indicator status-success';
+                    responseDiv.innerHTML = `✅ Success!\n\nStatus: ${response.status}\nBranch States Found: ${responseData.count}\n\nResponse:\n${JSON.stringify(responseData, null, 2)}`;
+                } else {
+                    responseDiv.className = 'response error';
+                    statusIndicator.className = 'status-indicator status-error';
+                    responseDiv.innerHTML = `❌ Error!\n\nStatus: ${response.status}\nError: ${responseData.error || 'Unknown error'}\n\nResponse:\n${JSON.stringify(responseData, null, 2)}`;
+                }
+            } catch (error) {
+                responseDiv.className = 'response error';
+                statusIndicator.className = 'status-indicator status-error';
+                responseDiv.innerHTML = `❌ Network Error!\n\nError: ${error.message}`;
+            }
+        }
+
+        async function testBranchLocationsDropdown() {
+            const responseDiv = document.getElementById('branchLocationsResponse');
+            const statusIndicator = document.getElementById('branchLocationsStatus');
+            responseDiv.innerHTML = 'Loading...';
+            responseDiv.className = 'response';
+            statusIndicator.className = 'status-indicator status-unknown';
+
+            try {
+                const response = await fetch(`${API_BASE_URL}${APIs.branchLocations}`, {
+                    method: 'GET',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+
+                const responseText = await response.text();
+                const responseData = JSON.parse(responseText);
+
+                if (response.ok && responseData.success) {
+                    responseDiv.className = 'response success';
+                    statusIndicator.className = 'status-indicator status-success';
+                    responseDiv.innerHTML = `✅ Success!\n\nStatus: ${response.status}\nBranch Locations Found: ${responseData.count}\n\nResponse:\n${JSON.stringify(responseData, null, 2)}`;
+                } else {
+                    responseDiv.className = 'response error';
+                    statusIndicator.className = 'status-indicator status-error';
+                    responseDiv.innerHTML = `❌ Error!\n\nStatus: ${response.status}\nError: ${responseData.error || 'Unknown error'}\n\nResponse:\n${JSON.stringify(responseData, null, 2)}`;
+                }
+            } catch (error) {
+                responseDiv.className = 'response error';
+                statusIndicator.className = 'status-indicator status-error';
+                responseDiv.innerHTML = `❌ Network Error!\n\nError: ${error.message}`;
+            }
+        }
+
+        async function testAllApis() {
+            const responseDiv = document.getElementById('allApisResponse');
+            responseDiv.innerHTML = 'Testing all APIs...\n\n';
+            responseDiv.className = 'response';
+
+            const results = [];
+
+            for (const [name, endpoint] of Object.entries(APIs)) {
+                try {
+                    const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+                        method: 'GET',
+                        headers: { 'Content-Type': 'application/json' }
+                    });
+
+                    if (response.ok) {
+                        const responseText = await response.text();
+                        const responseData = JSON.parse(responseText);
+                        
+                        if (responseData.success) {
+                            results.push(`✅ ${name}: SUCCESS (${responseData.count || 0} items)`);
+                        } else {
+                            results.push(`❌ ${name}: ERROR - ${responseData.error || 'Unknown error'}`);
+                        }
+                    } else {
+                        results.push(`❌ ${name}: HTTP ${response.status}`);
+                    }
+                } catch (error) {
+                    results.push(`❌ ${name}: NETWORK ERROR - ${error.message}`);
+                }
+            }
+
+            responseDiv.innerHTML = 'API Test Results:\n\n' + results.join('\n');
+            
+            const successCount = results.filter(r => r.includes('✅')).length;
+            const totalCount = results.length;
+            
+            if (successCount === totalCount) {
+                responseDiv.className = 'response success';
+                responseDiv.innerHTML += `\n\n🎉 All ${totalCount} APIs are working correctly!`;
+            } else {
+                responseDiv.className = 'response error';
+                responseDiv.innerHTML += `\n\n⚠️ ${successCount}/${totalCount} APIs are working. ${totalCount - successCount} APIs have issues.`;
+            }
+        }
+
+        // Auto-test on page load
+        window.onload = function() {
+            console.log('DSA APIs Test Page Loaded');
+            console.log('API Base URL:', API_BASE_URL);
+            console.log('Available APIs:', Object.keys(APIs));
+        };
+    </script>
+</body>
+</html> 

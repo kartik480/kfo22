@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complete PIN Code API Testing</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .info {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            border-left: 4px solid #2196f3;
+        }
+        .feature-list {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+        .feature-list li {
+            margin: 5px 0;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .test-button {
+            background: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            margin: 5px;
+        }
+        .test-button:hover {
+            background: #45a049;
+        }
+        .response {
+            background: #f9f9f9;
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin-top: 10px;
+            border-radius: 4px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .success {
+            background: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .form-group {
+            margin: 10px 0;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .form-row {
+            display: flex;
+            gap: 10px;
+        }
+        .form-row .form-group {
+            flex: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 Complete PIN Code API Testing</h1>
+        
+        <div class="info">
+            <strong>API Endpoints:</strong>
+            <ul class="feature-list">
+                <li><strong>GET PIN Codes:</strong> https://emp.kfinone.com/mobile/api/get_pincode_list.php</li>
+                <li><strong>ADD PIN Code:</strong> https://emp.kfinone.com/mobile/api/add_pincode.php</li>
+                <li><strong>Tables:</strong> tbl_pincode, tbl_branch_state, tbl_branch_location, tbl_sub_location</li>
+                <li><strong>Features:</strong> List with joins, Add with validation, Foreign key relationships</li>
+            </ul>
+        </div>
+
+        <div class="test-section">
+            <h2>📊 GET PIN Code List Test</h2>
+            <p>Test fetching all PIN codes with related information.</p>
+            <button class="test-button" onclick="testGetPincodeList()">Test GET PIN Code List</button>
+            <div id="getPincodeResult"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>➕ ADD PIN Code Test</h2>
+            <p>Test adding a new PIN code to the database.</p>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="pincodeInput">PIN Code (6 digits):</label>
+                    <input type="text" id="pincodeInput" placeholder="123456" maxlength="6">
+                </div>
+                <div class="form-group">
+                    <label for="stateIdInput">State ID (optional):</label>
+                    <input type="number" id="stateIdInput" placeholder="1">
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="locationIdInput">Location ID (optional):</label>
+                    <input type="number" id="locationIdInput" placeholder="1">
+                </div>
+                <div class="form-group">
+                    <label for="subLocationIdInput">Sub Location ID (optional):</label>
+                    <input type="number" id="subLocationIdInput" placeholder="1">
+                </div>
+            </div>
+            
+            <button class="test-button" onclick="testAddPincode()">Test ADD PIN Code</button>
+            <div id="addPincodeResult"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>🔄 Complete Workflow Test</h2>
+            <p>Test the complete workflow: Add PIN code, then fetch updated list.</p>
+            <button class="test-button" onclick="testCompleteWorkflow()">Test Complete Workflow</button>
+            <div id="workflowResult"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>📋 PIN Code Table Display</h2>
+            <p>Display all PIN codes in a formatted table.</p>
+            <button class="test-button" onclick="displayPincodeTable()">Display PIN Code Table</button>
+            <div id="tableDisplayResult"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>🔍 Validation Tests</h2>
+            <p>Test various validation scenarios.</p>
+            <button class="test-button" onclick="testValidation()">Test Validation</button>
+            <div id="validationResult"></div>
+        </div>
+    </div>
+
+    <script>
+        const GET_API_URL = 'https://emp.kfinone.com/mobile/api/get_pincode_list.php';
+        const ADD_API_URL = 'https://emp.kfinone.com/mobile/api/add_pincode.php';
+
+        async function testGetPincodeList() {
+            const resultDiv = document.getElementById('getPincodeResult');
+            resultDiv.innerHTML = 'Testing GET PIN Code List...';
+            resultDiv.className = 'response';
+
+            try {
+                const response = await fetch(GET_API_URL);
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    const summary = {
+                        'Status': data.status,
+                        'Message': data.message,
+                        'Total PIN Codes': data.count,
+                        'Sample Data': data.data.slice(0, 3)
+                    };
+                    
+                    resultDiv.innerHTML = JSON.stringify(summary, null, 2);
+                    resultDiv.className = 'response success';
+                } else {
+                    resultDiv.innerHTML = `API Error: ${data.message}`;
+                    resultDiv.className = 'response error';
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `Error: ${error.message}`;
+                resultDiv.className = 'response error';
+            }
+        }
+
+        async function testAddPincode() {
+            const resultDiv = document.getElementById('addPincodeResult');
+            const pincode = document.getElementById('pincodeInput').value.trim();
+            const stateId = document.getElementById('stateIdInput').value.trim();
+            const locationId = document.getElementById('locationIdInput').value.trim();
+            const subLocationId = document.getElementById('subLocationIdInput').value.trim();
+
+            if (!pincode) {
+                resultDiv.innerHTML = 'Please enter a PIN code';
+                resultDiv.className = 'response error';
+                return;
+            }
+
+            if (!/^\d{6}$/.test(pincode)) {
+                resultDiv.innerHTML = 'PIN code must be exactly 6 digits';
+                resultDiv.className = 'response error';
+                return;
+            }
+
+            resultDiv.innerHTML = 'Adding PIN code...';
+            resultDiv.className = 'response';
+
+            try {
+                const requestData = {
+                    pincode: pincode,
+                    state_id: stateId ? parseInt(stateId) : null,
+                    location_id: locationId ? parseInt(locationId) : null,
+                    sub_location_id: subLocationId ? parseInt(subLocationId) : null
+                };
+
+                const response = await fetch(ADD_API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(requestData)
+                });
+
+                const data = await response.json();
+                
+                if (data.success) {
+                    resultDiv.innerHTML = JSON.stringify(data, null, 2);
+                    resultDiv.className = 'response success';
+                    
+                    // Clear form
+                    document.getElementById('pincodeInput').value = '';
+                    document.getElementById('stateIdInput').value = '';
+                    document.getElementById('locationIdInput').value = '';
+                    document.getElementById('subLocationIdInput').value = '';
+                } else {
+                    resultDiv.innerHTML = `Error: ${data.error}`;
+                    resultDiv.className = 'response error';
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `Error: ${error.message}`;
+                resultDiv.className = 'response error';
+            }
+        }
+
+        async function testCompleteWorkflow() {
+            const resultDiv = document.getElementById('workflowResult');
+            resultDiv.innerHTML = 'Testing complete workflow...';
+            resultDiv.className = 'response';
+
+            try {
+                // Step 1: Get initial count
+                const initialResponse = await fetch(GET_API_URL);
+                const initialData = await initialResponse.json();
+                const initialCount = initialData.status === 'success' ? initialData.count : 0;
+
+                // Step 2: Add a test PIN code
+                const testPincode = Math.floor(100000 + Math.random() * 900000).toString();
+                const addResponse = await fetch(ADD_API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        pincode: testPincode
+                    })
+                });
+
+                const addData = await addResponse.json();
+                
+                if (!addData.success) {
+                    resultDiv.innerHTML = `Failed to add PIN code: ${addData.error}`;
+                    resultDiv.className = 'response error';
+                    return;
+                }
+
+                // Step 3: Get updated count
+                const finalResponse = await fetch(GET_API_URL);
+                const finalData = await finalResponse.json();
+                const finalCount = finalData.status === 'success' ? finalData.count : 0;
+
+                const workflowResult = {
+                    'Initial PIN Code Count': initialCount,
+                    'Test PIN Code Added': testPincode,
+                    'Add Operation': addData.success ? 'SUCCESS' : 'FAILED',
+                    'Final PIN Code Count': finalCount,
+                    'Count Increased': finalCount > initialCount ? 'YES' : 'NO',
+                    'Workflow Status': finalCount > initialCount ? 'PASS' : 'FAIL'
+                };
+
+                resultDiv.innerHTML = JSON.stringify(workflowResult, null, 2);
+                resultDiv.className = workflowResult['Workflow Status'] === 'PASS' ? 'response success' : 'response error';
+            } catch (error) {
+                resultDiv.innerHTML = `Error: ${error.message}`;
+                resultDiv.className = 'response error';
+            }
+        }
+
+        async function displayPincodeTable() {
+            const resultDiv = document.getElementById('tableDisplayResult');
+            resultDiv.innerHTML = 'Loading PIN code table...';
+            resultDiv.className = 'response';
+
+            try {
+                const response = await fetch(GET_API_URL);
+                const data = await response.json();
+                
+                if (data.status === 'success' && data.data.length > 0) {
+                    let tableHTML = `
+                        <h3>PIN Code List (${data.count} records)</h3>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>PIN Code</th>
+                                    <th>State</th>
+                                    <th>Location</th>
+                                    <th>Sub Location</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                    `;
+                    
+                    data.data.forEach(item => {
+                        tableHTML += `
+                            <tr>
+                                <td>${item.id}</td>
+                                <td>${item.pincode}</td>
+                                <td>${item.state_name || 'N/A'}</td>
+                                <td>${item.location_name || 'N/A'}</td>
+                                <td>${item.sub_location_name || 'N/A'}</td>
+                                <td>${item.status}</td>
+                            </tr>
+                        `;
+                    });
+                    
+                    tableHTML += '</tbody></table>';
+                    resultDiv.innerHTML = tableHTML;
+                    resultDiv.className = 'response success';
+                } else {
+                    resultDiv.innerHTML = `No PIN codes found: ${data.message}`;
+                    resultDiv.className = 'response error';
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `Error: ${error.message}`;
+                resultDiv.className = 'response error';
+            }
+        }
+
+        async function testValidation() {
+            const resultDiv = document.getElementById('validationResult');
+            resultDiv.innerHTML = 'Testing validation scenarios...';
+            resultDiv.className = 'response';
+
+            const validationTests = [];
+
+            // Test 1: Empty PIN code
+            try {
+                const response1 = await fetch(ADD_API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ pincode: '' })
+                });
+                const data1 = await response1.json();
+                validationTests.push({
+                    'Test': 'Empty PIN Code',
+                    'Expected': 'Error - PIN code is required',
+                    'Actual': data1.error || data1.message,
+                    'Status': data1.success ? 'FAIL' : 'PASS'
+                });
+            } catch (error) {
+                validationTests.push({
+                    'Test': 'Empty PIN Code',
+                    'Expected': 'Error - PIN code is required',
+                    'Actual': error.message,
+                    'Status': 'ERROR'
+                });
+            }
+
+            // Test 2: Invalid PIN code format
+            try {
+                const response2 = await fetch(ADD_API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ pincode: '12345' })
+                });
+                const data2 = await response2.json();
+                validationTests.push({
+                    'Test': 'Invalid PIN Code Format',
+                    'Expected': 'Error - PIN code must be exactly 6 digits',
+                    'Actual': data2.error || data2.message,
+                    'Status': data2.success ? 'FAIL' : 'PASS'
+                });
+            } catch (error) {
+                validationTests.push({
+                    'Test': 'Invalid PIN Code Format',
+                    'Expected': 'Error - PIN code must be exactly 6 digits',
+                    'Actual': error.message,
+                    'Status': 'ERROR'
+                });
+            }
+
+            // Test 3: Duplicate PIN code
+            try {
+                const testPincode = '999999';
+                // First add
+                await fetch(ADD_API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ pincode: testPincode })
+                });
+                
+                // Try to add again
+                const response3 = await fetch(ADD_API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ pincode: testPincode })
+                });
+                const data3 = await response3.json();
+                validationTests.push({
+                    'Test': 'Duplicate PIN Code',
+                    'Expected': 'Error - PIN code already exists',
+                    'Actual': data3.error || data3.message,
+                    'Status': data3.success ? 'FAIL' : 'PASS'
+                });
+            } catch (error) {
+                validationTests.push({
+                    'Test': 'Duplicate PIN Code',
+                    'Expected': 'Error - PIN code already exists',
+                    'Actual': error.message,
+                    'Status': 'ERROR'
+                });
+            }
+
+            resultDiv.innerHTML = JSON.stringify(validationTests, null, 2);
+            resultDiv.className = 'response success';
+        }
+    </script>
+</body>
+</html> 

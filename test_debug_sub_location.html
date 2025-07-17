@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug Sub Location API</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .test-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #fafafa;
+        }
+        .test-button {
+            background-color: #007BFF;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+            font-size: 14px;
+        }
+        .test-button:hover {
+            background-color: #0056b3;
+        }
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .result {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 10px 0;
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 Debug Sub Location API</h1>
+        
+        <div class="info">
+            <strong>Debugging 404 Error:</strong>
+            <ul>
+                <li>Testing if the API file exists on the server</li>
+                <li>Checking database connection and table structure</li>
+                <li>Verifying column names and data</li>
+                <li>Providing detailed debug information</li>
+            </ul>
+        </div>
+
+        <div class="test-section">
+            <h2>🔍 Test Debug API</h2>
+            <p>Test the debug version of the sub location API to identify the issue.</p>
+            <button class="test-button" onclick="testDebugAPI()">Test Debug API</button>
+            <div id="debugResult"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>📁 Check File Existence</h2>
+            <p>Check if the API files exist on the server.</p>
+            <button class="test-button" onclick="checkFileExistence()">Check Files</button>
+            <div id="fileCheckResult"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>🔄 Test Original API</h2>
+            <p>Test the original API to see if it's working now.</p>
+            <button class="test-button" onclick="testOriginalAPI()">Test Original API</button>
+            <div id="originalResult"></div>
+        </div>
+    </div>
+
+    <script>
+        const BASE_URL = 'https://emp.kfinone.com/mobile/api/';
+
+        async function testDebugAPI() {
+            const resultDiv = document.getElementById('debugResult');
+            resultDiv.innerHTML = '<div class="info">Testing debug API...</div>';
+
+            try {
+                const response = await fetch(BASE_URL + 'debug_sub_location_pincode.php');
+                const data = await response.json();
+
+                if (data.status === 'success') {
+                    resultDiv.innerHTML = `
+                        <div class="success">✅ Debug API Working!</div>
+                        <div class="result">
+Debug Information:
+${JSON.stringify(data.debug, null, 2)}
+
+Data:
+${JSON.stringify(data.data, null, 2)}
+                        </div>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `
+                        <div class="error">❌ Debug API Error: ${data.message}</div>
+                        <div class="result">
+Debug Information:
+${JSON.stringify(data.debug, null, 2)}
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">❌ Network Error: ${error.message}</div>`;
+            }
+        }
+
+        async function checkFileExistence() {
+            const resultDiv = document.getElementById('fileCheckResult');
+            resultDiv.innerHTML = '<div class="info">Checking file existence...</div>';
+
+            const files = [
+                'debug_sub_location_pincode.php',
+                'fetch_sub_locations_for_pincode.php',
+                'get_sub_locations.php'
+            ];
+
+            let results = [];
+            for (const file of files) {
+                try {
+                    const response = await fetch(BASE_URL + file);
+                    if (response.ok) {
+                        results.push(`✅ ${file}: EXISTS (${response.status})`);
+                    } else {
+                        results.push(`❌ ${file}: NOT FOUND (${response.status})`);
+                    }
+                } catch (error) {
+                    results.push(`❌ ${file}: ERROR (${error.message})`);
+                }
+            }
+
+            resultDiv.innerHTML = `
+                <div class="info">File Existence Check Results:</div>
+                <div class="result">${results.join('\n')}</div>
+            `;
+        }
+
+        async function testOriginalAPI() {
+            const resultDiv = document.getElementById('originalResult');
+            resultDiv.innerHTML = '<div class="info">Testing original API...</div>';
+
+            try {
+                const response = await fetch(BASE_URL + 'fetch_sub_locations_for_pincode.php');
+                const data = await response.json();
+
+                if (data.status === 'success') {
+                    resultDiv.innerHTML = `
+                        <div class="success">✅ Original API Working!</div>
+                        <div class="result">
+Status: ${data.status}
+Message: ${data.message}
+Count: ${data.count}
+Sample Data:
+${JSON.stringify(data.data.slice(0, 3), null, 2)}
+                        </div>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `
+                        <div class="error">❌ Original API Error: ${data.message}</div>
+                        <div class="result">${JSON.stringify(data, null, 2)}</div>
+                    `;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">❌ Network Error: ${error.message}</div>`;
+            }
+        }
+    </script>
+</body>
+</html> 

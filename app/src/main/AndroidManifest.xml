@@ -1,0 +1,422 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
+    <application
+        android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.KfinOneApp"
+        android:usesCleartextTraffic="true"
+        tools:targetApi="31">
+        <activity
+            android:name=".LoginActivity"
+            android:exported="true"
+            android:theme="@style/Theme.KfinOneApp">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".MainActivity"
+            android:exported="false"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.KfinOneApp" />
+        <activity
+            android:name=".HomeActivity"
+            android:exported="false" />
+        <activity
+            android:name=".EmployeeDetailsActivity"
+            android:exported="false"
+            android:label="Add User Details"
+            android:parentActivityName=".HomeActivity" />
+        <activity
+            android:name=".AddEmpDetailsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ActiveEmpListActivity"
+            android:exported="false"
+            android:parentActivityName=".EmpMasterActivity" />
+        <activity
+            android:name=".EmpMasterActivity"
+            android:exported="false" />
+        <activity
+            android:name=".InactiveEmpListActivity"
+            android:exported="false"
+            android:parentActivityName=".EmpMasterActivity" />
+        <activity
+            android:name=".EmpDepartmentActivity"
+            android:exported="false"
+            android:parentActivityName=".EmpMasterActivity" />
+        <activity
+            android:name=".EmpDesignationActivity"
+            android:exported="false"
+            android:parentActivityName=".EmpMasterActivity" />
+        <activity android:name=".LocationMasterActivity" />
+        <activity android:name=".StateActivity" />
+        <activity android:name=".LocationActivity" />
+        <activity android:name=".SubLocationActivity" />
+        <activity android:name=".PincodeActivity" />
+        <activity android:name=".BranchStateActivity" />
+        <activity android:name=".BranchLocationActivity" />
+        <activity android:name=".SdsaMasterActivity" />
+        <activity android:name=".AddSdsaActivity" />
+        <activity
+            android:name=".ActiveSdsaListActivity"
+            android:exported="false"
+            android:parentActivityName=".SdsaMasterActivity" />
+        <activity
+            android:name=".InactiveSdsaListActivity"
+            android:exported="false"
+            android:parentActivityName=".SdsaMasterActivity" />
+        <activity
+            android:name=".DsaCodeMasterActivity"
+            android:exported="false" />
+        <activity
+            android:name=".AddDsaActivity"
+            android:exported="false"
+            android:parentActivityName=".DsaCodeMasterActivity" />
+        <activity 
+            android:name=".DsaListActivity"
+            android:exported="false"
+            android:parentActivityName=".DsaCodeMasterActivity" />
+        <activity 
+            android:name=".BankMasterActivity"
+            android:exported="false"
+            android:parentActivityName=".HomeActivity" />
+        <activity 
+            android:name=".BanksActivity"
+            android:exported="false"
+            android:parentActivityName=".BankMasterActivity" />
+        <activity 
+            android:name=".VendorBanksActivity"
+            android:exported="false"
+            android:parentActivityName=".BankMasterActivity" />
+        <activity 
+            android:name=".AccountTypeActivity"
+            android:exported="false"
+            android:parentActivityName=".BankMasterActivity" />
+        <activity 
+            android:name=".BankersDesignationActivity"
+            android:exported="false"
+            android:parentActivityName=".BankMasterActivity" />
+        <activity 
+            android:name=".EmpLinksActivity"
+            android:exported="false"
+            android:parentActivityName=".HomeActivity" />
+        <activity 
+            android:name=".EmpManageActivity"
+            android:exported="false"
+            android:parentActivityName=".EmpLinksActivity" />
+        <activity 
+            android:name=".AddIconsActivity"
+            android:exported="false"
+            android:parentActivityName=".EmpManageActivity" />
+        <activity 
+            android:name=".AddWorkIconsActivity"
+            android:exported="false"
+            android:parentActivityName=".EmpWorkActivity" />
+        <activity 
+            android:name=".TeamLinksActivity"
+            android:exported="false"
+            android:parentActivityName=".EmpManageActivity" />
+        <activity 
+            android:name=".EmpDataActivity"
+            android:exported="false"
+            android:parentActivityName=".EmpLinksActivity" />
+        <activity 
+            android:name=".EmpWorkActivity"
+            android:exported="false"
+            android:parentActivityName=".EmpLinksActivity" />
+        <activity android:name=".AgentMasterActivity" />
+        <activity android:name=".CallingStatusActivity" />
+        <activity android:name=".CallingSubStatusActivity" />
+        <activity 
+            android:name=".AgentActivity"
+            android:exported="false"
+            android:label="Agent"
+            android:parentActivityName=".SpecialPanelActivity" />
+        <activity android:name=".MyAgentActivity" />
+        <activity android:name=".TeamAgentActivity" />
+        <activity android:name=".DsaNameActivity" />
+        <activity android:name=".LoanTypeActivity" />
+        <activity 
+            android:name=".BankersActivity"
+            android:exported="false"
+            android:theme="@style/Theme.KfinOneApp"
+            android:parentActivityName=".HomeActivity" />
+        <activity 
+            android:name=".AddBankerActivity"
+            android:exported="false"
+            android:theme="@style/Theme.KfinOneApp"
+            android:parentActivityName=".BankersActivity" />
+        <activity 
+            android:name=".BankerListActivity"
+            android:exported="false"
+            android:theme="@style/Theme.KfinOneApp"
+            android:parentActivityName=".BankersActivity" />
+        <activity android:name=".PayoutActivity" />
+        <activity android:name=".AccountActivity" />
+        <activity
+            android:name=".AgentListActivity"
+            android:exported="false"
+            android:label="Agent List" />
+        <activity
+            android:name=".PartnerMasterActivity"
+            android:exported="false"
+            android:parentActivityName=".HomeActivity" />
+        <activity
+            android:name=".PartnerTypeActivity"
+            android:exported="false"
+            android:parentActivityName=".PartnerMasterActivity" />
+        <activity
+            android:name=".ActivePartnerListActivity"
+            android:exported="false"
+            android:parentActivityName=".PartnerMasterActivity" />
+        <activity
+            android:name=".CategoryActivity"
+            android:exported="false"
+            android:parentActivityName=".PayoutActivity" />
+        <activity android:name=".PayoutTypeActivity" />
+        <activity
+            android:name=".AddPayoutActivity"
+            android:exported="false"
+            android:label="Add Payout"
+            android:parentActivityName=".PayoutActivity" />
+        <activity 
+            android:name=".DocumentUploadActivity"
+            android:exported="false"
+            android:label="Document Upload"
+            android:parentActivityName=".HomeActivity" />
+        <activity 
+            android:name=".PolicyActivity"
+            android:exported="false"
+            android:label="Policy" />
+        <activity
+            android:name=".SpecialPanelActivity"
+            android:exported="false"
+            android:label="Special Panel" />
+        <activity
+            android:name=".EmployeePanelActivity"
+            android:exported="false"
+            android:label="Employee Management" />
+        <activity
+            android:name=".MyEmpActivity"
+            android:exported="false"
+            android:label="My Emp" />
+        <activity
+            android:name=".EmpTeamActivity"
+            android:exported="false"
+            android:label="Employee Team" />
+        <activity
+            android:name=".SdsaPanelActivity"
+            android:exported="false"
+            android:label="SDSA Management" />
+        <activity
+            android:name=".MySdsaActivity"
+            android:exported="false"
+            android:label="My SDSA" />
+        <activity
+            android:name=".SdsaTeamActivity"
+            android:exported="false"
+            android:label="SDSA Team" />
+        <activity
+            android:name=".PartnerPanelActivity"
+            android:exported="false"
+            android:label="Partner Panel" />
+        <activity
+            android:name=".ManagingDirectorPartnerPanelActivity"
+            android:exported="false"
+            android:label="Partner Panel"
+            android:parentActivityName=".SpecialPanelActivity" />
+        <activity
+            android:name=".ManagingDirectorPartnerMasterActivity"
+            android:exported="false"
+            android:label="Partner Master"
+            android:parentActivityName=".SpecialPanelActivity" />
+        <activity
+            android:name=".ManagingDirectorPayoutPanelActivity"
+            android:exported="false"
+            android:label="Payout Management"
+            android:parentActivityName=".SpecialPanelActivity" />
+        <activity
+            android:name=".BranchFullPayoutActivity"
+            android:exported="false"
+            android:label="Branch/Full Payout"
+            android:parentActivityName=".ManagingDirectorPayoutPanelActivity" />
+        <activity
+            android:name=".ServicePartnerPayoutActivity"
+            android:exported="false"
+            android:label="Service/Partner Payout"
+            android:parentActivityName=".ManagingDirectorPayoutPanelActivity" />
+        <activity
+            android:name=".LeadBaseAgentPayoutActivity"
+            android:exported="false"
+            android:label="Lead Base/Agent Payout"
+            android:parentActivityName=".ManagingDirectorPayoutPanelActivity" />
+        <activity
+            android:name=".ConnectorReferralPayoutActivity"
+            android:exported="false"
+            android:label="Connector/Referral Payout"
+            android:parentActivityName=".ManagingDirectorPayoutPanelActivity" />
+        <activity
+            android:name=".InterBranchPayoutActivity"
+            android:exported="false"
+            android:label="Inter Branch Payout"
+            android:parentActivityName=".ManagingDirectorPayoutPanelActivity" />
+        <activity
+            android:name=".RBHPayoutActivity"
+            android:exported="false"
+            android:label="RBH Payout"
+            android:parentActivityName=".ManagingDirectorPayoutPanelActivity" />
+        <activity
+            android:name=".PayoutTeamActivity"
+            android:exported="false"
+            android:label="Payout Team"
+            android:parentActivityName=".ManagingDirectorPayoutPanelActivity" />
+        <activity
+            android:name=".AddPartnerActivity"
+            android:exported="false"
+            android:label="Add Partner"
+            android:parentActivityName=".PartnerPanelActivity" />
+        <activity
+            android:name=".MyPartnerActivity"
+            android:exported="false"
+            android:label="My Partners"
+            android:parentActivityName=".PartnerPanelActivity" />
+        <activity
+            android:name=".PartnerTeamActivity"
+            android:exported="false"
+            android:label="Partner Teams"
+            android:parentActivityName=".PartnerPanelActivity" />
+        <activity
+            android:name=".PartnerInactiveActivity"
+            android:exported="false"
+            android:label="Partner Inactive"
+            android:parentActivityName=".PartnerPanelActivity" />
+        <activity
+            android:name=".AddAgentActivity"
+            android:exported="false"
+            android:label="Add Agent Details"
+            android:parentActivityName=".HomeActivity" />
+        <activity 
+            android:name=".MoreActivity"
+            android:exported="false"
+            android:label="More Options"
+            android:parentActivityName=".HomeActivity" />
+        <activity
+            android:name=".DsaCodeListActivity"
+            android:exported="false"
+            android:label="DSA Code List"
+            android:parentActivityName=".SpecialPanelActivity" />
+        <activity
+            android:name=".BankersPanelActivity"
+            android:exported="false"
+            android:label="Bankers Management"
+            android:parentActivityName=".SpecialPanelActivity" />
+        <activity
+            android:name=".AddBankerPanelActivity"
+            android:exported="false"
+            android:label="Add Banker"
+            android:parentActivityName=".BankersPanelActivity" />
+        <activity
+            android:name=".PortfolioPanelActivity"
+            android:exported="false"
+            android:label="Portfolio Management"
+            android:parentActivityName=".SpecialPanelActivity" />
+        <activity
+            android:name=".AddPortfolioActivity"
+            android:exported="false"
+            android:label="Add Portfolio"
+            android:parentActivityName=".PortfolioPanelActivity" />
+        <activity
+            android:name=".MyPortfolioActivity"
+            android:exported="false"
+            android:label="My Portfolio"
+            android:parentActivityName=".PortfolioPanelActivity" />
+        <activity
+            android:name=".PortfolioTeamActivity"
+            android:exported="false"
+            android:label="Portfolio Team"
+            android:parentActivityName=".PortfolioPanelActivity" />
+        <activity
+            android:name=".InsurancePanelActivity"
+            android:exported="false"
+            android:label="Insurance Management"
+            android:parentActivityName=".SpecialPanelActivity" />
+        <activity
+            android:name=".AddInsuranceActivity"
+            android:exported="false"
+            android:label="Add Insurance"
+            android:parentActivityName=".InsurancePanelActivity" />
+        <activity
+            android:name=".MyInsuranceActivity"
+            android:exported="false"
+            android:label="My Insurance"
+            android:parentActivityName=".InsurancePanelActivity" />
+        <activity
+            android:name=".InsuranceTeamActivity"
+            android:exported="false"
+            android:label="Insurance Team"
+            android:parentActivityName=".InsurancePanelActivity" />
+        <activity
+            android:name=".DocCheckListActivity"
+            android:exported="false"
+            android:label="Document Check List"
+            android:parentActivityName=".SpecialPanelActivity" />
+        <activity
+            android:name=".DataLinksActivity"
+            android:exported="false"
+            android:label="Data Links"
+            android:parentActivityName=".SpecialPanelActivity" />
+        <activity
+            android:name=".MyDataLinksActivity"
+            android:exported="false"
+            android:label="My Data Links"
+            android:parentActivityName=".DataLinksActivity" />
+        <activity
+            android:name=".WorkLinksActivity"
+            android:exported="false"
+            android:label="Work Links"
+            android:parentActivityName=".SpecialPanelActivity" />
+        <activity
+            android:name=".MyWorkLinksActivity"
+            android:exported="false"
+            android:label="My Work Links"
+            android:parentActivityName=".WorkLinksActivity" />
+        <activity
+            android:name=".ManageIconPermissionActivity"
+            android:exported="false"
+            android:label="Manage Icon Permissions"
+            android:parentActivityName=".ActiveEmpListActivity" />
+        <activity
+            android:name=".DataIconPermissionActivity"
+            android:exported="false"
+            android:label="Data Icon Permissions"
+            android:parentActivityName=".ActiveEmpListActivity" />
+        <activity
+            android:name=".WorkIconPermissionActivity"
+            android:exported="false"
+            android:label="Work Icon Permissions"
+            android:parentActivityName=".ActiveEmpListActivity" />
+        <activity
+            android:name=".MyEmpLinksActivity"
+            android:exported="false"
+            android:label="My Emp Links"
+            android:parentActivityName=".EmpLinksActivity" />
+        <activity
+            android:name=".TeamEmpLinksActivity"
+            android:exported="false"
+            android:label="Team Emp Links"
+            android:parentActivityName=".EmpLinksActivity" />
+    </application>
+
+</manifest>

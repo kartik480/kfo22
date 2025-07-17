@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test K RAJESH KUMAR Permissions</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: #f9f9f9;
+        }
+        .icon-item {
+            background: white;
+            margin: 10px 0;
+            padding: 15px;
+            border-radius: 6px;
+            border-left: 4px solid #007bff;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .icon-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .icon-name {
+            font-weight: bold;
+            font-size: 16px;
+            color: #333;
+        }
+        .icon-type {
+            background: #e9ecef;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            color: #666;
+        }
+        .icon-description {
+            color: #666;
+            margin-bottom: 8px;
+        }
+        .permission-status {
+            font-weight: bold;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+        .permission-granted {
+            background: #d4edda;
+            color: #155724;
+        }
+        .permission-denied {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        .section-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin: 20px 0 10px 0;
+            color: #333;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 5px;
+        }
+        .error {
+            color: #721c24;
+            background-color: #f8d7da;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .success {
+            color: #155724;
+            background-color: #d4edda;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .user-info {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            border-left: 4px solid #2196f3;
+        }
+        .test-section {
+            background: #fff3e0;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 15px 0;
+            border-left: 4px solid #ff9800;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Test K RAJESH KUMAR Permissions</h1>
+        <p>This page tests the permissions for K RAJESH KUMAR (Managing Director) to verify the My Emp Links functionality.</p>
+        
+        <div class="user-info">
+            <h3>Managing Director: K RAJESH KUMAR</h3>
+            <p><strong>Note:</strong> This test verifies that when you check/uncheck permissions for K RAJESH KUMAR, they appear in the "My Emp Links" panel.</p>
+        </div>
+        
+        <div class="form-group">
+            <label for="userId">K RAJESH KUMAR's User ID:</label>
+            <input type="text" id="userId" placeholder="Enter K RAJESH KUMAR's user ID">
+        </div>
+        
+        <div class="test-section">
+            <h4>Step 1: Test Current Permissions</h4>
+            <button onclick="fetchUserPermissions()">Fetch K RAJESH KUMAR's Current Permissions</button>
+            <button onclick="fetchActiveUsers()">Find K RAJESH KUMAR's User ID</button>
+        </div>
+        
+        <div class="test-section">
+            <h4>Step 2: Test Permission Updates</h4>
+            <button onclick="testManagePermission()">Test Manage Permission Update</button>
+            <button onclick="testDataPermission()">Test Data Permission Update</button>
+            <button onclick="testWorkPermission()">Test Work Permission Update</button>
+        </div>
+        
+        <div id="result" class="result" style="display: none;">
+            <h3>Results:</h3>
+            <div id="apiResponse"></div>
+            <div id="permissionsDisplay"></div>
+        </div>
+    </div>
+
+    <script>
+        async function fetchActiveUsers() {
+            const resultDiv = document.getElementById('result');
+            const apiResponse = document.getElementById('apiResponse');
+            const permissionsDisplay = document.getElementById('permissionsDisplay');
+            
+            resultDiv.style.display = 'block';
+            apiResponse.textContent = 'Loading active users...';
+            permissionsDisplay.innerHTML = '';
+
+            try {
+                const response = await fetch('https://emp.kfinone.com/mobile/api/get_active_users_fixed.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({})
+                });
+
+                const data = await response.json();
+                apiResponse.textContent = 'Active Users Response:\n' + JSON.stringify(data, null, 2);
+
+                if (data.status === 'success' && data.data) {
+                    const users = data.data;
+                    let html = '<h4>Active Users (Look for K RAJESH KUMAR):</h4>';
+                    
+                    users.forEach(user => {
+                        if (user.full_name && user.full_name.toLowerCase().includes('rajesh')) {
+                            html += `<div style="background: #fff3cd; padding: 10px; margin: 5px 0; border-radius: 4px; border-left: 4px solid #ffc107;">
+                                <strong>FOUND K RAJESH KUMAR:</strong><br>
+                                User ID: ${user.user_id}<br>
+                                Name: ${user.full_name}<br>
+                                Employee No: ${user.employee_no}<br>
+                                Email: ${user.email}
+                            </div>`;
+                        } else {
+                            html += `<div style="padding: 5px; margin: 2px 0;">
+                                ${user.full_name} (ID: ${user.user_id})
+                            </div>`;
+                        }
+                    });
+                    
+                    permissionsDisplay.innerHTML = html;
+                } else {
+                    permissionsDisplay.innerHTML = `<div class="error">Error: ${data.message}</div>`;
+                }
+            } catch (error) {
+                apiResponse.textContent = 'Error: ' + error.message;
+                permissionsDisplay.innerHTML = `<div class="error">Network error: ${error.message}</div>`;
+            }
+        }
+
+        async function fetchUserPermissions() {
+            const userId = document.getElementById('userId').value.trim();
+            if (!userId) {
+                alert('Please enter K RAJESH KUMAR\'s User ID first');
+                return;
+            }
+
+            const resultDiv = document.getElementById('result');
+            const apiResponse = document.getElementById('apiResponse');
+            const permissionsDisplay = document.getElementById('permissionsDisplay');
+            
+            resultDiv.style.display = 'block';
+            apiResponse.textContent = 'Loading K RAJESH KUMAR\'s permissions...';
+            permissionsDisplay.innerHTML = '';
+
+            try {
+                const response = await fetch('https://emp.kfinone.com/mobile/api/get_user_permissions_with_icons.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        userId: userId
+                    })
+                });
+
+                const data = await response.json();
+                apiResponse.textContent = 'K RAJESH KUMAR\'s Permissions Response:\n' + JSON.stringify(data, null, 2);
+
+                if (data.status === 'success') {
+                    displayPermissions(data.data);
+                } else {
+                    permissionsDisplay.innerHTML = `<div class="error">Error: ${data.message}</div>`;
+                }
+            } catch (error) {
+                apiResponse.textContent = 'Error: ' + error.message;
+                permissionsDisplay.innerHTML = `<div class="error">Network error: ${error.message}</div>`;
+            }
+        }
+
+        function displayPermissions(data) {
+            const permissionsDisplay = document.getElementById('permissionsDisplay');
+            let html = '<h4>K RAJESH KUMAR\'s Current Permissions:</h4>';
+
+            // Display Manage Icons
+            if (data.manage_icons && data.manage_icons.length > 0) {
+                html += '<div class="section-title">Manage Icons</div>';
+                data.manage_icons.forEach(icon => {
+                    html += createIconItem(icon, 'Manage');
+                });
+            }
+
+            // Display Data Icons
+            if (data.data_icons && data.data_icons.length > 0) {
+                html += '<div class="section-title">Data Icons</div>';
+                data.data_icons.forEach(icon => {
+                    html += createIconItem(icon, 'Data');
+                });
+            }
+
+            // Display Work Icons
+            if (data.work_icons && data.work_icons.length > 0) {
+                html += '<div class="section-title">Work Icons</div>';
+                data.work_icons.forEach(icon => {
+                    html += createIconItem(icon, 'Work');
+                });
+            }
+
+            if (html === '<h4>K RAJESH KUMAR\'s Current Permissions:</h4>') {
+                html += '<div class="success">No permissions found for K RAJESH KUMAR.</div>';
+            }
+
+            permissionsDisplay.innerHTML = html;
+        }
+
+        function createIconItem(icon, type) {
+            const permissionClass = icon.has_permission === 'Yes' ? 'permission-granted' : 'permission-denied';
+            const permissionText = icon.has_permission === 'Yes' ? '✓ Granted' : '✗ Not Granted';
+            
+            return `
+                <div class="icon-item">
+                    <div class="icon-header">
+                        <span class="icon-name">${icon.icon_name}</span>
+                        <span class="icon-type">${type} Icon</span>
+                    </div>
+                    <div class="icon-description">${icon.icon_description || 'No description available'}</div>
+                    <div class="permission-status ${permissionClass}">${permissionText}</div>
+                </div>
+            `;
+        }
+
+        async function testManagePermission() {
+            const userId = document.getElementById('userId').value.trim();
+            if (!userId) {
+                alert('Please enter K RAJESH KUMAR\'s User ID first');
+                return;
+            }
+
+            try {
+                const response = await fetch('https://emp.kfinone.com/mobile/api/update_icon_permission.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        userId: userId,
+                        iconId: "1", // Test with icon ID 1
+                        hasPermission: "Yes"
+                    })
+                });
+
+                const data = await response.json();
+                if (data.status === 'success') {
+                    alert('Manage permission updated successfully! Now check My Emp Links panel.');
+                    fetchUserPermissions(); // Refresh display
+                } else {
+                    alert('Error: ' + data.message);
+                }
+            } catch (error) {
+                alert('Network error: ' + error.message);
+            }
+        }
+
+        async function testDataPermission() {
+            const userId = document.getElementById('userId').value.trim();
+            if (!userId) {
+                alert('Please enter K RAJESH KUMAR\'s User ID first');
+                return;
+            }
+
+            try {
+                const response = await fetch('https://emp.kfinone.com/mobile/api/update_data_icon_permission.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        userId: userId,
+                        iconId: "1", // Test with icon ID 1
+                        hasPermission: "Yes"
+                    })
+                });
+
+                const data = await response.json();
+                if (data.status === 'success') {
+                    alert('Data permission updated successfully! Now check My Emp Links panel.');
+                    fetchUserPermissions(); // Refresh display
+                } else {
+                    alert('Error: ' + data.message);
+                }
+            } catch (error) {
+                alert('Network error: ' + error.message);
+            }
+        }
+
+        async function testWorkPermission() {
+            const userId = document.getElementById('userId').value.trim();
+            if (!userId) {
+                alert('Please enter K RAJESH KUMAR\'s User ID first');
+                return;
+            }
+
+            try {
+                const response = await fetch('https://emp.kfinone.com/mobile/api/update_work_icon_permission.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        userId: userId,
+                        iconId: "1", // Test with icon ID 1
+                        hasPermission: "Yes"
+                    })
+                });
+
+                const data = await response.json();
+                if (data.status === 'success') {
+                    alert('Work permission updated successfully! Now check My Emp Links panel.');
+                    fetchUserPermissions(); // Refresh display
+                } else {
+                    alert('Error: ' + data.message);
+                }
+            } catch (error) {
+                alert('Network error: ' + error.message);
+            }
+        }
+    </script>
+</body>
+</html> 

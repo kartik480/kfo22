@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug State Issue</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        h1, h2 {
+            color: #333;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .result {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 4px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 12px;
+        }
+        .success {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        .info {
+            background-color: #d1ecf1;
+            border: 1px solid #bee5eb;
+            color: #0c5460;
+        }
+    </style>
+</head>
+<body>
+    <h1>Debug State Issue - "Loaded 0 states from database"</h1>
+    
+    <div class="container">
+        <h2>1. Test Database Connection</h2>
+        <button onclick="testConnection()">Test DB Connection</button>
+        <div id="connectionResult" class="result" style="display: none;"></div>
+    </div>
+    
+    <div class="container">
+        <h2>2. Debug tbl_state Table</h2>
+        <button onclick="debugTable()">Debug tbl_state Table</button>
+        <div id="tableResult" class="result" style="display: none;"></div>
+    </div>
+    
+    <div class="container">
+        <h2>3. Test get_states.php API</h2>
+        <button onclick="testGetStates()">Test get_states.php</button>
+        <div id="getStatesResult" class="result" style="display: none;"></div>
+    </div>
+    
+    <div class="container">
+        <h2>4. Test add_state.php API</h2>
+        <button onclick="testAddState()">Test add_state.php</button>
+        <div id="addStateResult" class="result" style="display: none;"></div>
+    </div>
+
+    <script>
+        const BASE_URL = 'https://emp.kfinone.com/mobile/api/';
+        
+        async function testConnection() {
+            try {
+                const response = await fetch(BASE_URL + 'test_db_connection.php', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
+                
+                const data = await response.json();
+                showResult('connectionResult', JSON.stringify(data, null, 2), data.success ? 'success' : 'error');
+            } catch (error) {
+                showResult('connectionResult', `Network Error: ${error.message}`, 'error');
+            }
+        }
+        
+        async function debugTable() {
+            try {
+                const response = await fetch(BASE_URL + 'debug_tbl_state.php', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
+                
+                const data = await response.json();
+                showResult('tableResult', JSON.stringify(data, null, 2), data.success ? 'success' : 'error');
+            } catch (error) {
+                showResult('tableResult', `Network Error: ${error.message}`, 'error');
+            }
+        }
+        
+        async function testGetStates() {
+            try {
+                const response = await fetch(BASE_URL + 'get_states.php', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
+                
+                const data = await response.json();
+                showResult('getStatesResult', JSON.stringify(data, null, 2), data.success ? 'success' : 'error');
+            } catch (error) {
+                showResult('getStatesResult', `Network Error: ${error.message}`, 'error');
+            }
+        }
+        
+        async function testAddState() {
+            try {
+                const response = await fetch(BASE_URL + 'add_state.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        state_name: 'Test State ' + new Date().getTime()
+                    })
+                });
+                
+                const data = await response.json();
+                showResult('addStateResult', JSON.stringify(data, null, 2), data.success ? 'success' : 'error');
+            } catch (error) {
+                showResult('addStateResult', `Network Error: ${error.message}`, 'error');
+            }
+        }
+        
+        function showResult(elementId, message, type) {
+            const element = document.getElementById(elementId);
+            element.textContent = message;
+            element.className = `result ${type}`;
+            element.style.display = 'block';
+        }
+        
+        // Auto-run tests on page load
+        window.onload = function() {
+            console.log('Starting debug tests...');
+            setTimeout(() => testConnection(), 500);
+            setTimeout(() => debugTable(), 1000);
+            setTimeout(() => testGetStates(), 1500);
+        };
+    </script>
+</body>
+</html> 

@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quick Fix - Sub Location Dropdown</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        h1, h2 {
+            color: #333;
+        }
+        .status {
+            padding: 15px;
+            border-radius: 4px;
+            margin: 10px 0;
+            font-weight: bold;
+        }
+        .success {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        .warning {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+        }
+        .loading {
+            background-color: #d1ecf1;
+            border: 1px solid #bee5eb;
+            color: #0c5460;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        button:disabled {
+            background-color: #6c757d;
+            cursor: not-allowed;
+        }
+        .response {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 15px;
+            margin-top: 10px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        .progress {
+            display: none;
+            margin: 20px 0;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background-color: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            background-color: #007bff;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔧 Quick Fix - Sub Location Dropdown</h1>
+    
+    <div class="container">
+        <h2>Current Status</h2>
+        <div id="currentStatus" class="status warning">
+            ⚠️ Sub Location dropdown is not working (HTTP 500/404 errors)
+        </div>
+        
+        <div class="progress" id="progress">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <div id="progressText">Fixing...</div>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>Quick Fix</h2>
+        <p>This will create the sub location table and add sample data to fix the dropdown issue.</p>
+        
+        <button onclick="fixSubLocationIssue()" id="fixButton">🚀 Fix Sub Location Dropdown</button>
+        <button onclick="testSubLocationAPI()" id="testButton">🧪 Test Sub Location API</button>
+        
+        <div id="response" class="response"></div>
+    </div>
+
+    <div class="container">
+        <h2>What This Fix Does</h2>
+        <ul>
+            <li>✅ Creates <code>tbl_sub_location</code> table if it doesn't exist</li>
+            <li>✅ Adds 20 sample sub locations (Downtown, Uptown, etc.)</li>
+            <li>✅ Handles duplicate entries gracefully</li>
+            <li>✅ Tests the API to confirm it's working</li>
+        </ul>
+        
+        <p><strong>After fixing:</strong> The PIN Code panel should load all three dropdowns correctly.</p>
+    </div>
+
+    <script>
+        const API_BASE = 'https://emp.kfinone.com/mobile/api/';
+        
+        async function makeRequest(url, options = {}) {
+            try {
+                const response = await fetch(url, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        ...options.headers
+                    },
+                    ...options
+                });
+                
+                const data = await response.text();
+                let jsonData;
+                try {
+                    jsonData = JSON.parse(data);
+                } catch (e) {
+                    return { 
+                        success: false, 
+                        error: 'Invalid JSON response', 
+                        raw: data,
+                        status: response.status
+                    };
+                }
+                
+                return {
+                    success: response.ok,
+                    status: response.status,
+                    data: jsonData,
+                    raw: data
+                };
+            } catch (error) {
+                return {
+                    success: false,
+                    error: error.message,
+                    raw: error.toString()
+                };
+            }
+        }
+
+        async function fixSubLocationIssue() {
+            const fixButton = document.getElementById('fixButton');
+            const testButton = document.getElementById('testButton');
+            const responseDiv = document.getElementById('response');
+            const progressDiv = document.getElementById('progress');
+            const progressFill = document.getElementById('progressFill');
+            const progressText = document.getElementById('progressText');
+            const statusDiv = document.getElementById('currentStatus');
+            
+            // Disable buttons and show progress
+            fixButton.disabled = true;
+            testButton.disabled = true;
+            progressDiv.style.display = 'block';
+            responseDiv.innerHTML = '';
+            
+            try {
+                // Step 1: Add sample sub locations (creates table if needed)
+                progressFill.style.width = '25%';
+                progressText.textContent = 'Step 1: Creating table and adding sample data...';
+                
+                const addResult = await makeRequest(API_BASE + 'add_sample_sub_locations.php');
+                
+                if (!addResult.success || !addResult.data.success) {
+                    throw new Error(`Failed to add sample data: ${addResult.data?.error || addResult.error}`);
+                }
+                
+                // Step 2: Test the API
+                progressFill.style.width = '75%';
+                progressText.textContent = 'Step 2: Testing sub location API...';
+                
+                const testResult = await makeRequest(API_BASE + 'get_sub_locations.php');
+                
+                if (!testResult.success || !testResult.data.success) {
+                    throw new Error(`API test failed: ${testResult.data?.error || testResult.error}`);
+                }
+                
+                // Success!
+                progressFill.style.width = '100%';
+                progressText.textContent = '✅ Fixed successfully!';
+                
+                const subLocations = testResult.data.data;
+                responseDiv.className = 'response success';
+                responseDiv.innerHTML = `🎉 Sub Location Dropdown Fixed!\n\n` +
+                    `✅ Table created/updated successfully\n` +
+                    `✅ ${subLocations.length} sub locations loaded\n` +
+                    `✅ API is working correctly\n\n` +
+                    `Sample sub locations:\n${subLocations.map(loc => loc.subLocationName).join(', ')}`;
+                
+                statusDiv.className = 'status success';
+                statusDiv.textContent = '✅ Sub Location dropdown is now working!';
+                
+            } catch (error) {
+                progressFill.style.width = '100%';
+                progressText.textContent = '❌ Fix failed';
+                
+                responseDiv.className = 'response error';
+                responseDiv.innerHTML = `❌ Fix Failed!\n\nError: ${error.message}`;
+                
+                statusDiv.className = 'status error';
+                statusDiv.textContent = '❌ Sub Location dropdown still not working';
+            } finally {
+                // Re-enable buttons
+                fixButton.disabled = false;
+                testButton.disabled = false;
+                
+                // Hide progress after 3 seconds
+                setTimeout(() => {
+                    progressDiv.style.display = 'none';
+                }, 3000);
+            }
+        }
+
+        async function testSubLocationAPI() {
+            const responseDiv = document.getElementById('response');
+            const statusDiv = document.getElementById('currentStatus');
+            
+            responseDiv.innerHTML = '🧪 Testing sub location API...';
+            
+            const result = await makeRequest(API_BASE + 'get_sub_locations.php');
+            
+            if (result.success && result.data.success) {
+                const subLocations = result.data.data;
+                responseDiv.className = 'response success';
+                responseDiv.innerHTML = `✅ Sub Location API Working!\n\n` +
+                    `Sub Locations Count: ${subLocations.length}\n\n` +
+                    `Sub Locations:\n${subLocations.map(loc => loc.subLocationName).join(', ')}`;
+                
+                statusDiv.className = 'status success';
+                statusDiv.textContent = '✅ Sub Location dropdown is working!';
+            } else {
+                responseDiv.className = 'response error';
+                responseDiv.innerHTML = `❌ Sub Location API Failed!\n\n` +
+                    `Status: ${result.status}\n` +
+                    `Error: ${result.data?.error || result.error}\n\n` +
+                    `Raw Response:\n${result.raw}`;
+                
+                statusDiv.className = 'status error';
+                statusDiv.textContent = '❌ Sub Location dropdown is not working';
+            }
+        }
+
+        // Auto-test on page load
+        window.onload = function() {
+            testSubLocationAPI();
+        };
+    </script>
+</body>
+</html> 

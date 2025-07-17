@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Payout Type List API</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .api-info {
+            background-color: #e2e3e5;
+            border: 1px solid #d6d8db;
+            color: #383d41;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-right: 10px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+        .response {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 5px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .success {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        .info {
+            background-color: #d1ecf1;
+            border: 1px solid #bee5eb;
+            color: #0c5460;
+        }
+        .table-container {
+            margin-top: 20px;
+            overflow-x: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        .status-active {
+            color: #28a745;
+            font-weight: bold;
+        }
+        .status-inactive {
+            color: #dc3545;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Test Payout Type List API</h1>
+        
+        <div class="api-info">
+            <strong>API Endpoint:</strong> https://emp.kfinone.com/mobile/api/fetch_payout_types.php<br>
+            <strong>Method:</strong> GET<br>
+            <strong>Expected Response:</strong> JSON object with status, message, and data array<br>
+            <strong>Data Columns:</strong> id, payout_name, status<br>
+            <strong>Table:</strong> tbl_payout_type (payout_name, status)
+        </div>
+
+        <button type="button" onclick="testPayoutTypeList()">Test Payout Type List API</button>
+        <button type="button" onclick="clearResponse()">Clear Response</button>
+
+        <div id="response" class="response" style="display: none;"></div>
+        
+        <div id="tableContainer" class="table-container" style="display: none;">
+            <h3>Payout Types List</h3>
+            <table id="payoutTypeTable">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Payout Name</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        function showResponse(message, type) {
+            const responseDiv = document.getElementById('response');
+            responseDiv.textContent = message;
+            responseDiv.className = 'response ' + type;
+            responseDiv.style.display = 'block';
+        }
+
+        function clearResponse() {
+            document.getElementById('response').style.display = 'none';
+            document.getElementById('tableContainer').style.display = 'none';
+        }
+
+        function createTable(data) {
+            const tableBody = document.getElementById('tableBody');
+            tableBody.innerHTML = '';
+            
+            data.forEach(item => {
+                const row = document.createElement('tr');
+                
+                const idCell = document.createElement('td');
+                idCell.textContent = item.id;
+                row.appendChild(idCell);
+                
+                const nameCell = document.createElement('td');
+                nameCell.textContent = item.payout_name;
+                row.appendChild(nameCell);
+                
+                const statusCell = document.createElement('td');
+                statusCell.textContent = item.status;
+                statusCell.className = item.status === 'Active' ? 'status-active' : 'status-inactive';
+                row.appendChild(statusCell);
+                
+                tableBody.appendChild(row);
+            });
+            
+            document.getElementById('tableContainer').style.display = 'block';
+        }
+
+        async function testPayoutTypeList() {
+            showResponse('Testing payout type list API...', 'info');
+            
+            try {
+                const response = await fetch('https://emp.kfinone.com/mobile/api/fetch_payout_types.php');
+                const responseText = await response.text();
+                
+                console.log('Raw response:', responseText);
+                
+                try {
+                    const jsonResponse = JSON.parse(responseText);
+                    
+                    if (jsonResponse.status === 'success') {
+                        const data = jsonResponse.data;
+                        
+                        showResponse(`✅ SUCCESS!\n\nStatus: ${jsonResponse.status}\nMessage: ${jsonResponse.message}\n\nFetched ${data.length} payout types\n\nFull Response:\n${JSON.stringify(jsonResponse, null, 2)}`, 'success');
+                        
+                        // Create table
+                        createTable(data);
+                        
+                    } else {
+                        showResponse(`❌ ERROR!\n\nStatus: ${jsonResponse.status}\nMessage: ${jsonResponse.message}\n\nFull Response:\n${JSON.stringify(jsonResponse, null, 2)}`, 'error');
+                    }
+                } catch (parseError) {
+                    showResponse(`❌ JSON PARSE ERROR!\n\nError: ${parseError.message}\n\nRaw Response:\n${responseText}`, 'error');
+                }
+            } catch (error) {
+                showResponse(`❌ NETWORK ERROR!\n\nError: ${error.message}`, 'error');
+            }
+        }
+
+        // Auto-test on page load
+        window.addEventListener('load', function() {
+            setTimeout(() => {
+                testPayoutTypeList();
+            }, 1000);
+        });
+    </script>
+</body>
+</html> 

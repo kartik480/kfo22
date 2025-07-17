@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug Get Agent List API</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .result { margin: 10px 0; padding: 10px; border-radius: 5px; }
+        .success { background-color: #d4edda; border: 1px solid #c3e6cb; }
+        .error { background-color: #f8d7da; border: 1px solid #f5c6cb; }
+        .info { background-color: #d1ecf1; border: 1px solid #bee5eb; }
+        .warning { background-color: #fff3cd; border: 1px solid #ffeaa7; }
+        pre { background-color: #f8f9fa; padding: 10px; border-radius: 3px; overflow-x: auto; max-height: 400px; overflow-y: auto; }
+        .debug-section { margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 5px; }
+        .debug-section h3 { margin-top: 0; }
+        button { padding: 8px 15px; margin: 5px; background-color: #007bff; color: white; border: none; border-radius: 3px; cursor: pointer; }
+        button:hover { background-color: #0056b3; }
+    </style>
+</head>
+<body>
+    <h1>Debug Get Agent List API</h1>
+    
+    <div class="info">
+        <h3>Testing: https://emp.kfinone.com/mobile/api/get_agent_list.php</h3>
+        <p>This test will help identify why the Android app is showing "No agent data found".</p>
+    </div>
+
+    <div class="debug-section">
+        <h3>API Tests</h3>
+        <button onclick="testAPI()">Test Get Agent List API</button>
+        <button onclick="testTableExists()">Test Table Existence</button>
+        <button onclick="checkAgentDataTable()">Check Agent Data Table</button>
+        <button onclick="testDatabaseConnection()">Test Database Connection</button>
+    </div>
+
+    <div id="result"></div>
+
+    <script>
+        async function testAPI() {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = '<div class="info">Testing Get Agent List API...</div>';
+            
+            try {
+                const response = await fetch('https://emp.kfinone.com/mobile/api/get_agent_list.php', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const status = response.status;
+                const statusText = response.statusText;
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    resultDiv.innerHTML = `
+                        <div class="success">
+                            <h3>✅ API Response Success</h3>
+                            <p><strong>Status:</strong> ${status} ${statusText}</p>
+                            <p><strong>Response:</strong></p>
+                            <pre>${JSON.stringify(data, null, 2)}</pre>
+                            
+                            <div class="debug-section">
+                                <h4>Analysis:</h4>
+                                <ul>
+                                    <li><strong>Status:</strong> ${data.status}</li>
+                                    <li><strong>Message:</strong> ${data.message}</li>
+                                    <li><strong>Data Count:</strong> ${data.data ? data.data.length : 0}</li>
+                                    <li><strong>Has Data:</strong> ${data.data && data.data.length > 0 ? 'Yes' : 'No'}</li>
+                                </ul>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `
+                        <div class="error">
+                            <h3>❌ API Error</h3>
+                            <p><strong>Status:</strong> ${status} ${statusText}</p>
+                            <p><strong>Error:</strong> The API endpoint returned an error status code.</p>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="error">
+                        <h3>❌ Network Error</h3>
+                        <p><strong>Error:</strong> ${error.message}</p>
+                        <p>This usually means the API file doesn't exist on the server (404 error).</p>
+                    </div>
+                `;
+            }
+        }
+
+        async function testTableExists() {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = '<div class="info">Testing table existence...</div>';
+            
+            try {
+                const response = await fetch('https://emp.kfinone.com/mobile/api/test_table_structure.php', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    resultDiv.innerHTML = `
+                        <div class="success">
+                            <h3>✅ Table Structure Test</h3>
+                            <pre>${JSON.stringify(data, null, 2)}</pre>
+                        </div>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `
+                        <div class="warning">
+                            <h3>⚠️ Table Test Not Available</h3>
+                            <p>The table structure test API is not available. This is normal.</p>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="warning">
+                        <h3>⚠️ Table Test Not Available</h3>
+                        <p>Could not test table structure: ${error.message}</p>
+                    </div>
+                `;
+            }
+        }
+
+        async function testDatabaseConnection() {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = '<div class="info">Testing database connection...</div>';
+            
+            try {
+                const response = await fetch('https://emp.kfinone.com/mobile/api/test_db_connection.php', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    resultDiv.innerHTML = `
+                        <div class="success">
+                            <h3>✅ Database Connection Test</h3>
+                            <pre>${JSON.stringify(data, null, 2)}</pre>
+                        </div>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `
+                        <div class="warning">
+                            <h3>⚠️ Database Test Not Available</h3>
+                            <p>The database connection test API is not available. This is normal.</p>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="warning">
+                        <h3>⚠️ Database Test Not Available</h3>
+                        <p>Could not test database connection: ${error.message}</p>
+                    </div>
+                `;
+            }
+        }
+
+        async function checkAgentDataTable() {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = '<div class="info">Checking tbl_agent_data table...</div>';
+            
+            try {
+                const response = await fetch('https://emp.kfinone.com/mobile/api/check_agent_data_table.php', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    resultDiv.innerHTML = `
+                        <div class="success">
+                            <h3>✅ Agent Data Table Check</h3>
+                            <pre>${JSON.stringify(data, null, 2)}</pre>
+                            
+                            <div class="debug-section">
+                                <h4>Summary:</h4>
+                                <ul>
+                                    <li><strong>Table Exists:</strong> ${data.table_exists ? 'Yes' : 'No'}</li>
+                                    <li><strong>Total Records:</strong> ${data.total_records || 0}</li>
+                                    <li><strong>Active Records:</strong> ${data.active_records || 0}</li>
+                                    <li><strong>Columns:</strong> ${data.columns ? data.columns.join(', ') : 'N/A'}</li>
+                                </ul>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `
+                        <div class="error">
+                            <h3>❌ Agent Data Table Check Failed</h3>
+                            <p><strong>Status:</strong> ${response.status} ${response.statusText}</p>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="error">
+                        <h3>❌ Agent Data Table Check Error</h3>
+                        <p><strong>Error:</strong> ${error.message}</p>
+                    </div>
+                `;
+            }
+        }
+    </script>
+</body>
+</html> 

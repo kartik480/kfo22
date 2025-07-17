@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test All Dropdowns - KfinOne Add Employee Details</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2C3E50;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .dropdown-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+        }
+        .dropdown-section h2 {
+            color: #34495E;
+            margin-top: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .status {
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+            font-weight: bold;
+        }
+        .status.loading {
+            background-color: #FFF3CD;
+            color: #856404;
+            border: 1px solid #FFEAA7;
+        }
+        .status.success {
+            background-color: #D4EDDA;
+            color: #155724;
+            border: 1px solid #C3E6CB;
+        }
+        .status.error {
+            background-color: #F8D7DA;
+            color: #721C24;
+            border: 1px solid #F5C6CB;
+        }
+        .result {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 10px 0;
+            font-family: monospace;
+            white-space: pre-wrap;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        .dropdown-test {
+            margin: 20px 0;
+        }
+        select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .info {
+            background-color: #E3F2FD;
+            border: 1px solid #BBDEFB;
+            color: #1565C0;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .test-all-btn {
+            background-color: #28a745;
+            font-size: 18px;
+            padding: 15px 30px;
+            margin: 20px 0;
+        }
+        .test-all-btn:hover {
+            background-color: #218838;
+        }
+        .summary {
+            background-color: #FFF3CD;
+            border: 1px solid #FFEAA7;
+            color: #856404;
+            padding: 20px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Test All Dropdowns - KfinOne Add Employee Details</h1>
+        
+        <div class="info">
+            <strong>Purpose:</strong> Test all dropdown functionalities in the Add Employee Details panel<br>
+            <strong>Base URL:</strong> https://emp.kfinone.com/mobile/api/<br>
+            <strong>Testing:</strong> Branch States, Branch Locations, Departments, and Designations
+        </div>
+
+        <button class="test-all-btn" onclick="testAllDropdowns()">Test All Dropdowns</button>
+
+        <div class="summary" id="summary" style="display: none;">
+            <h3>Test Summary</h3>
+            <div id="summary-content"></div>
+        </div>
+
+        <div class="dropdown-section">
+            <h2>1. Branch State Dropdown</h2>
+            <div id="branch-state-status" class="status loading">Testing...</div>
+            <div class="dropdown-test">
+                <label for="branchStateDropdown"><strong>Select Branch State:</strong></label>
+                <select id="branchStateDropdown">
+                    <option value="">Loading...</option>
+                </select>
+            </div>
+            <div id="branch-state-result" class="result" style="display: none;"></div>
+        </div>
+
+        <div class="dropdown-section">
+            <h2>2. Branch Location Dropdown</h2>
+            <div id="branch-location-status" class="status loading">Testing...</div>
+            <div class="dropdown-test">
+                <label for="branchLocationDropdown"><strong>Select Branch Location:</strong></label>
+                <select id="branchLocationDropdown">
+                    <option value="">Loading...</option>
+                </select>
+            </div>
+            <div id="branch-location-result" class="result" style="display: none;"></div>
+        </div>
+
+        <div class="dropdown-section">
+            <h2>3. Department Dropdown</h2>
+            <div id="department-status" class="status loading">Testing...</div>
+            <div class="dropdown-test">
+                <label for="departmentDropdown"><strong>Select Department:</strong></label>
+                <select id="departmentDropdown">
+                    <option value="">Loading...</option>
+                </select>
+            </div>
+            <div id="department-result" class="result" style="display: none;"></div>
+        </div>
+
+        <div class="dropdown-section">
+            <h2>4. Designation Dropdown</h2>
+            <div id="designation-status" class="status loading">Testing...</div>
+            <div class="dropdown-test">
+                <label for="designationDropdown"><strong>Select Designation:</strong></label>
+                <select id="designationDropdown">
+                    <option value="">Loading...</option>
+                </select>
+            </div>
+            <div id="designation-result" class="result" style="display: none;"></div>
+        </div>
+    </div>
+
+    <script>
+        const BASE_URL = 'https://emp.kfinone.com/mobile/api/';
+        const APIs = {
+            branchState: 'fetch_branch_states.php',
+            branchLocation: 'fetch_branch_locations.php',
+            department: 'get_department_list.php',
+            designation: 'get_designation_list.php'
+        };
+        
+        const testResults = {};
+        
+        async function testAllDropdowns() {
+            // Reset results
+            testResults.branchState = { success: false, count: 0, error: null };
+            testResults.branchLocation = { success: false, count: 0, error: null };
+            testResults.department = { success: false, count: 0, error: null };
+            testResults.designation = { success: false, count: 0, error: null };
+            
+            // Test all dropdowns
+            await Promise.all([
+                testBranchStateDropdown(),
+                testBranchLocationDropdown(),
+                testDepartmentDropdown(),
+                testDesignationDropdown()
+            ]);
+            
+            // Show summary
+            showSummary();
+        }
+        
+        async function testBranchStateDropdown() {
+            const statusDiv = document.getElementById('branch-state-status');
+            const resultDiv = document.getElementById('branch-state-result');
+            const dropdown = document.getElementById('branchStateDropdown');
+            
+            statusDiv.className = 'status loading';
+            statusDiv.textContent = 'Testing Branch State API...';
+            resultDiv.style.display = 'none';
+            
+            try {
+                const response = await fetch(BASE_URL + APIs.branchState);
+                const data = await response.json();
+                
+                if (data.success && data.data) {
+                    // Load dropdown
+                    dropdown.innerHTML = '<option value="">Select Branch State</option>';
+                    data.data.forEach(state => {
+                        const option = document.createElement('option');
+                        option.value = state.branch_state_name;
+                        option.textContent = state.branch_state_name;
+                        dropdown.appendChild(option);
+                    });
+                    
+                    statusDiv.className = 'status success';
+                    statusDiv.textContent = `Branch States loaded successfully (${data.data.length} items)`;
+                    
+                    resultDiv.style.display = 'block';
+                    resultDiv.textContent = `API: ${APIs.branchState}\nTable: tbl_branch_state\nColumn: branch_state_name\nCount: ${data.data.length}\nSample: ${data.data.slice(0, 3).map(s => s.branch_state_name).join(', ')}`;
+                    
+                    testResults.branchState = { success: true, count: data.data.length, error: null };
+                } else {
+                    throw new Error(data.message || 'Unknown error');
+                }
+                
+            } catch (error) {
+                statusDiv.className = 'status error';
+                statusDiv.textContent = `Branch State API failed: ${error.message}`;
+                
+                resultDiv.style.display = 'block';
+                resultDiv.textContent = `Error: ${error.message}`;
+                
+                testResults.branchState = { success: false, count: 0, error: error.message };
+            }
+        }
+        
+        async function testBranchLocationDropdown() {
+            const statusDiv = document.getElementById('branch-location-status');
+            const resultDiv = document.getElementById('branch-location-result');
+            const dropdown = document.getElementById('branchLocationDropdown');
+            
+            statusDiv.className = 'status loading';
+            statusDiv.textContent = 'Testing Branch Location API...';
+            resultDiv.style.display = 'none';
+            
+            try {
+                const response = await fetch(BASE_URL + APIs.branchLocation);
+                const data = await response.json();
+                
+                if (data.success && data.data) {
+                    // Load dropdown
+                    dropdown.innerHTML = '<option value="">Select Branch Location</option>';
+                    data.data.forEach(location => {
+                        const option = document.createElement('option');
+                        option.value = location.branch_location;
+                        option.textContent = location.branch_location;
+                        dropdown.appendChild(option);
+                    });
+                    
+                    statusDiv.className = 'status success';
+                    statusDiv.textContent = `Branch Locations loaded successfully (${data.data.length} items)`;
+                    
+                    resultDiv.style.display = 'block';
+                    resultDiv.textContent = `API: ${APIs.branchLocation}\nTable: tbl_branch_location\nColumn: branch_location\nCount: ${data.data.length}\nSample: ${data.data.slice(0, 3).map(l => l.branch_location).join(', ')}`;
+                    
+                    testResults.branchLocation = { success: true, count: data.data.length, error: null };
+                } else {
+                    throw new Error(data.message || 'Unknown error');
+                }
+                
+            } catch (error) {
+                statusDiv.className = 'status error';
+                statusDiv.textContent = `Branch Location API failed: ${error.message}`;
+                
+                resultDiv.style.display = 'block';
+                resultDiv.textContent = `Error: ${error.message}`;
+                
+                testResults.branchLocation = { success: false, count: 0, error: error.message };
+            }
+        }
+        
+        async function testDepartmentDropdown() {
+            const statusDiv = document.getElementById('department-status');
+            const resultDiv = document.getElementById('department-result');
+            const dropdown = document.getElementById('departmentDropdown');
+            
+            statusDiv.className = 'status loading';
+            statusDiv.textContent = 'Testing Department API...';
+            resultDiv.style.display = 'none';
+            
+            try {
+                const response = await fetch(BASE_URL + APIs.department);
+                const data = await response.json();
+                
+                if (data.status === 'success' && data.data) {
+                    // Load dropdown
+                    dropdown.innerHTML = '<option value="">Select Department</option>';
+                    data.data.forEach(dept => {
+                        const option = document.createElement('option');
+                        option.value = dept.department_name;
+                        option.textContent = dept.department_name;
+                        dropdown.appendChild(option);
+                    });
+                    
+                    statusDiv.className = 'status success';
+                    statusDiv.textContent = `Departments loaded successfully (${data.data.length} items)`;
+                    
+                    resultDiv.style.display = 'block';
+                    resultDiv.textContent = `API: ${APIs.department}\nTable: tbl_department\nColumn: department_name\nCount: ${data.data.length}\nSample: ${data.data.slice(0, 3).map(d => d.department_name).join(', ')}`;
+                    
+                    testResults.department = { success: true, count: data.data.length, error: null };
+                } else {
+                    throw new Error(data.message || 'Unknown error');
+                }
+                
+            } catch (error) {
+                statusDiv.className = 'status error';
+                statusDiv.textContent = `Department API failed: ${error.message}`;
+                
+                resultDiv.style.display = 'block';
+                resultDiv.textContent = `Error: ${error.message}`;
+                
+                testResults.department = { success: false, count: 0, error: error.message };
+            }
+        }
+        
+        async function testDesignationDropdown() {
+            const statusDiv = document.getElementById('designation-status');
+            const resultDiv = document.getElementById('designation-result');
+            const dropdown = document.getElementById('designationDropdown');
+            
+            statusDiv.className = 'status loading';
+            statusDiv.textContent = 'Testing Designation API...';
+            resultDiv.style.display = 'none';
+            
+            try {
+                const response = await fetch(BASE_URL + APIs.designation);
+                const data = await response.json();
+                
+                if (data.status === 'success' && data.data) {
+                    // Load dropdown
+                    dropdown.innerHTML = '<option value="">Select Designation</option>';
+                    data.data.forEach(desig => {
+                        const option = document.createElement('option');
+                        option.value = desig.designation_name;
+                        option.textContent = desig.designation_name;
+                        dropdown.appendChild(option);
+                    });
+                    
+                    statusDiv.className = 'status success';
+                    statusDiv.textContent = `Designations loaded successfully (${data.data.length} items)`;
+                    
+                    resultDiv.style.display = 'block';
+                    resultDiv.textContent = `API: ${APIs.designation}\nTable: tbl_designation\nColumn: designation_name\nCount: ${data.data.length}\nSample: ${data.data.slice(0, 3).map(d => d.designation_name).join(', ')}`;
+                    
+                    testResults.designation = { success: true, count: data.data.length, error: null };
+                } else {
+                    throw new Error(data.message || 'Unknown error');
+                }
+                
+            } catch (error) {
+                statusDiv.className = 'status error';
+                statusDiv.textContent = `Designation API failed: ${error.message}`;
+                
+                resultDiv.style.display = 'block';
+                resultDiv.textContent = `Error: ${error.message}`;
+                
+                testResults.designation = { success: false, count: 0, error: error.message };
+            }
+        }
+        
+        function showSummary() {
+            const summaryDiv = document.getElementById('summary');
+            const summaryContent = document.getElementById('summary-content');
+            
+            const totalTests = Object.keys(testResults).length;
+            const passedTests = Object.values(testResults).filter(r => r.success).length;
+            const totalItems = Object.values(testResults).reduce((sum, r) => sum + r.count, 0);
+            
+            let summaryHTML = `
+                <strong>Test Results:</strong><br>
+                ✅ Passed: ${passedTests}/${totalTests} tests<br>
+                📊 Total Items: ${totalItems} across all dropdowns<br><br>
+                <strong>Details:</strong><br>
+            `;
+            
+            Object.entries(testResults).forEach(([key, result]) => {
+                const status = result.success ? '✅' : '❌';
+                const count = result.count;
+                const error = result.error ? ` (Error: ${result.error})` : '';
+                summaryHTML += `${status} ${key}: ${count} items${error}<br>`;
+            });
+            
+            summaryContent.innerHTML = summaryHTML;
+            summaryDiv.style.display = 'block';
+        }
+        
+        // Auto-run test on page load
+        window.addEventListener('load', () => {
+            setTimeout(testAllDropdowns, 1000);
+        });
+    </script>
+</body>
+</html> 

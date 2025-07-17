@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Policy Management Dropdowns</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .api-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .api-card {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 15px;
+            background-color: #f9f9f9;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .test-all-btn {
+            background-color: #28a745;
+            font-size: 16px;
+            padding: 15px 30px;
+        }
+        .test-all-btn:hover {
+            background-color: #218838;
+        }
+        .result {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .success {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        .loading {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+        }
+        .summary {
+            background-color: #e2e3e5;
+            border: 1px solid #d6d8db;
+            color: #383d41;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        .status-success { background-color: #28a745; }
+        .status-error { background-color: #dc3545; }
+        .status-loading { background-color: #ffc107; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Test Policy Management Dropdowns</h1>
+        
+        <div class="summary">
+            <h3>📋 Test Summary</h3>
+            <p>This test verifies that the Policy Management panel in the KfinOne app can fetch:</p>
+            <ul>
+                <li><strong>Loan Types</strong> from <code>tbl_loan_type</code> table (column: <code>loan_type</code>)</li>
+                <li><strong>Vendor Banks</strong> from <code>tbl_vendor_bank</code> table (column: <code>vendor_bank_name</code>)</li>
+            </ul>
+            <p>These dropdowns are used in the Policy Management panel for adding and filtering policies.</p>
+        </div>
+
+        <div class="test-section">
+            <h3>🧪 Test All APIs</h3>
+            <button class="test-all-btn" onclick="testAllAPIs()">Test All Policy Dropdown APIs</button>
+            <div id="summaryResult" class="result"></div>
+        </div>
+
+        <div class="api-grid">
+            <div class="api-card">
+                <h3>🏦 Loan Types API</h3>
+                <p><strong>Endpoint:</strong> <code>/fetch_loan_types.php</code></p>
+                <p><strong>Table:</strong> <code>tbl_loan_type</code></p>
+                <p><strong>Column:</strong> <code>loan_type</code></p>
+                <button onclick="testLoanTypesAPI()">Test Loan Types</button>
+                <div id="loanTypesResult" class="result"></div>
+            </div>
+
+            <div class="api-card">
+                <h3>🏛️ Vendor Banks API</h3>
+                <p><strong>Endpoint:</strong> <code>/fetch_vendor_banks.php</code></p>
+                <p><strong>Table:</strong> <code>tbl_vendor_bank</code></p>
+                <p><strong>Column:</strong> <code>vendor_bank_name</code></p>
+                <button onclick="testVendorBanksAPI()">Test Vendor Banks</button>
+                <div id="vendorBanksResult" class="result"></div>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h3>📱 Android App Integration</h3>
+            <p>The PolicyActivity in the Android app will:</p>
+            <ul>
+                <li>Call both APIs when the activity loads</li>
+                <li>Populate dropdown menus with the fetched data</li>
+                <li>Use fallback hardcoded data if APIs fail</li>
+                <li>Show appropriate error messages to users</li>
+            </ul>
+        </div>
+
+        <div class="test-section">
+            <h3>🔧 API Response Format</h3>
+            <p><strong>Expected Success Response:</strong></p>
+            <pre>{
+  "status": "success",
+  "message": "Data fetched successfully",
+  "data": [
+    {
+      "id": "1",
+      "loan_type": "Personal Loan"
+    },
+    {
+      "id": "2",
+      "loan_type": "Home Loan"
+    }
+  ]
+}</pre>
+        </div>
+    </div>
+
+    <script>
+        let testResults = {
+            loanTypes: { status: 'pending', data: null, error: null },
+            vendorBanks: { status: 'pending', data: null, error: null }
+        };
+
+        async function testAllAPIs() {
+            const summaryDiv = document.getElementById('summaryResult');
+            summaryDiv.className = 'result loading';
+            summaryDiv.textContent = 'Testing all APIs...';
+
+            // Reset results
+            testResults = {
+                loanTypes: { status: 'pending', data: null, error: null },
+                vendorBanks: { status: 'pending', data: null, error: null }
+            };
+
+            // Test both APIs concurrently
+            await Promise.all([
+                testLoanTypesAPI(true),
+                testVendorBanksAPI(true)
+            ]);
+
+            // Show summary
+            updateSummary();
+        }
+
+        async function testLoanTypesAPI(silent = false) {
+            const resultDiv = document.getElementById('loanTypesResult');
+            if (!silent) {
+                resultDiv.className = 'result loading';
+                resultDiv.textContent = 'Testing loan types API...';
+            }
+
+            try {
+                const response = await fetch('https://emp.kfinone.com/mobile/api/fetch_loan_types.php', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                const data = await response.json();
+                
+                if (response.ok && data.status === 'success') {
+                    testResults.loanTypes = { status: 'success', data: data.data, error: null };
+                    if (!silent) {
+                        resultDiv.className = 'result success';
+                        resultDiv.textContent = `✅ SUCCESS: ${data.message}\n\nFound ${data.data.length} loan types:\n\n${JSON.stringify(data, null, 2)}`;
+                    }
+                } else {
+                    testResults.loanTypes = { status: 'error', data: null, error: data.message };
+                    if (!silent) {
+                        resultDiv.className = 'result error';
+                        resultDiv.textContent = `❌ ERROR: ${data.message || 'Unknown error'}\n\nResponse: ${JSON.stringify(data, null, 2)}`;
+                    }
+                }
+            } catch (error) {
+                testResults.loanTypes = { status: 'error', data: null, error: error.message };
+                if (!silent) {
+                    resultDiv.className = 'result error';
+                    resultDiv.textContent = `❌ NETWORK ERROR: ${error.message}`;
+                }
+            }
+        }
+
+        async function testVendorBanksAPI(silent = false) {
+            const resultDiv = document.getElementById('vendorBanksResult');
+            if (!silent) {
+                resultDiv.className = 'result loading';
+                resultDiv.textContent = 'Testing vendor banks API...';
+            }
+
+            try {
+                const response = await fetch('https://emp.kfinone.com/mobile/api/fetch_vendor_banks.php', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                const data = await response.json();
+                
+                if (response.ok && data.status === 'success') {
+                    testResults.vendorBanks = { status: 'success', data: data.data, error: null };
+                    if (!silent) {
+                        resultDiv.className = 'result success';
+                        resultDiv.textContent = `✅ SUCCESS: ${data.message}\n\nFound ${data.data.length} vendor banks:\n\n${JSON.stringify(data, null, 2)}`;
+                    }
+                } else {
+                    testResults.vendorBanks = { status: 'error', data: null, error: data.message };
+                    if (!silent) {
+                        resultDiv.className = 'result error';
+                        resultDiv.textContent = `❌ ERROR: ${data.message || 'Unknown error'}\n\nResponse: ${JSON.stringify(data, null, 2)}`;
+                    }
+                }
+            } catch (error) {
+                testResults.vendorBanks = { status: 'error', data: null, error: error.message };
+                if (!silent) {
+                    resultDiv.className = 'result error';
+                    resultDiv.textContent = `❌ NETWORK ERROR: ${error.message}`;
+                }
+            }
+        }
+
+        function updateSummary() {
+            const summaryDiv = document.getElementById('summaryResult');
+            const loanTypesStatus = testResults.loanTypes.status;
+            const vendorBanksStatus = testResults.vendorBanks.status;
+
+            let summary = '📊 API Test Summary:\n\n';
+            
+            // Loan Types status
+            summary += `🏦 Loan Types API: `;
+            if (loanTypesStatus === 'success') {
+                summary += `✅ SUCCESS (${testResults.loanTypes.data.length} items found)\n`;
+            } else if (loanTypesStatus === 'error') {
+                summary += `❌ ERROR: ${testResults.loanTypes.error}\n`;
+            } else {
+                summary += `⏳ PENDING\n`;
+            }
+
+            // Vendor Banks status
+            summary += `🏛️ Vendor Banks API: `;
+            if (vendorBanksStatus === 'success') {
+                summary += `✅ SUCCESS (${testResults.vendorBanks.data.length} items found)\n`;
+            } else if (vendorBanksStatus === 'error') {
+                summary += `❌ ERROR: ${testResults.vendorBanks.error}\n`;
+            } else {
+                summary += `⏳ PENDING\n`;
+            }
+
+            // Overall status
+            summary += `\n🎯 Overall Status: `;
+            if (loanTypesStatus === 'success' && vendorBanksStatus === 'success') {
+                summary += `✅ ALL APIs WORKING - Policy Management panel should work correctly!`;
+                summaryDiv.className = 'result success';
+            } else if (loanTypesStatus === 'error' && vendorBanksStatus === 'error') {
+                summary += `❌ ALL APIs FAILING - Check server and database connection`;
+                summaryDiv.className = 'result error';
+            } else {
+                summary += `⚠️ PARTIAL SUCCESS - Some APIs working, others failing`;
+                summaryDiv.className = 'result loading';
+            }
+
+            summaryDiv.textContent = summary;
+        }
+
+        // Auto-test on page load
+        window.onload = function() {
+            setTimeout(testAllAPIs, 1000);
+        };
+    </script>
+</body>
+</html> 

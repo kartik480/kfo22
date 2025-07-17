@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Partner Users API</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .test-button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            margin: 10px 5px;
+        }
+        .test-button:hover {
+            background-color: #0056b3;
+        }
+        .result {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 6px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .success {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        .info {
+            background-color: #d1ecf1;
+            border: 1px solid #bee5eb;
+            color: #0c5460;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 Test Partner Users API</h1>
+        
+        <p><strong>Table:</strong> tbl_partner_users</p>
+        <p><strong>Columns:</strong> All 40+ columns confirmed</p>
+        <p><strong>Goal:</strong> Test if the API is working correctly</p>
+        
+        <button class="test-button" onclick="testAPI()">Test Partner Users API</button>
+        <div id="result"></div>
+    </div>
+
+    <script>
+        const BASE_URL = 'https://emp.kfinone.com/mobile/api/';
+
+        async function testAPI() {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = '<div class="result info">Testing API...</div>';
+            
+            try {
+                const response = await fetch(BASE_URL + 'get_partner_users_list.php');
+                
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    resultDiv.innerHTML = `
+                        <div class="result error">
+❌ API Failed!
+
+HTTP Status: ${response.status} ${response.statusText}
+Response: ${errorText}
+                    `;
+                } else {
+                    const data = await response.json();
+                    resultDiv.innerHTML = `
+                        <div class="result success">
+✅ API Working Successfully!
+
+Status: ${data.status}
+Message: ${data.message}
+Count: ${data.count}
+
+📋 Sample Data (first 3 records):
+${data.data.slice(0, 3).map((user, index) => `
+${index + 1}. ${user.full_name}
+   - Username: ${user.username}
+   - Phone: ${user.phone_number}
+   - Email: ${user.email_id}
+   - Company: ${user.company_name}
+   - Department: ${user.department}
+   - Status: ${user.status}
+`).join('\n')}
+
+${data.count > 3 ? `... and ${data.count - 3} more records` : ''}
+                    `;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="result error">
+❌ API Error!
+
+Error: ${error.message}
+                `;
+            }
+        }
+
+        // Auto-test when page loads
+        window.onload = function() {
+            setTimeout(() => {
+                testAPI();
+            }, 1000);
+        };
+    </script>
+</body>
+</html> 

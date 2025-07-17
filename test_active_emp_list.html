@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Active Emp List API - Emp Master</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .api-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #fafafa;
+        }
+        .api-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        .api-url {
+            background-color: #e8f4fd;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: monospace;
+            margin-bottom: 10px;
+            word-break: break-all;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-right: 10px;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        .result {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 4px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .success {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        .loading {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+        }
+        .summary {
+            background-color: #e2e3e5;
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+        .emp-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        .emp-table th, .emp-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        .emp-table th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        .emp-table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .status-active {
+            color: #28a745;
+            font-weight: bold;
+        }
+        .status-inactive {
+            color: #dc3545;
+            font-weight: bold;
+        }
+        .emp-master-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .emp-master-header h2 {
+            margin: 0;
+            font-size: 24px;
+        }
+        .emp-master-header p {
+            margin: 10px 0 0 0;
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="emp-master-header">
+            <h2>🏢 Emp Master - Active Emp List</h2>
+            <p>Testing API for Active Employee List in Kfinone Panel</p>
+        </div>
+        
+        <div class="api-section">
+            <div class="api-title">👥 Active Emp List API</div>
+            <div class="api-url">https://emp.kfinone.com/mobile/api/fetch_active_emp_list.php</div>
+            <button onclick="testActiveEmpList()">Test Active Emp List</button>
+            <button onclick="clearResults()">Clear Results</button>
+            <div id="activeEmpResult" class="result" style="display: none;"></div>
+        </div>
+    </div>
+
+    <script>
+        async function testActiveEmpList() {
+            const resultDiv = document.getElementById('activeEmpResult');
+            resultDiv.style.display = 'block';
+            resultDiv.className = 'result loading';
+            resultDiv.textContent = 'Loading Active Employee List...';
+            
+            try {
+                const response = await fetch('https://emp.kfinone.com/mobile/api/fetch_active_emp_list.php');
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    resultDiv.className = 'result success';
+                    
+                    let resultText = `✅ Active Emp List API Response Success\n`;
+                    resultText += `📊 Employee Summary:\n`;
+                    resultText += `   Total Employees: ${data.summary.total_employees}\n`;
+                    resultText += `   Active Employees: ${data.summary.active_employees}\n`;
+                    resultText += `   Inactive Employees: ${data.summary.inactive_employees}\n\n`;
+                    resultText += `👥 Employee Data (${data.data.length} records):\n`;
+                    resultText += JSON.stringify(data.data, null, 2);
+                    
+                    resultDiv.textContent = resultText;
+                    
+                    // Create employee table view
+                    createEmployeeTable(data.data, data.summary);
+                } else {
+                    resultDiv.className = 'result error';
+                    resultDiv.textContent = `❌ API Error: ${data.message}\n\nFull Response:\n${JSON.stringify(data, null, 2)}`;
+                }
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.textContent = `❌ Network Error: ${error.message}`;
+            }
+        }
+        
+        function createEmployeeTable(employees, summary) {
+            const resultDiv = document.getElementById('activeEmpResult');
+            
+            let tableHTML = `
+                <div class="summary">
+                    📊 Employee Summary: Total: ${summary.total_employees} | Active: ${summary.active_employees} | Inactive: ${summary.inactive_employees}
+                </div>
+                <table class="emp-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Full Name</th>
+                            <th>First Name</th>
+                            <th>Last Name</th>
+                            <th>Username</th>
+                            <th>Email</th>
+                            <th>Mobile</th>
+                            <th>Status</th>
+                            <th>Designation</th>
+                            <th>Department</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+            
+            employees.forEach(emp => {
+                const statusClass = (emp.status === 'Active' || emp.status === '1' || !emp.status) ? 'status-active' : 'status-inactive';
+                const statusText = (emp.status === 'Active' || emp.status === '1' || !emp.status) ? 'Active' : 'Inactive';
+                
+                tableHTML += `
+                    <tr>
+                        <td>${emp.id || 'N/A'}</td>
+                        <td><strong>${emp.fullName || 'N/A'}</strong></td>
+                        <td>${emp.firstName || 'N/A'}</td>
+                        <td>${emp.lastName || 'N/A'}</td>
+                        <td>${emp.username || 'N/A'}</td>
+                        <td>${emp.email || 'N/A'}</td>
+                        <td>${emp.mobile || 'N/A'}</td>
+                        <td class="${statusClass}">${statusText}</td>
+                        <td>${emp.designation || 'N/A'}</td>
+                        <td>${emp.department || 'N/A'}</td>
+                    </tr>
+                `;
+            });
+            
+            tableHTML += `
+                    </tbody>
+                </table>
+            `;
+            
+            // Add table after the JSON response
+            resultDiv.innerHTML += tableHTML;
+        }
+        
+        function clearResults() {
+            const resultDiv = document.getElementById('activeEmpResult');
+            resultDiv.style.display = 'none';
+            resultDiv.textContent = '';
+        }
+        
+        // Auto-test on page load
+        window.onload = function() {
+            console.log('🧪 Auto-testing Active Emp List API...');
+            testActiveEmpList();
+        };
+    </script>
+</body>
+</html> 

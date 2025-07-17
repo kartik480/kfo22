@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diagnose 500 Error - Partner Users API</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .test-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+        }
+        .test-button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            margin: 10px 5px;
+        }
+        .test-button:hover {
+            background-color: #0056b3;
+        }
+        .result {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 6px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .success {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        .info {
+            background-color: #d1ecf1;
+            border: 1px solid #bee5eb;
+            color: #0c5460;
+        }
+        .warning {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+        }
+        .step {
+            margin: 10px 0;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-left: 4px solid #007bff;
+            border-radius: 4px;
+        }
+        .step.success {
+            border-left-color: #28a745;
+        }
+        .step.error {
+            border-left-color: #dc3545;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 Diagnose 500 Error - Partner Users API</h1>
+        
+        <div class="test-section">
+            <h2>🚨 Problem</h2>
+            <p><strong>Error:</strong> HTTP 500 Server Error when calling <code>get_partner_users_list.php</code></p>
+            <p><strong>Android Log:</strong> <code>Unexpected response code 500 for https://emp.kfinone.com/mobile/api/get_partner_users_list.php</code></p>
+            <p><strong>Goal:</strong> Identify the exact step where the error occurs</p>
+        </div>
+
+        <div class="test-section">
+            <h2>🔍 Step 1: Basic PHP Test</h2>
+            <p>Test if PHP is working at all on the server.</p>
+            <button class="test-button" onclick="testBasicPHP()">Test Basic PHP</button>
+            <div id="basicPHPResult"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>🔍 Step 2: Database Configuration Test</h2>
+            <p>Test if the database configuration file exists and can be loaded.</p>
+            <button class="test-button" onclick="testDBConfig()">Test DB Config</button>
+            <div id="dbConfigResult"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>🔍 Step 3: Comprehensive Diagnosis</h2>
+            <p>Run a step-by-step diagnosis to identify exactly where the error occurs.</p>
+            <button class="test-button" onclick="runDiagnosis()">Run Full Diagnosis</button>
+            <div id="diagnosisResult"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>🔍 Step 4: Test Original API</h2>
+            <p>Test the original API to see the exact error message.</p>
+            <button class="test-button" onclick="testOriginalAPI()">Test Original API</button>
+            <div id="originalAPIResult"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>🔧 Step 5: Solution</h2>
+            <p>Based on the diagnosis results, here's the recommended solution:</p>
+            <div id="solutionResult"></div>
+        </div>
+    </div>
+
+    <script>
+        const BASE_URL = 'https://emp.kfinone.com/mobile/api/';
+        let diagnosisResults = {};
+
+        async function testBasicPHP() {
+            const resultDiv = document.getElementById('basicPHPResult');
+            resultDiv.innerHTML = '<div class="result info">Testing basic PHP...</div>';
+            
+            try {
+                const response = await fetch(BASE_URL + 'test_partner_users_simple.php');
+                
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    resultDiv.innerHTML = `
+                        <div class="result error">
+❌ Basic PHP Test Failed!
+
+HTTP Status: ${response.status} ${response.statusText}
+Response: ${errorText}
+
+This indicates a server configuration issue.
+                    `;
+                } else {
+                    const data = await response.json();
+                    resultDiv.innerHTML = `
+                        <div class="result success">
+✅ Basic PHP Test Passed!
+
+Status: ${data.status}
+Message: ${data.message}
+Step: ${data.step}
+Timestamp: ${data.timestamp}
+                    `;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="result error">
+❌ Basic PHP Test Error!
+
+Error: ${error.message}
+                `;
+            }
+        }
+
+        async function testDBConfig() {
+            const resultDiv = document.getElementById('dbConfigResult');
+            resultDiv.innerHTML = '<div class="result info">Testing database configuration...</div>';
+            
+            try {
+                const response = await fetch(BASE_URL + 'diagnose_partner_users.php');
+                
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    resultDiv.innerHTML = `
+                        <div class="result error">
+❌ Database Configuration Test Failed!
+
+HTTP Status: ${response.status} ${response.statusText}
+Response: ${errorText}
+                    `;
+                } else {
+                    const data = await response.json();
+                    diagnosisResults.dbConfig = data;
+                    
+                    let stepsHtml = '';
+                    for (const [step, result] of Object.entries(data.diagnosis)) {
+                        const stepClass = result.includes('OK') ? 'success' : 'error';
+                        stepsHtml += `<div class="step ${stepClass}"><strong>${step}:</strong> ${result}</div>`;
+                    }
+                    
+                    resultDiv.innerHTML = `
+                        <div class="result success">
+✅ Database Configuration Test Complete!
+
+Message: ${data.message}
+Timestamp: ${data.timestamp}
+
+${stepsHtml}
+                    `;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="result error">
+❌ Database Configuration Test Error!
+
+Error: ${error.message}
+                `;
+            }
+        }
+
+        async function runDiagnosis() {
+            const resultDiv = document.getElementById('diagnosisResult');
+            resultDiv.innerHTML = '<div class="result info">Running comprehensive diagnosis...</div>';
+            
+            // Run all tests in sequence
+            await testBasicPHP();
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            await testDBConfig();
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            await testOriginalAPI();
+            
+            resultDiv.innerHTML = `
+                <div class="result info">
+🔍 Comprehensive Diagnosis Complete!
+
+All tests have been run. Check the results above for each step.
+            `;
+        }
+
+        async function testOriginalAPI() {
+            const resultDiv = document.getElementById('originalAPIResult');
+            resultDiv.innerHTML = '<div class="result info">Testing original API...</div>';
+            
+            try {
+                const response = await fetch(BASE_URL + 'get_partner_users_list.php');
+                
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    resultDiv.innerHTML = `
+                        <div class="result error">
+❌ Original API Failed!
+
+HTTP Status: ${response.status} ${response.statusText}
+Response: ${errorText}
+
+This confirms the 500 error is still happening.
+                    `;
+                } else {
+                    const data = await response.json();
+                    resultDiv.innerHTML = `
+                        <div class="result success">
+✅ Original API Working!
+
+Status: ${data.status}
+Message: ${data.message}
+Count: ${data.count}
+                    `;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="result error">
+❌ Original API Error!
+
+Error: ${error.message}
+                `;
+            }
+        }
+
+        function generateSolution() {
+            const resultDiv = document.getElementById('solutionResult');
+            let solution = '<div class="result info">';
+            
+            if (diagnosisResults.dbConfig) {
+                const diagnosis = diagnosisResults.dbConfig.diagnosis;
+                const failedSteps = Object.entries(diagnosis).filter(([step, result]) => !result.includes('OK'));
+                
+                if (failedSteps.length > 0) {
+                    solution += `
+❌ Issues Found:
+
+${failedSteps.map(([step, result]) => `- ${step}: ${result}`).join('\n')}
+
+🔧 Recommended Solutions:
+
+1. Upload the updated API files to the server
+2. Check server error logs for specific PHP errors
+3. Verify database credentials in db_config.php
+4. Ensure all required files are present on the server
+                    `;
+                } else {
+                    solution += `
+✅ All Tests Passed!
+
+The diagnosis shows all components are working correctly.
+If the original API still fails, the issue might be:
+1. Server caching the old version
+2. File permissions on the server
+3. Server configuration issues
+                    `;
+                }
+            } else {
+                solution += `
+🔍 Run the diagnosis tests above to identify the issue.
+                `;
+            }
+            
+            solution += '</div>';
+            resultDiv.innerHTML = solution;
+        }
+
+        // Auto-run diagnosis when page loads
+        window.onload = function() {
+            setTimeout(() => {
+                runDiagnosis();
+            }, 1000);
+            
+            setTimeout(() => {
+                generateSolution();
+            }, 10000);
+        };
+    </script>
+</body>
+</html> 

@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Agent Data API</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #1976D2;
+            text-align: center;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        button {
+            background: #1976D2;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #1565C0;
+        }
+        .result {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 5px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 12px;
+        }
+        .success {
+            background: #E8F5E8;
+            border: 1px solid #4CAF50;
+            color: #2E7D32;
+        }
+        .error {
+            background: #FFEBEE;
+            border: 1px solid #F44336;
+            color: #C62828;
+        }
+        .loading {
+            background: #E3F2FD;
+            border: 1px solid #2196F3;
+            color: #1565C0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        .status-badge {
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+        }
+        .status-active {
+            background: #4CAF50;
+            color: white;
+        }
+        .status-inactive {
+            background: #F44336;
+            color: white;
+        }
+        input {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin: 5px;
+            width: 200px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Test Agent Data API</h1>
+        
+        <div class="test-section">
+            <h3>🔍 Test get_agent_data_by_user.php</h3>
+            <p>This API fetches agent data from tbl_agent_data filtered by createdBy user ID</p>
+            
+            <div>
+                <label for="userId">User ID:</label>
+                <input type="text" id="userId" placeholder="Enter user ID (e.g., 40)" value="40">
+                <button onclick="testAgentDataAPI()">Test API</button>
+                <button onclick="clearResults()">Clear Results</button>
+            </div>
+            
+            <div id="result" class="result" style="display: none;"></div>
+        </div>
+    </div>
+
+    <script>
+        async function testAgentDataAPI() {
+            const resultDiv = document.getElementById('result');
+            const userId = document.getElementById('userId').value;
+            
+            if (!userId) {
+                alert('Please enter a User ID');
+                return;
+            }
+            
+            resultDiv.style.display = 'block';
+            resultDiv.className = 'result loading';
+            resultDiv.textContent = 'Testing API... Please wait...';
+            
+            try {
+                const response = await fetch(`https://emp.kfinone.com/mobile/api/get_agent_data_by_user.php?user_id=${userId}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    resultDiv.className = 'result success';
+                    
+                    let html = `✅ API Test Successful!\n\n`;
+                    html += `Status: ${data.status}\n`;
+                    html += `Message: ${data.message}\n`;
+                    html += `Total Agents: ${data.count}\n`;
+                    html += `Filtered by User ID: ${data.filtered_by_user_id}\n\n`;
+                    
+                    if (data.data && data.data.length > 0) {
+                        html += `<strong>Agent Data:</strong>\n`;
+                        html += `<table>
+                            <thead>
+                                <tr>
+                                    <th>Agent ID</th>
+                                    <th>Full Name</th>
+                                    <th>Company</th>
+                                    <th>Phone</th>
+                                    <th>Email</th>
+                                    <th>Created By</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>`;
+                        
+                        data.data.forEach(agent => {
+                            const statusClass = agent.status === 'Active' ? 'status-active' : 'status-inactive';
+                            html += `<tr>
+                                <td>${agent.id}</td>
+                                <td><strong>${agent.full_name}</strong></td>
+                                <td>${agent.company_name || '-'}</td>
+                                <td>${agent.Phone_number || '-'}</td>
+                                <td>${agent.email_id || '-'}</td>
+                                <td>${agent.created_by_name || '-'}</td>
+                                <td><span class="status-badge ${statusClass}">${agent.status || 'Unknown'}</span></td>
+                            </tr>`;
+                        });
+                        
+                        html += `</tbody></table>`;
+                        
+                        html += `\n<strong>Complete Data (First Agent):</strong>\n`;
+                        const firstAgent = data.data[0];
+                        html += `ID: ${firstAgent.id}\n`;
+                        html += `Full Name: ${firstAgent.full_name}\n`;
+                        html += `Company: ${firstAgent.company_name}\n`;
+                        html += `Phone: ${firstAgent.Phone_number}\n`;
+                        html += `Alternative Phone: ${firstAgent.alternative_Phone_number}\n`;
+                        html += `Email: ${firstAgent.email_id}\n`;
+                        html += `Partner Type: ${firstAgent.partnerType}\n`;
+                        html += `State: ${firstAgent.state}\n`;
+                        html += `Location: ${firstAgent.location}\n`;
+                        html += `Address: ${firstAgent.address}\n`;
+                        html += `Created By: ${firstAgent.created_by_name}\n`;
+                        html += `Status: ${firstAgent.status}\n`;
+                        html += `Created At: ${firstAgent.created_at}\n`;
+                    } else {
+                        html += `⚠️ No agent data found for user ID: ${userId}`;
+                    }
+                    
+                    resultDiv.innerHTML = html;
+                } else {
+                    resultDiv.className = 'result error';
+                    resultDiv.textContent = `❌ API Error:\nStatus: ${data.status}\nMessage: ${data.message}`;
+                }
+                
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.textContent = `❌ Network Error:\n${error.message}`;
+            }
+        }
+        
+        function clearResults() {
+            const resultDiv = document.getElementById('result');
+            resultDiv.style.display = 'none';
+            resultDiv.textContent = '';
+        }
+        
+        // Auto-test on page load with default user ID
+        window.onload = function() {
+            setTimeout(() => {
+                testAgentDataAPI();
+            }, 1000);
+        };
+    </script>
+</body>
+</html> 

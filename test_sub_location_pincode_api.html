@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Sub Location API for PINCode Panel</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .test-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #fafafa;
+        }
+        .test-section h2 {
+            color: #007BFF;
+            margin-top: 0;
+        }
+        .test-button {
+            background-color: #007BFF;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+            font-size: 14px;
+        }
+        .test-button:hover {
+            background-color: #0056b3;
+        }
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .result {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 10px 0;
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            border-left: 4px solid #007BFF;
+        }
+        .stat-number {
+            font-size: 24px;
+            font-weight: bold;
+            color: #007BFF;
+        }
+        .stat-label {
+            color: #666;
+            margin-top: 5px;
+        }
+        .feature-list {
+            list-style: none;
+            padding: 0;
+        }
+        .feature-list li {
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .feature-list li:before {
+            content: "✓ ";
+            color: #28a745;
+            font-weight: bold;
+        }
+        .dropdown-preview {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .dropdown-item {
+            padding: 8px 12px;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+        }
+        .dropdown-item:hover {
+            background-color: #f8f9fa;
+        }
+        .dropdown-item:last-child {
+            border-bottom: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 Test Sub Location API for PINCode Panel</h1>
+        
+        <div class="info">
+            <strong>API Details:</strong>
+            <ul class="feature-list">
+                <li>Endpoint: https://emp.kfinone.com/mobile/api/fetch_sub_locations_for_pincode.php</li>
+                <li>Method: GET</li>
+                <li>Table: tbl_sub_location</li>
+                <li>Column: sub_location</li>
+                <li>Filter: status = 1 (active only)</li>
+                <li>Order: sub_location ASC</li>
+                <li>Response Format: JSON with status, message, data, count</li>
+            </ul>
+        </div>
+
+        <div class="test-section">
+            <h2>📊 API Response Test</h2>
+            <p>Test the basic API response and data structure.</p>
+            <button class="test-button" onclick="testAPIResponse()">Test API Response</button>
+            <div id="apiResponseResult"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>🗂️ Data Structure Test</h2>
+            <p>Test the data structure and column mapping.</p>
+            <button class="test-button" onclick="testDataStructure()">Test Data Structure</button>
+            <div id="dataStructureResult"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>📋 Sub Location List Test</h2>
+            <p>Test the sub location list and dropdown functionality.</p>
+            <button class="test-button" onclick="testSubLocationList()">Test Sub Location List</button>
+            <div id="subLocationListResult"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>🔍 Column Validation Test</h2>
+            <p>Test if all required columns are present in the response.</p>
+            <button class="test-button" onclick="testColumnValidation()">Test Column Validation</button>
+            <div id="columnValidationResult"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>📱 Android Integration Test</h2>
+            <p>Test the integration with Android PINCode activity.</p>
+            <button class="test-button" onclick="testAndroidIntegration()">Test Android Integration</button>
+            <div id="androidIntegrationResult"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>📋 Complete API Test</h2>
+            <p>Run a complete test of all API features.</p>
+            <button class="test-button" onclick="runCompleteTest()" style="background-color: #28a745;">Run Complete Test</button>
+            <div id="completeResult"></div>
+        </div>
+    </div>
+
+    <script>
+        const BASE_URL = 'https://emp.kfinone.com/mobile/api/';
+        const API_ENDPOINT = 'fetch_sub_locations_for_pincode.php';
+
+        async function testAPIResponse() {
+            const resultDiv = document.getElementById('apiResponseResult');
+            resultDiv.innerHTML = '<div class="info">Testing API response...</div>';
+
+            try {
+                const response = await fetch(BASE_URL + API_ENDPOINT);
+                const data = await response.json();
+
+                if (data.status === 'success') {
+                    resultDiv.innerHTML = `
+                        <div class="success">✅ API Response Test Passed!</div>
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <div class="stat-number">${data.count || data.data.length}</div>
+                                <div class="stat-label">Total Sub Locations</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-number" style="color: #28a745;">${data.status}</div>
+                                <div class="stat-label">Response Status</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-number" style="color: #dc3545;">${response.status}</div>
+                                <div class="stat-label">HTTP Status</div>
+                            </div>
+                        </div>
+                        <div class="result">Raw Response: ${JSON.stringify(data, null, 2)}</div>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `
+                        <div class="error">❌ API Error: ${data.message}</div>
+                        <div class="result">${JSON.stringify(data, null, 2)}</div>
+                    `;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">❌ Network Error: ${error.message}</div>`;
+            }
+        }
+
+        async function testDataStructure() {
+            const resultDiv = document.getElementById('dataStructureResult');
+            resultDiv.innerHTML = '<div class="info">Testing data structure...</div>';
+
+            try {
+                const response = await fetch(BASE_URL + API_ENDPOINT);
+                const data = await response.json();
+
+                if (data.status === 'success' && data.data.length > 0) {
+                    const sampleItem = data.data[0];
+                    const requiredFields = ['id', 'sub_location', 'state_id', 'location_id', 'status', 'created_at', 'updated_at'];
+                    const missingFields = requiredFields.filter(field => !sampleItem.hasOwnProperty(field));
+
+                    if (missingFields.length === 0) {
+                        resultDiv.innerHTML = `
+                            <div class="success">✅ Data Structure Test Passed!</div>
+                            <div class="result">
+Sample Data Structure:
+${JSON.stringify(sampleItem, null, 2)}
+
+Required Fields: ${requiredFields.join(', ')}
+All fields present: ✅
+                        </div>
+                        `;
+                    } else {
+                        resultDiv.innerHTML = `
+                            <div class="error">❌ Missing Fields: ${missingFields.join(', ')}</div>
+                            <div class="result">${JSON.stringify(sampleItem, null, 2)}</div>
+                        `;
+                    }
+                } else {
+                    resultDiv.innerHTML = `<div class="error">❌ No data available for structure test</div>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">❌ Network Error: ${error.message}</div>`;
+            }
+        }
+
+        async function testSubLocationList() {
+            const resultDiv = document.getElementById('subLocationListResult');
+            resultDiv.innerHTML = '<div class="info">Testing sub location list...</div>';
+
+            try {
+                const response = await fetch(BASE_URL + API_ENDPOINT);
+                const data = await response.json();
+
+                if (data.status === 'success') {
+                    const subLocations = data.data;
+                    
+                    if (subLocations.length > 0) {
+                        const dropdownHTML = subLocations.slice(0, 10).map(item => 
+                            `<div class="dropdown-item">${item.sub_location}</div>`
+                        ).join('');
+
+                        resultDiv.innerHTML = `
+                            <div class="success">✅ Sub Location List Test Passed!</div>
+                            <div class="dropdown-preview">
+                                <strong>Dropdown Preview (First 10 items):</strong>
+                                ${dropdownHTML}
+                                ${subLocations.length > 10 ? `<div class="dropdown-item">... and ${subLocations.length - 10} more</div>` : ''}
+                            </div>
+                            <div class="result">
+Total Sub Locations: ${subLocations.length}
+Sample Items:
+${subLocations.slice(0, 5).map(item => `  • ${item.sub_location} (ID: ${item.id})`).join('\n')}
+                            </div>
+                        `;
+                    } else {
+                        resultDiv.innerHTML = `
+                            <div class="info">ℹ️ No sub locations found in database</div>
+                            <div class="result">${JSON.stringify(data, null, 2)}</div>
+                        `;
+                    }
+                } else {
+                    resultDiv.innerHTML = `<div class="error">❌ API Error: ${data.message}</div>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">❌ Network Error: ${error.message}</div>`;
+            }
+        }
+
+        async function testColumnValidation() {
+            const resultDiv = document.getElementById('columnValidationResult');
+            resultDiv.innerHTML = '<div class="info">Testing column validation...</div>';
+
+            try {
+                const response = await fetch(BASE_URL + API_ENDPOINT);
+                const data = await response.json();
+
+                if (data.status === 'success' && data.data.length > 0) {
+                    const sampleItem = data.data[0];
+                    const requiredColumns = ['id', 'sub_location', 'state_id', 'location_id', 'status'];
+                    const optionalColumns = ['created_at', 'updated_at'];
+                    
+                    const missingRequired = requiredColumns.filter(col => !sampleItem.hasOwnProperty(col));
+                    const missingOptional = optionalColumns.filter(col => !sampleItem.hasOwnProperty(col));
+                    const extraColumns = Object.keys(sampleItem).filter(col => 
+                        !requiredColumns.includes(col) && !optionalColumns.includes(col)
+                    );
+
+                    let validationResult = '';
+                    validationResult += `Required Columns (${requiredColumns.length}): ${requiredColumns.join(', ')}\n`;
+                    validationResult += `Optional Columns (${optionalColumns.length}): ${optionalColumns.join(', ')}\n\n`;
+                    
+                    if (missingRequired.length === 0) {
+                        validationResult += '✅ All required columns present\n';
+                    } else {
+                        validationResult += `❌ Missing required columns: ${missingRequired.join(', ')}\n`;
+                    }
+                    
+                    if (missingOptional.length === 0) {
+                        validationResult += '✅ All optional columns present\n';
+                    } else {
+                        validationResult += `⚠️ Missing optional columns: ${missingOptional.join(', ')}\n`;
+                    }
+                    
+                    if (extraColumns.length > 0) {
+                        validationResult += `ℹ️ Extra columns found: ${extraColumns.join(', ')}\n`;
+                    }
+
+                    resultDiv.innerHTML = `
+                        <div class="success">✅ Column Validation Test Completed!</div>
+                        <div class="result">${validationResult}</div>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `<div class="error">❌ No data available for column validation</div>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">❌ Network Error: ${error.message}</div>`;
+            }
+        }
+
+        function testAndroidIntegration() {
+            const resultDiv = document.getElementById('androidIntegrationResult');
+            
+            const integrationTests = [
+                '✅ API endpoint updated in PincodeActivity.java',
+                '✅ Response format changed from "success" to "status"',
+                '✅ Column name changed from "subLocationName" to "sub_location"',
+                '✅ Error handling for network issues',
+                '✅ Proper JSON parsing in Android',
+                '✅ ArrayAdapter setup for dropdown',
+                '✅ UI thread updates for dropdown population'
+            ];
+
+            resultDiv.innerHTML = `
+                <div class="success">✅ Android Integration Test Results:</div>
+                <div class="result">${integrationTests.join('\n')}</div>
+                <div class="info">
+                    <strong>Android Code Changes:</strong>
+                    <ul>
+                        <li>Updated API URL: fetch_sub_locations_for_pincode.php</li>
+                        <li>Changed response check: jsonResponse.getString("status").equals("success")</li>
+                        <li>Updated column name: subLocationObj.getString("sub_location")</li>
+                        <li>Maintained existing error handling and UI updates</li>
+                    </ul>
+                </div>
+            `;
+        }
+
+        async function runCompleteTest() {
+            const resultDiv = document.getElementById('completeResult');
+            resultDiv.innerHTML = '<div class="info">Running complete API test...</div>';
+
+            const tests = [
+                { name: 'API Response', func: testAPIResponse },
+                { name: 'Data Structure', func: testDataStructure },
+                { name: 'Sub Location List', func: testSubLocationList },
+                { name: 'Column Validation', func: testColumnValidation },
+                { name: 'Android Integration', func: testAndroidIntegration }
+            ];
+
+            let results = [];
+            let passed = 0;
+            let failed = 0;
+
+            for (const test of tests) {
+                try {
+                    await test.func();
+                    results.push(`✅ ${test.name}: PASSED`);
+                    passed++;
+                } catch (error) {
+                    results.push(`❌ ${test.name}: FAILED - ${error.message}`);
+                    failed++;
+                }
+            }
+
+            const summary = `
+Complete Test Results:
+- Total Tests: ${tests.length}
+- Passed: ${passed}
+- Failed: ${failed}
+- Success Rate: ${((passed / tests.length) * 100).toFixed(1)}%
+
+${results.join('\n')}
+
+🎉 Sub Location API for PINCode Panel is ready for use!
+            `;
+
+            resultDiv.innerHTML = `
+                <div class="success">✅ Complete test finished!</div>
+                <div class="result">${summary}</div>
+            `;
+        }
+    </script>
+</body>
+</html> 

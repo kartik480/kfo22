@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <!-- Managing Director Menu Items -->
+    <group android:checkableBehavior="single">
+        
+        <item
+            android:id="@+id/nav_dashboard"
+            android:icon="@drawable/ic_dashboard"
+            android:title="Dashboard"
+            app:showAsAction="never" />
+
+        <item
+            android:id="@+id/nav_employee_management"
+            android:icon="@drawable/ic_people"
+            android:title="Employee Management"
+            app:showAsAction="never" />
+
+        <item
+            android:id="@+id/nav_sdsa_management"
+            android:icon="@drawable/ic_dsa"
+            android:title="SDSA Management"
+            app:showAsAction="never" />
+
+        <item
+            android:id="@+id/nav_partner_management"
+            android:icon="@drawable/ic_team"
+            android:title="Partner Management"
+            app:showAsAction="never" />
+
+        <item
+            android:id="@+id/nav_agent_management"
+            android:icon="@drawable/ic_agent"
+            android:title="Agent Management"
+            app:showAsAction="never" />
+
+        <item
+            android:id="@+id/nav_portfolio_management"
+            android:icon="@drawable/ic_file"
+            android:title="Portfolio Management"
+            app:showAsAction="never" />
+
+        <item
+            android:id="@+id/nav_insurance_management"
+            android:icon="@drawable/ic_policy"
+            android:title="Insurance Management"
+            app:showAsAction="never" />
+
+        <item
+            android:id="@+id/nav_payout_management"
+            android:icon="@drawable/ic_payment"
+            android:title="Payout Management"
+            app:showAsAction="never" />
+
+        <item
+            android:id="@+id/nav_document_management"
+            android:icon="@drawable/ic_file"
+            android:title="Document Management"
+            app:showAsAction="never" />
+
+        <item
+            android:id="@+id/nav_reports"
+            android:icon="@drawable/ic_reports"
+            android:title="Reports &amp; Analytics"
+            app:showAsAction="never" />
+
+        <item
+            android:id="@+id/nav_settings"
+            android:icon="@drawable/ic_settings"
+            android:title="Settings"
+            app:showAsAction="never" />
+
+        <item
+            android:id="@+id/nav_profile"
+            android:icon="@drawable/ic_profile"
+            android:title="Profile"
+            app:showAsAction="never" />
+
+        <item
+            android:id="@+id/nav_help"
+            android:icon="@drawable/ic_help"
+            android:title="Help &amp; Support"
+            app:showAsAction="never" />
+
+        <item
+            android:id="@+id/nav_logout"
+            android:icon="@drawable/ic_logout"
+            android:title="Logout"
+            app:showAsAction="never" />
+
+    </group>
+
+</menu> 

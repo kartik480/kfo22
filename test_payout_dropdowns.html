@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Payout Dropdown APIs</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .api-section {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .api-section h3 {
+            margin-top: 0;
+            color: #495057;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+        .response {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 5px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .success {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        .info {
+            background-color: #d1ecf1;
+            border: 1px solid #bee5eb;
+            color: #0c5460;
+        }
+        .api-info {
+            background-color: #e2e3e5;
+            border: 1px solid #d6d8db;
+            color: #383d41;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Test Payout Dropdown APIs</h1>
+        
+        <div class="api-info">
+            <strong>Testing all dropdown APIs for Add Payout functionality</strong><br>
+            This page tests the JSON response format of all dropdown APIs to ensure they work correctly with the Android app.
+        </div>
+
+        <!-- Payout Types API -->
+        <div class="api-section">
+            <h3>Payout Types API</h3>
+            <p><strong>Endpoint:</strong> https://emp.kfinone.com/mobile/api/fetch_payout_types.php</p>
+            <button type="button" onclick="testPayoutTypes()">Test Payout Types API</button>
+            <div id="payoutTypesResponse" class="response" style="display: none;"></div>
+        </div>
+
+        <!-- Loan Types API -->
+        <div class="api-section">
+            <h3>Loan Types API</h3>
+            <p><strong>Endpoint:</strong> https://emp.kfinone.com/mobile/api/fetch_loan_types.php</p>
+            <button type="button" onclick="testLoanTypes()">Test Loan Types API</button>
+            <div id="loanTypesResponse" class="response" style="display: none;"></div>
+        </div>
+
+        <!-- Vendor Banks API -->
+        <div class="api-section">
+            <h3>Vendor Banks API</h3>
+            <p><strong>Endpoint:</strong> https://emp.kfinone.com/mobile/api/fetch_vendor_banks.php</p>
+            <button type="button" onclick="testVendorBanks()">Test Vendor Banks API</button>
+            <div id="vendorBanksResponse" class="response" style="display: none;"></div>
+        </div>
+
+        <!-- Categories API -->
+        <div class="api-section">
+            <h3>Categories API</h3>
+            <p><strong>Endpoint:</strong> https://emp.kfinone.com/mobile/api/fetch_categories.php</p>
+            <button type="button" onclick="testCategories()">Test Categories API</button>
+            <div id="categoriesResponse" class="response" style="display: none;"></div>
+        </div>
+
+        <!-- Test All APIs -->
+        <div class="api-section">
+            <h3>Test All APIs</h3>
+            <button type="button" onclick="testAllAPIs()">Test All APIs</button>
+            <div id="allAPIsResponse" class="response" style="display: none;"></div>
+        </div>
+    </div>
+
+    <script>
+        function showResponse(elementId, message, type) {
+            const responseDiv = document.getElementById(elementId);
+            responseDiv.textContent = message;
+            responseDiv.className = 'response ' + type;
+            responseDiv.style.display = 'block';
+        }
+
+        async function testPayoutTypes() {
+            showResponse('payoutTypesResponse', 'Testing payout types API...', 'info');
+            
+            try {
+                const response = await fetch('https://emp.kfinone.com/mobile/api/fetch_payout_types.php');
+                const responseText = await response.text();
+                
+                console.log('Payout Types Raw Response:', responseText);
+                
+                try {
+                    const jsonResponse = JSON.parse(responseText);
+                    
+                    if (jsonResponse.status === 'success') {
+                        showResponse('payoutTypesResponse', 
+                            `✅ SUCCESS!\n\nStatus: ${jsonResponse.status}\nMessage: ${jsonResponse.message}\n\nData (${jsonResponse.data.length} items):\n${JSON.stringify(jsonResponse.data, null, 2)}`, 
+                            'success');
+                    } else {
+                        showResponse('payoutTypesResponse', 
+                            `❌ ERROR!\n\nStatus: ${jsonResponse.status}\nMessage: ${jsonResponse.message}\n\nFull Response:\n${JSON.stringify(jsonResponse, null, 2)}`, 
+                            'error');
+                    }
+                } catch (parseError) {
+                    showResponse('payoutTypesResponse', 
+                        `❌ JSON PARSE ERROR!\n\nError: ${parseError.message}\n\nRaw Response:\n${responseText}`, 
+                        'error');
+                }
+            } catch (error) {
+                showResponse('payoutTypesResponse', 
+                    `❌ NETWORK ERROR!\n\nError: ${error.message}`, 
+                    'error');
+            }
+        }
+
+        async function testLoanTypes() {
+            showResponse('loanTypesResponse', 'Testing loan types API...', 'info');
+            
+            try {
+                const response = await fetch('https://emp.kfinone.com/mobile/api/fetch_loan_types.php');
+                const responseText = await response.text();
+                
+                console.log('Loan Types Raw Response:', responseText);
+                
+                try {
+                    const jsonResponse = JSON.parse(responseText);
+                    
+                    if (jsonResponse.status === 'success') {
+                        showResponse('loanTypesResponse', 
+                            `✅ SUCCESS!\n\nStatus: ${jsonResponse.status}\nMessage: ${jsonResponse.message}\n\nData (${jsonResponse.data.length} items):\n${JSON.stringify(jsonResponse.data, null, 2)}`, 
+                            'success');
+                    } else {
+                        showResponse('loanTypesResponse', 
+                            `❌ ERROR!\n\nStatus: ${jsonResponse.status}\nMessage: ${jsonResponse.message}\n\nFull Response:\n${JSON.stringify(jsonResponse, null, 2)}`, 
+                            'error');
+                    }
+                } catch (parseError) {
+                    showResponse('loanTypesResponse', 
+                        `❌ JSON PARSE ERROR!\n\nError: ${parseError.message}\n\nRaw Response:\n${responseText}`, 
+                        'error');
+                }
+            } catch (error) {
+                showResponse('loanTypesResponse', 
+                    `❌ NETWORK ERROR!\n\nError: ${error.message}`, 
+                    'error');
+            }
+        }
+
+        async function testVendorBanks() {
+            showResponse('vendorBanksResponse', 'Testing vendor banks API...', 'info');
+            
+            try {
+                const response = await fetch('https://emp.kfinone.com/mobile/api/fetch_vendor_banks.php');
+                const responseText = await response.text();
+                
+                console.log('Vendor Banks Raw Response:', responseText);
+                
+                try {
+                    const jsonResponse = JSON.parse(responseText);
+                    
+                    if (jsonResponse.status === 'success') {
+                        showResponse('vendorBanksResponse', 
+                            `✅ SUCCESS!\n\nStatus: ${jsonResponse.status}\nMessage: ${jsonResponse.message}\n\nData (${jsonResponse.data.length} items):\n${JSON.stringify(jsonResponse.data, null, 2)}`, 
+                            'success');
+                    } else {
+                        showResponse('vendorBanksResponse', 
+                            `❌ ERROR!\n\nStatus: ${jsonResponse.status}\nMessage: ${jsonResponse.message}\n\nFull Response:\n${JSON.stringify(jsonResponse, null, 2)}`, 
+                            'error');
+                    }
+                } catch (parseError) {
+                    showResponse('vendorBanksResponse', 
+                        `❌ JSON PARSE ERROR!\n\nError: ${parseError.message}\n\nRaw Response:\n${responseText}`, 
+                        'error');
+                }
+            } catch (error) {
+                showResponse('vendorBanksResponse', 
+                    `❌ NETWORK ERROR!\n\nError: ${error.message}`, 
+                    'error');
+            }
+        }
+
+        async function testCategories() {
+            showResponse('categoriesResponse', 'Testing categories API...', 'info');
+            
+            try {
+                const response = await fetch('https://emp.kfinone.com/mobile/api/fetch_categories.php');
+                const responseText = await response.text();
+                
+                console.log('Categories Raw Response:', responseText);
+                
+                try {
+                    const jsonResponse = JSON.parse(responseText);
+                    
+                    if (jsonResponse.status === 'success') {
+                        showResponse('categoriesResponse', 
+                            `✅ SUCCESS!\n\nStatus: ${jsonResponse.status}\nMessage: ${jsonResponse.message}\n\nData (${jsonResponse.data.length} items):\n${JSON.stringify(jsonResponse.data, null, 2)}`, 
+                            'success');
+                    } else {
+                        showResponse('categoriesResponse', 
+                            `❌ ERROR!\n\nStatus: ${jsonResponse.status}\nMessage: ${jsonResponse.message}\n\nFull Response:\n${JSON.stringify(jsonResponse, null, 2)}`, 
+                            'error');
+                    }
+                } catch (parseError) {
+                    showResponse('categoriesResponse', 
+                        `❌ JSON PARSE ERROR!\n\nError: ${parseError.message}\n\nRaw Response:\n${responseText}`, 
+                        'error');
+                }
+            } catch (error) {
+                showResponse('categoriesResponse', 
+                    `❌ NETWORK ERROR!\n\nError: ${error.message}`, 
+                    'error');
+            }
+        }
+
+        async function testAllAPIs() {
+            showResponse('allAPIsResponse', 'Testing all APIs...', 'info');
+            
+            const results = [];
+            
+            // Test Payout Types
+            try {
+                const response = await fetch('https://emp.kfinone.com/mobile/api/fetch_payout_types.php');
+                const jsonResponse = await response.json();
+                results.push(`✅ Payout Types: ${jsonResponse.status === 'success' ? 'SUCCESS' : 'FAILED'} (${jsonResponse.data?.length || 0} items)`);
+            } catch (error) {
+                results.push(`❌ Payout Types: FAILED - ${error.message}`);
+            }
+            
+            // Test Loan Types
+            try {
+                const response = await fetch('https://emp.kfinone.com/mobile/api/fetch_loan_types.php');
+                const jsonResponse = await response.json();
+                results.push(`✅ Loan Types: ${jsonResponse.status === 'success' ? 'SUCCESS' : 'FAILED'} (${jsonResponse.data?.length || 0} items)`);
+            } catch (error) {
+                results.push(`❌ Loan Types: FAILED - ${error.message}`);
+            }
+            
+            // Test Vendor Banks
+            try {
+                const response = await fetch('https://emp.kfinone.com/mobile/api/fetch_vendor_banks.php');
+                const jsonResponse = await response.json();
+                results.push(`✅ Vendor Banks: ${jsonResponse.status === 'success' ? 'SUCCESS' : 'FAILED'} (${jsonResponse.data?.length || 0} items)`);
+            } catch (error) {
+                results.push(`❌ Vendor Banks: FAILED - ${error.message}`);
+            }
+            
+            // Test Categories
+            try {
+                const response = await fetch('https://emp.kfinone.com/mobile/api/fetch_categories.php');
+                const jsonResponse = await response.json();
+                results.push(`✅ Categories: ${jsonResponse.status === 'success' ? 'SUCCESS' : 'FAILED'} (${jsonResponse.data?.length || 0} items)`);
+            } catch (error) {
+                results.push(`❌ Categories: FAILED - ${error.message}`);
+            }
+            
+            const allSuccess = results.every(result => result.includes('SUCCESS'));
+            showResponse('allAPIsResponse', 
+                `📊 ALL APIs TEST RESULTS:\n\n${results.join('\n')}\n\n${allSuccess ? '🎉 All APIs are working correctly!' : '⚠️ Some APIs have issues. Check individual results above.'}`, 
+                allSuccess ? 'success' : 'error');
+        }
+    </script>
+</body>
+</html> 

@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Location Table Debug</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        h1, h2 {
+            color: #333;
+        }
+        .api-section {
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .response {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 15px;
+            margin-top: 10px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            max-height: 600px;
+            overflow-y: auto;
+        }
+        .success {
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+        .loading {
+            color: #007bff;
+        }
+        .column-info {
+            background-color: #e9ecef;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 4px;
+        }
+        .sample-data {
+            background-color: #fff3cd;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Location Table Debug</h1>
+    
+    <div class="container">
+        <h2>1. Test Database Connection</h2>
+        <div class="api-section">
+            <button onclick="testConnection()">Test Database Connection</button>
+            <div id="connectionResponse" class="response"></div>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>2. Check tbl_location Table Structure</h2>
+        <div class="api-section">
+            <button onclick="debugLocationTable()">Debug tbl_location Table</button>
+            <div id="debugResponse" class="response"></div>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>3. Test Current get_locations.php</h2>
+        <div class="api-section">
+            <button onclick="testGetLocations()">Test get_locations.php</button>
+            <div id="getLocationsResponse" class="response"></div>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>4. Run All Tests</h2>
+        <div class="api-section">
+            <button onclick="runAllTests()">Run All Tests</button>
+            <div id="allTestsResponse" class="response"></div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'https://emp.kfinone.com/mobile/api/';
+        
+        async function makeRequest(url, options = {}) {
+            try {
+                const response = await fetch(url, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        ...options.headers
+                    },
+                    ...options
+                });
+                
+                const data = await response.text();
+                let jsonData;
+                try {
+                    jsonData = JSON.parse(data);
+                } catch (e) {
+                    return { success: false, error: 'Invalid JSON response', raw: data };
+                }
+                
+                return {
+                    success: response.ok,
+                    status: response.status,
+                    data: jsonData,
+                    raw: data
+                };
+            } catch (error) {
+                return {
+                    success: false,
+                    error: error.message,
+                    raw: error.toString()
+                };
+            }
+        }
+
+        async function testConnection() {
+            const responseDiv = document.getElementById('connectionResponse');
+            responseDiv.innerHTML = '<div class="loading">Testing database connection...</div>';
+            
+            const result = await makeRequest(API_BASE + 'test_location_connection.php');
+            
+            if (result.success && result.data.success) {
+                responseDiv.className = 'response success';
+                let html = `✅ Database Connection Successful!\n\n`;
+                html += `Connection Status: ${result.data.data.connection_status}\n`;
+                html += `Database Test: ${result.data.data.database_test}\n`;
+                html += `tbl_location Table: ${result.data.data.tbl_location_table.exists ? 'Exists' : 'Does not exist'}\n`;
+                
+                if (result.data.data.tbl_location_table.exists) {
+                    html += `Record Count: ${result.data.data.tbl_location_table.record_count}\n`;
+                }
+                
+                responseDiv.innerHTML = html;
+            } else {
+                responseDiv.className = 'response error';
+                responseDiv.innerHTML = `❌ Connection Failed!\n\nStatus: ${result.status}\nError: ${result.data?.error || result.error}\n\nRaw Response:\n${result.raw}`;
+            }
+        }
+
+        async function debugLocationTable() {
+            const responseDiv = document.getElementById('debugResponse');
+            responseDiv.innerHTML = '<div class="loading">Checking tbl_location table structure...</div>';
+            
+            const result = await makeRequest(API_BASE + 'debug_location_table.php');
+            
+            if (result.success && result.data.success) {
+                responseDiv.className = 'response success';
+                let html = `✅ Table Structure Found!\n\n`;
+                html += `Table Name: ${result.data.table_name}\n`;
+                html += `Total Records: ${result.data.total_records}\n\n`;
+                
+                html += `📋 COLUMNS:\n`;
+                result.data.columns.forEach(column => {
+                    html += `• ${column.field} (${column.type}) - ${column.null === 'YES' ? 'NULL' : 'NOT NULL'}\n`;
+                });
+                
+                if (result.data.sample_data.length > 0) {
+                    html += `\n📊 SAMPLE DATA:\n`;
+                    result.data.sample_data.forEach((row, index) => {
+                        html += `Row ${index + 1}: ${JSON.stringify(row, null, 2)}\n`;
+                    });
+                }
+                
+                responseDiv.innerHTML = html;
+            } else {
+                responseDiv.className = 'response error';
+                responseDiv.innerHTML = `❌ Error!\n\nStatus: ${result.status}\nError: ${result.data?.error || result.error}\n\nRaw Response:\n${result.raw}`;
+            }
+        }
+
+        async function testGetLocations() {
+            const responseDiv = document.getElementById('getLocationsResponse');
+            responseDiv.innerHTML = '<div class="loading">Testing get_locations.php...</div>';
+            
+            const result = await makeRequest(API_BASE + 'get_locations.php');
+            
+            if (result.success && result.data.success) {
+                responseDiv.className = 'response success';
+                const locations = result.data.data;
+                responseDiv.innerHTML = `✅ Success!\n\nLocations loaded: ${locations.length}\n\nLocations:\n${locations.map(loc => loc.locationName).join(', ')}`;
+            } else {
+                responseDiv.className = 'response error';
+                responseDiv.innerHTML = `❌ Error!\n\nStatus: ${result.status}\nError: ${result.data?.error || result.error}\n\nRaw Response:\n${result.raw}`;
+            }
+        }
+
+        async function runAllTests() {
+            const responseDiv = document.getElementById('allTestsResponse');
+            responseDiv.innerHTML = '<div class="loading">Running all tests...</div>';
+            
+            let results = [];
+            
+            // Test 1: Connection
+            responseDiv.innerHTML = '<div class="loading">1. Testing database connection...</div>';
+            const connectionResult = await makeRequest(API_BASE + 'test_location_connection.php');
+            results.push({
+                test: 'Database Connection',
+                success: connectionResult.success && connectionResult.data.success,
+                message: connectionResult.success && connectionResult.data.success ? 
+                    `✅ Success - Database connected` : 
+                    `❌ Failed - ${connectionResult.data?.error || connectionResult.error}`
+            });
+            
+            // Test 2: Table Structure
+            responseDiv.innerHTML = '<div class="loading">2. Checking table structure...</div>';
+            const structureResult = await makeRequest(API_BASE + 'debug_location_table.php');
+            results.push({
+                test: 'Table Structure',
+                success: structureResult.success && structureResult.data.success,
+                message: structureResult.success && structureResult.data.success ? 
+                    `✅ Success - Table exists with ${structureResult.data.total_records} records` : 
+                    `❌ Failed - ${structureResult.data?.error || structureResult.error}`
+            });
+            
+            // Test 3: Get Locations
+            responseDiv.innerHTML = '<div class="loading">3. Testing get_locations.php...</div>';
+            const locationsResult = await makeRequest(API_BASE + 'get_locations.php');
+            results.push({
+                test: 'Get Locations API',
+                success: locationsResult.success && locationsResult.data.success,
+                message: locationsResult.success && locationsResult.data.success ? 
+                    `✅ Success - ${locationsResult.data.data.length} locations loaded` : 
+                    `❌ Failed - ${locationsResult.data?.error || locationsResult.error}`
+            });
+            
+            // Display summary
+            const successCount = results.filter(r => r.success).length;
+            const totalCount = results.length;
+            
+            responseDiv.className = successCount === totalCount ? 'response success' : 'response error';
+            responseDiv.innerHTML = `Test Summary: ${successCount}/${totalCount} tests passed\n\n${results.map(r => r.message).join('\n')}`;
+        }
+
+        // Auto-run connection test on page load
+        window.onload = function() {
+            testConnection();
+        };
+    </script>
+</body>
+</html> 

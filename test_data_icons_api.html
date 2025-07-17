@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Data Icons API</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .success {
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+        }
+        .error {
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+        }
+        pre {
+            background-color: #f8f9fa;
+            padding: 10px;
+            border-radius: 3px;
+            overflow-x: auto;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .icon-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        .icon-item {
+            border: 1px solid #ddd;
+            padding: 10px;
+            border-radius: 5px;
+            background-color: white;
+        }
+        .icon-image {
+            width: 100%;
+            height: 100px;
+            object-fit: contain;
+            border: 1px solid #eee;
+            border-radius: 3px;
+        }
+        .icon-name {
+            font-weight: bold;
+            margin: 5px 0;
+        }
+        .icon-description {
+            font-size: 12px;
+            color: #666;
+            margin: 5px 0;
+        }
+        .icon-url {
+            font-size: 11px;
+            color: #999;
+            word-break: break-all;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test Data Icons API</h1>
+    
+    <div class="test-section">
+        <h2>Test: Get Data Icons from tbl_data_icon</h2>
+        <button onclick="testDataIcons()">Test Data Icons API</button>
+        <div id="result"></div>
+    </div>
+
+    <script>
+        async function testDataIcons() {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = '<p>Testing...</p>';
+            
+            try {
+                const response = await fetch('https://emp.kfinone.com/mobile/api/get_data_icons.php', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok && data.status === 'success') {
+                    resultDiv.className = 'test-section success';
+                    
+                    let html = `
+                        <h3>✅ Success!</h3>
+                        <p><strong>Message:</strong> ${data.message}</p>
+                        <p><strong>Total Icons:</strong> ${data.summary.total_icons}</p>
+                    `;
+                    
+                    if (data.data && data.data.length > 0) {
+                        html += `
+                            <h4>Icons Found:</h4>
+                            <div class="icon-grid">
+                        `;
+                        
+                        data.data.forEach(icon => {
+                            html += `
+                                <div class="icon-item">
+                                    <div class="icon-name">${icon.icon_name || 'No Name'}</div>
+                                    <div class="icon-description">${icon.icon_description || 'No Description'}</div>
+                                    <div class="icon-url">${icon.icon_url || 'No URL'}</div>
+                                    ${icon.icon_image ? `<img src="data:image/png;base64,${icon.icon_image}" class="icon-image" alt="${icon.icon_name}">` : '<div class="icon-image">No Image</div>'}
+                                </div>
+                            `;
+                        });
+                        
+                        html += '</div>';
+                    } else {
+                        html += '<p><em>No icons found in the database.</em></p>';
+                    }
+                    
+                    html += `
+                        <h4>Debug Information:</h4>
+                        <pre>${JSON.stringify(data.debug, null, 2)}</pre>
+                        
+                        <h4>Raw Response:</h4>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                    
+                    resultDiv.innerHTML = html;
+                } else {
+                    resultDiv.className = 'test-section error';
+                    resultDiv.innerHTML = `
+                        <h3>❌ Error!</h3>
+                        <p><strong>Status:</strong> ${data.status}</p>
+                        <p><strong>Message:</strong> ${data.message}</p>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                }
+            } catch (error) {
+                resultDiv.className = 'test-section error';
+                resultDiv.innerHTML = `
+                    <h3>❌ Network Error!</h3>
+                    <p><strong>Error:</strong> ${error.message}</p>
+                `;
+            }
+        }
+    </script>
+</body>
+</html> 

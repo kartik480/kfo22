@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug 500 Error - Partner Users API</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .test-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .test-section h2 {
+            color: #555;
+            margin-top: 0;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .result {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 5px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .success {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        .loading {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+        }
+        .warning {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Debug 500 Error - Partner Users API</h1>
+        
+        <div class="test-section">
+            <h2>Step 1: Debug API (Comprehensive)</h2>
+            <p>This will test each step of the API process to identify where the 500 error occurs.</p>
+            <button onclick="testDebugAPI()">Run Debug API</button>
+            <div id="debugResult" class="result"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>Step 2: Test Compatible API</h2>
+            <p>Test the new compatible API that works with older PHP versions.</p>
+            <button onclick="testCompatibleAPI()">Test Compatible API</button>
+            <div id="compatibleResult" class="result"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>Step 3: Test Original Fixed API</h2>
+            <p>Test the original fixed API to see if it's a PHP version issue.</p>
+            <button onclick="testFixedAPI()">Test Fixed API</button>
+            <div id="fixedResult" class="result"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>Step 4: Test Minimal API</h2>
+            <p>Test the minimal API that was working before.</p>
+            <button onclick="testMinimalAPI()">Test Minimal API</button>
+            <div id="minimalResult" class="result"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>Step 5: Test Database Connection</h2>
+            <p>Test basic database connectivity.</p>
+            <button onclick="testDatabaseConnection()">Test Database</button>
+            <div id="databaseResult" class="result"></div>
+        </div>
+    </div>
+
+    <script>
+        const BASE_URL = 'https://emp.kfinone.com/mobile/api/';
+
+        async function testDebugAPI() {
+            const resultDiv = document.getElementById('debugResult');
+            resultDiv.className = 'result loading';
+            resultDiv.textContent = 'Running debug API...';
+
+            try {
+                const response = await fetch(BASE_URL + 'debug_partner_users_500.php');
+                const data = await response.json();
+
+                if (data.status === 'success') {
+                    resultDiv.className = 'result success';
+                    let result = '✅ Debug API Successful!\n\n';
+                    result += `Status: ${data.status}\n`;
+                    result += `Message: ${data.message}\n`;
+                    result += `Count: ${data.count}\n\n`;
+                    result += 'Debug Log:\n';
+                    if (data.debug_log) {
+                        data.debug_log.forEach(log => {
+                            result += log + '\n';
+                        });
+                    }
+                    resultDiv.textContent = result;
+                } else {
+                    resultDiv.className = 'result error';
+                    let result = '❌ Debug API Failed!\n\n';
+                    result += `Status: ${data.status}\n`;
+                    result += `Message: ${data.message}\n\n`;
+                    if (data.debug_log) {
+                        result += 'Debug Log:\n';
+                        data.debug_log.forEach(log => {
+                            result += log + '\n';
+                        });
+                    }
+                    resultDiv.textContent = result;
+                }
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.textContent = `❌ Error: ${error.message}`;
+            }
+        }
+
+        async function testCompatibleAPI() {
+            const resultDiv = document.getElementById('compatibleResult');
+            resultDiv.className = 'result loading';
+            resultDiv.textContent = 'Testing compatible API...';
+
+            try {
+                const response = await fetch(BASE_URL + 'get_partner_users_list_compatible.php');
+                const data = await response.json();
+
+                if (data.status === 'success') {
+                    resultDiv.className = 'result success';
+                    let result = '✅ Compatible API Successful!\n\n';
+                    result += `Status: ${data.status}\n`;
+                    result += `Message: ${data.message}\n`;
+                    result += `Count: ${data.count}\n\n`;
+                    
+                    if (data.data && data.data.length > 0) {
+                        result += 'Sample data:\n';
+                        const user = data.data[0];
+                        result += `ID: ${user.id}\n`;
+                        result += `Username: ${user.username}\n`;
+                        result += `Name: ${user.first_name} ${user.last_name}\n`;
+                    }
+                    resultDiv.textContent = result;
+                } else {
+                    resultDiv.className = 'result error';
+                    resultDiv.textContent = `❌ Compatible API Failed!\n\nStatus: ${data.status}\nMessage: ${data.message}`;
+                }
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.textContent = `❌ Error: ${error.message}`;
+            }
+        }
+
+        async function testFixedAPI() {
+            const resultDiv = document.getElementById('fixedResult');
+            resultDiv.className = 'result loading';
+            resultDiv.textContent = 'Testing fixed API...';
+
+            try {
+                const response = await fetch(BASE_URL + 'get_partner_users_list_fixed.php');
+                const data = await response.json();
+
+                if (data.status === 'success') {
+                    resultDiv.className = 'result success';
+                    let result = '✅ Fixed API Successful!\n\n';
+                    result += `Status: ${data.status}\n`;
+                    result += `Message: ${data.message}\n`;
+                    result += `Count: ${data.count}\n`;
+                    resultDiv.textContent = result;
+                } else {
+                    resultDiv.className = 'result error';
+                    resultDiv.textContent = `❌ Fixed API Failed!\n\nStatus: ${data.status}\nMessage: ${data.message}`;
+                }
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.textContent = `❌ Error: ${error.message}`;
+            }
+        }
+
+        async function testMinimalAPI() {
+            const resultDiv = document.getElementById('minimalResult');
+            resultDiv.className = 'result loading';
+            resultDiv.textContent = 'Testing minimal API...';
+
+            try {
+                const response = await fetch(BASE_URL + 'get_partner_users_list_minimal.php');
+                const data = await response.json();
+
+                if (data.status === 'success') {
+                    resultDiv.className = 'result success';
+                    let result = '✅ Minimal API Successful!\n\n';
+                    result += `Status: ${data.status}\n`;
+                    result += `Message: ${data.message}\n`;
+                    result += `Count: ${data.count}\n`;
+                    resultDiv.textContent = result;
+                } else {
+                    resultDiv.className = 'result error';
+                    resultDiv.textContent = `❌ Minimal API Failed!\n\nStatus: ${data.status}\nMessage: ${data.message}`;
+                }
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.textContent = `❌ Error: ${error.message}`;
+            }
+        }
+
+        async function testDatabaseConnection() {
+            const resultDiv = document.getElementById('databaseResult');
+            resultDiv.className = 'result loading';
+            resultDiv.textContent = 'Testing database connection...';
+
+            try {
+                const response = await fetch(BASE_URL + 'check_database.php');
+                const data = await response.json();
+
+                if (data.status === 'success') {
+                    resultDiv.className = 'result success';
+                    let result = '✅ Database Connection Successful!\n\n';
+                    result += `Status: ${data.status}\n`;
+                    result += `Message: ${data.message}\n`;
+                    resultDiv.textContent = result;
+                } else {
+                    resultDiv.className = 'result error';
+                    resultDiv.textContent = `❌ Database Connection Failed!\n\nStatus: ${data.status}\nMessage: ${data.message}`;
+                }
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.textContent = `❌ Error: ${error.message}`;
+            }
+        }
+
+        // Auto-run debug when page loads
+        window.onload = function() {
+            testDebugAPI();
+        };
+    </script>
+</body>
+</html> 

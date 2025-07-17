@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Check tbl_user Table Structure</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        .button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+        }
+        .button:hover {
+            background-color: #0056b3;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 4px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 14px;
+        }
+        .success {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        .loading {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        .section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .section h3 {
+            margin-top: 0;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Check tbl_user Table Structure</h1>
+        
+        <div>
+            <button class="button" onclick="checkTableStructure()">Check Table Structure</button>
+            <button class="button" onclick="testFixedAPI()">Test Fixed API</button>
+            <button class="button" onclick="testEnhancedAPI()">Test Enhanced API</button>
+            <button class="button" onclick="testInactiveAPI()">Test Inactive API</button>
+            <button class="button" onclick="clearResults()">Clear Results</button>
+        </div>
+        
+        <div id="result" class="result" style="display: none;"></div>
+    </div>
+
+    <script>
+        function checkTableStructure() {
+            const resultDiv = document.getElementById('result');
+            resultDiv.style.display = 'block';
+            resultDiv.className = 'result loading';
+            resultDiv.textContent = 'Checking table structure...';
+            
+            fetch('https://emp.kfinone.com/mobile/api/check_table_structure.php')
+                .then(response => response.json())
+                .then(data => {
+                    resultDiv.className = 'result success';
+                    
+                    let output = '=== TABLE STRUCTURE ===\n\n';
+                    
+                    if (data.status === 'success') {
+                        output += `Table: ${data.table_info.table_name}\n`;
+                        output += `Total Rows: ${data.table_info.total_rows}\n`;
+                        output += `Columns Count: ${data.table_info.columns_count}\n\n`;
+                        
+                        output += '=== COLUMNS ===\n';
+                        data.columns.forEach(column => {
+                            output += `${column.field} (${column.type}) - Null: ${column.null} - Key: ${column.key}\n`;
+                        });
+                        
+                        output += '\n=== SAMPLE DATA (First 3 rows) ===\n';
+                        if (data.sample_data.length > 0) {
+                            data.sample_data.forEach((row, index) => {
+                                output += `\nRow ${index + 1}:\n`;
+                                Object.keys(row).forEach(key => {
+                                    output += `  ${key}: ${row[key]}\n`;
+                                });
+                            });
+                        } else {
+                            output += 'No data found in table.\n';
+                        }
+                        
+                        // Also display as formatted table
+                        displayColumnsTable(data.columns);
+                        displaySampleDataTable(data.sample_data);
+                        
+                    } else {
+                        output += `Error: ${data.message}\n`;
+                        resultDiv.className = 'result error';
+                    }
+                    
+                    resultDiv.textContent = output;
+                })
+                .catch(error => {
+                    resultDiv.className = 'result error';
+                    resultDiv.textContent = 'Error: ' + error.message;
+                });
+        }
+        
+        function testFixedAPI() {
+            const resultDiv = document.getElementById('result');
+            resultDiv.style.display = 'block';
+            resultDiv.className = 'result loading';
+            resultDiv.textContent = 'Testing fixed API...';
+            
+            fetch('https://emp.kfinone.com/mobile/api/get_active_users_fixed.php')
+                .then(response => response.json())
+                .then(data => {
+                    resultDiv.className = 'result success';
+                    
+                    let output = '=== FIXED API TEST ===\n\n';
+                    
+                    if (data.status === 'success') {
+                        output += `Status: ${data.status}\n`;
+                        output += `Message: ${data.message}\n\n`;
+                        output += `Total Users: ${data.summary.total_users}\n`;
+                        output += `Active Users: ${data.summary.active_users}\n`;
+                        output += `Inactive Users: ${data.summary.inactive_users}\n\n`;
+                        
+                        if (data.debug) {
+                            output += '=== DEBUG INFO ===\n';
+                            output += `Available Columns: ${data.debug.available_columns.join(', ')}\n`;
+                            output += `Selected Columns: ${data.debug.selected_columns.join(', ')}\n\n`;
+                        }
+                        
+                        output += '=== FIRST 3 USERS ===\n';
+                        if (data.data.length > 0) {
+                            data.data.slice(0, 3).forEach((user, index) => {
+                                output += `\nUser ${index + 1}:\n`;
+                                Object.keys(user).forEach(key => {
+                                    output += `  ${key}: ${user[key]}\n`;
+                                });
+                            });
+                        } else {
+                            output += 'No users found.\n';
+                        }
+                        
+                    } else {
+                        output += `Error: ${data.message}\n`;
+                        resultDiv.className = 'result error';
+                    }
+                    
+                    resultDiv.textContent = output;
+                })
+                .catch(error => {
+                    resultDiv.className = 'result error';
+                    resultDiv.textContent = 'Error: ' + error.message;
+                });
+        }
+        
+        function displayColumnsTable(columns) {
+            const container = document.querySelector('.container');
+            
+            // Remove existing table if any
+            const existingTable = document.getElementById('columnsTable');
+            if (existingTable) {
+                existingTable.remove();
+            }
+            
+            const section = document.createElement('div');
+            section.className = 'section';
+            section.innerHTML = '<h3>Table Columns</h3>';
+            
+            const table = document.createElement('table');
+            table.id = 'columnsTable';
+            
+            const thead = document.createElement('thead');
+            thead.innerHTML = `
+                <tr>
+                    <th>Column Name</th>
+                    <th>Type</th>
+                    <th>Null</th>
+                    <th>Key</th>
+                    <th>Default</th>
+                    <th>Extra</th>
+                </tr>
+            `;
+            table.appendChild(thead);
+            
+            const tbody = document.createElement('tbody');
+            columns.forEach(column => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${column.field}</td>
+                    <td>${column.type}</td>
+                    <td>${column.null}</td>
+                    <td>${column.key}</td>
+                    <td>${column.default || ''}</td>
+                    <td>${column.extra}</td>
+                `;
+                tbody.appendChild(row);
+            });
+            table.appendChild(tbody);
+            
+            section.appendChild(table);
+            container.appendChild(section);
+        }
+        
+        function displaySampleDataTable(sampleData) {
+            if (sampleData.length === 0) return;
+            
+            const container = document.querySelector('.container');
+            
+            // Remove existing table if any
+            const existingTable = document.getElementById('sampleDataTable');
+            if (existingTable) {
+                existingTable.remove();
+            }
+            
+            const section = document.createElement('div');
+            section.className = 'section';
+            section.innerHTML = '<h3>Sample Data (First 3 rows)</h3>';
+            
+            const table = document.createElement('table');
+            table.id = 'sampleDataTable';
+            
+            // Create header
+            const thead = document.createElement('thead');
+            const headerRow = document.createElement('tr');
+            Object.keys(sampleData[0]).forEach(key => {
+                const th = document.createElement('th');
+                th.textContent = key;
+                headerRow.appendChild(th);
+            });
+            thead.appendChild(headerRow);
+            table.appendChild(thead);
+            
+            // Create body
+            const tbody = document.createElement('tbody');
+            sampleData.forEach(row => {
+                const tr = document.createElement('tr');
+                Object.values(row).forEach(value => {
+                    const td = document.createElement('td');
+                    td.textContent = value || '';
+                    tr.appendChild(td);
+                });
+                tbody.appendChild(tr);
+            });
+            table.appendChild(tbody);
+            
+            section.appendChild(table);
+            container.appendChild(section);
+        }
+        
+        function testEnhancedAPI() {
+            const resultDiv = document.getElementById('result');
+            resultDiv.style.display = 'block';
+            resultDiv.className = 'result loading';
+            resultDiv.textContent = 'Testing enhanced API with designation/department names...';
+            
+            fetch('https://emp.kfinone.com/mobile/api/get_active_users_with_names.php')
+                .then(response => response.json())
+                .then(data => {
+                    resultDiv.className = 'result success';
+                    
+                    let output = '=== ENHANCED API TEST ===\n\n';
+                    
+                    if (data.status === 'success') {
+                        output += `Status: ${data.status}\n`;
+                        output += `Message: ${data.message}\n\n`;
+                        output += `Total Users: ${data.summary.total_users}\n`;
+                        output += `Active Users: ${data.summary.active_users}\n`;
+                        output += `Inactive Users: ${data.summary.inactive_users}\n\n`;
+                        
+                        if (data.debug) {
+                            output += '=== DEBUG INFO ===\n';
+                            output += `Designation Table Exists: ${data.debug.designation_table_exists}\n`;
+                            output += `Department Table Exists: ${data.debug.department_table_exists}\n`;
+                            output += `Query Used: ${data.debug.query_used}\n\n`;
+                        }
+                        
+                        output += '=== FIRST 3 USERS ===\n';
+                        if (data.data.length > 0) {
+                            data.data.slice(0, 3).forEach((user, index) => {
+                                output += `\nUser ${index + 1}:\n`;
+                                Object.keys(user).forEach(key => {
+                                    output += `  ${key}: ${user[key]}\n`;
+                                });
+                            });
+                        } else {
+                            output += 'No users found.\n';
+                        }
+                        
+                    } else {
+                        output += `Error: ${data.message}\n`;
+                        resultDiv.className = 'result error';
+                    }
+                    
+                    resultDiv.textContent = output;
+                })
+                .catch(error => {
+                    resultDiv.className = 'result error';
+                    resultDiv.textContent = 'Error: ' + error.message;
+                });
+        }
+        
+        function testInactiveAPI() {
+            const resultDiv = document.getElementById('result');
+            resultDiv.style.display = 'block';
+            resultDiv.className = 'result loading';
+            resultDiv.textContent = 'Testing inactive users API...';
+            
+            fetch('https://emp.kfinone.com/mobile/api/get_inactive_users.php')
+                .then(response => response.json())
+                .then(data => {
+                    resultDiv.className = 'result success';
+                    
+                    let output = '=== INACTIVE USERS API TEST ===\n\n';
+                    
+                    if (data.status === 'success') {
+                        output += `Status: ${data.status}\n`;
+                        output += `Message: ${data.message}\n\n`;
+                        output += `Total Inactive Users: ${data.summary.total_inactive_users}\n\n`;
+                        
+                        if (data.debug) {
+                            output += '=== DEBUG INFO ===\n';
+                            output += `Designation Table Exists: ${data.debug.designation_table_exists}\n`;
+                            output += `Department Table Exists: ${data.debug.department_table_exists}\n`;
+                            output += `Query Used: ${data.debug.query_used}\n\n`;
+                        }
+                        
+                        output += '=== FIRST 3 INACTIVE USERS ===\n';
+                        if (data.data.length > 0) {
+                            data.data.slice(0, 3).forEach((user, index) => {
+                                output += `\nUser ${index + 1}:\n`;
+                                Object.keys(user).forEach(key => {
+                                    output += `  ${key}: ${user[key]}\n`;
+                                });
+                            });
+                        } else {
+                            output += 'No inactive users found.\n';
+                        }
+                        
+                    } else {
+                        output += `Error: ${data.message}\n`;
+                        resultDiv.className = 'result error';
+                    }
+                    
+                    resultDiv.textContent = output;
+                })
+                .catch(error => {
+                    resultDiv.className = 'result error';
+                    resultDiv.textContent = 'Error: ' + error.message;
+                });
+        }
+        
+        function clearResults() {
+            const resultDiv = document.getElementById('result');
+            resultDiv.style.display = 'none';
+            resultDiv.textContent = '';
+            
+            // Remove tables
+            const existingTables = document.querySelectorAll('#columnsTable, #sampleDataTable');
+            existingTables.forEach(table => {
+                if (table.parentElement) {
+                    table.parentElement.remove();
+                }
+            });
+        }
+    </script>
+</body>
+</html> 

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Partner Users API Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px 0;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .result {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 5px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .success {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        .loading {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Partner Users API Test</h1>
+        <p>Testing the fixed API endpoint for partner users.</p>
+        
+        <button onclick="testAPI()">Test API</button>
+        <div id="result" class="result"></div>
+    </div>
+
+    <script>
+        const API_URL = 'https://emp.kfinone.com/mobile/api/get_partner_users_list_fixed.php';
+
+        async function testAPI() {
+            const resultDiv = document.getElementById('result');
+            resultDiv.className = 'result loading';
+            resultDiv.textContent = 'Testing API...';
+
+            try {
+                const response = await fetch(API_URL);
+                const data = await response.json();
+
+                if (data.status === 'success') {
+                    resultDiv.className = 'result success';
+                    let result = '✅ API Test Successful!\n\n';
+                    result += `Status: ${data.status}\n`;
+                    result += `Message: ${data.message}\n`;
+                    result += `Total Users: ${data.count}\n\n`;
+                    
+                    if (data.data && data.data.length > 0) {
+                        result += 'First 3 users:\n';
+                        const sampleCount = Math.min(3, data.data.length);
+                        
+                        for (let i = 0; i < sampleCount; i++) {
+                            const user = data.data[i];
+                            result += `\n--- User ${i + 1} ---\n`;
+                            result += `ID: ${user.id || 'N/A'}\n`;
+                            result += `Name: ${user.first_name || ''} ${user.last_name || ''}\n`;
+                            result += `Alias: ${user.alias_name || 'N/A'}\n`;
+                            result += `Phone: ${user.Phone_number || 'N/A'}\n`;
+                            result += `Email: ${user.email_id || 'N/A'}\n`;
+                            result += `Status: ${user.status || 'N/A'}\n`;
+                        }
+                    }
+                    
+                    resultDiv.textContent = result;
+                } else {
+                    resultDiv.className = 'result error';
+                    resultDiv.textContent = `❌ API Test Failed!\n\nStatus: ${data.status}\nMessage: ${data.message}`;
+                }
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.textContent = `❌ Error: ${error.message}`;
+            }
+        }
+
+        // Auto-run test when page loads
+        window.onload = testAPI;
+    </script>
+</body>
+</html> 

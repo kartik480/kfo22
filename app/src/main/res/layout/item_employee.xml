@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="60dp"
+    android:orientation="horizontal"
+    android:background="#FFFFFF"
+    android:paddingHorizontal="12dp"
+    android:gravity="center_vertical"
+    android:layout_marginBottom="4dp"
+    android:elevation="1dp">
+
+    <!-- Fullname -->
+    <TextView
+        android:id="@+id/fullNameText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="2"
+        android:text="Employee Name"
+        android:textSize="11sp"
+        android:textColor="#2C3E50"
+        android:gravity="start"
+        android:maxLines="2"
+        android:ellipsize="end" />
+
+    <!-- Employee Id -->
+    <TextView
+        android:id="@+id/empIdText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="EMP001"
+        android:textSize="11sp"
+        android:textColor="#2C3E50"
+        android:gravity="center" />
+
+    <!-- Mobile -->
+    <TextView
+        android:id="@+id/mobileText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1.5"
+        android:text="9876543210"
+        android:textSize="11sp"
+        android:textColor="#2C3E50"
+        android:gravity="center" />
+
+    <!-- Email -->
+    <TextView
+        android:id="@+id/emailText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="2"
+        android:text="email@kfinone.com"
+        android:textSize="10sp"
+        android:textColor="#2C3E50"
+        android:gravity="center"
+        android:maxLines="2"
+        android:ellipsize="end" />
+
+    <!-- Designation -->
+    <TextView
+        android:id="@+id/designationText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1.5"
+        android:text="Designation"
+        android:textSize="10sp"
+        android:textColor="#2C3E50"
+        android:gravity="center"
+        android:maxLines="2"
+        android:ellipsize="end" />
+
+    <!-- Action -->
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="horizontal"
+        android:gravity="center">
+
+        <Button
+            android:id="@+id/editButton"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:text="✏️"
+            android:textSize="10sp"
+            android:background="@drawable/circle_background"
+            android:minWidth="0dp"
+            android:minHeight="0dp"
+            android:padding="0dp"
+            android:layout_marginEnd="4dp" />
+
+        <Button
+            android:id="@+id/deleteButton"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:text="🗑️"
+            android:textSize="10sp"
+            android:background="@drawable/circle_background"
+            android:minWidth="0dp"
+            android:minHeight="0dp"
+            android:padding="0dp" />
+
+    </LinearLayout>
+
+</LinearLayout> 

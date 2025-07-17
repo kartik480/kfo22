@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Document Uploads API</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .result {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .success {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        .loading {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+        }
+        .document-card {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 10px;
+            margin: 10px 0;
+            background-color: #f9f9f9;
+        }
+        .document-header {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 5px;
+        }
+        .document-content {
+            color: #666;
+            font-size: 14px;
+        }
+        .summary {
+            background-color: #e2e3e5;
+            border: 1px solid #d6d8db;
+            color: #383d41;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Test Document Uploads API</h1>
+        
+        <div class="summary">
+            <h3>📋 Test Summary</h3>
+            <p>This test verifies that the Document Upload panel can fetch documents from the <code>tbl_document_upload</code> table with the following columns:</p>
+            <ul>
+                <li><strong>id</strong> - Unique identifier for the document</li>
+                <li><strong>document_name</strong> - Name/title of the uploaded document</li>
+                <li><strong>uploaded_file</strong> - File path or URL of the uploaded file</li>
+            </ul>
+            <p>The API fetches all active document uploads and displays them in the Document Upload panel.</p>
+        </div>
+
+        <div class="test-section">
+            <h3>🧪 Test Document Uploads API</h3>
+            <button onclick="testDocumentUploadsAPI()">Test Document Uploads API</button>
+            <div id="documentUploadsResult" class="result"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>📊 API Information</h3>
+            <p><strong>Endpoint:</strong> <code>https://emp.kfinone.com/mobile/api/fetch_document_uploads.php</code></p>
+            <p><strong>Method:</strong> GET</p>
+            <p><strong>Table:</strong> <code>tbl_document_upload</code></p>
+            <p><strong>Expected Response:</strong></p>
+            <pre>{
+  "status": "success",
+  "message": "Document uploads fetched successfully",
+  "data": [
+    {
+      "id": "1",
+      "document_name": "Sample Document",
+      "uploaded_file": "uploads/document1.pdf"
+    }
+  ]
+}</pre>
+        </div>
+
+        <div class="test-section">
+            <h3>📱 Android App Integration</h3>
+            <p>The DocumentUploadActivity will:</p>
+            <ul>
+                <li>Call this API when the activity loads</li>
+                <li>Display documents in a RecyclerView</li>
+                <li>Show document names and file paths</li>
+                <li>Allow downloading and deleting documents</li>
+                <li>Provide filtering functionality</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        async function testDocumentUploadsAPI() {
+            const resultDiv = document.getElementById('documentUploadsResult');
+            resultDiv.className = 'result loading';
+            resultDiv.textContent = 'Testing document uploads API...';
+
+            try {
+                const response = await fetch('https://emp.kfinone.com/mobile/api/fetch_document_uploads.php', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                const data = await response.json();
+                
+                if (response.ok && data.status === 'success') {
+                    resultDiv.className = 'result success';
+                    
+                    let resultText = `✅ SUCCESS: ${data.message}\n\n`;
+                    resultText += `Found ${data.data.length} document uploads:\n\n`;
+                    
+                    if (data.data.length > 0) {
+                        resultText += '📋 Document Uploads List:\n';
+                        resultText += '='.repeat(50) + '\n\n';
+                        
+                        data.data.forEach((document, index) => {
+                            resultText += `Document #${index + 1}:\n`;
+                            resultText += `  ID: ${document.id}\n`;
+                            resultText += `  Document Name: ${document.document_name || 'Unknown'}\n`;
+                            resultText += `  Uploaded File: ${document.uploaded_file || 'No file'}\n`;
+                            resultText += '\n';
+                        });
+                    } else {
+                        resultText += 'No document uploads found in the database.\n';
+                        resultText += 'This is normal if no documents have been uploaded yet.\n';
+                    }
+                    
+                    resultText += '\n📄 Full API Response:\n';
+                    resultText += '='.repeat(50) + '\n';
+                    resultText += JSON.stringify(data, null, 2);
+                    
+                    resultDiv.textContent = resultText;
+                } else {
+                    resultDiv.className = 'result error';
+                    resultText = `❌ ERROR: ${data.message || 'Unknown error'}\n\nResponse: ${JSON.stringify(data, null, 2)}`;
+                    resultDiv.textContent = resultText;
+                }
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.textContent = `❌ NETWORK ERROR: ${error.message}`;
+            }
+        }
+
+        // Auto-test on page load
+        window.onload = function() {
+            setTimeout(testDocumentUploadsAPI, 1000);
+        };
+    </script>
+</body>
+</html> 

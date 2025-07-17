@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Branch Location Panel Functionality</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input, select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .branch-location-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            border: 1px solid #ddd;
+            margin-bottom: 10px;
+            border-radius: 4px;
+            background-color: #f9f9f9;
+        }
+        .branch-location-info {
+            flex: 1;
+        }
+        .branch-location-name {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .branch-location-details {
+            font-size: 14px;
+            color: #666;
+        }
+        .status-active {
+            background-color: #28a745;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+        .status-inactive {
+            background-color: #dc3545;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+        .response {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 15px;
+            margin-top: 15px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .error {
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+        .success {
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+        }
+        .loading {
+            color: #007bff;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test Branch Location Panel Functionality</h1>
+    <p>This page tests the branch location APIs for adding and fetching branch locations with branch state relationships</p>
+
+    <div class="container">
+        <div class="section">
+            <h2>1. Add New Branch Location</h2>
+            <form id="addForm">
+                <div class="form-group">
+                    <label for="branchStateSelect">Branch State:</label>
+                    <select id="branchStateSelect" name="branchStateSelect" required>
+                        <option value="">Select Branch State</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="branchLocationName">Branch Location Name:</label>
+                    <input type="text" id="branchLocationName" name="branchLocationName" required>
+                </div>
+                <button type="submit">Add Branch Location</button>
+            </form>
+            <div id="addResponse" class="response" style="display: none;"></div>
+        </div>
+
+        <div class="section">
+            <h2>2. Fetch All Branch Locations</h2>
+            <button onclick="fetchBranchLocations()">Fetch Branch Locations</button>
+            <div id="fetchResponse" class="response" style="display: none;"></div>
+            <div id="branchLocationsList"></div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'https://emp.kfinone.com/mobile/api/';
+
+        // Load branch states on page load
+        window.onload = function() {
+            loadBranchStates();
+            fetchBranchLocations();
+        };
+
+        async function loadBranchStates() {
+            try {
+                const response = await fetch(API_BASE + 'get_branch_states_dropdown.php');
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    const branchStateSelect = document.getElementById('branchStateSelect');
+                    data.data.forEach(state => {
+                        const option = document.createElement('option');
+                        option.value = state.name;
+                        option.textContent = state.name;
+                        branchStateSelect.appendChild(option);
+                    });
+                }
+            } catch (error) {
+                console.error('Error loading branch states:', error);
+            }
+        }
+
+        document.getElementById('addForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const responseDiv = document.getElementById('addResponse');
+            
+            responseDiv.style.display = 'block';
+            responseDiv.className = 'response loading';
+            responseDiv.textContent = 'Adding branch location...';
+            
+            try {
+                const response = await fetch(API_BASE + 'add_branch_location_with_state.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        branch_location: formData.get('branchLocationName'),
+                        branch_state: formData.get('branchStateSelect')
+                    })
+                });
+                
+                const data = await response.json();
+                
+                responseDiv.className = 'response ' + (data.success ? 'success' : 'error');
+                responseDiv.textContent = JSON.stringify(data, null, 2);
+                
+                if (data.success) {
+                    this.reset();
+                    fetchBranchLocations(); // Refresh the list
+                }
+            } catch (error) {
+                responseDiv.className = 'response error';
+                responseDiv.textContent = 'Error: ' + error.message;
+            }
+        });
+
+        async function fetchBranchLocations() {
+            const responseDiv = document.getElementById('fetchResponse');
+            const listDiv = document.getElementById('branchLocationsList');
+            
+            responseDiv.style.display = 'block';
+            responseDiv.className = 'response loading';
+            responseDiv.textContent = 'Fetching branch locations...';
+            
+            try {
+                const response = await fetch(API_BASE + 'get_branch_locations_with_states.php');
+                const data = await response.json();
+                
+                responseDiv.className = 'response ' + (data.success ? 'success' : 'error');
+                responseDiv.textContent = JSON.stringify(data, null, 2);
+                
+                if (data.success) {
+                    displayBranchLocations(data.branch_locations);
+                }
+            } catch (error) {
+                responseDiv.className = 'response error';
+                responseDiv.textContent = 'Error: ' + error.message;
+            }
+        }
+
+        function displayBranchLocations(branchLocations) {
+            const listDiv = document.getElementById('branchLocationsList');
+            
+            if (branchLocations.length === 0) {
+                listDiv.innerHTML = '<p>No branch locations found.</p>';
+                return;
+            }
+            
+            listDiv.innerHTML = '<h3>All Branch Locations:</h3>';
+            
+            branchLocations.forEach(branchLocation => {
+                const item = document.createElement('div');
+                item.className = 'branch-location-item';
+                
+                const statusClass = branchLocation.status === 'Active' ? 'status-active' : 'status-inactive';
+                
+                item.innerHTML = `
+                    <div class="branch-location-info">
+                        <div class="branch-location-name">${branchLocation.branch_location}</div>
+                        <div class="branch-location-details">
+                            ID: ${branchLocation.id} | Branch State: ${branchLocation.branch_state_name} | 
+                            Status: <span class="${statusClass}">${branchLocation.status}</span> | 
+                            Created: ${branchLocation.created_at}
+                        </div>
+                    </div>
+                `;
+                listDiv.appendChild(item);
+            });
+        }
+    </script>
+</body>
+</html> 

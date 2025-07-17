@@ -1,0 +1,502 @@
+{
+	"info": {
+		"_postman_id": "kfinone-login-api",
+		"name": "KfinOne Login API",
+		"description": "API collection for testing KfinOne login functionality",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Login API",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\": \"krajeshk\",\n    \"password\": \"Aara@123\"\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/login.php",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"login.php"
+					]
+				},
+				"description": "Test login with valid credentials"
+			},
+			"response": []
+		},
+		{
+			"name": "Login API - Invalid Username",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\": \"invaliduser\",\n    \"password\": \"Aara@123\"\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/login.php",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"login.php"
+					]
+				},
+				"description": "Test login with invalid username"
+			},
+			"response": []
+		},
+		{
+			"name": "Login API - Invalid Password",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\": \"krajeshk\",\n    \"password\": \"wrongpassword\"\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/login.php",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"login.php"
+					]
+				},
+				"description": "Test login with invalid password"
+			},
+			"response": []
+		},
+		{
+			"name": "Login API - Empty Fields",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\": \"\",\n    \"password\": \"\"\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/login.php",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"login.php"
+					]
+				},
+				"description": "Test login with empty fields"
+			},
+			"response": []
+		},
+		{
+			"name": "Test Database Connection",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/test_db.php",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"test_db.php"
+					]
+				},
+				"description": "Test if database connection is working"
+			},
+			"response": []
+		},
+		{
+			"name": "Get Branch States",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/get_branch_states_dropdown.php",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"get_branch_states_dropdown.php"
+					]
+				},
+				"description": "Fetch branch states from tbl_branch_state table for dropdown"
+			},
+			"response": []
+		},
+		{
+			"name": "Get Branch Locations",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/get_branch_locations_dropdown.php",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"get_branch_locations_dropdown.php"
+					]
+				},
+				"description": "Fetch branch locations from tbl_branch_location table for dropdown"
+			},
+			"response": []
+		},
+		{
+			"name": "Check Branch Tables",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/check_branch_tables.php",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"check_branch_tables.php"
+					]
+				},
+				"description": "Check what branch-related tables exist and their data"
+			},
+			"response": []
+		},
+		{
+			"name": "Add Sample Branch Data",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/add_sample_branch_data.php",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"add_sample_branch_data.php"
+					]
+				},
+				"description": "Add sample branch states and locations if tables are empty"
+			},
+			"response": []
+		},
+		{
+			"name": "Get Partner List",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/get_partner_list.php",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"get_partner_list.php"
+					]
+				},
+				"description": "Fetch partner list with name, phone, email, password, created by, and status"
+			},
+			"response": []
+		},
+		{
+			"name": "Get Users for Dropdown",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/get_users_for_dropdown.php",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"get_users_for_dropdown.php"
+					]
+				},
+				"description": "Fetch users for Partner Team dropdown"
+			},
+			"response": []
+		},
+		{
+			"name": "Get Partner Team Data",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/get_partner_team_data.php?user_id=1",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"get_partner_team_data.php"
+					],
+					"query": [
+						{
+							"key": "user_id",
+							"value": "1"
+						}
+					]
+				},
+				"description": "Fetch partner team data for selected user"
+			},
+			"response": []
+		},
+		{
+			"name": "Add Agent",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"phone_number\": \"9876543210\",\n    \"full_name\": \"John Doe\",\n    \"company_name\": \"ABC Company\",\n    \"alternative_number\": \"9876543211\",\n    \"email\": \"john.doe@example.com\",\n    \"partner_type\": \"Business\",\n    \"branch_state\": \"Maharashtra\",\n    \"branch_location\": \"Mumbai Central\",\n    \"address\": \"123 Main Street, Mumbai, Maharashtra\",\n    \"visiting_card\": \"base64_encoded_file_content\",\n    \"file_name\": \"visiting_card.pdf\"\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/add_agent.php",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"add_agent.php"
+					]
+				},
+				"description": "Add new agent with all required details including visiting card"
+			},
+			"response": []
+		},
+		{
+			"name": "Get Agent List",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/get_agent_list.php",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"get_agent_list.php"
+					]
+				},
+				"description": "Fetch all agents for My Agent List panel"
+			},
+			"response": []
+		},
+		{
+			"name": "Get DSA Code List",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"vendor_bank\": \"HDFC Bank\",\n    \"loan_type\": \"Personal Loan\",\n    \"state\": \"Maharashtra\",\n    \"location\": \"Mumbai\"\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/get_dsa_code_list.php",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"get_dsa_code_list.php"
+					]
+				},
+				"description": "Fetch DSA code list with optional filters for vendor bank, loan type, state, and location"
+			},
+			"response": []
+		},
+		{
+			"name": "Get DSA Code List - No Filters",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{}"
+				},
+				"url": {
+					"raw": "{{base_url}}/get_dsa_code_list.php",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"get_dsa_code_list.php"
+					]
+				},
+				"description": "Fetch all DSA codes without any filters"
+			},
+			"response": []
+		},
+		{
+			"name": "Get Banker Designation List",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/get_banker_designation_list.php",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"get_banker_designation_list.php"
+					]
+				},
+				"description": "Fetch banker designations for dropdown"
+			},
+			"response": []
+		},
+		{
+			"name": "Add Banker",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "vendor_bank",
+							"value": "HDFC Bank",
+							"type": "text"
+						},
+						{
+							"key": "banker_name",
+							"value": "John Doe",
+							"type": "text"
+						},
+						{
+							"key": "phone_number",
+							"value": "9876543210",
+							"type": "text"
+						},
+						{
+							"key": "email",
+							"value": "john.doe@hdfc.com",
+							"type": "text"
+						},
+						{
+							"key": "banker_designation",
+							"value": "Manager",
+							"type": "text"
+						},
+						{
+							"key": "loan_type",
+							"value": "Personal Loan",
+							"type": "text"
+						},
+						{
+							"key": "branch_state",
+							"value": "Maharashtra",
+							"type": "text"
+						},
+						{
+							"key": "branch_location",
+							"value": "Mumbai",
+							"type": "text"
+						},
+						{
+							"key": "address",
+							"value": "123 Main Street, Mumbai, Maharashtra",
+							"type": "text"
+						},
+						{
+							"key": "visiting_card",
+							"type": "file",
+							"src": []
+						}
+					]
+				},
+				"url": {
+					"raw": "{{base_url}}/add_banker.php",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"add_banker.php"
+					]
+				},
+				"description": "Add new banker with all details including visiting card"
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"// Test script to validate responses",
+					"pm.test(\"Status code is 200 or 401\", function () {",
+					"    pm.expect(pm.response.code).to.be.oneOf([200, 401, 400]);",
+					"});",
+					"",
+					"pm.test(\"Response has JSON format\", function () {",
+					"    pm.response.to.have.jsonBody();",
+					"});",
+					"",
+					"pm.test(\"Response has success field\", function () {",
+					"    const jsonData = pm.response.json();",
+					"    pm.expect(jsonData).to.have.property('success');",
+					"});",
+					"",
+					"pm.test(\"Response has message field\", function () {",
+					"    const jsonData = pm.response.json();",
+					"    pm.expect(jsonData).to.have.property('message');",
+					"});"
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "https://emp.kfinone.com/mobile/api",
+			"type": "string"
+		}
+	]
+} 

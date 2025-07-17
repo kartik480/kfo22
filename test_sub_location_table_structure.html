@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sub Location Table Structure Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        h1, h2 {
+            color: #333;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .response {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 15px;
+            margin-top: 10px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .success {
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+        .info {
+            background-color: #d1ecf1;
+            border-color: #bee5eb;
+            color: #0c5460;
+        }
+        .table-info {
+            background-color: #e9ecef;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .sql-query {
+            background-color: #f8f9fa;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: monospace;
+            margin: 10px 0;
+            border-left: 4px solid #007bff;
+        }
+    </style>
+</head>
+<body>
+    <h1>Sub Location Table Structure Test</h1>
+    
+    <div class="container">
+        <h2>Table Information</h2>
+        <div class="table-info">
+            <strong>Table Name:</strong> tbl_sub_location<br>
+            <strong>Column Name:</strong> sub_location<br>
+            <strong>Expected Query:</strong> SELECT sub_location AS subLocationName FROM tbl_sub_location ORDER BY sub_location ASC
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>Test Commands</h2>
+        <button onclick="testTableStructure()">🔍 Check Table Structure</button>
+        <button onclick="testSubLocationAPI()">🧪 Test Sub Location API</button>
+        <button onclick="testDirectQuery()">📊 Test Direct SQL Query</button>
+        <button onclick="addSampleData()">➕ Add Sample Data</button>
+        <div id="response" class="response"></div>
+    </div>
+
+    <div class="container">
+        <h2>Expected Results</h2>
+        <div class="sql-query">
+            <strong>API Response Format:</strong><br>
+            {<br>
+            &nbsp;&nbsp;"success": true,<br>
+            &nbsp;&nbsp;"message": "Sub locations fetched successfully.",<br>
+            &nbsp;&nbsp;"data": [<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;{"subLocationName": "Downtown"},<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;{"subLocationName": "Uptown"},<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;...<br>
+            &nbsp;&nbsp;]<br>
+            }
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'https://emp.kfinone.com/mobile/api/';
+        
+        async function makeRequest(url, options = {}) {
+            try {
+                const response = await fetch(url, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        ...options.headers
+                    },
+                    ...options
+                });
+                
+                const data = await response.text();
+                let jsonData;
+                try {
+                    jsonData = JSON.parse(data);
+                } catch (e) {
+                    return { 
+                        success: false, 
+                        error: 'Invalid JSON response', 
+                        raw: data,
+                        status: response.status
+                    };
+                }
+                
+                return {
+                    success: response.ok,
+                    status: response.status,
+                    data: jsonData,
+                    raw: data
+                };
+            } catch (error) {
+                return {
+                    success: false,
+                    error: error.message,
+                    raw: error.toString()
+                };
+            }
+        }
+
+        async function testTableStructure() {
+            const responseDiv = document.getElementById('response');
+            responseDiv.innerHTML = '🔍 Checking table structure...';
+            
+            const result = await makeRequest(API_BASE + 'debug_sub_location_table.php');
+            
+            if (result.success && result.data.success) {
+                const data = result.data;
+                responseDiv.className = 'response success';
+                
+                let html = `✅ Table Structure Check:\n\n`;
+                html += `Table Exists: ${data.table_exists ? 'Yes' : 'No'}\n`;
+                html += `Total Records: ${data.total_count}\n\n`;
+                
+                if (data.table_structure && data.table_structure.length > 0) {
+                    html += `📋 Table Structure:\n`;
+                    data.table_structure.forEach(column => {
+                        html += `- ${column.Field} (${column.Type}) ${column.Null === 'NO' ? 'NOT NULL' : 'NULL'}\n`;
+                    });
+                    html += `\n`;
+                }
+                
+                if (data.sample_data && data.sample_data.length > 0) {
+                    html += `📊 Sample Data:\n`;
+                    data.sample_data.forEach((row, index) => {
+                        html += `${index + 1}. ${JSON.stringify(row)}\n`;
+                    });
+                }
+                
+                responseDiv.innerHTML = html;
+            } else {
+                responseDiv.className = 'response error';
+                responseDiv.innerHTML = `❌ Table Structure Check Failed!\n\nStatus: ${result.status}\nError: ${result.data?.error || result.error}`;
+            }
+        }
+
+        async function testSubLocationAPI() {
+            const responseDiv = document.getElementById('response');
+            responseDiv.innerHTML = '🧪 Testing sub location API...';
+            
+            const result = await makeRequest(API_BASE + 'get_sub_locations.php');
+            
+            if (result.success && result.data.success) {
+                const subLocations = result.data.data;
+                responseDiv.className = 'response success';
+                
+                let html = `✅ Sub Location API Working!\n\n`;
+                html += `📊 API Response:\n`;
+                html += `Status: ${result.status}\n`;
+                html += `Sub Locations Count: ${subLocations.length}\n\n`;
+                
+                if (subLocations.length > 0) {
+                    html += `📍 Sub Locations:\n`;
+                    subLocations.forEach((loc, index) => {
+                        html += `${index + 1}. ${loc.subLocationName}\n`;
+                    });
+                } else {
+                    html += `⚠️ No sub locations found in table\n`;
+                }
+                
+                responseDiv.innerHTML = html;
+            } else {
+                responseDiv.className = 'response error';
+                responseDiv.innerHTML = `❌ Sub Location API Failed!\n\nStatus: ${result.status}\nError: ${result.data?.error || result.error}\n\nRaw Response:\n${result.raw}`;
+            }
+        }
+
+        async function testDirectQuery() {
+            const responseDiv = document.getElementById('response');
+            responseDiv.innerHTML = '📊 Testing direct SQL query...';
+            
+            // Create a simple test API to run the exact query
+            const testQuery = `
+                SELECT sub_location AS subLocationName 
+                FROM tbl_sub_location 
+                ORDER BY sub_location ASC
+            `;
+            
+            responseDiv.innerHTML = `🔍 Testing Query:\n${testQuery}\n\n⏳ Running query...`;
+            
+            // We'll use the debug API to show the actual data
+            const result = await makeRequest(API_BASE + 'debug_sub_location_table.php');
+            
+            if (result.success && result.data.success) {
+                const data = result.data;
+                responseDiv.className = 'response info';
+                
+                let html = `📊 Direct Query Results:\n\n`;
+                html += `Query: SELECT sub_location AS subLocationName FROM tbl_sub_location ORDER BY sub_location ASC\n\n`;
+                html += `Table Exists: ${data.table_exists ? 'Yes' : 'No'}\n`;
+                html += `Total Records: ${data.total_count}\n\n`;
+                
+                if (data.sample_data && data.sample_data.length > 0) {
+                    html += `📋 Sample Records:\n`;
+                    data.sample_data.forEach((row, index) => {
+                        html += `${index + 1}. subLocationName: "${row.subLocationName || row.sub_location || 'N/A'}"\n`;
+                    });
+                } else {
+                    html += `⚠️ No data found in table\n`;
+                }
+                
+                responseDiv.innerHTML = html;
+            } else {
+                responseDiv.className = 'response error';
+                responseDiv.innerHTML = `❌ Direct Query Failed!\n\nStatus: ${result.status}\nError: ${result.data?.error || result.error}`;
+            }
+        }
+
+        async function addSampleData() {
+            const responseDiv = document.getElementById('response');
+            responseDiv.innerHTML = '➕ Adding sample sub location data...';
+            
+            const result = await makeRequest(API_BASE + 'add_sample_sub_locations.php');
+            
+            if (result.success && result.data.success) {
+                const data = result.data;
+                responseDiv.className = 'response success';
+                
+                let html = `✅ Sample Data Added Successfully!\n\n`;
+                html += `📊 Results:\n`;
+                html += `- Inserted: ${data.inserted_count} new records\n`;
+                html += `- Skipped: ${data.skipped_count} duplicates\n`;
+                html += `- Total: ${data.total_count} records\n`;
+                html += `- Table Created: ${data.table_created ? 'Yes' : 'No'}\n\n`;
+                html += `💬 Message: ${data.message}`;
+                
+                responseDiv.innerHTML = html;
+            } else {
+                responseDiv.className = 'response error';
+                responseDiv.innerHTML = `❌ Failed to Add Sample Data!\n\nStatus: ${result.status}\nError: ${result.data?.error || result.error}`;
+            }
+        }
+
+        // Auto-run table structure check on page load
+        window.onload = function() {
+            testTableStructure();
+        };
+    </script>
+</body>
+</html> 

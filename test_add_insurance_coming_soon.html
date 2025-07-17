@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Insurance Coming Soon - Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .header {
+            background: #1976D2;
+            color: white;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .success {
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+        }
+        .info {
+            background-color: #d1ecf1;
+            border-color: #bee5eb;
+            color: #0c5460;
+        }
+        .code {
+            background-color: #f8f9fa;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: monospace;
+            margin: 10px 0;
+        }
+        .feature-list {
+            list-style-type: none;
+            padding: 0;
+        }
+        .feature-list li {
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .feature-list li:before {
+            content: "✅ ";
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Add Insurance Coming Soon - Test Results</h1>
+            <p>Testing the translucent overlay functionality for Add Insurance box</p>
+        </div>
+
+        <div class="test-section success">
+            <h2>✅ Implementation Complete</h2>
+            <p>The Add Insurance box in the Managing Director panel now shows a translucent black overlay with "Coming Soon..!" text when clicked.</p>
+        </div>
+
+        <div class="test-section info">
+            <h3>🔧 Changes Made:</h3>
+            <ul class="feature-list">
+                <li>Added translucent overlay to activity_special_panel.xml</li>
+                <li>Modified SpecialPanelActivity.java to handle overlay display</li>
+                <li>Updated Add Insurance click listener to show overlay instead of navigation</li>
+                <li>Added auto-dismiss functionality after 2 seconds</li>
+                <li>Added tap-to-dismiss functionality</li>
+            </ul>
+        </div>
+
+        <div class="test-section">
+            <h3>📱 How to Test:</h3>
+            <ol>
+                <li>Open the KfinOneApp</li>
+                <li>Login as a Managing Director user</li>
+                <li>Navigate to the Managing Director panel</li>
+                <li>Find the "Add Insurance" box (red background with plus icon)</li>
+                <li>Click on the Add Insurance box</li>
+                <li>Verify that a translucent black overlay appears with "Coming Soon..!" text</li>
+                <li>Wait 2 seconds - the overlay should automatically disappear</li>
+                <li>Click the Add Insurance box again and tap anywhere on the overlay to dismiss it immediately</li>
+            </ol>
+        </div>
+
+        <div class="test-section">
+            <h3>🎨 Overlay Design:</h3>
+            <ul>
+                <li><strong>Background:</strong> Translucent black (#80000000 - 50% opacity)</li>
+                <li><strong>Text:</strong> "Coming Soon..!" in white, bold, 32sp</li>
+                <li><strong>Position:</strong> Centered on screen</li>
+                <li><strong>Duration:</strong> 2 seconds auto-dismiss</li>
+                <li><strong>Interaction:</strong> Tap anywhere to dismiss immediately</li>
+            </ul>
+        </div>
+
+        <div class="test-section">
+            <h3>🔍 Code Changes:</h3>
+            
+            <h4>Layout Changes (activity_special_panel.xml):</h4>
+            <div class="code">
+&lt;!-- Coming Soon Overlay --&gt;
+&lt;LinearLayout
+    android:id="@+id/comingSoonOverlay"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#80000000"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:visibility="gone"
+    android:clickable="true"
+    android:focusable="true"&gt;
+
+    &lt;TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Coming Soon..!"
+        android:textSize="32sp"
+        android:textStyle="bold"
+        android:textColor="#FFFFFF"
+        android:fontFamily="sans-serif-medium"
+        android:gravity="center" /&gt;
+
+&lt;/LinearLayout&gt;
+            </div>
+
+            <h4>Activity Changes (SpecialPanelActivity.java):</h4>
+            <div class="code">
+// Added overlay variable
+private View comingSoonOverlay;
+
+// Initialize overlay
+comingSoonOverlay = findViewById(R.id.comingSoonOverlay);
+
+// Set up overlay click listener
+comingSoonOverlay.setOnClickListener(v -> {
+    comingSoonOverlay.setVisibility(View.GONE);
+});
+
+// Modified Add Insurance click listener
+findViewById(R.id.addInsuranceBox).setOnClickListener(v -> {
+    // Show coming soon overlay
+    comingSoonOverlay.setVisibility(View.VISIBLE);
+    
+    // Hide overlay after 2 seconds
+    comingSoonOverlay.postDelayed(() -> {
+        comingSoonOverlay.setVisibility(View.GONE);
+    }, 2000);
+});
+            </div>
+        </div>
+
+        <div class="test-section success">
+            <h3>✅ Expected Behavior:</h3>
+            <ul>
+                <li>Clicking Add Insurance box shows translucent overlay</li>
+                <li>Overlay displays "Coming Soon..!" text prominently</li>
+                <li>Overlay automatically disappears after 2 seconds</li>
+                <li>Tapping anywhere on overlay dismisses it immediately</li>
+                <li>No navigation to InsurancePanelActivity occurs</li>
+                <li>All other functionality remains unchanged</li>
+            </ul>
+        </div>
+
+        <div class="test-section info">
+            <h3>📝 Notes:</h3>
+            <ul>
+                <li>The overlay uses a FrameLayout to cover the entire screen</li>
+                <li>The overlay is initially hidden (visibility="gone")</li>
+                <li>The overlay is clickable to allow immediate dismissal</li>
+                <li>No existing functionality was removed - only the navigation was replaced</li>
+                <li>The InsurancePanelActivity still exists and can be accessed via navigation drawer</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html> 

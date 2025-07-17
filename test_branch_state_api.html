@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Branch State API</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .info {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            border-left: 4px solid #2196f3;
+        }
+        .feature-list {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+        .feature-list li {
+            margin: 5px 0;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .test-button {
+            background: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            margin: 5px;
+        }
+        .test-button:hover {
+            background: #45a049;
+        }
+        .response {
+            background: #f9f9f9;
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin-top: 10px;
+            border-radius: 4px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .success {
+            background: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .form-group {
+            margin: 10px 0;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 Test Branch State API</h1>
+        
+        <div class="info">
+            <strong>API Details:</strong>
+            <ul class="feature-list">
+                <li>Endpoint: https://emp.kfinone.com/mobile/api/get_branch_state_list.php</li>
+                <li>Method: GET</li>
+                <li>Table: tbl_branch_state</li>
+                <li>Columns: id, branch_state_name, status</li>
+                <li>Response Format: JSON with status, message, data, count</li>
+            </ul>
+        </div>
+
+        <div class="test-section">
+            <h2>📊 GET Branch State List Test</h2>
+            <p>Test fetching all branch states for the list box.</p>
+            <button class="test-button" onclick="testGetBranchStateList()">Test GET Branch State List</button>
+            <div id="getBranchStateResult"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>➕ ADD Branch State Test</h2>
+            <p>Test adding a new branch state to the database.</p>
+            
+            <div class="form-group">
+                <label for="branchStateInput">Branch State Name:</label>
+                <input type="text" id="branchStateInput" placeholder="Enter branch state name">
+            </div>
+            
+            <button class="test-button" onclick="testAddBranchState()">Test ADD Branch State</button>
+            <div id="addBranchStateResult"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>🔄 Complete Workflow Test</h2>
+            <p>Test the complete workflow: Add branch state, then fetch updated list.</p>
+            <button class="test-button" onclick="testCompleteWorkflow()">Test Complete Workflow</button>
+            <div id="workflowResult"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>📋 Branch State Table Display</h2>
+            <p>Display all branch states in a formatted table.</p>
+            <button class="test-button" onclick="displayBranchStateTable()">Display Branch State Table</button>
+            <div id="tableDisplayResult"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>🔍 Column Validation Test</h2>
+            <p>Test if all required columns are present in the response.</p>
+            <button class="test-button" onclick="testColumnValidation()">Test Column Validation</button>
+            <div id="columnValidationResult"></div>
+        </div>
+    </div>
+
+    <script>
+        const GET_API_URL = 'https://emp.kfinone.com/mobile/api/get_branch_state_list.php';
+        const ADD_API_URL = 'https://emp.kfinone.com/mobile/api/add_branch_state.php';
+
+        async function testGetBranchStateList() {
+            const resultDiv = document.getElementById('getBranchStateResult');
+            resultDiv.innerHTML = 'Testing GET Branch State List...';
+            resultDiv.className = 'response';
+
+            try {
+                const response = await fetch(GET_API_URL);
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    const summary = {
+                        'Status': data.status,
+                        'Message': data.message,
+                        'Total Branch States': data.count,
+                        'Sample Data': data.data.slice(0, 3)
+                    };
+                    
+                    resultDiv.innerHTML = JSON.stringify(summary, null, 2);
+                    resultDiv.className = 'response success';
+                } else {
+                    resultDiv.innerHTML = `API Error: ${data.message}`;
+                    resultDiv.className = 'response error';
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `Error: ${error.message}`;
+                resultDiv.className = 'response error';
+            }
+        }
+
+        async function testAddBranchState() {
+            const resultDiv = document.getElementById('addBranchStateResult');
+            const branchStateName = document.getElementById('branchStateInput').value.trim();
+
+            if (!branchStateName) {
+                resultDiv.innerHTML = 'Please enter a branch state name';
+                resultDiv.className = 'response error';
+                return;
+            }
+
+            resultDiv.innerHTML = 'Adding branch state...';
+            resultDiv.className = 'response';
+
+            try {
+                const requestData = {
+                    branch_state_name: branchStateName
+                };
+
+                const response = await fetch(ADD_API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(requestData)
+                });
+
+                const data = await response.json();
+                
+                if (data.success) {
+                    resultDiv.innerHTML = JSON.stringify(data, null, 2);
+                    resultDiv.className = 'response success';
+                    
+                    // Clear form
+                    document.getElementById('branchStateInput').value = '';
+                } else {
+                    resultDiv.innerHTML = `Error: ${data.error}`;
+                    resultDiv.className = 'response error';
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `Error: ${error.message}`;
+                resultDiv.className = 'response error';
+            }
+        }
+
+        async function testCompleteWorkflow() {
+            const resultDiv = document.getElementById('workflowResult');
+            resultDiv.innerHTML = 'Testing complete workflow...';
+            resultDiv.className = 'response';
+
+            try {
+                // Step 1: Get initial count
+                const initialResponse = await fetch(GET_API_URL);
+                const initialData = await initialResponse.json();
+                const initialCount = initialData.status === 'success' ? initialData.count : 0;
+
+                // Step 2: Add a test branch state
+                const testBranchState = 'Test State ' + Math.floor(Math.random() * 1000);
+                const addResponse = await fetch(ADD_API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        branch_state_name: testBranchState
+                    })
+                });
+
+                const addData = await addResponse.json();
+                
+                if (!addData.success) {
+                    resultDiv.innerHTML = `Failed to add branch state: ${addData.error}`;
+                    resultDiv.className = 'response error';
+                    return;
+                }
+
+                // Step 3: Get updated count
+                const finalResponse = await fetch(GET_API_URL);
+                const finalData = await finalResponse.json();
+                const finalCount = finalData.status === 'success' ? finalData.count : 0;
+
+                const workflowResult = {
+                    'Initial Branch State Count': initialCount,
+                    'Test Branch State Added': testBranchState,
+                    'Add Operation': addData.success ? 'SUCCESS' : 'FAILED',
+                    'Final Branch State Count': finalCount,
+                    'Count Increased': finalCount > initialCount ? 'YES' : 'NO',
+                    'Workflow Status': finalCount > initialCount ? 'PASS' : 'FAIL'
+                };
+
+                resultDiv.innerHTML = JSON.stringify(workflowResult, null, 2);
+                resultDiv.className = workflowResult['Workflow Status'] === 'PASS' ? 'response success' : 'response error';
+            } catch (error) {
+                resultDiv.innerHTML = `Error: ${error.message}`;
+                resultDiv.className = 'response error';
+            }
+        }
+
+        async function displayBranchStateTable() {
+            const resultDiv = document.getElementById('tableDisplayResult');
+            resultDiv.innerHTML = 'Loading branch state table...';
+            resultDiv.className = 'response';
+
+            try {
+                const response = await fetch(GET_API_URL);
+                const data = await response.json();
+                
+                if (data.status === 'success' && data.data.length > 0) {
+                    let tableHTML = `
+                        <h3>Branch State List (${data.count} records)</h3>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Branch State Name</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                    `;
+                    
+                    data.data.forEach(item => {
+                        tableHTML += `
+                            <tr>
+                                <td>${item.id}</td>
+                                <td>${item.branch_state_name}</td>
+                                <td>${item.status}</td>
+                            </tr>
+                        `;
+                    });
+                    
+                    tableHTML += '</tbody></table>';
+                    resultDiv.innerHTML = tableHTML;
+                    resultDiv.className = 'response success';
+                } else {
+                    resultDiv.innerHTML = `No branch states found: ${data.message}`;
+                    resultDiv.className = 'response error';
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `Error: ${error.message}`;
+                resultDiv.className = 'response error';
+            }
+        }
+
+        async function testColumnValidation() {
+            const resultDiv = document.getElementById('columnValidationResult');
+            resultDiv.innerHTML = 'Testing validation scenarios...';
+            resultDiv.className = 'response';
+
+            try {
+                const response = await fetch(GET_API_URL);
+                const data = await response.json();
+                
+                if (data.status === 'success' && data.data.length > 0) {
+                    const requiredColumns = ['id', 'branch_state_name', 'status'];
+                    const sampleRecord = data.data[0];
+                    const availableColumns = Object.keys(sampleRecord);
+                    
+                    const validation = {
+                        'Required Columns': requiredColumns,
+                        'Available Columns': availableColumns,
+                        'Missing Columns': requiredColumns.filter(col => !availableColumns.includes(col)),
+                        'Extra Columns': availableColumns.filter(col => !requiredColumns.includes(col)),
+                        'Validation Status': requiredColumns.every(col => availableColumns.includes(col)) ? 'PASS' : 'FAIL'
+                    };
+                    
+                    resultDiv.innerHTML = JSON.stringify(validation, null, 2);
+                    resultDiv.className = validation['Validation Status'] === 'PASS' ? 'response success' : 'response error';
+                } else {
+                    resultDiv.innerHTML = 'No data available for validation';
+                    resultDiv.className = 'response error';
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `Error: ${error.message}`;
+                resultDiv.className = 'response error';
+            }
+        }
+    </script>
+</body>
+</html> 

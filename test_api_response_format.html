@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test API Response Format</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #1976D2;
+            text-align: center;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .result {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 5px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .success {
+            background: #E8F5E8;
+            border: 1px solid #4CAF50;
+            color: #2E7D32;
+        }
+        .error {
+            background: #FFEBEE;
+            border: 1px solid #F44336;
+            color: #C62828;
+        }
+        .loading {
+            background: #E3F2FD;
+            border: 1px solid #2196F3;
+            color: #1565C0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Test API Response Format</h1>
+        
+        <div class="test-section">
+            <h3>🔍 Debug API Response</h3>
+            <p>Testing the exact response format to identify why Android app shows "User 1, User 2, User 3"</p>
+            
+            <button onclick="testAPIFormat()">Test API Format</button>
+            <button onclick="clearResults()">Clear Results</button>
+            
+            <div id="result" class="result" style="display: none;"></div>
+        </div>
+    </div>
+
+    <script>
+        async function testAPIFormat() {
+            const resultDiv = document.getElementById('result');
+            resultDiv.style.display = 'block';
+            resultDiv.className = 'result loading';
+            resultDiv.textContent = 'Testing API format... Please wait...';
+            
+            try {
+                const response = await fetch('https://emp.kfinone.com/mobile/api/fetch_emp_panel_users.php', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const responseText = await response.text();
+                const data = JSON.parse(responseText);
+                
+                resultDiv.className = 'result success';
+                
+                let html = `✅ API Response Analysis\n\n`;
+                html += `Response Status: ${response.status}\n`;
+                html += `Content Type: ${response.headers.get('content-type')}\n\n`;
+                
+                html += `<strong>Raw Response (first 500 chars):</strong>\n`;
+                html += responseText.substring(0, 500) + '...\n\n';
+                
+                html += `<strong>Parsed JSON Structure:</strong>\n`;
+                html += `Status: ${data.status}\n`;
+                html += `Message: ${data.message}\n`;
+                html += `Count: ${data.count}\n\n`;
+                
+                if (data.data && data.data.length > 0) {
+                    html += `<strong>First 3 Users Analysis:</strong>\n`;
+                    
+                    for (let i = 0; i < Math.min(3, data.data.length); i++) {
+                        const user = data.data[i];
+                        html += `\n--- User ${i + 1} ---\n`;
+                        html += `ID: "${user.id}" (type: ${typeof user.id})\n`;
+                        html += `firstName: "${user.firstName}" (type: ${typeof user.firstName})\n`;
+                        html += `lastName: "${user.lastName}" (type: ${typeof user.lastName})\n`;
+                        html += `fullName: "${user.fullName}" (type: ${typeof user.fullName})\n`;
+                        html += `designation_name: "${user.designation_name}" (type: ${typeof user.designation_name})\n`;
+                    }
+                    
+                    html += `\n<strong>Field Availability Test:</strong>\n`;
+                    const firstUser = data.data[0];
+                    html += `Has 'id': ${firstUser.hasOwnProperty('id')}\n`;
+                    html += `Has 'fullName': ${firstUser.hasOwnProperty('fullName')}\n`;
+                    html += `Has 'designation_name': ${firstUser.hasOwnProperty('designation_name')}\n`;
+                } else {
+                    html += `⚠️ No data found in response\n`;
+                }
+                
+                resultDiv.innerHTML = html;
+                
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.textContent = `❌ Error:\n${error.message}`;
+            }
+        }
+        
+        function clearResults() {
+            const resultDiv = document.getElementById('result');
+            resultDiv.style.display = 'none';
+            resultDiv.textContent = '';
+        }
+        
+        // Auto-test on page load
+        window.onload = function() {
+            setTimeout(testAPIFormat, 1000);
+        };
+    </script>
+</body>
+</html> 

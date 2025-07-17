@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test API Upload Status</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .header {
+            background: #1976D2;
+            color: white;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .test-section {
+            margin-bottom: 30px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .test-section h3 {
+            margin-top: 0;
+            color: #1976D2;
+        }
+        button {
+            background: #1976D2;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #1565C0;
+        }
+        .result {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 15px;
+            margin-top: 10px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        .success {
+            background: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+        .loading {
+            background: #fff3cd;
+            border-color: #ffeaa7;
+            color: #856404;
+        }
+        .status-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .status-item {
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+        .status-available {
+            background: #d4edda;
+            border-color: #c3e6cb;
+        }
+        .status-missing {
+            background: #f8d7da;
+            border-color: #f5c6cb;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Test API Upload Status</h1>
+            <p>Checking which API endpoints are available on the server</p>
+        </div>
+
+        <div class="test-section">
+            <h3>Test All API Endpoints</h3>
+            <button onclick="testAllAPIs()">Test All APIs</button>
+            <div id="allResults" class="result" style="display: none;"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>API Status Summary</h3>
+            <div id="statusGrid" class="status-grid"></div>
+        </div>
+    </div>
+
+    <script>
+        const apis = [
+            { name: 'Login API', url: 'https://emp.kfinone.com/mobile/api/login.php', expected: 'login' },
+            { name: 'Fetch Active SDSA', url: 'https://emp.kfinone.com/mobile/api/fetch_active_sdsa.php', expected: 'sdsa' },
+            { name: 'Fetch SDSA Team', url: 'https://emp.kfinone.com/mobile/api/fetch_sdsa_team.php', expected: 'team' },
+            { name: 'Fetch Emp Panel Users', url: 'https://emp.kfinone.com/mobile/api/fetch_emp_panel_users.php', expected: 'emp' },
+            { name: 'Fetch Team Members', url: 'https://emp.kfinone.com/mobile/api/fetch_team_members.php', expected: 'team' },
+            { name: 'Fetch All Team Members', url: 'https://emp.kfinone.com/mobile/api/fetch_all_team_members.php', expected: 'all' },
+            { name: 'Database Test', url: 'https://emp.kfinone.com/mobile/api/test_db_connection_sdsa.php', expected: 'test' }
+        ];
+
+        async function testAllAPIs() {
+            const resultsDiv = document.getElementById('allResults');
+            const statusGrid = document.getElementById('statusGrid');
+            
+            resultsDiv.style.display = 'block';
+            resultsDiv.className = 'result loading';
+            resultsDiv.textContent = 'Testing all APIs...';
+            
+            statusGrid.innerHTML = '';
+
+            let results = [];
+            
+            for (const api of apis) {
+                try {
+                    const response = await fetch(api.url, {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    });
+
+                    const responseText = await response.text();
+                    let jsonData = null;
+                    
+                    try {
+                        jsonData = JSON.parse(responseText);
+                    } catch (e) {
+                        // Not JSON, that's okay
+                    }
+
+                    results.push({
+                        name: api.name,
+                        url: api.url,
+                        status: response.status,
+                        available: response.status === 200,
+                        response: responseText.substring(0, 200) + (responseText.length > 200 ? '...' : ''),
+                        json: jsonData
+                    });
+
+                } catch (error) {
+                    results.push({
+                        name: api.name,
+                        url: api.url,
+                        status: 'ERROR',
+                        available: false,
+                        response: error.message,
+                        json: null
+                    });
+                }
+            }
+
+            // Display results
+            let resultsText = 'API Test Results:\n\n';
+            results.forEach(result => {
+                resultsText += `${result.name}:\n`;
+                resultsText += `  URL: ${result.url}\n`;
+                resultsText += `  Status: ${result.status}\n`;
+                resultsText += `  Available: ${result.available ? '✅ YES' : '❌ NO'}\n`;
+                resultsText += `  Response: ${result.response}\n\n`;
+            });
+
+            resultsDiv.className = 'result success';
+            resultsDiv.textContent = resultsText;
+
+            // Create status grid
+            results.forEach(result => {
+                const statusItem = document.createElement('div');
+                statusItem.className = `status-item ${result.available ? 'status-available' : 'status-missing'}`;
+                
+                statusItem.innerHTML = `
+                    <h4>${result.name}</h4>
+                    <p><strong>Status:</strong> ${result.status}</p>
+                    <p><strong>Available:</strong> ${result.available ? '✅ YES' : '❌ NO'}</p>
+                    ${result.json ? `<p><strong>JSON:</strong> ${result.json.status || 'N/A'}</p>` : ''}
+                `;
+                
+                statusGrid.appendChild(statusItem);
+            });
+        }
+
+        // Auto-run test on page load
+        window.onload = function() {
+            console.log('Page loaded, ready to test API upload status');
+        };
+    </script>
+</body>
+</html> 

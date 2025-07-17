@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test User Permissions with Icons API</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #34495e;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-right: 10px;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        .result {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+            border-left: 4px solid #3498db;
+        }
+        .error {
+            background-color: #f8d7da;
+            border-left-color: #dc3545;
+            color: #721c24;
+        }
+        .success {
+            background-color: #d4edda;
+            border-left-color: #28a745;
+            color: #155724;
+        }
+        pre {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        .icon-section {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: white;
+        }
+        .icon-section h3 {
+            margin-top: 0;
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+        .icon-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            margin: 5px 0;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+            border-left: 3px solid #3498db;
+        }
+        .icon-info {
+            flex: 1;
+        }
+        .icon-name {
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        .icon-description {
+            color: #7f8c8d;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+        .permission-status {
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .permission-granted {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .permission-denied {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        .loading {
+            text-align: center;
+            color: #7f8c8d;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Test User Permissions with Icons API</h1>
+        
+        <div class="form-group">
+            <label for="userId">User ID:</label>
+            <input type="text" id="userId" placeholder="Enter user ID (e.g., 1, 2, 3...)" value="1">
+        </div>
+        
+        <div class="form-group">
+            <button onclick="testAPI()">Test API</button>
+            <button onclick="clearResult()">Clear Result</button>
+        </div>
+        
+        <div id="result" class="result" style="display: none;">
+            <h3>API Response:</h3>
+            <div id="responseContent"></div>
+        </div>
+    </div>
+
+    <script>
+        async function testAPI() {
+            const userId = document.getElementById('userId').value.trim();
+            const resultDiv = document.getElementById('result');
+            const responseContent = document.getElementById('responseContent');
+            
+            if (!userId) {
+                showError('Please enter a User ID');
+                return;
+            }
+            
+            // Show loading
+            resultDiv.style.display = 'block';
+            resultDiv.className = 'result';
+            responseContent.innerHTML = '<div class="loading">Loading...</div>';
+            
+            try {
+                const response = await fetch('http://192.168.1.100/kfinone/api/get_user_permissions_with_icons.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        userId: userId
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok && data.status === 'success') {
+                    showSuccess(data);
+                    displayIcons(data.data);
+                } else {
+                    showError(data.message || 'API request failed');
+                }
+                
+            } catch (error) {
+                showError('Network error: ' + error.message);
+            }
+        }
+        
+        function showSuccess(data) {
+            const resultDiv = document.getElementById('result');
+            const responseContent = document.getElementById('responseContent');
+            
+            resultDiv.className = 'result success';
+            responseContent.innerHTML = `
+                <h4>✅ Success!</h4>
+                <p><strong>Message:</strong> ${data.message}</p>
+                <h4>Raw Response:</h4>
+                <pre>${JSON.stringify(data, null, 2)}</pre>
+            `;
+        }
+        
+        function showError(message) {
+            const resultDiv = document.getElementById('result');
+            const responseContent = document.getElementById('responseContent');
+            
+            resultDiv.className = 'result error';
+            responseContent.innerHTML = `
+                <h4>❌ Error!</h4>
+                <p>${message}</p>
+            `;
+        }
+        
+        function displayIcons(data) {
+            const responseContent = document.getElementById('responseContent');
+            
+            let iconsHtml = '<h4>📋 Icons Summary:</h4>';
+            
+            // Display manage icons
+            if (data.manage_icons && data.manage_icons.length > 0) {
+                iconsHtml += createIconSection('Manage Icons', data.manage_icons, '#27ae60');
+            }
+            
+            // Display data icons
+            if (data.data_icons && data.data_icons.length > 0) {
+                iconsHtml += createIconSection('Data Icons', data.data_icons, '#3498db');
+            }
+            
+            // Display work icons
+            if (data.work_icons && data.work_icons.length > 0) {
+                iconsHtml += createIconSection('Work Icons', data.work_icons, '#f39c12');
+            }
+            
+            if (!data.manage_icons?.length && !data.data_icons?.length && !data.work_icons?.length) {
+                iconsHtml += '<p>No icons found for this user.</p>';
+            }
+            
+            responseContent.innerHTML += iconsHtml;
+        }
+        
+        function createIconSection(title, icons, color) {
+            let html = `
+                <div class="icon-section">
+                    <h3 style="border-bottom-color: ${color}">${title} (${icons.length})</h3>
+            `;
+            
+            icons.forEach(icon => {
+                const permissionClass = icon.has_permission === 'Yes' ? 'permission-granted' : 'permission-denied';
+                const permissionText = icon.has_permission === 'Yes' ? '✓ Granted' : '✗ Not Granted';
+                
+                html += `
+                    <div class="icon-item">
+                        <div class="icon-info">
+                            <div class="icon-name">${icon.icon_name || 'N/A'}</div>
+                            <div class="icon-description">${icon.icon_description || 'No description'}</div>
+                        </div>
+                        <span class="permission-status ${permissionClass}">${permissionText}</span>
+                    </div>
+                `;
+            });
+            
+            html += '</div>';
+            return html;
+        }
+        
+        function clearResult() {
+            document.getElementById('result').style.display = 'none';
+        }
+        
+        // Test with default user ID on page load
+        window.onload = function() {
+            // Uncomment the line below to auto-test on page load
+            // testAPI();
+        };
+    </script>
+</body>
+</html> 

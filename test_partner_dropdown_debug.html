@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Partner Dropdown Debug</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+        }
+        h2 {
+            color: #34495e;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 5px;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        .result {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 15px;
+            margin-top: 10px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .success {
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+        .warning {
+            background-color: #fff3cd;
+            border-color: #ffeaa7;
+            color: #856404;
+        }
+    </style>
+</head>
+<body>
+    <h1>Partner Dropdown Debug Tool</h1>
+
+    <!-- Database Check -->
+    <div class="container">
+        <h2>Step 1: Check Database Tables and Data</h2>
+        <button onclick="checkDatabase()">Check Database Tables</button>
+        <button onclick="checkBranchTables()">Check Branch Tables</button>
+        <button onclick="addSampleBranchData()">Add Sample Branch Data</button>
+        <div id="databaseResult" class="result"></div>
+    </div>
+
+    <!-- Setup Tables and Add Sample Data -->
+    <div class="container">
+        <h2>Step 2: Setup Tables and Add Sample Data</h2>
+        <button onclick="setupTables()">Setup Tables & Add Sample Data</button>
+        <div id="setupResult" class="result"></div>
+    </div>
+
+    <!-- Test Individual APIs -->
+    <div class="container">
+        <h2>Step 3: Test Individual API Endpoints</h2>
+        <button onclick="testPartnerTypes()">Test Partner Types API</button>
+        <button onclick="testBranchStates()">Test Branch States API</button>
+        <button onclick="testBranchLocations()">Test Branch Locations API</button>
+        <button onclick="testBanks()">Test Banks API</button>
+        <button onclick="testAccountTypes()">Test Account Types API</button>
+        <div id="apiResult" class="result"></div>
+    </div>
+
+    <script>
+        const BASE_URL = 'https://emp.kfinone.com/mobile/api/';
+
+        function showResult(elementId, data, type = 'info') {
+            const element = document.getElementById(elementId);
+            element.textContent = JSON.stringify(data, null, 2);
+            element.className = 'result ' + type;
+        }
+
+        async function checkDatabase() {
+            try {
+                const response = await fetch(BASE_URL + 'test_partner_dropdowns.php');
+                const data = await response.json();
+                
+                if (data.success) {
+                    const results = data.data;
+                    let summary = 'Database Check Results:\n\n';
+                    
+                    // Check table existence
+                    summary += 'Table Existence:\n';
+                    Object.keys(results.table_exists).forEach(table => {
+                        const exists = results.table_exists[table];
+                        summary += `- ${table}: ${exists ? '✅ EXISTS' : '❌ MISSING'}\n`;
+                    });
+                    
+                    summary += '\nData Counts:\n';
+                    if (results.partner_type_count !== undefined) {
+                        summary += `- Partner Types: ${results.partner_type_count} records\n`;
+                    }
+                    if (results.branch_state_count !== undefined) {
+                        summary += `- Branch States: ${results.branch_state_count} records\n`;
+                    }
+                    if (results.branch_location_count !== undefined) {
+                        summary += `- Branch Locations: ${results.branch_location_count} records\n`;
+                    }
+                    if (results.bank_count !== undefined) {
+                        summary += `- Banks: ${results.bank_count} records\n`;
+                    }
+                    if (results.account_type_count !== undefined) {
+                        summary += `- Account Types: ${results.account_type_count} records\n`;
+                    }
+                    
+                    // Show sample data
+                    summary += '\nSample Data:\n';
+                    if (results.partner_type_sample) {
+                        summary += 'Partner Types: ' + JSON.stringify(results.partner_type_sample, null, 2) + '\n';
+                    }
+                    if (results.branch_state_sample) {
+                        summary += 'Branch States: ' + JSON.stringify(results.branch_state_sample, null, 2) + '\n';
+                    }
+                    
+                    showResult('databaseResult', summary, 'success');
+                } else {
+                    showResult('databaseResult', data, 'error');
+                }
+            } catch (error) {
+                showResult('databaseResult', { error: error.message }, 'error');
+            }
+        }
+
+        async function checkBranchTables() {
+            try {
+                const response = await fetch(BASE_URL + 'check_branch_tables.php');
+                const data = await response.json();
+                
+                if (data.success) {
+                    const results = data.data;
+                    let summary = 'Branch Tables Check Results:\n\n';
+                    
+                    summary += 'Branch Tables Found:\n';
+                    results.branch_tables_found.forEach(table => {
+                        summary += `- ${table}\n`;
+                    });
+                    
+                    summary += '\nRequired Tables:\n';
+                    Object.keys(results.required_tables).forEach(table => {
+                        const exists = results.required_tables[table];
+                        summary += `- ${table}: ${exists ? '✅ EXISTS' : '❌ MISSING'}\n`;
+                    });
+                    
+                    summary += '\nTable Counts:\n';
+                    Object.keys(results.table_counts).forEach(table => {
+                        summary += `- ${table}: ${results.table_counts[table]} records\n`;
+                    });
+                    
+                    summary += '\nState Tables:\n';
+                    results.state_tables.forEach(table => {
+                        summary += `- ${table}\n`;
+                    });
+                    
+                    summary += '\nLocation Tables:\n';
+                    results.location_tables.forEach(table => {
+                        summary += `- ${table}\n`;
+                    });
+                    
+                    summary += '\nSample Data:\n';
+                    if (results.sample_data) {
+                        Object.keys(results.sample_data).forEach(table => {
+                            summary += `${table}: ` + JSON.stringify(results.sample_data[table], null, 2) + '\n';
+                        });
+                    }
+                    
+                    showResult('databaseResult', summary, 'success');
+                } else {
+                    showResult('databaseResult', data, 'error');
+                }
+            } catch (error) {
+                showResult('databaseResult', { error: error.message }, 'error');
+            }
+        }
+
+        async function addSampleBranchData() {
+            try {
+                const response = await fetch(BASE_URL + 'add_sample_branch_data.php');
+                const data = await response.json();
+                
+                if (data.success) {
+                    const results = data.data;
+                    let summary = 'Sample Branch Data Setup Results:\n\n';
+                    
+                    if (results.branch_states_added) {
+                        summary += `✅ Added ${results.branch_states_added} branch states\n`;
+                    }
+                    if (results.branch_states_existing) {
+                        summary += `ℹ️ Branch states already exist: ${results.branch_states_existing} records\n`;
+                    }
+                    if (results.branch_state_table_missing) {
+                        summary += `❌ Branch state table missing\n`;
+                    }
+                    
+                    if (results.branch_locations_added) {
+                        summary += `✅ Added ${results.branch_locations_added} branch locations\n`;
+                    }
+                    if (results.branch_locations_existing) {
+                        summary += `ℹ️ Branch locations already exist: ${results.branch_locations_existing} records\n`;
+                    }
+                    if (results.branch_location_table_missing) {
+                        summary += `❌ Branch location table missing\n`;
+                    }
+                    
+                    showResult('databaseResult', summary, 'success');
+                } else {
+                    showResult('databaseResult', data, 'error');
+                }
+            } catch (error) {
+                showResult('databaseResult', { error: error.message }, 'error');
+            }
+        }
+
+        async function setupTables() {
+            try {
+                const response = await fetch(BASE_URL + 'setup_partner_tables.php');
+                const data = await response.json();
+                showResult('setupResult', data, data.success ? 'success' : 'error');
+            } catch (error) {
+                showResult('setupResult', { error: error.message }, 'error');
+            }
+        }
+
+        async function testPartnerTypes() {
+            try {
+                const response = await fetch(BASE_URL + 'get_partner_type_list.php');
+                const data = await response.json();
+                showResult('apiResult', data, data.success ? 'success' : 'error');
+            } catch (error) {
+                showResult('apiResult', { error: error.message }, 'error');
+            }
+        }
+
+        async function testBranchStates() {
+            try {
+                const response = await fetch(BASE_URL + 'get_branch_states_dropdown.php');
+                const data = await response.json();
+                showResult('apiResult', data, data.status === 'success' ? 'success' : 'error');
+            } catch (error) {
+                showResult('apiResult', { error: error.message }, 'error');
+            }
+        }
+
+        async function testBranchLocations() {
+            try {
+                const response = await fetch(BASE_URL + 'get_branch_locations_dropdown.php');
+                const data = await response.json();
+                showResult('apiResult', data, data.status === 'success' ? 'success' : 'error');
+            } catch (error) {
+                showResult('apiResult', { error: error.message }, 'error');
+            }
+        }
+
+        async function testBanks() {
+            try {
+                const response = await fetch(BASE_URL + 'get_bank_list.php');
+                const data = await response.json();
+                showResult('apiResult', data, data.success ? 'success' : 'error');
+            } catch (error) {
+                showResult('apiResult', { error: error.message }, 'error');
+            }
+        }
+
+        async function testAccountTypes() {
+            try {
+                const response = await fetch(BASE_URL + 'get_account_type_list.php');
+                const data = await response.json();
+                showResult('apiResult', data, data.success ? 'success' : 'error');
+            } catch (error) {
+                showResult('apiResult', { error: error.message }, 'error');
+            }
+        }
+    </script>
+</body>
+</html> 

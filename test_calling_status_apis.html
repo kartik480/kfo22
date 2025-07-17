@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Calling Status APIs</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        h1, h2 {
+            color: #333;
+            text-align: center;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .success-btn {
+            background-color: #28a745;
+        }
+        .success-btn:hover {
+            background-color: #1e7e34;
+        }
+        input[type="text"] {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin: 5px;
+            width: 200px;
+        }
+        .result {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 4px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .calling-status-item {
+            background: #e9ecef;
+            margin: 5px 0;
+            padding: 10px;
+            border-radius: 4px;
+            border-left: 4px solid #007bff;
+        }
+        .calling-status-id {
+            font-weight: bold;
+            color: #333;
+        }
+        .calling-status-name {
+            color: #666;
+            font-size: 0.9em;
+        }
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Test Calling Status APIs</h1>
+        
+        <!-- Fetch Calling Statuses Section -->
+        <div class="section">
+            <h2>1. Fetch All Calling Statuses</h2>
+            <p>This tests the <code>get_calling_status_list.php</code> API that fetches from <code>tbl_partner_calling_status</code> table.</p>
+            <button onclick="fetchCallingStatuses()">Fetch All Calling Statuses</button>
+            <button onclick="clearResults('fetchResult')">Clear Results</button>
+            <div id="fetchResult" class="result" style="display: none;"></div>
+        </div>
+        
+        <!-- Add Calling Status Section -->
+        <div class="section">
+            <h2>2. Add New Calling Status</h2>
+            <p>This tests the <code>add_calling_status.php</code> API that adds to <code>tbl_partner_calling_status</code> table.</p>
+            <div class="form-group">
+                <label for="newCallingStatus">New Calling Status:</label>
+                <input type="text" id="newCallingStatus" placeholder="Enter calling status name">
+                <button class="success-btn" onclick="addCallingStatus()">Add Calling Status</button>
+            </div>
+            <div id="addResult" class="result" style="display: none;"></div>
+        </div>
+        
+        <!-- Test Both APIs Section -->
+        <div class="section">
+            <h2>3. Test Complete Flow</h2>
+            <p>This will add a test calling status and then fetch all calling statuses to verify the flow.</p>
+            <button onclick="testCompleteFlow()">Test Complete Flow</button>
+            <div id="flowResult" class="result" style="display: none;"></div>
+        </div>
+    </div>
+
+    <script>
+        const BASE_URL = 'https://emp.kfinone.com/mobile/api/';
+        
+        async function fetchCallingStatuses() {
+            const resultDiv = document.getElementById('fetchResult');
+            resultDiv.style.display = 'block';
+            resultDiv.innerHTML = 'Fetching calling statuses...';
+            resultDiv.className = 'result';
+            
+            try {
+                const response = await fetch(BASE_URL + 'get_calling_status_list.php', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    resultDiv.className = 'result success';
+                    resultDiv.innerHTML = `✅ Success! Found ${data.data.length} calling statuses\n\n`;
+                    
+                    if (data.data.length > 0) {
+                        data.data.forEach((status, index) => {
+                            const itemDiv = document.createElement('div');
+                            itemDiv.className = 'calling-status-item';
+                            itemDiv.innerHTML = `
+                                <div class="calling-status-id">${index + 1}. ID: ${status.id}</div>
+                                <div class="calling-status-name">Calling Status: ${status.calling_status || 'N/A'}</div>
+                            `;
+                            resultDiv.appendChild(itemDiv);
+                        });
+                    } else {
+                        resultDiv.innerHTML += 'No calling statuses found in the database.';
+                    }
+                } else {
+                    resultDiv.className = 'result error';
+                    resultDiv.innerHTML = `❌ Error: ${data.message || 'Unknown error'}`;
+                }
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.innerHTML = `❌ Network Error: ${error.message}`;
+            }
+        }
+        
+        async function addCallingStatus() {
+            const callingStatus = document.getElementById('newCallingStatus').value.trim();
+            const resultDiv = document.getElementById('addResult');
+            
+            if (!callingStatus) {
+                alert('Please enter a calling status name');
+                return;
+            }
+            
+            resultDiv.style.display = 'block';
+            resultDiv.innerHTML = 'Adding calling status...';
+            resultDiv.className = 'result';
+            
+            try {
+                const response = await fetch(BASE_URL + 'add_calling_status.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        calling_status: callingStatus
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    resultDiv.className = 'result success';
+                    resultDiv.innerHTML = `✅ Success! Calling status added successfully\n\n`;
+                    resultDiv.innerHTML += `ID: ${data.data.id}\n`;
+                    resultDiv.innerHTML += `Calling Status: ${data.data.calling_status}\n`;
+                    
+                    // Clear the input
+                    document.getElementById('newCallingStatus').value = '';
+                } else {
+                    resultDiv.className = 'result error';
+                    resultDiv.innerHTML = `❌ Error: ${data.message || 'Unknown error'}`;
+                }
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.innerHTML = `❌ Network Error: ${error.message}`;
+            }
+        }
+        
+        async function testCompleteFlow() {
+            const resultDiv = document.getElementById('flowResult');
+            resultDiv.style.display = 'block';
+            resultDiv.innerHTML = 'Testing complete flow...\n\n';
+            resultDiv.className = 'result';
+            
+            try {
+                // Step 1: Add a test calling status
+                const testStatus = 'Test Status ' + new Date().getTime();
+                resultDiv.innerHTML += 'Step 1: Adding test calling status...\n';
+                
+                const addResponse = await fetch(BASE_URL + 'add_calling_status.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        calling_status: testStatus
+                    })
+                });
+                
+                const addData = await addResponse.json();
+                
+                if (addData.success) {
+                    resultDiv.innerHTML += `✅ Added: ${testStatus} (ID: ${addData.data.id})\n\n`;
+                    
+                    // Step 2: Fetch all calling statuses
+                    resultDiv.innerHTML += 'Step 2: Fetching all calling statuses...\n';
+                    
+                    const fetchResponse = await fetch(BASE_URL + 'get_calling_status_list.php', {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    });
+                    
+                    const fetchData = await fetchResponse.json();
+                    
+                    if (fetchData.success) {
+                        resultDiv.innerHTML += `✅ Found ${fetchData.data.length} calling statuses\n\n`;
+                        
+                        // Check if our test status is in the list
+                        const foundStatus = fetchData.data.find(status => status.calling_status === testStatus);
+                        if (foundStatus) {
+                            resultDiv.innerHTML += `✅ Test status found in list: ${foundStatus.calling_status} (ID: ${foundStatus.id})\n`;
+                            resultDiv.className = 'result success';
+                        } else {
+                            resultDiv.innerHTML += `❌ Test status not found in list\n`;
+                            resultDiv.className = 'result error';
+                        }
+                    } else {
+                        resultDiv.innerHTML += `❌ Error fetching: ${fetchData.message}\n`;
+                        resultDiv.className = 'result error';
+                    }
+                } else {
+                    resultDiv.innerHTML += `❌ Error adding: ${addData.message}\n`;
+                    resultDiv.className = 'result error';
+                }
+            } catch (error) {
+                resultDiv.innerHTML += `❌ Network Error: ${error.message}\n`;
+                resultDiv.className = 'result error';
+            }
+        }
+        
+        function clearResults(elementId) {
+            const resultDiv = document.getElementById(elementId);
+            resultDiv.style.display = 'none';
+            resultDiv.innerHTML = '';
+        }
+        
+        // Auto-fetch on page load
+        window.onload = function() {
+            fetchCallingStatuses();
+        };
+    </script>
+</body>
+</html> 

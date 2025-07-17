@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Branch States API Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .section { margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 5px; }
+        .success { background-color: #d4edda; border-color: #c3e6cb; }
+        .error { background-color: #f8d7da; border-color: #f5c6cb; }
+        .info { background-color: #d1ecf1; border-color: #bee5eb; }
+        button { padding: 10px 15px; margin: 5px; cursor: pointer; }
+        pre { background-color: #f8f9fa; padding: 10px; border-radius: 3px; overflow-x: auto; }
+        .branch-state-item { 
+            background: #fff; 
+            padding: 10px; 
+            margin: 5px 0; 
+            border: 1px solid #ddd; 
+            border-radius: 3px; 
+        }
+    </style>
+</head>
+<body>
+    <h1>Branch States API Test</h1>
+    
+    <div class="section info">
+        <h2>Test Branch States API</h2>
+        <p>This will fetch branch states from tbl_branch_state table:</p>
+        <button onclick="testBranchStatesAPI()">Test Branch States API</button>
+        <div id="apiResult"></div>
+    </div>
+    
+    <div class="section info">
+        <h2>Branch States List</h2>
+        <div id="branchStatesList"></div>
+    </div>
+
+    <script>
+        const BASE_URL = 'https://emp.kfinone.com/mobile/api/';
+        
+        async function testBranchStatesAPI() {
+            const resultDiv = document.getElementById('apiResult');
+            const listDiv = document.getElementById('branchStatesList');
+            
+            resultDiv.innerHTML = '<p>Fetching branch states...</p>';
+            listDiv.innerHTML = '';
+            
+            try {
+                const response = await fetch(BASE_URL + 'get_branch_states_dropdown.php', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    resultDiv.innerHTML = `<div class="success">
+                        <p>✅ Successfully loaded ${data.data.length} branch states</p>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    </div>`;
+                    
+                    // Display branch states in a nice list
+                    let listHTML = '<h3>Available Branch States:</h3>';
+                    data.data.forEach((state, index) => {
+                        listHTML += `
+                            <div class="branch-state-item">
+                                <strong>ID:</strong> ${state.id} | 
+                                <strong>Name:</strong> ${state.name}
+                            </div>
+                        `;
+                    });
+                    listDiv.innerHTML = listHTML;
+                    
+                } else {
+                    resultDiv.innerHTML = `<div class="error">
+                        <p>❌ Error: ${data.message || 'Unknown error'}</p>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    </div>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">
+                    <p>❌ Network error: ${error.message}</p>
+                </div>`;
+            }
+        }
+        
+        // Auto-load on page load
+        window.onload = function() {
+            testBranchStatesAPI();
+        };
+    </script>
+</body>
+</html> 

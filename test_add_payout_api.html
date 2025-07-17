@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Add Payout API</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+        input[type="text"], input[type="number"], select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-right: 10px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+        .response {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 5px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 12px;
+        }
+        .success {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        .info {
+            background-color: #d1ecf1;
+            border: 1px solid #bee5eb;
+            color: #0c5460;
+        }
+        .api-info {
+            background-color: #e2e3e5;
+            border: 1px solid #d6d8db;
+            color: #383d41;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .dropdown-section {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Test Add Payout API</h1>
+        
+        <div class="api-info">
+            <strong>API Endpoint:</strong> https://emp.kfinone.com/mobile/api/add_payout.php<br>
+            <strong>Method:</strong> POST<br>
+            <strong>Parameters:</strong> user_id, payout_type_id, loan_type_id, vendor_bank_id, category_id, payout<br>
+            <strong>Table:</strong> tbl_payout (user_id, payout_type_id, loan_type_id, vendor_bank_id, category_id, payout)
+        </div>
+
+        <!-- Dropdown Data Section -->
+        <div class="dropdown-section">
+            <h3>Dropdown Data</h3>
+            <button type="button" onclick="loadPayoutTypes()">Load Payout Types</button>
+            <button type="button" onclick="loadLoanTypes()">Load Loan Types</button>
+            <button type="button" onclick="loadVendorBanks()">Load Vendor Banks</button>
+            <button type="button" onclick="loadCategories()">Load Categories</button>
+            <div id="dropdownResponse" class="response" style="display: none;"></div>
+        </div>
+
+        <form id="payoutForm">
+            <div class="form-group">
+                <label for="userId">User ID:</label>
+                <input type="number" id="userId" name="userId" value="1" required>
+            </div>
+
+            <div class="form-group">
+                <label for="payoutTypeId">Payout Type ID:</label>
+                <input type="number" id="payoutTypeId" name="payoutTypeId" placeholder="Enter payout type ID" required>
+            </div>
+
+            <div class="form-group">
+                <label for="loanTypeId">Loan Type ID:</label>
+                <input type="number" id="loanTypeId" name="loanTypeId" placeholder="Enter loan type ID" required>
+            </div>
+
+            <div class="form-group">
+                <label for="vendorBankId">Vendor Bank ID:</label>
+                <input type="number" id="vendorBankId" name="vendorBankId" placeholder="Enter vendor bank ID" required>
+            </div>
+
+            <div class="form-group">
+                <label for="categoryId">Category ID:</label>
+                <input type="number" id="categoryId" name="categoryId" placeholder="Enter category ID" required>
+            </div>
+
+            <div class="form-group">
+                <label for="payout">Payout Amount:</label>
+                <input type="number" id="payout" name="payout" step="0.01" placeholder="Enter payout amount" required>
+            </div>
+
+            <div class="form-group">
+                <button type="button" onclick="useSampleData()">Use Sample Data</button>
+                <button type="button" onclick="clearForm()">Clear Form</button>
+            </div>
+
+            <div class="form-group">
+                <button type="submit" id="submitBtn">Submit Payout</button>
+            </div>
+        </form>
+
+        <div id="response" class="response" style="display: none;"></div>
+    </div>
+
+    <script>
+        function loadPayoutTypes() {
+            showDropdownInfo('Loading payout types...');
+            fetch('https://emp.kfinone.com/mobile/api/fetch_payout_types.php')
+                .then(response => response.json())
+                .then(data => {
+                    showDropdownResponse('Payout Types loaded: ' + JSON.stringify(data, null, 2));
+                })
+                .catch(error => {
+                    showDropdownResponse('Error loading payout types: ' + error.message);
+                });
+        }
+
+        function loadLoanTypes() {
+            showDropdownInfo('Loading loan types...');
+            fetch('https://emp.kfinone.com/mobile/api/fetch_loan_types.php')
+                .then(response => response.json())
+                .then(data => {
+                    showDropdownResponse('Loan Types loaded: ' + JSON.stringify(data, null, 2));
+                })
+                .catch(error => {
+                    showDropdownResponse('Error loading loan types: ' + error.message);
+                });
+        }
+
+        function loadVendorBanks() {
+            showDropdownInfo('Loading vendor banks...');
+            fetch('https://emp.kfinone.com/mobile/api/fetch_vendor_banks.php')
+                .then(response => response.json())
+                .then(data => {
+                    showDropdownResponse('Vendor Banks loaded: ' + JSON.stringify(data, null, 2));
+                })
+                .catch(error => {
+                    showDropdownResponse('Error loading vendor banks: ' + error.message);
+                });
+        }
+
+        function loadCategories() {
+            showDropdownInfo('Loading categories...');
+            fetch('https://emp.kfinone.com/mobile/api/fetch_categories.php')
+                .then(response => response.json())
+                .then(data => {
+                    showDropdownResponse('Categories loaded: ' + JSON.stringify(data, null, 2));
+                })
+                .catch(error => {
+                    showDropdownResponse('Error loading categories: ' + error.message);
+                });
+        }
+
+        function showDropdownInfo(message) {
+            const responseDiv = document.getElementById('dropdownResponse');
+            responseDiv.textContent = message;
+            responseDiv.className = 'response info';
+            responseDiv.style.display = 'block';
+        }
+
+        function showDropdownResponse(message) {
+            const responseDiv = document.getElementById('dropdownResponse');
+            responseDiv.textContent = message;
+            responseDiv.className = 'response success';
+            responseDiv.style.display = 'block';
+        }
+
+        function useSampleData() {
+            document.getElementById('userId').value = '1';
+            document.getElementById('payoutTypeId').value = '1';
+            document.getElementById('loanTypeId').value = '1';
+            document.getElementById('vendorBankId').value = '1';
+            document.getElementById('categoryId').value = '1';
+            document.getElementById('payout').value = '5000.00';
+        }
+
+        function clearForm() {
+            document.getElementById('payoutForm').reset();
+            document.getElementById('response').style.display = 'none';
+            document.getElementById('dropdownResponse').style.display = 'none';
+        }
+
+        function showResponse(message, isSuccess) {
+            const responseDiv = document.getElementById('response');
+            responseDiv.textContent = message;
+            responseDiv.className = 'response ' + (isSuccess ? 'success' : 'error');
+            responseDiv.style.display = 'block';
+        }
+
+        function showInfo(message) {
+            const responseDiv = document.getElementById('response');
+            responseDiv.textContent = message;
+            responseDiv.className = 'response info';
+            responseDiv.style.display = 'block';
+        }
+
+        document.getElementById('payoutForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const submitBtn = document.getElementById('submitBtn');
+            const userId = document.getElementById('userId').value;
+            const payoutTypeId = document.getElementById('payoutTypeId').value;
+            const loanTypeId = document.getElementById('loanTypeId').value;
+            const vendorBankId = document.getElementById('vendorBankId').value;
+            const categoryId = document.getElementById('categoryId').value;
+            const payout = document.getElementById('payout').value;
+
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Submitting...';
+
+            showInfo('Submitting payout...');
+
+            try {
+                const requestData = {
+                    user_id: parseInt(userId),
+                    payout_type_id: parseInt(payoutTypeId),
+                    loan_type_id: parseInt(loanTypeId),
+                    vendor_bank_id: parseInt(vendorBankId),
+                    category_id: parseInt(categoryId),
+                    payout: parseFloat(payout)
+                };
+
+                const response = await fetch('https://emp.kfinone.com/mobile/api/add_payout.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(requestData)
+                });
+
+                const responseText = await response.text();
+                
+                console.log('Raw response:', responseText);
+                
+                try {
+                    const jsonResponse = JSON.parse(responseText);
+                    
+                    if (jsonResponse.status === 'success') {
+                        showResponse(`Success!\n\nResponse: ${JSON.stringify(jsonResponse, null, 2)}`, true);
+                    } else {
+                        showResponse(`Error: ${jsonResponse.message}\n\nResponse: ${JSON.stringify(jsonResponse, null, 2)}`, false);
+                    }
+                } catch (parseError) {
+                    showResponse(`Error parsing JSON response: ${parseError.message}\n\nRaw response: ${responseText}`, false);
+                }
+
+            } catch (error) {
+                showResponse(`Network error: ${error.message}`, false);
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Submit Payout';
+            }
+        });
+
+        // Auto-fill with sample data on page load
+        window.addEventListener('load', function() {
+            useSampleData();
+        });
+    </script>
+</body>
+</html> 

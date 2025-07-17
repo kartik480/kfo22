@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comprehensive Users Analysis</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .section h2 {
+            color: #555;
+            margin-top: 0;
+        }
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            font-size: 12px;
+        }
+        .data-table th, .data-table td {
+            border: 1px solid #ddd;
+            padding: 6px;
+            text-align: left;
+        }
+        .data-table th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        .data-table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .count {
+            font-size: 18px;
+            font-weight: bold;
+            color: #007bff;
+            margin: 10px 0;
+        }
+        .error {
+            color: #dc3545;
+            background-color: #f8d7da;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .success {
+            color: #155724;
+            background-color: #d4edda;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .warning {
+            color: #856404;
+            background-color: #fff3cd;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .loading {
+            color: #666;
+            font-style: italic;
+        }
+        .summary-box {
+            display: inline-block;
+            margin: 10px;
+            padding: 15px;
+            border: 2px solid #007bff;
+            border-radius: 8px;
+            background-color: #f8f9fa;
+            min-width: 200px;
+            text-align: center;
+        }
+        .summary-box h3 {
+            margin: 0 0 10px 0;
+            color: #007bff;
+        }
+        .summary-box .number {
+            font-size: 24px;
+            font-weight: bold;
+            color: #28a745;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Comprehensive Users Analysis</h1>
+        
+        <button onclick="analyzeUsers()">Analyze All Users</button>
+        <button onclick="clearResults()">Clear Results</button>
+        
+        <div id="results"></div>
+    </div>
+
+    <script>
+        function analyzeUsers() {
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = '<div class="loading">Analyzing all users...</div>';
+            
+            fetch('api/debug_all_users_designations.php', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                let html = '';
+                
+                if (data.status === 'success') {
+                    html += '<div class="success">Analysis completed successfully!</div>';
+                    
+                    const info = data.data;
+                    
+                    // Summary boxes
+                    html += '<div class="section">';
+                    html += '<h2>Summary</h2>';
+                    html += '<div class="summary-box">';
+                    html += '<h3>Total Users</h3>';
+                    html += `<div class="number">${info.total_users}</div>`;
+                    html += '</div>';
+                    
+                    html += '<div class="summary-box">';
+                    html += '<h3>Target Designation Users</h3>';
+                    html += `<div class="number">${info.target_designation_users}</div>`;
+                    html += '</div>';
+                    
+                    html += '<div class="summary-box">';
+                    html += '<h3>Active Target Users</h3>';
+                    html += `<div class="number">${info.active_target_users}</div>`;
+                    html += '</div>';
+                    html += '</div>';
+                    
+                    // Status counts
+                    html += '<div class="section">';
+                    html += '<h2>Users by Status</h2>';
+                    html += '<table class="data-table">';
+                    html += '<tr><th>Status</th><th>Count</th></tr>';
+                    for (const [status, count] of Object.entries(info.status_counts)) {
+                        html += `<tr><td>${status}</td><td>${count}</td></tr>`;
+                    }
+                    html += '</table>';
+                    html += '</div>';
+                    
+                    // Designation counts
+                    html += '<div class="section">';
+                    html += '<h2>Users by Designation</h2>';
+                    html += '<table class="data-table">';
+                    html += '<tr><th>Designation</th><th>Count</th></tr>';
+                    for (const [designation, count] of Object.entries(info.designation_counts)) {
+                        const isTarget = ['Chief Business Officer', 'Regional Business Head', 'Director'].includes(designation);
+                        const rowClass = isTarget ? 'style="background-color: #d4edda;"' : '';
+                        html += `<tr ${rowClass}><td>${designation}</td><td>${count}</td></tr>`;
+                    }
+                    html += '</table>';
+                    html += '</div>';
+                    
+                    // All users with target designations (regardless of status)
+                    html += '<div class="section">';
+                    html += '<h2>All Users with Target Designations (Any Status)</h2>';
+                    html += `<div class="count">Found: ${info.target_users_all_status.length} users</div>`;
+                    
+                    if (info.target_users_all_status.length > 0) {
+                        html += '<table class="data-table">';
+                        html += '<tr><th>ID</th><th>First Name</th><th>Last Name</th><th>Designation ID</th><th>Designation Name</th><th>Status</th></tr>';
+                        info.target_users_all_status.forEach(user => {
+                            const statusClass = user.status === 'Active' ? 'style="background-color: #d4edda;"' : 'style="background-color: #f8d7da;"';
+                            html += `<tr ${statusClass}><td>${user.id}</td><td>${user.firstName}</td><td>${user.lastName}</td><td>${user.designation_id}</td><td>${user.designation_name}</td><td>${user.status}</td></tr>`;
+                        });
+                        html += '</table>';
+                    } else {
+                        html += '<div class="warning">No users found with target designations!</div>';
+                    }
+                    html += '</div>';
+                    
+                    // Active users with target designations only
+                    html += '<div class="section">';
+                    html += '<h2>Active Users with Target Designations Only</h2>';
+                    html += `<div class="count">Found: ${info.active_target_users_only.length} users</div>`;
+                    
+                    if (info.active_target_users_only.length > 0) {
+                        html += '<table class="data-table">';
+                        html += '<tr><th>ID</th><th>First Name</th><th>Last Name</th><th>Designation ID</th><th>Designation Name</th><th>Status</th></tr>';
+                        info.active_target_users_only.forEach(user => {
+                            html += `<tr><td>${user.id}</td><td>${user.firstName}</td><td>${user.lastName}</td><td>${user.designation_id}</td><td>${user.designation_name}</td><td>${user.status}</td></tr>`;
+                        });
+                        html += '</table>';
+                    } else {
+                        html += '<div class="warning">No active users found with target designations!</div>';
+                    }
+                    html += '</div>';
+                    
+                    // All users (first 20 for reference)
+                    html += '<div class="section">';
+                    html += '<h2>All Users (First 20)</h2>';
+                    html += `<div class="count">Showing first 20 of ${info.all_users.length} total users</div>`;
+                    
+                    if (info.all_users.length > 0) {
+                        html += '<table class="data-table">';
+                        html += '<tr><th>ID</th><th>First Name</th><th>Last Name</th><th>Designation ID</th><th>Designation Name</th><th>Status</th></tr>';
+                        info.all_users.slice(0, 20).forEach(user => {
+                            const isTarget = ['Chief Business Officer', 'Regional Business Head', 'Director'].includes(user.designation_name);
+                            const rowClass = isTarget ? 'style="background-color: #fff3cd;"' : '';
+                            html += `<tr ${rowClass}><td>${user.id}</td><td>${user.firstName}</td><td>${user.lastName}</td><td>${user.designation_id}</td><td>${user.designation_name}</td><td>${user.status}</td></tr>`;
+                        });
+                        html += '</table>';
+                        
+                        if (info.all_users.length > 20) {
+                            html += `<p><em>... and ${info.all_users.length - 20} more users</em></p>`;
+                        }
+                    } else {
+                        html += '<div class="warning">No users found!</div>';
+                    }
+                    html += '</div>';
+                    
+                } else {
+                    html += `<div class="error">Error: ${data.message}</div>`;
+                }
+                
+                resultsDiv.innerHTML = html;
+            })
+            .catch(error => {
+                resultsDiv.innerHTML = `<div class="error">Error: ${error.message}</div>`;
+            });
+        }
+        
+        function clearResults() {
+            document.getElementById('results').innerHTML = '';
+        }
+    </script>
+</body>
+</html> 

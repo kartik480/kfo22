@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Work Icons Debug Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .container { max-width: 800px; margin: 0 auto; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; }
+        input[type="text"] { width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; }
+        button { background: #007bff; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; }
+        button:hover { background: #0056b3; }
+        .result { margin-top: 20px; padding: 15px; border: 1px solid #ddd; border-radius: 4px; background: #f9f9f9; }
+        .success { border-color: #28a745; background: #d4edda; }
+        .error { border-color: #dc3545; background: #f8d7da; }
+        .icon-item { margin: 10px 0; padding: 10px; border: 1px solid #ddd; border-radius: 4px; background: white; }
+        .permission-yes { border-left: 4px solid #28a745; }
+        .permission-no { border-left: 4px solid #dc3545; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Work Icons Debug Test</h1>
+        
+        <div class="form-group">
+            <label for="userId">User ID:</label>
+            <input type="text" id="userId" value="8" placeholder="Enter User ID">
+        </div>
+        
+        <button onclick="testWorkIcons()">Test Work Icons API</button>
+        <button onclick="testUserPermissions()">Test User Permissions API</button>
+        
+        <div id="result" class="result" style="display: none;"></div>
+    </div>
+
+    <script>
+        async function testWorkIcons() {
+            const userId = document.getElementById('userId').value.trim();
+            if (!userId) {
+                alert('Please enter a User ID');
+                return;
+            }
+
+            const resultDiv = document.getElementById('result');
+            resultDiv.style.display = 'block';
+            resultDiv.className = 'result';
+            resultDiv.innerHTML = '<h3>Testing Work Icons API...</h3>';
+
+            try {
+                const response = await fetch('https://emp.kfinone.com/mobile/api/get_work_icons_for_permission.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ userId: userId })
+                });
+
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    resultDiv.className = 'result success';
+                    let html = '<h3>Work Icons API Response:</h3>';
+                    html += '<p><strong>Status:</strong> ' + data.status + '</p>';
+                    html += '<p><strong>Message:</strong> ' + data.message + '</p>';
+                    html += '<p><strong>Total Icons:</strong> ' + data.data.length + '</p>';
+                    
+                    if (data.summary) {
+                        html += '<p><strong>Summary:</strong></p>';
+                        html += '<ul>';
+                        html += '<li>Total Icons: ' + data.summary.total_icons + '</li>';
+                        html += '<li>Active Icons: ' + data.summary.active_icons + '</li>';
+                        html += '<li>Inactive Icons: ' + data.summary.inactive_icons + '</li>';
+                        html += '<li>Permitted Icons: ' + data.summary.permitted_icons + '</li>';
+                        html += '</ul>';
+                    }
+                    
+                    html += '<h4>Work Icons:</h4>';
+                    data.data.forEach(icon => {
+                        const permissionClass = icon.has_permission === 'Yes' ? 'permission-yes' : 'permission-no';
+                        html += '<div class="icon-item ' + permissionClass + '">';
+                        html += '<strong>' + icon.icon_name + '</strong><br>';
+                        html += 'ID: ' + icon.id + '<br>';
+                        html += 'Description: ' + icon.icon_description + '<br>';
+                        html += 'Permission: <strong>' + icon.has_permission + '</strong>';
+                        html += '</div>';
+                    });
+                    
+                    resultDiv.innerHTML = html;
+                } else {
+                    resultDiv.className = 'result error';
+                    resultDiv.innerHTML = '<h3>Error:</h3><p>' + data.message + '</p>';
+                }
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.innerHTML = '<h3>Error:</h3><p>' + error.message + '</p>';
+            }
+        }
+
+        async function testUserPermissions() {
+            const userId = document.getElementById('userId').value.trim();
+            if (!userId) {
+                alert('Please enter a User ID');
+                return;
+            }
+
+            const resultDiv = document.getElementById('result');
+            resultDiv.style.display = 'block';
+            resultDiv.className = 'result';
+            resultDiv.innerHTML = '<h3>Testing User Permissions API...</h3>';
+
+            try {
+                const response = await fetch('https://emp.kfinone.com/mobile/api/get_user_permissions_simple.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ userId: userId })
+                });
+
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    resultDiv.className = 'result success';
+                    let html = '<h3>User Permissions API Response:</h3>';
+                    html += '<p><strong>Status:</strong> ' + data.status + '</p>';
+                    html += '<p><strong>Message:</strong> ' + data.message + '</p>';
+                    
+                    const permissions = data.data;
+                    html += '<p><strong>Available Permission Types:</strong></p>';
+                    html += '<ul>';
+                    html += '<li>Manage Icons: ' + (permissions.manage_icons ? permissions.manage_icons.length : 0) + '</li>';
+                    html += '<li>Data Icons: ' + (permissions.data_icons ? permissions.data_icons.length : 0) + '</li>';
+                    html += '<li>Work Icons: ' + (permissions.work_icons ? permissions.work_icons.length : 0) + '</li>';
+                    html += '</ul>';
+                    
+                    if (permissions.work_icons && permissions.work_icons.length > 0) {
+                        html += '<h4>Work Icons with Permissions:</h4>';
+                        permissions.work_icons.forEach(icon => {
+                            const permissionClass = icon.has_permission === 'Yes' ? 'permission-yes' : 'permission-no';
+                            html += '<div class="icon-item ' + permissionClass + '">';
+                            html += '<strong>' + icon.icon_name + '</strong><br>';
+                            html += 'ID: ' + icon.id + '<br>';
+                            html += 'Description: ' + icon.icon_description + '<br>';
+                            html += 'Permission: <strong>' + icon.has_permission + '</strong>';
+                            html += '</div>';
+                        });
+                    } else {
+                        html += '<p><em>No work icons found or no permissions set.</em></p>';
+                    }
+                    
+                    resultDiv.innerHTML = html;
+                } else {
+                    resultDiv.className = 'result error';
+                    resultDiv.innerHTML = '<h3>Error:</h3><p>' + data.message + '</p>';
+                }
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.innerHTML = '<h3>Error:</h3><p>' + error.message + '</p>';
+            }
+        }
+    </script>
+</body>
+</html> 

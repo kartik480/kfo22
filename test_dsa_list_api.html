@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test DSA List API</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .test-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .test-section h2 {
+            color: #555;
+            margin-top: 0;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input, select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .response {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 15px;
+            margin-top: 15px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .success {
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+        .filter-form {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .filter-form .form-group {
+            margin-bottom: 0;
+        }
+        .filter-form button {
+            grid-column: span 2;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Test DSA List API</h1>
+        
+        <div class="test-section">
+            <h2>1. Test GET Request (All DSA Records)</h2>
+            <p>This will fetch all DSA records without any filters.</p>
+            <button onclick="testGetAllDsaRecords()">Test GET All DSA Records</button>
+            <div id="getResponse" class="response"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>2. Test POST Request (Filtered DSA Records)</h2>
+            <p>This will fetch DSA records with optional filters.</p>
+            
+            <form class="filter-form" id="filterForm">
+                <div class="form-group">
+                    <label for="vendorBank">Vendor Bank:</label>
+                    <input type="text" id="vendorBank" placeholder="Enter vendor bank name">
+                </div>
+                
+                <div class="form-group">
+                    <label for="loanType">Loan Type:</label>
+                    <input type="text" id="loanType" placeholder="Enter loan type">
+                </div>
+                
+                <div class="form-group">
+                    <label for="state">State:</label>
+                    <input type="text" id="state" placeholder="Enter state name">
+                </div>
+                
+                <div class="form-group">
+                    <label for="location">Location:</label>
+                    <input type="text" id="location" placeholder="Enter location">
+                </div>
+                
+                <div class="form-group">
+                    <label for="dsaCode">DSA Code:</label>
+                    <input type="text" id="dsaCode" placeholder="Enter DSA code">
+                </div>
+                
+                <button type="button" onclick="testFilteredDsaRecords()">Test Filtered DSA Records</button>
+            </form>
+            
+            <div id="postResponse" class="response"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>3. Test API Endpoint Status</h2>
+            <button onclick="testApiStatus()">Check API Status</button>
+            <div id="statusResponse" class="response"></div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'https://emp.kfinone.com/mobile/api/';
+        const API_ENDPOINT = 'get_dsa_list.php';
+
+        async function testGetAllDsaRecords() {
+            const responseDiv = document.getElementById('getResponse');
+            responseDiv.innerHTML = 'Loading...';
+            responseDiv.className = 'response';
+
+            try {
+                const response = await fetch(`${API_BASE_URL}${API_ENDPOINT}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                const responseText = await response.text();
+                const responseData = JSON.parse(responseText);
+
+                if (response.ok && responseData.success) {
+                    responseDiv.className = 'response success';
+                    responseDiv.innerHTML = `✅ Success!\n\nStatus: ${response.status}\nRecords Found: ${responseData.count}\n\nResponse:\n${JSON.stringify(responseData, null, 2)}`;
+                } else {
+                    responseDiv.className = 'response error';
+                    responseDiv.innerHTML = `❌ Error!\n\nStatus: ${response.status}\nError: ${responseData.error || 'Unknown error'}\n\nResponse:\n${JSON.stringify(responseData, null, 2)}`;
+                }
+            } catch (error) {
+                responseDiv.className = 'response error';
+                responseDiv.innerHTML = `❌ Network Error!\n\nError: ${error.message}\n\nThis might indicate:\n- API endpoint doesn't exist\n- Server is down\n- Network connectivity issues`;
+            }
+        }
+
+        async function testFilteredDsaRecords() {
+            const responseDiv = document.getElementById('postResponse');
+            responseDiv.innerHTML = 'Loading...';
+            responseDiv.className = 'response';
+
+            const filters = {
+                vendor_bank: document.getElementById('vendorBank').value,
+                loan_type: document.getElementById('loanType').value,
+                state: document.getElementById('state').value,
+                location: document.getElementById('location').value,
+                dsa_code: document.getElementById('dsaCode').value
+            };
+
+            // Remove empty filters
+            Object.keys(filters).forEach(key => {
+                if (!filters[key]) {
+                    delete filters[key];
+                }
+            });
+
+            try {
+                const response = await fetch(`${API_BASE_URL}${API_ENDPOINT}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(filters)
+                });
+
+                const responseText = await response.text();
+                const responseData = JSON.parse(responseText);
+
+                if (response.ok && responseData.success) {
+                    responseDiv.className = 'response success';
+                    responseDiv.innerHTML = `✅ Success!\n\nStatus: ${response.status}\nFilters Applied: ${JSON.stringify(filters)}\nRecords Found: ${responseData.count}\n\nResponse:\n${JSON.stringify(responseData, null, 2)}`;
+                } else {
+                    responseDiv.className = 'response error';
+                    responseDiv.innerHTML = `❌ Error!\n\nStatus: ${response.status}\nFilters Applied: ${JSON.stringify(filters)}\nError: ${responseData.error || 'Unknown error'}\n\nResponse:\n${JSON.stringify(responseData, null, 2)}`;
+                }
+            } catch (error) {
+                responseDiv.className = 'response error';
+                responseDiv.innerHTML = `❌ Network Error!\n\nError: ${error.message}\n\nThis might indicate:\n- API endpoint doesn't exist\n- Server is down\n- Network connectivity issues`;
+            }
+        }
+
+        async function testApiStatus() {
+            const responseDiv = document.getElementById('statusResponse');
+            responseDiv.innerHTML = 'Checking...';
+            responseDiv.className = 'response';
+
+            try {
+                const response = await fetch(`${API_BASE_URL}${API_ENDPOINT}`, {
+                    method: 'HEAD'
+                });
+
+                if (response.ok) {
+                    responseDiv.className = 'response success';
+                    responseDiv.innerHTML = `✅ API Endpoint Available!\n\nStatus: ${response.status}\nStatus Text: ${response.statusText}\nURL: ${API_BASE_URL}${API_ENDPOINT}`;
+                } else {
+                    responseDiv.className = 'response error';
+                    responseDiv.innerHTML = `❌ API Endpoint Error!\n\nStatus: ${response.status}\nStatus Text: ${response.statusText}\nURL: ${API_BASE_URL}${API_ENDPOINT}`;
+                }
+            } catch (error) {
+                responseDiv.className = 'response error';
+                responseDiv.innerHTML = `❌ API Endpoint Not Found!\n\nError: ${error.message}\nURL: ${API_BASE_URL}${API_ENDPOINT}\n\nThis indicates the API endpoint doesn't exist or is not accessible.`;
+            }
+        }
+
+        // Auto-test on page load
+        window.onload = function() {
+            console.log('DSA List API Test Page Loaded');
+            console.log('API Base URL:', API_BASE_URL);
+            console.log('API Endpoint:', API_ENDPOINT);
+        };
+    </script>
+</body>
+</html> 

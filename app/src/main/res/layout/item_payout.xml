@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="8dp"
+    android:background="@drawable/edit_text_background"
+    android:layout_marginBottom="4dp">
+
+    <!-- Payout Type -->
+    <TextView
+        android:id="@+id/payoutTypeText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="Payout Type"
+        android:textSize="12sp"
+        android:textColor="@color/black"
+        android:padding="4dp"
+        android:gravity="center"
+        android:maxLines="2"
+        android:ellipsize="end" />
+
+    <!-- Vendor Bank -->
+    <TextView
+        android:id="@+id/vendorBankText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="Vendor Bank"
+        android:textSize="12sp"
+        android:textColor="@color/black"
+        android:padding="4dp"
+        android:gravity="center"
+        android:maxLines="2"
+        android:ellipsize="end" />
+
+    <!-- Loan Type -->
+    <TextView
+        android:id="@+id/loanTypeText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="Loan Type"
+        android:textSize="12sp"
+        android:textColor="@color/black"
+        android:padding="4dp"
+        android:gravity="center"
+        android:maxLines="2"
+        android:ellipsize="end" />
+
+    <!-- Category -->
+    <TextView
+        android:id="@+id/categoryText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="Category"
+        android:textSize="12sp"
+        android:textColor="@color/black"
+        android:padding="4dp"
+        android:gravity="center"
+        android:maxLines="2"
+        android:ellipsize="end" />
+
+    <!-- Payout Amount -->
+    <TextView
+        android:id="@+id/payoutText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="Payout"
+        android:textSize="12sp"
+        android:textColor="@color/black"
+        android:padding="4dp"
+        android:gravity="center"
+        android:maxLines="2"
+        android:ellipsize="end" />
+
+</LinearLayout> 

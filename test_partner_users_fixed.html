@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Partner Users Fixed API</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .test-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .test-section h2 {
+            color: #555;
+            margin-top: 0;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .result {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 5px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .success {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        .loading {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+        }
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .stat-card {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            text-align: center;
+        }
+        .stat-number {
+            font-size: 24px;
+            font-weight: bold;
+            color: #007bff;
+        }
+        .stat-label {
+            color: #666;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Test Partner Users Fixed API</h1>
+        
+        <div class="stats" id="stats">
+            <div class="stat-card">
+                <div class="stat-number" id="totalCount">-</div>
+                <div class="stat-label">Total Partner Users</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="activeCount">-</div>
+                <div class="stat-label">Active Users</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="inactiveCount">-</div>
+                <div class="stat-label">Inactive Users</div>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h2>Test Fixed API Endpoint</h2>
+            <p>Testing the new fixed API endpoint that handles null values properly.</p>
+            <button onclick="testFixedAPI()">Test Fixed API</button>
+            <div id="fixedApiResult" class="result"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>Test JSON Parsing</h2>
+            <p>Test if the JSON response can be parsed without errors.</p>
+            <button onclick="testJSONParsing()">Test JSON Parsing</button>
+            <div id="jsonResult" class="result"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>Sample Data</h2>
+            <p>Display first 3 partner users from the response.</p>
+            <button onclick="showSampleData()">Show Sample Data</button>
+            <div id="sampleResult" class="result"></div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'https://emp.kfinone.com/mobile/api/get_partner_users_list_fixed.php';
+        let lastResponse = null;
+
+        async function testFixedAPI() {
+            const resultDiv = document.getElementById('fixedApiResult');
+            resultDiv.className = 'result loading';
+            resultDiv.textContent = 'Testing API...';
+
+            try {
+                const response = await fetch(API_URL);
+                const data = await response.json();
+                lastResponse = data;
+
+                if (data.status === 'success') {
+                    resultDiv.className = 'result success';
+                    resultDiv.textContent = `✅ API Test Successful!\n\nStatus: ${data.status}\nMessage: ${data.message}\nCount: ${data.count}\nResponse Time: ${response.headers.get('date') || 'N/A'}`;
+                    
+                    // Update stats
+                    updateStats(data.data);
+                } else {
+                    resultDiv.className = 'result error';
+                    resultDiv.textContent = `❌ API Test Failed!\n\nStatus: ${data.status}\nMessage: ${data.message}`;
+                }
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.textContent = `❌ Error: ${error.message}`;
+            }
+        }
+
+        function testJSONParsing() {
+            const resultDiv = document.getElementById('jsonResult');
+            
+            if (!lastResponse) {
+                resultDiv.className = 'result error';
+                resultDiv.textContent = 'Please run the API test first.';
+                return;
+            }
+
+            try {
+                // Test if we can access all the specified fields
+                const testData = lastResponse.data;
+                if (testData && testData.length > 0) {
+                    const firstUser = testData[0];
+                    const requiredFields = [
+                        'id', 'username', 'alias_name', 'first_name', 'last_name',
+                        'password', 'Phone_number', 'email_id', 'alternative_mobile_number',
+                        'company_name', 'branch_state_name_id', 'branch_location_id',
+                        'bank_id', 'account_type_id', 'office_address', 'residential_address',
+                        'aadhaar_number', 'pan_number', 'account_number', 'ifsc_code',
+                        'rank', 'status', 'reportingTo', 'employee_no', 'department',
+                        'designation', 'branchstate', 'branchloaction', 'bank_name',
+                        'account_type', 'partner_type_id', 'pan_img', 'aadhaar_img',
+                        'photo_img', 'bankproof_img', 'user_id', 'created_at',
+                        'createdBy', 'updated_at'
+                    ];
+
+                    const missingFields = [];
+                    const nullFields = [];
+
+                    requiredFields.forEach(field => {
+                        if (!(field in firstUser)) {
+                            missingFields.push(field);
+                        } else if (firstUser[field] === null) {
+                            nullFields.push(field);
+                        }
+                    });
+
+                    resultDiv.className = 'result success';
+                    let result = '✅ JSON Parsing Test Successful!\n\n';
+                    result += `Total fields checked: ${requiredFields.length}\n`;
+                    result += `Missing fields: ${missingFields.length}\n`;
+                    result += `Null fields: ${nullFields.length}\n\n`;
+
+                    if (missingFields.length > 0) {
+                        result += `Missing fields: ${missingFields.join(', ')}\n\n`;
+                    }
+                    if (nullFields.length > 0) {
+                        result += `Null fields: ${nullFields.join(', ')}\n\n`;
+                    }
+
+                    result += 'All fields are present and accessible!';
+                    resultDiv.textContent = result;
+                } else {
+                    resultDiv.className = 'result error';
+                    resultDiv.textContent = 'No data found in response.';
+                }
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.textContent = `❌ JSON Parsing Error: ${error.message}`;
+            }
+        }
+
+        function showSampleData() {
+            const resultDiv = document.getElementById('sampleResult');
+            
+            if (!lastResponse || !lastResponse.data) {
+                resultDiv.className = 'result error';
+                resultDiv.textContent = 'Please run the API test first.';
+                return;
+            }
+
+            const data = lastResponse.data;
+            const sampleCount = Math.min(3, data.length);
+
+            resultDiv.className = 'result success';
+            let result = `📋 Sample Data (First ${sampleCount} users):\n\n`;
+
+            for (let i = 0; i < sampleCount; i++) {
+                const user = data[i];
+                result += `=== User ${i + 1} ===\n`;
+                result += `ID: ${user.id || 'N/A'}\n`;
+                result += `Username: ${user.username || 'N/A'}\n`;
+                result += `Alias Name: ${user.alias_name || 'N/A'}\n`;
+                result += `First Name: ${user.first_name || 'N/A'}\n`;
+                result += `Last Name: ${user.last_name || 'N/A'}\n`;
+                result += `Phone: ${user.Phone_number || 'N/A'}\n`;
+                result += `Email: ${user.email_id || 'N/A'}\n`;
+                result += `Company: ${user.company_name || 'N/A'}\n`;
+                result += `Status: ${user.status || 'N/A'}\n`;
+                result += `Department: ${user.department || 'N/A'}\n`;
+                result += `Designation: ${user.designation || 'N/A'}\n`;
+                result += `Bank: ${user.bank_name || 'N/A'}\n`;
+                result += `Branch: ${user.branchloaction || 'N/A'}\n`;
+                result += `Created: ${user.created_at || 'N/A'}\n\n`;
+            }
+
+            resultDiv.textContent = result;
+        }
+
+        function updateStats(data) {
+            if (!data) return;
+
+            const total = data.length;
+            const active = data.filter(user => user.status === '1' || user.status === 'active').length;
+            const inactive = total - active;
+
+            document.getElementById('totalCount').textContent = total;
+            document.getElementById('activeCount').textContent = active;
+            document.getElementById('inactiveCount').textContent = inactive;
+        }
+
+        // Auto-run the test when page loads
+        window.onload = function() {
+            testFixedAPI();
+        };
+    </script>
+</body>
+</html> 

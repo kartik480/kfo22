@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Calling Sub Status List API</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        .api-info {
+            background-color: #e9ecef;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .sql-query {
+            background-color: #f8f9fa;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: monospace;
+            margin: 10px 0;
+            border-left: 4px solid #007bff;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .response {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 15px;
+            margin-top: 10px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            max-height: 600px;
+            overflow-y: auto;
+        }
+        .success {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        .sub-status-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        .sub-status-table th, .sub-status-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        .sub-status-table th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        .sub-status-table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .status-badge {
+            background-color: #28a745;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .parent-status {
+            background-color: #e3f2fd;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: bold;
+            color: #1976d2;
+        }
+        .sub-status {
+            background-color: #f3e5f5;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: bold;
+            color: #7b1fa2;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test Calling Sub Status List API</h1>
+    
+    <div class="container">
+        <h2>API Information</h2>
+        <div class="api-info">
+            <strong>API URL:</strong> https://emp.kfinone.com/mobile/api/fetch_all_calling_sub_statuses.php<br>
+            <strong>Table:</strong> tbl_partner_calling_sub_status<br>
+            <strong>Filter:</strong> status = 1 (Active sub statuses)<br>
+            <strong>Method:</strong> GET<br>
+            <strong>Purpose:</strong> Fetch all calling sub statuses for the list box in Add Calling Sub Status panel
+        </div>
+        
+        <div class="sql-query">
+            <strong>SQL Query:</strong><br>
+            SELECT cs.id, cs.calling_sub_status, cs.calling_status_id, cs.status,<br>
+            cst.calling_status as parent_calling_status<br>
+            FROM tbl_partner_calling_sub_status cs<br>
+            LEFT JOIN tbl_partner_calling_status cst ON cs.calling_status_id = cst.id<br>
+            WHERE cs.status = 1<br>
+            ORDER BY cst.calling_status ASC, cs.calling_sub_status ASC
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>Test Commands</h2>
+        <button onclick="testCallingSubStatusList()">🧪 Test Calling Sub Status List</button>
+        <button onclick="checkTableStructure()">🔍 Check Table Structure</button>
+        <button onclick="addSampleSubStatuses()">➕ Add Sample Sub Statuses</button>
+        <button onclick="clearResults()">🗑️ Clear Results</button>
+        <div id="response" class="response"></div>
+    </div>
+
+    <div class="container">
+        <h2>List Box Preview</h2>
+        <div class="api-info">
+            <h3>📋 How it will appear in the Android app list box:</h3>
+            <div id="listBoxPreview">
+                <div style="padding: 10px; border: 1px solid #ddd; border-radius: 4px; background-color: #f8f9fa;">
+                    Loading calling sub statuses...
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'https://emp.kfinone.com/mobile/api/';
+        
+        async function makeRequest(url, options = {}) {
+            try {
+                const response = await fetch(url, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        ...options.headers
+                    },
+                    ...options
+                });
+                
+                const data = await response.text();
+                let jsonData;
+                try {
+                    jsonData = JSON.parse(data);
+                } catch (e) {
+                    return { 
+                        success: false, 
+                        error: 'Invalid JSON response', 
+                        raw: data,
+                        status: response.status
+                    };
+                }
+                
+                return {
+                    success: response.ok,
+                    status: response.status,
+                    data: jsonData,
+                    raw: data
+                };
+            } catch (error) {
+                return {
+                    success: false,
+                    error: error.message,
+                    raw: error.toString()
+                };
+            }
+        }
+
+        async function testCallingSubStatusList() {
+            const responseDiv = document.getElementById('response');
+            responseDiv.innerHTML = '🧪 Testing calling sub status list API...';
+            responseDiv.className = 'response';
+            
+            const result = await makeRequest(API_BASE + 'fetch_all_calling_sub_statuses.php');
+            
+            if (result.success && result.data.success) {
+                const subStatuses = result.data.data;
+                const totalCount = result.data.total_count;
+                responseDiv.className = 'response success';
+                
+                let html = `✅ Calling Sub Status List API Working!\n\n`;
+                html += `📊 API Response:\n`;
+                html += `Status: ${result.status}\n`;
+                html += `Total Calling Sub Statuses: ${totalCount}\n\n`;
+                
+                if (subStatuses.length > 0) {
+                    html += `<table class="sub-status-table">`;
+                    html += `<tr><th>ID</th><th>Parent Calling Status</th><th>Calling Sub Status</th><th>Status</th><th>Calling Status ID</th></tr>`;
+                    
+                    subStatuses.forEach(subStatus => {
+                        html += `<tr>`;
+                        html += `<td>${subStatus.id}</td>`;
+                        html += `<td><span class="parent-status">${subStatus.parent_calling_status || 'Unknown'}</span></td>`;
+                        html += `<td><span class="sub-status">${subStatus.calling_sub_status}</span></td>`;
+                        html += `<td><span class="status-badge">Active (${subStatus.status})</span></td>`;
+                        html += `<td>${subStatus.calling_status_id}</td>`;
+                        html += `</tr>`;
+                    });
+                    
+                    html += `</table>`;
+                    
+                    // Update list box preview
+                    updateListBoxPreview(subStatuses);
+                } else {
+                    html += `⚠️ No calling sub statuses found in database\n`;
+                    updateListBoxPreview([]);
+                }
+                
+                responseDiv.innerHTML = html;
+            } else {
+                responseDiv.className = 'response error';
+                responseDiv.innerHTML = `❌ API Error:\nStatus: ${result.status}\nError: ${result.data?.error || result.error}\n\nRaw Response:\n${result.raw}`;
+                updateListBoxPreview([]);
+            }
+        }
+
+        function updateListBoxPreview(subStatuses) {
+            const listBoxPreview = document.getElementById('listBoxPreview');
+            
+            if (subStatuses.length === 0) {
+                listBoxPreview.innerHTML = `
+                    <div style="padding: 10px; border: 1px solid #ddd; border-radius: 4px; background-color: #f8f9fa; color: #6c757d;">
+                        No calling sub statuses available
+                    </div>
+                `;
+                return;
+            }
+            
+            let html = '<div style="max-height: 300px; overflow-y: auto; border: 1px solid #ddd; border-radius: 4px;">';
+            
+            // Group by parent calling status
+            const grouped = {};
+            subStatuses.forEach(subStatus => {
+                const parent = subStatus.parent_calling_status || 'Unknown';
+                if (!grouped[parent]) {
+                    grouped[parent] = [];
+                }
+                grouped[parent].push(subStatus);
+            });
+            
+            Object.keys(grouped).forEach(parentStatus => {
+                html += `<div style="background-color: #e3f2fd; padding: 8px; font-weight: bold; border-bottom: 1px solid #ddd;">`;
+                html += `${parentStatus}`;
+                html += `</div>`;
+                
+                grouped[parentStatus].forEach(subStatus => {
+                    html += `<div style="padding: 8px 12px; border-bottom: 1px solid #eee; cursor: pointer;">`;
+                    html += `<span style="color: #7b1fa2; font-weight: bold;">${subStatus.calling_sub_status}</span>`;
+                    html += `</div>`;
+                });
+            });
+            
+            html += '</div>';
+            listBoxPreview.innerHTML = html;
+        }
+
+        async function checkTableStructure() {
+            const responseDiv = document.getElementById('response');
+            responseDiv.innerHTML = '🔍 Checking table structures...';
+            responseDiv.className = 'response';
+            
+            responseDiv.className = 'response success';
+            responseDiv.innerHTML = `📋 Table Structures:\n\n` +
+                `tbl_partner_calling_sub_status:\n` +
+                `- id (INT, PRIMARY KEY)\n` +
+                `- calling_sub_status (VARCHAR)\n` +
+                `- calling_status_id (INT, FOREIGN KEY)\n` +
+                `- status (TINYINT)\n\n` +
+                `tbl_partner_calling_status:\n` +
+                `- id (INT, PRIMARY KEY)\n` +
+                `- calling_status (VARCHAR)\n` +
+                `- status (TINYINT)\n` +
+                `- created_at (TIMESTAMP)\n` +
+                `- updated_at (TIMESTAMP)`;
+        }
+
+        async function addSampleSubStatuses() {
+            const responseDiv = document.getElementById('response');
+            responseDiv.innerHTML = '➕ Adding sample calling sub statuses...';
+            responseDiv.className = 'response';
+            
+            // First, let's add some sample calling statuses
+            const sampleCallingStatuses = [
+                { calling_status: "Interested" },
+                { calling_status: "Not Interested" },
+                { calling_status: "Follow Up" },
+                { calling_status: "Converted" }
+            ];
+            
+            let addedCount = 0;
+            
+            for (const status of sampleCallingStatuses) {
+                try {
+                    const result = await makeRequest(API_BASE + 'add_calling_status.php', {
+                        method: 'POST',
+                        body: JSON.stringify(status)
+                    });
+                    
+                    if (result.success && result.data.success) {
+                        addedCount++;
+                    }
+                } catch (e) {
+                    // Ignore errors (might already exist)
+                }
+            }
+            
+            // Now add sample sub statuses
+            const sampleSubStatuses = [
+                { calling_status_id: 1, calling_sub_status: "Very Interested" },
+                { calling_status_id: 1, calling_sub_status: "Somewhat Interested" },
+                { calling_status_id: 2, calling_sub_status: "Not Available" },
+                { calling_status_id: 2, calling_sub_status: "Wrong Number" },
+                { calling_status_id: 3, calling_sub_status: "Call Back Later" },
+                { calling_status_id: 3, calling_sub_status: "Send Information" },
+                { calling_status_id: 4, calling_sub_status: "Application Submitted" },
+                { calling_status_id: 4, calling_sub_status: "Policy Issued" }
+            ];
+            
+            let subStatusAddedCount = 0;
+            
+            for (const subStatus of sampleSubStatuses) {
+                try {
+                    const result = await makeRequest(API_BASE + 'add_calling_sub_status.php', {
+                        method: 'POST',
+                        body: JSON.stringify(subStatus)
+                    });
+                    
+                    if (result.success && result.data.success) {
+                        subStatusAddedCount++;
+                    }
+                } catch (e) {
+                    // Ignore errors (might already exist)
+                }
+            }
+            
+            responseDiv.className = 'response success';
+            responseDiv.innerHTML = `✅ Sample Data Added:\n\n` +
+                `Calling Statuses Added: ${addedCount}\n` +
+                `Calling Sub Statuses Added: ${subStatusAddedCount}\n\n` +
+                `Note: Some items might already exist in the database.`;
+        }
+
+        function clearResults() {
+            document.getElementById('response').innerHTML = '';
+            document.getElementById('response').className = 'response';
+        }
+
+        // Auto-test on page load
+        window.onload = function() {
+            setTimeout(() => {
+                testCallingSubStatusList();
+            }, 1000);
+        };
+    </script>
+</body>
+</html> 

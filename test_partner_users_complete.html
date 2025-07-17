@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Partner Users Complete API Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .response {
+            margin-top: 15px;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .success {
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+        .stats {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        .stat-card {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            border: 1px solid #dee2e6;
+            text-align: center;
+        }
+        .stat-number {
+            font-size: 24px;
+            font-weight: bold;
+            color: #007bff;
+        }
+        .stat-label {
+            font-size: 14px;
+            color: #6c757d;
+        }
+        .table-container {
+            margin-top: 20px;
+            overflow-x: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .column-list {
+            background-color: #e9ecef;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .column-list h3 {
+            margin-top: 0;
+        }
+        .column-list ul {
+            columns: 3;
+            column-gap: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Partner Users Complete API Test</h1>
+    
+    <div class="column-list">
+        <h3>Expected Columns in tbl_partner_users:</h3>
+        <ul>
+            <li>id</li>
+            <li>username</li>
+            <li>alias_name</li>
+            <li>first_name</li>
+            <li>last_name</li>
+            <li>password</li>
+            <li>Phone_number</li>
+            <li>email_id</li>
+            <li>alternative_mobile_number</li>
+            <li>company_name</li>
+            <li>branch_state_name_id</li>
+            <li>branch_location_id</li>
+            <li>bank_id</li>
+            <li>account_type_id</li>
+            <li>office_address</li>
+            <li>residential_address</li>
+            <li>aadhaar_number</li>
+            <li>pan_number</li>
+            <li>account_number</li>
+            <li>ifsc_code</li>
+            <li>rank</li>
+            <li>status</li>
+            <li>reportingTo</li>
+            <li>employee_no</li>
+            <li>department</li>
+            <li>designation</li>
+            <li>branchstate</li>
+            <li>branchloaction</li>
+            <li>bank_name</li>
+            <li>account_type</li>
+            <li>partner_type_id</li>
+            <li>pan_img</li>
+            <li>aadhaar_img</li>
+            <li>photo_img</li>
+            <li>bankproof_img</li>
+            <li>user_id</li>
+            <li>created_at</li>
+            <li>createdBy</li>
+            <li>updated_at</li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2>Fetch Partner Users Complete Data</h2>
+        <button onclick="fetchPartnerUsers()">Fetch Partner Users</button>
+        <div id="fetchResponse" class="response"></div>
+    </div>
+
+    <div class="section">
+        <h2>Statistics</h2>
+        <div id="stats" class="stats">
+            <div class="stat-card">
+                <div id="totalCount" class="stat-number">0</div>
+                <div class="stat-label">Total Users</div>
+            </div>
+            <div class="stat-card">
+                <div id="activeCount" class="stat-number">0</div>
+                <div class="stat-label">Active Users</div>
+            </div>
+            <div class="stat-card">
+                <div id="inactiveCount" class="stat-number">0</div>
+                <div class="stat-label">Inactive Users</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>Sample Data (First 5 Records)</h2>
+        <div id="sampleData" class="table-container"></div>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'https://emp.kfinone.com/mobile/api/';
+        let partnerUsersData = [];
+
+        async function fetchPartnerUsers() {
+            const responseDiv = document.getElementById('fetchResponse');
+            responseDiv.textContent = 'Fetching partner users data...';
+            responseDiv.className = 'response';
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}get_partner_users_complete.php`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const data = await response.json();
+                responseDiv.textContent = JSON.stringify(data, null, 2);
+                responseDiv.className = `response ${data.status === 'success' ? 'success' : 'error'}`;
+                
+                if (data.status === 'success') {
+                    partnerUsersData = data.data;
+                    updateStats();
+                    displaySampleData();
+                }
+            } catch (error) {
+                responseDiv.textContent = `Error: ${error.message}`;
+                responseDiv.className = 'response error';
+            }
+        }
+
+        function updateStats() {
+            const total = partnerUsersData.length;
+            const active = partnerUsersData.filter(user => 
+                user.status === '1' || user.status === 'Active' || user.status === 'active'
+            ).length;
+            const inactive = total - active;
+
+            document.getElementById('totalCount').textContent = total;
+            document.getElementById('activeCount').textContent = active;
+            document.getElementById('inactiveCount').textContent = inactive;
+        }
+
+        function displaySampleData() {
+            const sampleDataDiv = document.getElementById('sampleData');
+            
+            if (partnerUsersData.length === 0) {
+                sampleDataDiv.innerHTML = '<p>No data available</p>';
+                return;
+            }
+
+            const sampleUsers = partnerUsersData.slice(0, 5);
+            const columns = [
+                'id', 'username', 'alias_name', 'first_name', 'last_name', 
+                'Phone_number', 'email_id', 'company_name', 'status', 'created_at'
+            ];
+
+            let tableHTML = '<table><thead><tr>';
+            columns.forEach(col => {
+                tableHTML += `<th>${col}</th>`;
+            });
+            tableHTML += '</tr></thead><tbody>';
+
+            sampleUsers.forEach(user => {
+                tableHTML += '<tr>';
+                columns.forEach(col => {
+                    const value = user[col] || '';
+                    tableHTML += `<td>${value}</td>`;
+                });
+                tableHTML += '</tr>';
+            });
+
+            tableHTML += '</tbody></table>';
+            sampleDataDiv.innerHTML = tableHTML;
+        }
+
+        // Auto-fetch on page load
+        window.onload = function() {
+            fetchPartnerUsers();
+        };
+    </script>
+</body>
+</html> 

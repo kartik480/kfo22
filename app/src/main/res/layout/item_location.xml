@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="12dp"
+    android:gravity="center_vertical"
+    android:background="@drawable/edit_text_background"
+    android:layout_marginBottom="1dp">
+
+    <!-- Location Name Column -->
+    <TextView
+        android:id="@+id/locationName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:textSize="14sp"
+        android:textColor="@color/black"
+        android:padding="8dp"
+        android:gravity="start|center_vertical"
+        android:maxLines="2"
+        android:ellipsize="end"/>
+
+    <!-- Divider -->
+    <View
+        android:layout_width="1dp"
+        android:layout_height="match_parent"
+        android:background="@color/gray"
+        android:layout_marginHorizontal="4dp"/>
+
+    <!-- State Name Column -->
+    <TextView
+        android:id="@+id/stateName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:textSize="14sp"
+        android:textColor="@color/black"
+        android:padding="8dp"
+        android:gravity="start|center_vertical"
+        android:maxLines="2"
+        android:ellipsize="end"/>
+
+    <!-- Divider -->
+    <View
+        android:layout_width="1dp"
+        android:layout_height="match_parent"
+        android:background="@color/gray"
+        android:layout_marginHorizontal="4dp"/>
+
+    <!-- Status Column -->
+    <TextView
+        android:id="@+id/status"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.8"
+        android:textSize="12sp"
+        android:textColor="@color/white"
+        android:padding="6dp"
+        android:gravity="center"
+        android:background="@drawable/circle_background"
+        android:layout_marginHorizontal="4dp"/>
+
+    <!-- Divider -->
+    <View
+        android:layout_width="1dp"
+        android:layout_height="match_parent"
+        android:background="@color/gray"
+        android:layout_marginHorizontal="4dp"/>
+
+    <!-- Actions Column -->
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:padding="4dp">
+
+        <ImageButton
+            android:id="@+id/editButton"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:src="@drawable/ic_edit"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Edit"
+            android:padding="4dp"
+            android:layout_marginEnd="4dp"/>
+
+        <ImageButton
+            android:id="@+id/deleteButton"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:src="@drawable/ic_delete"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Delete"
+            android:padding="4dp"
+            android:layout_marginStart="4dp"/>
+    </LinearLayout>
+</LinearLayout> 

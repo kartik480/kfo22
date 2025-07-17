@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PIN Code Dropdowns Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        h1, h2 {
+            color: #333;
+        }
+        .api-section {
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        select, input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .response {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 15px;
+            margin-top: 10px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .success {
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+        .loading {
+            color: #007bff;
+        }
+        .dropdown-preview {
+            background-color: #e9ecef;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .dropdown-row {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 10px;
+        }
+        .dropdown-col {
+            flex: 1;
+        }
+        .test-summary {
+            background-color: #fff3cd;
+            padding: 15px;
+            border-radius: 4px;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+    <h1>PIN Code Dropdowns Test</h1>
+    
+    <div class="container">
+        <h2>1. Test Individual APIs</h2>
+        <div class="api-section">
+            <button onclick="testStatesAPI()">Test States API</button>
+            <button onclick="testLocationsAPI()">Test Locations API</button>
+            <button onclick="testSubLocationsAPI()">Test Sub Locations API</button>
+            <div id="individualResponse" class="response"></div>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>2. Dropdown Preview (PIN Code Panel)</h2>
+        <div class="api-section">
+            <div class="dropdown-preview">
+                <div class="dropdown-row">
+                    <div class="dropdown-col">
+                        <label for="stateSelect">Select State:</label>
+                        <select id="stateSelect">
+                            <option value="">Loading states...</option>
+                        </select>
+                    </div>
+                    <div class="dropdown-col">
+                        <label for="locationSelect">Select Location:</label>
+                        <select id="locationSelect">
+                            <option value="">Loading locations...</option>
+                        </select>
+                    </div>
+                    <div class="dropdown-col">
+                        <label for="subLocationSelect">Select Sub Location:</label>
+                        <select id="subLocationSelect">
+                            <option value="">Loading sub locations...</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="dropdown-row">
+                    <div class="dropdown-col">
+                        <label for="pincodeInput">PIN Code:</label>
+                        <input type="text" id="pincodeInput" placeholder="Enter 6-digit PIN code" maxlength="6">
+                    </div>
+                    <div class="dropdown-col">
+                        <label>&nbsp;</label>
+                        <button onclick="testPincodeForm()">Test PIN Code Form</button>
+                    </div>
+                </div>
+            </div>
+            <div id="formResponse" class="response"></div>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>3. Run All Tests</h2>
+        <div class="api-section">
+            <button onclick="runAllTests()">Run All Dropdown Tests</button>
+            <div id="allTestsResponse" class="response"></div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'https://emp.kfinone.com/mobile/api/';
+        
+        async function makeRequest(url, options = {}) {
+            try {
+                const response = await fetch(url, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        ...options.headers
+                    },
+                    ...options
+                });
+                
+                const data = await response.text();
+                let jsonData;
+                try {
+                    jsonData = JSON.parse(data);
+                } catch (e) {
+                    return { success: false, error: 'Invalid JSON response', raw: data };
+                }
+                
+                return {
+                    success: response.ok,
+                    status: response.status,
+                    data: jsonData,
+                    raw: data
+                };
+            } catch (error) {
+                return {
+                    success: false,
+                    error: error.message,
+                    raw: error.toString()
+                };
+            }
+        }
+
+        async function testStatesAPI() {
+            const responseDiv = document.getElementById('individualResponse');
+            responseDiv.innerHTML = '<div class="loading">Testing States API...</div>';
+            
+            const result = await makeRequest(API_BASE + 'get_states_for_location.php');
+            
+            if (result.success && result.data.success) {
+                responseDiv.className = 'response success';
+                const states = result.data.states;
+                responseDiv.innerHTML = `✅ States API Success!\n\nStates loaded: ${states.length}\n\nStates:\n${states.join(', ')}`;
+                
+                // Update dropdown
+                updateStateDropdown(states);
+            } else {
+                responseDiv.className = 'response error';
+                responseDiv.innerHTML = `❌ States API Error!\n\nStatus: ${result.status}\nError: ${result.data?.error || result.error}`;
+            }
+        }
+
+        async function testLocationsAPI() {
+            const responseDiv = document.getElementById('individualResponse');
+            responseDiv.innerHTML = '<div class="loading">Testing Locations API...</div>';
+            
+            const result = await makeRequest(API_BASE + 'get_locations_simple.php');
+            
+            if (result.success && result.data.success) {
+                responseDiv.className = 'response success';
+                const locations = result.data.data;
+                responseDiv.innerHTML = `✅ Locations API Success!\n\nLocations loaded: ${locations.length}\n\nLocations:\n${locations.map(loc => loc.locationName).join(', ')}`;
+                
+                // Update dropdown
+                updateLocationDropdown(locations.map(loc => loc.locationName));
+            } else {
+                responseDiv.className = 'response error';
+                responseDiv.innerHTML = `❌ Locations API Error!\n\nStatus: ${result.status}\nError: ${result.data?.error || result.error}`;
+            }
+        }
+
+        async function testSubLocationsAPI() {
+            const responseDiv = document.getElementById('individualResponse');
+            responseDiv.innerHTML = '<div class="loading">Testing Sub Locations API...</div>';
+            
+            const result = await makeRequest(API_BASE + 'get_sub_locations.php');
+            
+            if (result.success && result.data.success) {
+                responseDiv.className = 'response success';
+                const subLocations = result.data.data;
+                responseDiv.innerHTML = `✅ Sub Locations API Success!\n\nSub Locations loaded: ${subLocations.length}\n\nSub Locations:\n${subLocations.map(loc => loc.subLocationName).join(', ')}`;
+                
+                // Update dropdown
+                updateSubLocationDropdown(subLocations.map(loc => loc.subLocationName));
+            } else {
+                responseDiv.className = 'response error';
+                responseDiv.innerHTML = `❌ Sub Locations API Error!\n\nStatus: ${result.status}\nError: ${result.data?.error || result.error}`;
+            }
+        }
+
+        function updateStateDropdown(states) {
+            const stateSelect = document.getElementById('stateSelect');
+            stateSelect.innerHTML = '<option value="">Select a state...</option>';
+            
+            states.forEach(state => {
+                const option = document.createElement('option');
+                option.value = state;
+                option.textContent = state;
+                stateSelect.appendChild(option);
+            });
+        }
+
+        function updateLocationDropdown(locations) {
+            const locationSelect = document.getElementById('locationSelect');
+            locationSelect.innerHTML = '<option value="">Select a location...</option>';
+            
+            locations.forEach(location => {
+                const option = document.createElement('option');
+                option.value = location;
+                option.textContent = location;
+                locationSelect.appendChild(option);
+            });
+        }
+
+        function updateSubLocationDropdown(subLocations) {
+            const subLocationSelect = document.getElementById('subLocationSelect');
+            subLocationSelect.innerHTML = '<option value="">Select a sub location...</option>';
+            
+            subLocations.forEach(subLocation => {
+                const option = document.createElement('option');
+                option.value = subLocation;
+                option.textContent = subLocation;
+                subLocationSelect.appendChild(option);
+            });
+        }
+
+        function testPincodeForm() {
+            const stateSelect = document.getElementById('stateSelect');
+            const locationSelect = document.getElementById('locationSelect');
+            const subLocationSelect = document.getElementById('subLocationSelect');
+            const pincodeInput = document.getElementById('pincodeInput');
+            const responseDiv = document.getElementById('formResponse');
+            
+            const selectedState = stateSelect.value;
+            const selectedLocation = locationSelect.value;
+            const selectedSubLocation = subLocationSelect.value;
+            const pincode = pincodeInput.value;
+            
+            let validationErrors = [];
+            
+            if (!selectedState) validationErrors.push('State is required');
+            if (!selectedLocation) validationErrors.push('Location is required');
+            if (!selectedSubLocation) validationErrors.push('Sub Location is required');
+            if (!pincode) validationErrors.push('PIN Code is required');
+            else if (pincode.length !== 6) validationErrors.push('PIN Code must be 6 digits');
+            else if (!/^\d{6}$/.test(pincode)) validationErrors.push('PIN Code must contain only digits');
+            
+            if (validationErrors.length > 0) {
+                responseDiv.className = 'response error';
+                responseDiv.innerHTML = `❌ Form Validation Failed!\n\nErrors:\n${validationErrors.join('\n')}`;
+            } else {
+                responseDiv.className = 'response success';
+                responseDiv.innerHTML = `✅ Form Validation Passed!\n\nSelected Values:\nState: ${selectedState}\nLocation: ${selectedLocation}\nSub Location: ${selectedSubLocation}\nPIN Code: ${pincode}`;
+            }
+        }
+
+        async function runAllTests() {
+            const responseDiv = document.getElementById('allTestsResponse');
+            responseDiv.innerHTML = '<div class="loading">Running all dropdown tests...</div>';
+            
+            let results = [];
+            
+            // Test 1: States API
+            responseDiv.innerHTML = '<div class="loading">1. Testing States API...</div>';
+            const statesResult = await makeRequest(API_BASE + 'get_states_for_location.php');
+            results.push({
+                test: 'States API',
+                success: statesResult.success && statesResult.data.success,
+                count: statesResult.success && statesResult.data.success ? statesResult.data.states.length : 0,
+                message: statesResult.success && statesResult.data.success ? 
+                    `✅ Success - ${statesResult.data.states.length} states loaded` : 
+                    `❌ Failed - ${statesResult.data?.error || statesResult.error}`
+            });
+            
+            // Test 2: Locations API
+            responseDiv.innerHTML = '<div class="loading">2. Testing Locations API...</div>';
+            const locationsResult = await makeRequest(API_BASE + 'get_locations_simple.php');
+            results.push({
+                test: 'Locations API',
+                success: locationsResult.success && locationsResult.data.success,
+                count: locationsResult.success && locationsResult.data.success ? locationsResult.data.data.length : 0,
+                message: locationsResult.success && locationsResult.data.success ? 
+                    `✅ Success - ${locationsResult.data.data.length} locations loaded` : 
+                    `❌ Failed - ${locationsResult.data?.error || locationsResult.error}`
+            });
+            
+            // Test 3: Sub Locations API
+            responseDiv.innerHTML = '<div class="loading">3. Testing Sub Locations API...</div>';
+            const subLocationsResult = await makeRequest(API_BASE + 'get_sub_locations.php');
+            results.push({
+                test: 'Sub Locations API',
+                success: subLocationsResult.success && subLocationsResult.data.success,
+                count: subLocationsResult.success && subLocationsResult.data.success ? subLocationsResult.data.data.length : 0,
+                message: subLocationsResult.success && subLocationsResult.data.success ? 
+                    `✅ Success - ${subLocationsResult.data.data.length} sub locations loaded` : 
+                    `❌ Failed - ${subLocationsResult.data?.error || subLocationsResult.error}`
+            });
+            
+            // Update all dropdowns
+            if (results[0].success) {
+                updateStateDropdown(statesResult.data.states);
+            }
+            if (results[1].success) {
+                updateLocationDropdown(locationsResult.data.data.map(loc => loc.locationName));
+            }
+            if (results[2].success) {
+                updateSubLocationDropdown(subLocationsResult.data.data.map(loc => loc.subLocationName));
+            }
+            
+            // Display summary
+            const successCount = results.filter(r => r.success).length;
+            const totalCount = results.length;
+            const totalItems = results.reduce((sum, r) => sum + r.count, 0);
+            
+            responseDiv.className = successCount === totalCount ? 'response success' : 'response error';
+            responseDiv.innerHTML = `Test Summary: ${successCount}/${totalCount} APIs working\nTotal Items Loaded: ${totalItems}\n\n${results.map(r => r.message).join('\n')}`;
+        }
+
+        // Auto-run all tests on page load
+        window.onload = function() {
+            runAllTests();
+        };
+    </script>
+</body>
+</html> 

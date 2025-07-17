@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Location Panel Functionality</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        h1, h2 {
+            color: #333;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        select, input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .result {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 4px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 12px;
+        }
+        .success {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        .info {
+            background-color: #d1ecf1;
+            border: 1px solid #bee5eb;
+            color: #0c5460;
+        }
+        .locations-list {
+            max-height: 400px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            padding: 10px;
+            background-color: #f9f9f9;
+        }
+        .location-item {
+            padding: 8px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .location-item:last-child {
+            border-bottom: none;
+        }
+        .location-info {
+            flex: 1;
+        }
+        .location-name {
+            font-weight: bold;
+            color: #333;
+        }
+        .location-state {
+            color: #666;
+            font-size: 14px;
+        }
+        .location-status {
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .status-active {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .status-inactive {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test Location Panel Functionality</h1>
+    
+    <div class="container">
+        <h2>1. Load States for Dropdown</h2>
+        <p>This loads states from <code>tbl_state</code> table for the dropdown selection.</p>
+        
+        <button onclick="loadStates()">Load States</button>
+        <button onclick="clearStatesResult()">Clear Result</button>
+        
+        <div id="statesResult" class="result" style="display: none;"></div>
+        <select id="stateDropdown" style="display: none;">
+            <option value="">Select State</option>
+        </select>
+    </div>
+    
+    <div class="container">
+        <h2>2. Add New Location</h2>
+        <p>This adds a new location to <code>tbl_location</code> table with <code>location</code> and <code>state_id</code> columns.</p>
+        
+        <div class="form-group">
+            <label for="selectedState">Select State:</label>
+            <select id="selectedState">
+                <option value="">Select State</option>
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label for="locationName">Location Name:</label>
+            <input type="text" id="locationName" placeholder="Enter location name">
+        </div>
+        
+        <button onclick="addLocation()">Add Location</button>
+        <button onclick="clearAddResult()">Clear Result</button>
+        
+        <div id="addResult" class="result" style="display: none;"></div>
+    </div>
+    
+    <div class="container">
+        <h2>3. Fetch All Locations (Listbox)</h2>
+        <p>This fetches all locations from <code>tbl_location</code> table with their associated states.</p>
+        
+        <button onclick="fetchLocations()">Fetch Locations</button>
+        <button onclick="clearFetchResult()">Clear Result</button>
+        
+        <div id="fetchResult" class="result" style="display: none;"></div>
+        <div id="locationsList" class="locations-list" style="display: none;"></div>
+    </div>
+    
+    <div class="container">
+        <h2>4. API Endpoints</h2>
+        <div class="info">
+            <strong>Load States API:</strong> <code>https://emp.kfinone.com/mobile/api/simple_get_states.php</code><br>
+            <strong>Method:</strong> GET<br><br>
+            
+            <strong>Add Location API:</strong> <code>https://emp.kfinone.com/mobile/api/add_location.php</code><br>
+            <strong>Method:</strong> POST<br>
+            <strong>Body:</strong> {"location": "Location Name", "state": "State Name"}<br><br>
+            
+            <strong>Fetch Locations API:</strong> <code>https://emp.kfinone.com/mobile/api/get_locations_with_states.php</code><br>
+            <strong>Method:</strong> GET<br>
+            <strong>Response:</strong> {"success": true, "locations": [{"name": "...", "state": "...", "status": "..."}]}
+        </div>
+    </div>
+
+    <script>
+        const BASE_URL = 'https://emp.kfinone.com/mobile/api/';
+        
+        async function loadStates() {
+            try {
+                const response = await fetch(BASE_URL + 'simple_get_states.php', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showResult('statesResult', `✅ Success: ${data.message}\n\nTotal States: ${data.total_states}\n\nResponse: ${JSON.stringify(data, null, 2)}`, 'success');
+                    
+                    // Populate state dropdowns
+                    const stateDropdown = document.getElementById('stateDropdown');
+                    const selectedState = document.getElementById('selectedState');
+                    
+                    // Clear existing options
+                    stateDropdown.innerHTML = '<option value="">Select State</option>';
+                    selectedState.innerHTML = '<option value="">Select State</option>';
+                    
+                    // Add states
+                    data.states.forEach(state => {
+                        stateDropdown.innerHTML += `<option value="${state}">${state}</option>`;
+                        selectedState.innerHTML += `<option value="${state}">${state}</option>`;
+                    });
+                    
+                    stateDropdown.style.display = 'block';
+                    selectedState.style.display = 'block';
+                } else {
+                    showResult('statesResult', `❌ Error: ${data.error}\n\nResponse: ${JSON.stringify(data, null, 2)}`, 'error');
+                }
+            } catch (error) {
+                showResult('statesResult', `❌ Network Error: ${error.message}`, 'error');
+            }
+        }
+        
+        async function addLocation() {
+            const selectedState = document.getElementById('selectedState').value;
+            const locationName = document.getElementById('locationName').value.trim();
+            
+            if (!selectedState) {
+                showResult('addResult', 'Please select a state', 'error');
+                return;
+            }
+            
+            if (!locationName) {
+                showResult('addResult', 'Please enter a location name', 'error');
+                return;
+            }
+            
+            try {
+                const response = await fetch(BASE_URL + 'add_location.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        location: locationName,
+                        state: selectedState
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showResult('addResult', `✅ Success: ${data.message}\n\nResponse: ${JSON.stringify(data, null, 2)}`, 'success');
+                    document.getElementById('locationName').value = '';
+                    document.getElementById('selectedState').value = '';
+                } else {
+                    showResult('addResult', `❌ Error: ${data.error}\n\nResponse: ${JSON.stringify(data, null, 2)}`, 'error');
+                }
+            } catch (error) {
+                showResult('addResult', `❌ Network Error: ${error.message}`, 'error');
+            }
+        }
+        
+        async function fetchLocations() {
+            try {
+                const response = await fetch(BASE_URL + 'get_locations_with_states.php', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showResult('fetchResult', `✅ Success: ${data.message}\n\nTotal Locations: ${data.total_locations}`, 'success');
+                    
+                    // Display locations in a list
+                    let locationsHtml = '<h3>Available Locations from tbl_location:</h3>';
+                    if (data.locations.length === 0) {
+                        locationsHtml += '<p>No locations found in the database.</p>';
+                    } else {
+                        data.locations.forEach((location, index) => {
+                            const statusClass = location.status === 'Active' ? 'status-active' : 'status-inactive';
+                            locationsHtml += `
+                                <div class="location-item">
+                                    <div class="location-info">
+                                        <div class="location-name">${index + 1}. ${location.name}</div>
+                                        <div class="location-state">State: ${location.state}</div>
+                                    </div>
+                                    <span class="location-status ${statusClass}">${location.status}</span>
+                                </div>
+                            `;
+                        });
+                    }
+                    document.getElementById('locationsList').innerHTML = locationsHtml;
+                    document.getElementById('locationsList').style.display = 'block';
+                } else {
+                    showResult('fetchResult', `❌ Error: ${data.error}\n\nResponse: ${JSON.stringify(data, null, 2)}`, 'error');
+                    document.getElementById('locationsList').style.display = 'none';
+                }
+            } catch (error) {
+                showResult('fetchResult', `❌ Network Error: ${error.message}`, 'error');
+                document.getElementById('locationsList').style.display = 'none';
+            }
+        }
+        
+        function showResult(elementId, message, type) {
+            const element = document.getElementById(elementId);
+            element.textContent = message;
+            element.className = `result ${type}`;
+            element.style.display = 'block';
+        }
+        
+        function clearStatesResult() {
+            document.getElementById('statesResult').style.display = 'none';
+        }
+        
+        function clearAddResult() {
+            document.getElementById('addResult').style.display = 'none';
+        }
+        
+        function clearFetchResult() {
+            document.getElementById('fetchResult').style.display = 'none';
+            document.getElementById('locationsList').style.display = 'none';
+        }
+        
+        // Auto-load states on page load
+        window.onload = function() {
+            loadStates();
+        };
+    </script>
+</body>
+</html> 

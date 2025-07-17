@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug Partner Users 500 Error</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .test-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+        }
+        .test-button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            margin: 10px 5px;
+        }
+        .test-button:hover {
+            background-color: #0056b3;
+        }
+        .result {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 6px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .success {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        .info {
+            background-color: #d1ecf1;
+            border: 1px solid #bee5eb;
+            color: #0c5460;
+        }
+        .warning {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 Debug Partner Users 500 Error</h1>
+        
+        <div class="test-section">
+            <h2>🚨 Problem Description</h2>
+            <p><strong>Error:</strong> HTTP 500 Server Error when calling <code>get_partner_users_list.php</code></p>
+            <p><strong>Log:</strong> <code>Unexpected response code 500 for https://emp.kfinone.com/mobile/api/get_partner_users_list.php</code></p>
+            <p><strong>Goal:</strong> Identify and fix the root cause of the 500 error</p>
+        </div>
+
+        <div class="test-section">
+            <h2>🔍 Step 1: Test Database Connection</h2>
+            <p>First, let's test if the database connection is working properly.</p>
+            <button class="test-button" onclick="testDatabaseConnection()">Test Database Connection</button>
+            <div id="connectionResult"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>📋 Step 2: Check Table Structure</h2>
+            <p>Check if the tbl_partner_users table exists and what its structure looks like.</p>
+            <button class="test-button" onclick="testTableStructure()">Check Table Structure</button>
+            <div id="tableResult"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>🚀 Step 3: Test Original API</h2>
+            <p>Test the original API endpoint to see the exact error.</p>
+            <button class="test-button" onclick="testOriginalAPI()">Test Original API</button>
+            <div id="originalResult"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>🔧 Step 4: Fix Suggestions</h2>
+            <p>Based on the debug results, here are potential fixes:</p>
+            <div id="fixSuggestions"></div>
+        </div>
+    </div>
+
+    <script>
+        const BASE_URL = 'https://emp.kfinone.com/mobile/api/';
+
+        async function testDatabaseConnection() {
+            const resultDiv = document.getElementById('connectionResult');
+            resultDiv.innerHTML = '<div class="result info">Testing database connection...</div>';
+            
+            try {
+                const response = await fetch(BASE_URL + 'debug_partner_users_list.php');
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    resultDiv.innerHTML = `
+                        <div class="result success">
+✅ Database Connection Successful!
+
+Message: ${data.message}
+Server Info: ${data.debug_info.server_info}
+Host Info: ${data.debug_info.host_info}
+Connect Error: ${data.debug_info.connect_error || 'None'}
+                    `;
+                } else {
+                    resultDiv.innerHTML = `
+                        <div class="result error">
+❌ Database Connection Failed!
+
+Message: ${data.message}
+Error Type: ${data.debug_info.error_type}
+File: ${data.debug_info.file}
+Line: ${data.debug_info.line}
+                    `;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="result error">
+❌ Database Connection Error!
+
+Error: ${error.message}
+This could indicate:
+- Server is down
+- Network connectivity issues
+- PHP configuration problems
+                `;
+            }
+        }
+
+        async function testTableStructure() {
+            const resultDiv = document.getElementById('tableResult');
+            resultDiv.innerHTML = '<div class="result info">Checking table structure...</div>';
+            
+            try {
+                const response = await fetch(BASE_URL + 'debug_partner_users_table.php');
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    const debug = data.debug_info;
+                    resultDiv.innerHTML = `
+                        <div class="result success">
+✅ Table Structure Analysis Complete!
+
+Table Exists: ${debug.table_exists}
+Total Columns: ${debug.total_columns}
+Row Count: ${debug.row_count}
+
+📋 All Columns Found:
+${debug.all_columns.join(', ')}
+
+${debug.missing_columns.length > 0 ? `
+❌ Missing Columns:
+${debug.missing_columns.join(', ')}
+` : '✅ All required columns present'}
+
+${debug.extra_columns.length > 0 ? `
+📝 Extra Columns:
+${debug.extra_columns.join(', ')}
+` : ''}
+                    `;
+                } else {
+                    const debug = data.debug_info;
+                    resultDiv.innerHTML = `
+                        <div class="result error">
+❌ Table Structure Issue!
+
+Message: ${data.message}
+Table Exists: ${debug.table_exists}
+
+${debug.similar_tables.length > 0 ? `
+🔍 Similar Tables Found:
+${debug.similar_tables.join(', ')}
+
+Possible Solutions:
+1. The table might have a different name
+2. Check if it's named differently (e.g., tbl_partners, partners, etc.)
+3. The table might not exist yet
+` : 'No similar tables found'}
+                    `;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="result error">
+❌ Table Structure Check Error!
+
+Error: ${error.message}
+                `;
+            }
+        }
+
+        async function testOriginalAPI() {
+            const resultDiv = document.getElementById('originalResult');
+            resultDiv.innerHTML = '<div class="result info">Testing original API...</div>';
+            
+            try {
+                const response = await fetch(BASE_URL + 'get_partner_users_list.php');
+                
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    resultDiv.innerHTML = `
+                        <div class="result error">
+❌ Original API Failed!
+
+HTTP Status: ${response.status} ${response.statusText}
+Response: ${errorText}
+
+This confirms the 500 error is happening in the original API.
+                    `;
+                } else {
+                    const data = await response.json();
+                    resultDiv.innerHTML = `
+                        <div class="result success">
+✅ Original API Working!
+
+Status: ${data.status}
+Message: ${data.message}
+Count: ${data.count}
+                    `;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="result error">
+❌ Original API Error!
+
+Error: ${error.message}
+                `;
+            }
+        }
+
+        // Auto-run tests when page loads
+        window.onload = function() {
+            setTimeout(() => {
+                testDatabaseConnection();
+            }, 1000);
+            
+            setTimeout(() => {
+                testTableStructure();
+            }, 2000);
+            
+            setTimeout(() => {
+                testOriginalAPI();
+            }, 3000);
+        };
+    </script>
+</body>
+</html> 

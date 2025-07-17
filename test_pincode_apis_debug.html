@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PIN Code APIs Debug Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        h1, h2 {
+            color: #333;
+        }
+        .api-test {
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+        .api-url {
+            background-color: #f8f9fa;
+            padding: 8px;
+            border-radius: 4px;
+            font-family: monospace;
+            margin: 10px 0;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .response {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 15px;
+            margin-top: 10px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .success {
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+        .loading {
+            color: #007bff;
+        }
+        .status {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .connection-test {
+            background-color: #fff3cd;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>PIN Code APIs Debug Test</h1>
+    
+    <div class="container">
+        <h2>Connection Test</h2>
+        <div class="connection-test">
+            <button onclick="testServerConnection()">Test Server Connection</button>
+            <div id="connectionResponse" class="response"></div>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>Individual API Tests</h2>
+        
+        <div class="api-test">
+            <h3>1. States API</h3>
+            <div class="api-url">URL: https://emp.kfinone.com/mobile/api/get_states_for_location.php</div>
+            <button onclick="testStatesAPI()">Test States API</button>
+            <div class="status" id="statesStatus">Not tested</div>
+            <div id="statesResponse" class="response"></div>
+        </div>
+
+        <div class="api-test">
+            <h3>2. Locations API</h3>
+            <div class="api-url">URL: https://emp.kfinone.com/mobile/api/get_locations_simple.php</div>
+            <button onclick="testLocationsAPI()">Test Locations API</button>
+            <div class="status" id="locationsStatus">Not tested</div>
+            <div id="locationsResponse" class="response"></div>
+        </div>
+
+        <div class="api-test">
+            <h3>3. Sub Locations API</h3>
+            <div class="api-url">URL: https://emp.kfinone.com/mobile/api/get_sub_locations.php</div>
+            <button onclick="testSubLocationsAPI()">Test Sub Locations API</button>
+            <div class="status" id="subLocationsStatus">Not tested</div>
+            <div id="subLocationsResponse" class="response"></div>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>Run All Tests</h2>
+        <button onclick="runAllAPITests()">Run All API Tests</button>
+        <div id="allTestsResponse" class="response"></div>
+    </div>
+
+    <script>
+        const API_BASE = 'https://emp.kfinone.com/mobile/api/';
+        
+        async function makeRequest(url, options = {}) {
+            const startTime = Date.now();
+            try {
+                const response = await fetch(url, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        ...options.headers
+                    },
+                    ...options
+                });
+                
+                const endTime = Date.now();
+                const responseTime = endTime - startTime;
+                
+                const data = await response.text();
+                let jsonData;
+                try {
+                    jsonData = JSON.parse(data);
+                } catch (e) {
+                    return { 
+                        success: false, 
+                        error: 'Invalid JSON response', 
+                        raw: data,
+                        responseTime: responseTime,
+                        status: response.status
+                    };
+                }
+                
+                return {
+                    success: response.ok,
+                    status: response.status,
+                    data: jsonData,
+                    raw: data,
+                    responseTime: responseTime
+                };
+            } catch (error) {
+                const endTime = Date.now();
+                const responseTime = endTime - startTime;
+                return {
+                    success: false,
+                    error: error.message,
+                    raw: error.toString(),
+                    responseTime: responseTime
+                };
+            }
+        }
+
+        async function testServerConnection() {
+            const responseDiv = document.getElementById('connectionResponse');
+            responseDiv.innerHTML = '<div class="loading">Testing server connection...</div>';
+            
+            const result = await makeRequest(API_BASE + 'test_simple.php');
+            
+            if (result.success) {
+                responseDiv.className = 'response success';
+                responseDiv.innerHTML = `✅ Server Connection Success!\n\nResponse Time: ${result.responseTime}ms\nStatus: ${result.status}\nResponse: ${result.raw}`;
+            } else {
+                responseDiv.className = 'response error';
+                responseDiv.innerHTML = `❌ Server Connection Failed!\n\nResponse Time: ${result.responseTime}ms\nError: ${result.error}\nStatus: ${result.status || 'N/A'}\nRaw: ${result.raw}`;
+            }
+        }
+
+        async function testStatesAPI() {
+            const responseDiv = document.getElementById('statesResponse');
+            const statusDiv = document.getElementById('statesStatus');
+            
+            responseDiv.innerHTML = '<div class="loading">Testing States API...</div>';
+            statusDiv.textContent = 'Testing...';
+            
+            const result = await makeRequest(API_BASE + 'get_states_for_location.php');
+            
+            if (result.success && result.data.success) {
+                responseDiv.className = 'response success';
+                const states = result.data.states;
+                responseDiv.innerHTML = `✅ States API Success!\n\nResponse Time: ${result.responseTime}ms\nStatus: ${result.status}\nStates Count: ${states.length}\n\nStates:\n${states.join(', ')}`;
+                statusDiv.textContent = `✅ Success - ${states.length} states loaded`;
+            } else {
+                responseDiv.className = 'response error';
+                responseDiv.innerHTML = `❌ States API Error!\n\nResponse Time: ${result.responseTime}ms\nStatus: ${result.status}\nError: ${result.data?.error || result.error}\n\nRaw Response:\n${result.raw}`;
+                statusDiv.textContent = '❌ Failed';
+            }
+        }
+
+        async function testLocationsAPI() {
+            const responseDiv = document.getElementById('locationsResponse');
+            const statusDiv = document.getElementById('locationsStatus');
+            
+            responseDiv.innerHTML = '<div class="loading">Testing Locations API...</div>';
+            statusDiv.textContent = 'Testing...';
+            
+            const result = await makeRequest(API_BASE + 'get_locations_simple.php');
+            
+            if (result.success && result.data.success) {
+                responseDiv.className = 'response success';
+                const locations = result.data.data;
+                responseDiv.innerHTML = `✅ Locations API Success!\n\nResponse Time: ${result.responseTime}ms\nStatus: ${result.status}\nLocations Count: ${locations.length}\n\nLocations:\n${locations.map(loc => loc.locationName).join(', ')}`;
+                statusDiv.textContent = `✅ Success - ${locations.length} locations loaded`;
+            } else {
+                responseDiv.className = 'response error';
+                responseDiv.innerHTML = `❌ Locations API Error!\n\nResponse Time: ${result.responseTime}ms\nStatus: ${result.status}\nError: ${result.data?.error || result.error}\n\nRaw Response:\n${result.raw}`;
+                statusDiv.textContent = '❌ Failed';
+            }
+        }
+
+        async function testSubLocationsAPI() {
+            const responseDiv = document.getElementById('subLocationsResponse');
+            const statusDiv = document.getElementById('subLocationsStatus');
+            
+            responseDiv.innerHTML = '<div class="loading">Testing Sub Locations API...</div>';
+            statusDiv.textContent = 'Testing...';
+            
+            const result = await makeRequest(API_BASE + 'get_sub_locations.php');
+            
+            if (result.success && result.data.success) {
+                responseDiv.className = 'response success';
+                const subLocations = result.data.data;
+                responseDiv.innerHTML = `✅ Sub Locations API Success!\n\nResponse Time: ${result.responseTime}ms\nStatus: ${result.status}\nSub Locations Count: ${subLocations.length}\n\nSub Locations:\n${subLocations.map(loc => loc.subLocationName).join(', ')}`;
+                statusDiv.textContent = `✅ Success - ${subLocations.length} sub locations loaded`;
+            } else {
+                responseDiv.className = 'response error';
+                responseDiv.innerHTML = `❌ Sub Locations API Error!\n\nResponse Time: ${result.responseTime}ms\nStatus: ${result.status}\nError: ${result.data?.error || result.error}\n\nRaw Response:\n${result.raw}`;
+                statusDiv.textContent = '❌ Failed';
+            }
+        }
+
+        async function runAllAPITests() {
+            const responseDiv = document.getElementById('allTestsResponse');
+            responseDiv.innerHTML = '<div class="loading">Running all API tests...</div>';
+            
+            let results = [];
+            
+            // Test 1: States API
+            responseDiv.innerHTML = '<div class="loading">1. Testing States API...</div>';
+            const statesResult = await makeRequest(API_BASE + 'get_states_for_location.php');
+            results.push({
+                test: 'States API',
+                success: statesResult.success && statesResult.data.success,
+                count: statesResult.success && statesResult.data.success ? statesResult.data.states.length : 0,
+                responseTime: statesResult.responseTime,
+                message: statesResult.success && statesResult.data.success ? 
+                    `✅ Success - ${statesResult.data.states.length} states (${statesResult.responseTime}ms)` : 
+                    `❌ Failed - ${statesResult.data?.error || statesResult.error} (${statesResult.responseTime}ms)`
+            });
+            
+            // Test 2: Locations API
+            responseDiv.innerHTML = '<div class="loading">2. Testing Locations API...</div>';
+            const locationsResult = await makeRequest(API_BASE + 'get_locations_simple.php');
+            results.push({
+                test: 'Locations API',
+                success: locationsResult.success && locationsResult.data.success,
+                count: locationsResult.success && locationsResult.data.success ? locationsResult.data.data.length : 0,
+                responseTime: locationsResult.responseTime,
+                message: locationsResult.success && locationsResult.data.success ? 
+                    `✅ Success - ${locationsResult.data.data.length} locations (${locationsResult.responseTime}ms)` : 
+                    `❌ Failed - ${locationsResult.data?.error || locationsResult.error} (${locationsResult.responseTime}ms)`
+            });
+            
+            // Test 3: Sub Locations API
+            responseDiv.innerHTML = '<div class="loading">3. Testing Sub Locations API...</div>';
+            const subLocationsResult = await makeRequest(API_BASE + 'get_sub_locations.php');
+            results.push({
+                test: 'Sub Locations API',
+                success: subLocationsResult.success && subLocationsResult.data.success,
+                count: subLocationsResult.success && subLocationsResult.data.success ? subLocationsResult.data.data.length : 0,
+                responseTime: subLocationsResult.responseTime,
+                message: subLocationsResult.success && subLocationsResult.data.success ? 
+                    `✅ Success - ${subLocationsResult.data.data.length} sub locations (${subLocationsResult.responseTime}ms)` : 
+                    `❌ Failed - ${subLocationsResult.data?.error || subLocationsResult.error} (${subLocationsResult.responseTime}ms)`
+            });
+            
+            // Display summary
+            const successCount = results.filter(r => r.success).length;
+            const totalCount = results.length;
+            const totalItems = results.reduce((sum, r) => sum + r.count, 0);
+            const avgResponseTime = results.reduce((sum, r) => sum + r.responseTime, 0) / results.length;
+            
+            responseDiv.className = successCount === totalCount ? 'response success' : 'response error';
+            responseDiv.innerHTML = `Test Summary: ${successCount}/${totalCount} APIs working\nTotal Items Loaded: ${totalItems}\nAverage Response Time: ${avgResponseTime.toFixed(0)}ms\n\n${results.map(r => r.message).join('\n')}`;
+        }
+
+        // Auto-run connection test on page load
+        window.onload = function() {
+            testServerConnection();
+        };
+    </script>
+</body>
+</html> 

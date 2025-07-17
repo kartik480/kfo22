@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find Calling Status Table</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 10px 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .success-btn {
+            background-color: #28a745;
+        }
+        .success-btn:hover {
+            background-color: #1e7e34;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 4px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .table-item {
+            background: #e9ecef;
+            margin: 5px 0;
+            padding: 10px;
+            border-radius: 4px;
+            border-left: 4px solid #007bff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Find Calling Status Table</h1>
+        
+        <div>
+            <button onclick="findCallingStatusTables()">Find Calling Status Tables</button>
+            <button class="success-btn" onclick="setupCorrectTable()">Setup tbl_partner_calling_status</button>
+            <button onclick="clearResults()">Clear Results</button>
+        </div>
+        
+        <div id="result" class="result" style="display: none;"></div>
+    </div>
+
+    <script>
+        const BASE_URL = 'https://emp.kfinone.com/mobile/api/';
+        
+        async function findCallingStatusTables() {
+            const resultDiv = document.getElementById('result');
+            resultDiv.style.display = 'block';
+            resultDiv.innerHTML = 'Searching for calling status tables...';
+            resultDiv.className = 'result';
+            
+            try {
+                const response = await fetch(BASE_URL + 'check_calling_status_tables.php', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    resultDiv.className = 'result success';
+                    resultDiv.innerHTML = `✅ Found calling status related tables\n\n`;
+                    
+                    if (data.data.tables_with_calling_status_column.length > 0) {
+                        resultDiv.innerHTML += `Tables with calling_status column:\n`;
+                        data.data.tables_with_calling_status_column.forEach(table => {
+                            const tableDiv = document.createElement('div');
+                            tableDiv.className = 'table-item';
+                            tableDiv.innerHTML = `
+                                <strong>Table: ${table.table_name}</strong><br>
+                                Records: ${table.record_count}<br>
+                                Columns: ${table.structure.map(col => col.Field).join(', ')}<br>
+                                Sample Data: ${JSON.stringify(table.sample_data, null, 2)}
+                            `;
+                            resultDiv.appendChild(tableDiv);
+                        });
+                    } else {
+                        resultDiv.innerHTML += `❌ No tables found with calling_status column\n\n`;
+                        resultDiv.innerHTML += `Potential calling status tables:\n`;
+                        data.data.potential_calling_status_tables.forEach(table => {
+                            resultDiv.innerHTML += `- ${table}\n`;
+                        });
+                    }
+                    
+                    resultDiv.innerHTML += `\nAll tables in database:\n`;
+                    data.data.all_tables.forEach(table => {
+                        resultDiv.innerHTML += `- ${table}\n`;
+                    });
+                } else {
+                    resultDiv.className = 'result error';
+                    resultDiv.innerHTML = `❌ Error: ${data.message}`;
+                }
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.innerHTML = `❌ Network Error: ${error.message}`;
+            }
+        }
+        
+        async function setupCorrectTable() {
+            const resultDiv = document.getElementById('result');
+            resultDiv.style.display = 'block';
+            resultDiv.innerHTML = 'Setting up tbl_partner_calling_status table...';
+            resultDiv.className = 'result';
+            
+            try {
+                const response = await fetch(BASE_URL + 'setup_calling_status_table.php', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    resultDiv.className = 'result success';
+                    resultDiv.innerHTML = `✅ ${data.message}\n\n`;
+                    
+                    if (data.setup_info.table_created) {
+                        resultDiv.innerHTML += `Table created successfully!\n`;
+                        resultDiv.innerHTML += `Sample data inserted: ${data.setup_info.sample_data_inserted}\n`;
+                        resultDiv.innerHTML += `Sample statuses: ${data.setup_info.sample_statuses.join(', ')}\n\n`;
+                        resultDiv.innerHTML += `Now test the Android app - it should work!\n`;
+                    } else {
+                        resultDiv.innerHTML += `Table already exists with ${data.setup_info.existing_records} records\n`;
+                    }
+                } else {
+                    resultDiv.className = 'result error';
+                    resultDiv.innerHTML = `❌ Error: ${data.message}`;
+                }
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.innerHTML = `❌ Network Error: ${error.message}`;
+            }
+        }
+        
+        function clearResults() {
+            const resultDiv = document.getElementById('result');
+            resultDiv.style.display = 'none';
+            resultDiv.innerHTML = '';
+        }
+        
+        // Auto-run on page load
+        window.onload = function() {
+            findCallingStatusTables();
+        };
+    </script>
+</body>
+</html> 
