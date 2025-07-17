@@ -425,6 +425,16 @@
             android:exported="false"
             android:label="Team Emp Links"
             android:parentActivityName=".EmpLinksActivity" />
+        <activity
+            android:name=".DirectorPartnerActivity"
+            android:exported="false"
+            android:label="Director Partner Management"
+            android:parentActivityName=".User10002PanelActivity" />
+        <activity
+            android:name=".DirectorPayoutActivity"
+            android:exported="false"
+            android:label="Director Payout Management"
+            android:parentActivityName=".User10002PanelActivity" />
     </application>
 
 </manifest>

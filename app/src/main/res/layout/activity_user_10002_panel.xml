@@ -576,7 +576,7 @@
 
                     </LinearLayout>
 
-                    <!-- Quick Access Section Header -->
+                    <!-- Management Tools Section Header -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -602,515 +602,462 @@
 
                     </LinearLayout>
 
-                    <!-- Quick Access Grid - Row 1 -->
-                    <LinearLayout
+                    <!-- Horizontally Scrollable Management Tools -->
+                    <HorizontalScrollView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:layout_marginBottom="12dp">
-
-                        <!-- Employee Links Box -->
-                        <com.google.android.material.card.MaterialCardView
-                            android:id="@+id/empLinksBox"
-                            android:layout_width="0dp"
-                            android:layout_height="100dp"
-                            android:layout_weight="1"
-                            android:layout_marginEnd="6dp"
-                            app:cardCornerRadius="12dp"
-                            app:cardElevation="2dp"
-                            app:cardBackgroundColor="#FFFFFF">
-
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:orientation="vertical"
-                                android:padding="12dp"
-                                android:gravity="center">
-
-                                <ImageView
-                                    android:layout_width="32dp"
-                                    android:layout_height="32dp"
-                                    android:src="@drawable/ic_emp_links"
-                                    android:tint="@color/light_green"
-                                    android:layout_marginBottom="8dp" />
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="Employee Links"
-                                    android:textSize="12sp"
-                                    android:textColor="#2C3E50"
-                                    android:textStyle="bold"
-                                    android:gravity="center" />
-
-                            </LinearLayout>
-
-                        </com.google.android.material.card.MaterialCardView>
-
-                        <!-- Data Links Box -->
-                        <com.google.android.material.card.MaterialCardView
-                            android:id="@+id/dataLinksBox"
-                            android:layout_width="0dp"
-                            android:layout_height="100dp"
-                            android:layout_weight="1"
-                            android:layout_marginStart="6dp"
-                            app:cardCornerRadius="12dp"
-                            app:cardElevation="2dp"
-                            app:cardBackgroundColor="#FFFFFF">
-
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:orientation="vertical"
-                                android:padding="12dp"
-                                android:gravity="center">
-
-                                <ImageView
-                                    android:layout_width="32dp"
-                                    android:layout_height="32dp"
-                                    android:src="@drawable/ic_data_links"
-                                    android:tint="@color/light_green"
-                                    android:layout_marginBottom="8dp" />
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="Data Links"
-                                    android:textSize="12sp"
-                                    android:textColor="#2C3E50"
-                                    android:textStyle="bold"
-                                    android:gravity="center" />
-
-                            </LinearLayout>
-
-                        </com.google.android.material.card.MaterialCardView>
-
-                    </LinearLayout>
-
-                    <!-- Quick Access Grid - Row 2 -->
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:layout_marginBottom="12dp">
-
-                        <!-- Work Links Box -->
-                        <com.google.android.material.card.MaterialCardView
-                            android:id="@+id/workLinksBox"
-                            android:layout_width="0dp"
-                            android:layout_height="100dp"
-                            android:layout_weight="1"
-                            android:layout_marginEnd="6dp"
-                            app:cardCornerRadius="12dp"
-                            app:cardElevation="2dp"
-                            app:cardBackgroundColor="#FFFFFF">
-
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:orientation="vertical"
-                                android:padding="12dp"
-                                android:gravity="center">
-
-                                <ImageView
-                                    android:layout_width="32dp"
-                                    android:layout_height="32dp"
-                                    android:src="@drawable/ic_work_links"
-                                    android:tint="@color/light_green"
-                                    android:layout_marginBottom="8dp" />
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="Work Links"
-                                    android:textSize="12sp"
-                                    android:textColor="#2C3E50"
-                                    android:textStyle="bold"
-                                    android:gravity="center" />
-
-                            </LinearLayout>
-
-                        </com.google.android.material.card.MaterialCardView>
-
-                        <!-- Employee Box -->
-                        <com.google.android.material.card.MaterialCardView
-                            android:id="@+id/employeeBox"
-                            android:layout_width="0dp"
-                            android:layout_height="100dp"
-                            android:layout_weight="1"
-                            android:layout_marginStart="6dp"
-                            app:cardCornerRadius="12dp"
-                            app:cardElevation="2dp"
-                            app:cardBackgroundColor="#FFFFFF">
-
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:orientation="vertical"
-                                android:padding="12dp"
-                                android:gravity="center">
-
-                                <ImageView
-                                    android:layout_width="32dp"
-                                    android:layout_height="32dp"
-                                    android:src="@drawable/ic_people"
-                                    android:tint="@color/light_green"
-                                    android:layout_marginBottom="8dp" />
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="Employees"
-                                    android:textSize="12sp"
-                                    android:textColor="#2C3E50"
-                                    android:textStyle="bold"
-                                    android:gravity="center" />
-
-                            </LinearLayout>
-
-                        </com.google.android.material.card.MaterialCardView>
-
-                    </LinearLayout>
-
-                    <!-- Quick Access Grid - Row 3 -->
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:layout_marginBottom="12dp">
-
-                        <!-- SDSA Box -->
-                        <com.google.android.material.card.MaterialCardView
-                            android:id="@+id/sdsaBox"
-                            android:layout_width="0dp"
-                            android:layout_height="100dp"
-                            android:layout_weight="1"
-                            android:layout_marginEnd="6dp"
-                            app:cardCornerRadius="12dp"
-                            app:cardElevation="2dp"
-                            app:cardBackgroundColor="#FFFFFF">
-
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:orientation="vertical"
-                                android:padding="12dp"
-                                android:gravity="center">
-
-                                <ImageView
-                                    android:layout_width="32dp"
-                                    android:layout_height="32dp"
-                                    android:src="@drawable/ic_dsa"
-                                    android:tint="@color/light_green"
-                                    android:layout_marginBottom="8dp" />
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="SDSA"
-                                    android:textSize="12sp"
-                                    android:textColor="#2C3E50"
-                                    android:textStyle="bold"
-                                    android:gravity="center" />
-
-                            </LinearLayout>
-
-                        </com.google.android.material.card.MaterialCardView>
-
-                        <!-- Partner Box -->
-                        <com.google.android.material.card.MaterialCardView
-                            android:id="@+id/partnerBox"
-                            android:layout_width="0dp"
-                            android:layout_height="100dp"
-                            android:layout_weight="1"
-                            android:layout_marginStart="6dp"
-                            app:cardCornerRadius="12dp"
-                            app:cardElevation="2dp"
-                            app:cardBackgroundColor="#FFFFFF">
-
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:orientation="vertical"
-                                android:padding="12dp"
-                                android:gravity="center">
-
-                                <ImageView
-                                    android:layout_width="32dp"
-                                    android:layout_height="32dp"
-                                    android:src="@drawable/ic_partner"
-                                    android:tint="@color/light_green"
-                                    android:layout_marginBottom="8dp" />
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="Partners"
-                                    android:textSize="12sp"
-                                    android:textColor="#2C3E50"
-                                    android:textStyle="bold"
-                                    android:gravity="center" />
-
-                            </LinearLayout>
-
-                        </com.google.android.material.card.MaterialCardView>
-
-                    </LinearLayout>
-
-                    <!-- Quick Access Grid - Row 4 -->
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:layout_marginBottom="12dp">
-
-                        <!-- Agent Box -->
-                        <com.google.android.material.card.MaterialCardView
-                            android:id="@+id/agentBox"
-                            android:layout_width="0dp"
-                            android:layout_height="100dp"
-                            android:layout_weight="1"
-                            android:layout_marginEnd="6dp"
-                            app:cardCornerRadius="12dp"
-                            app:cardElevation="2dp"
-                            app:cardBackgroundColor="#FFFFFF">
-
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:orientation="vertical"
-                                android:padding="12dp"
-                                android:gravity="center">
-
-                                <ImageView
-                                    android:layout_width="32dp"
-                                    android:layout_height="32dp"
-                                    android:src="@drawable/ic_agent"
-                                    android:tint="@color/light_green"
-                                    android:layout_marginBottom="8dp" />
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="Agents"
-                                    android:textSize="12sp"
-                                    android:textColor="#2C3E50"
-                                    android:textStyle="bold"
-                                    android:gravity="center" />
-
-                            </LinearLayout>
-
-                        </com.google.android.material.card.MaterialCardView>
-
-                        <!-- Payout Box -->
-                        <com.google.android.material.card.MaterialCardView
-                            android:id="@+id/payoutBox"
-                            android:layout_width="0dp"
-                            android:layout_height="100dp"
-                            android:layout_weight="1"
-                            android:layout_marginStart="6dp"
-                            app:cardCornerRadius="12dp"
-                            app:cardElevation="2dp"
-                            app:cardBackgroundColor="#FFFFFF">
-
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:orientation="vertical"
-                                android:padding="12dp"
-                                android:gravity="center">
-
-                                <ImageView
-                                    android:layout_width="32dp"
-                                    android:layout_height="32dp"
-                                    android:src="@drawable/ic_payout"
-                                    android:tint="@color/light_green"
-                                    android:layout_marginBottom="8dp" />
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="Payouts"
-                                    android:textSize="12sp"
-                                    android:textColor="#2C3E50"
-                                    android:textStyle="bold"
-                                    android:gravity="center" />
-
-                            </LinearLayout>
-
-                        </com.google.android.material.card.MaterialCardView>
-
-                    </LinearLayout>
-
-                    <!-- Quick Access Grid - Row 5 -->
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:layout_marginBottom="12dp">
-
-                        <!-- DSA Codes Box -->
-                        <com.google.android.material.card.MaterialCardView
-                            android:id="@+id/dsaCodesBox"
-                            android:layout_width="0dp"
-                            android:layout_height="100dp"
-                            android:layout_weight="1"
-                            android:layout_marginEnd="6dp"
-                            app:cardCornerRadius="12dp"
-                            app:cardElevation="2dp"
-                            app:cardBackgroundColor="#FFFFFF">
-
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:orientation="vertical"
-                                android:padding="12dp"
-                                android:gravity="center">
-
-                                <ImageView
-                                    android:layout_width="32dp"
-                                    android:layout_height="32dp"
-                                    android:src="@drawable/ic_dsa_code"
-                                    android:tint="@color/light_green"
-                                    android:layout_marginBottom="8dp" />
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="DSA Codes"
-                                    android:textSize="12sp"
-                                    android:textColor="#2C3E50"
-                                    android:textStyle="bold"
-                                    android:gravity="center" />
-
-                            </LinearLayout>
-
-                        </com.google.android.material.card.MaterialCardView>
-
-                        <!-- Bankers Box -->
-                        <com.google.android.material.card.MaterialCardView
-                            android:id="@+id/bankersBox"
-                            android:layout_width="0dp"
-                            android:layout_height="100dp"
-                            android:layout_weight="1"
-                            android:layout_marginStart="6dp"
-                            app:cardCornerRadius="12dp"
-                            app:cardElevation="2dp"
-                            app:cardBackgroundColor="#FFFFFF">
-
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:orientation="vertical"
-                                android:padding="12dp"
-                                android:gravity="center">
-
-                                <ImageView
-                                    android:layout_width="32dp"
-                                    android:layout_height="32dp"
-                                    android:src="@drawable/ic_banker"
-                                    android:tint="@color/light_green"
-                                    android:layout_marginBottom="8dp" />
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="Bankers"
-                                    android:textSize="12sp"
-                                    android:textColor="#2C3E50"
-                                    android:textStyle="bold"
-                                    android:gravity="center" />
-
-                            </LinearLayout>
-
-                        </com.google.android.material.card.MaterialCardView>
-
-                    </LinearLayout>
-
-                    <!-- Quick Access Grid - Row 6 -->
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:layout_marginBottom="12dp">
-
-                        <!-- Portfolio Box -->
-                        <com.google.android.material.card.MaterialCardView
-                            android:id="@+id/portfolioBox"
-                            android:layout_width="0dp"
-                            android:layout_height="100dp"
-                            android:layout_weight="1"
-                            android:layout_marginEnd="6dp"
-                            app:cardCornerRadius="12dp"
-                            app:cardElevation="2dp"
-                            app:cardBackgroundColor="#FFFFFF">
-
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:orientation="vertical"
-                                android:padding="12dp"
-                                android:gravity="center">
-
-                                <ImageView
-                                    android:layout_width="32dp"
-                                    android:layout_height="32dp"
-                                    android:src="@drawable/ic_portfolio"
-                                    android:tint="@color/light_green"
-                                    android:layout_marginBottom="8dp" />
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="Portfolio"
-                                    android:textSize="12sp"
-                                    android:textColor="#2C3E50"
-                                    android:textStyle="bold"
-                                    android:gravity="center" />
-
-                            </LinearLayout>
-
-                        </com.google.android.material.card.MaterialCardView>
-
-                        <!-- Add Insurance Box -->
-                        <com.google.android.material.card.MaterialCardView
-                            android:id="@+id/addInsuranceBox"
-                            android:layout_width="0dp"
-                            android:layout_height="100dp"
-                            android:layout_weight="1"
-                            android:layout_marginStart="6dp"
-                            app:cardCornerRadius="12dp"
-                            app:cardElevation="2dp"
-                            app:cardBackgroundColor="#FFFFFF">
-
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:orientation="vertical"
-                                android:padding="12dp"
-                                android:gravity="center">
-
-                                <ImageView
-                                    android:layout_width="32dp"
-                                    android:layout_height="32dp"
-                                    android:src="@drawable/ic_insurance"
-                                    android:tint="@color/light_green"
-                                    android:layout_marginBottom="8dp" />
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="Add Insurance"
-                                    android:textSize="12sp"
-                                    android:textColor="#2C3E50"
-                                    android:textStyle="bold"
-                                    android:gravity="center" />
-
-                            </LinearLayout>
-
-                        </com.google.android.material.card.MaterialCardView>
-
-                    </LinearLayout>
+                        android:scrollbars="none"
+                        android:layout_marginBottom="24dp">
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <!-- Employee Links Box -->
+                            <com.google.android.material.card.MaterialCardView
+                                android:id="@+id/empLinksBox"
+                                android:layout_width="140dp"
+                                android:layout_height="100dp"
+                                android:layout_marginEnd="12dp"
+                                app:cardCornerRadius="12dp"
+                                app:cardElevation="2dp"
+                                app:cardBackgroundColor="#FFFFFF">
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:orientation="vertical"
+                                    android:padding="12dp"
+                                    android:gravity="center">
+
+                                    <ImageView
+                                        android:layout_width="32dp"
+                                        android:layout_height="32dp"
+                                        android:src="@drawable/ic_emp_links"
+                                        android:tint="@color/light_green"
+                                        android:layout_marginBottom="8dp" />
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="Employee Links"
+                                        android:textSize="12sp"
+                                        android:textColor="#2C3E50"
+                                        android:textStyle="bold"
+                                        android:gravity="center" />
+
+                                </LinearLayout>
+
+                            </com.google.android.material.card.MaterialCardView>
+
+                            <!-- Data Links Box -->
+                            <com.google.android.material.card.MaterialCardView
+                                android:id="@+id/dataLinksBox"
+                                android:layout_width="140dp"
+                                android:layout_height="100dp"
+                                android:layout_marginEnd="12dp"
+                                app:cardCornerRadius="12dp"
+                                app:cardElevation="2dp"
+                                app:cardBackgroundColor="#FFFFFF">
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:orientation="vertical"
+                                    android:padding="12dp"
+                                    android:gravity="center">
+
+                                    <ImageView
+                                        android:layout_width="32dp"
+                                        android:layout_height="32dp"
+                                        android:src="@drawable/ic_data_links"
+                                        android:tint="@color/light_green"
+                                        android:layout_marginBottom="8dp" />
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="Data Links"
+                                        android:textSize="12sp"
+                                        android:textColor="#2C3E50"
+                                        android:textStyle="bold"
+                                        android:gravity="center" />
+
+                                </LinearLayout>
+
+                            </com.google.android.material.card.MaterialCardView>
+
+                            <!-- Work Links Box -->
+                            <com.google.android.material.card.MaterialCardView
+                                android:id="@+id/workLinksBox"
+                                android:layout_width="140dp"
+                                android:layout_height="100dp"
+                                android:layout_marginEnd="12dp"
+                                app:cardCornerRadius="12dp"
+                                app:cardElevation="2dp"
+                                app:cardBackgroundColor="#FFFFFF">
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:orientation="vertical"
+                                    android:padding="12dp"
+                                    android:gravity="center">
+
+                                    <ImageView
+                                        android:layout_width="32dp"
+                                        android:layout_height="32dp"
+                                        android:src="@drawable/ic_work_links"
+                                        android:tint="@color/light_green"
+                                        android:layout_marginBottom="8dp" />
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="Work Links"
+                                        android:textSize="12sp"
+                                        android:textColor="#2C3E50"
+                                        android:textStyle="bold"
+                                        android:gravity="center" />
+
+                                </LinearLayout>
+
+                            </com.google.android.material.card.MaterialCardView>
+
+                            <!-- Employee Box -->
+                            <com.google.android.material.card.MaterialCardView
+                                android:id="@+id/employeeBox"
+                                android:layout_width="140dp"
+                                android:layout_height="100dp"
+                                android:layout_marginEnd="12dp"
+                                app:cardCornerRadius="12dp"
+                                app:cardElevation="2dp"
+                                app:cardBackgroundColor="#FFFFFF">
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:orientation="vertical"
+                                    android:padding="12dp"
+                                    android:gravity="center">
+
+                                    <ImageView
+                                        android:layout_width="32dp"
+                                        android:layout_height="32dp"
+                                        android:src="@drawable/ic_people"
+                                        android:tint="@color/light_green"
+                                        android:layout_marginBottom="8dp" />
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="Employees"
+                                        android:textSize="12sp"
+                                        android:textColor="#2C3E50"
+                                        android:textStyle="bold"
+                                        android:gravity="center" />
+
+                                </LinearLayout>
+
+                            </com.google.android.material.card.MaterialCardView>
+
+                            <!-- SDSA Box -->
+                            <com.google.android.material.card.MaterialCardView
+                                android:id="@+id/sdsaBox"
+                                android:layout_width="140dp"
+                                android:layout_height="100dp"
+                                android:layout_marginEnd="12dp"
+                                app:cardCornerRadius="12dp"
+                                app:cardElevation="2dp"
+                                app:cardBackgroundColor="#FFFFFF">
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:orientation="vertical"
+                                    android:padding="12dp"
+                                    android:gravity="center">
+
+                                    <ImageView
+                                        android:layout_width="32dp"
+                                        android:layout_height="32dp"
+                                        android:src="@drawable/ic_dsa"
+                                        android:tint="@color/light_green"
+                                        android:layout_marginBottom="8dp" />
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="SDSA"
+                                        android:textSize="12sp"
+                                        android:textColor="#2C3E50"
+                                        android:textStyle="bold"
+                                        android:gravity="center" />
+
+                                </LinearLayout>
+
+                            </com.google.android.material.card.MaterialCardView>
+
+                            <!-- Partner Box -->
+                            <com.google.android.material.card.MaterialCardView
+                                android:id="@+id/partnerBox"
+                                android:layout_width="140dp"
+                                android:layout_height="100dp"
+                                android:layout_marginEnd="12dp"
+                                app:cardCornerRadius="12dp"
+                                app:cardElevation="2dp"
+                                app:cardBackgroundColor="#FFFFFF">
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:orientation="vertical"
+                                    android:padding="12dp"
+                                    android:gravity="center">
+
+                                    <ImageView
+                                        android:layout_width="32dp"
+                                        android:layout_height="32dp"
+                                        android:src="@drawable/ic_partner"
+                                        android:tint="@color/light_green"
+                                        android:layout_marginBottom="8dp" />
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="Partners"
+                                        android:textSize="12sp"
+                                        android:textColor="#2C3E50"
+                                        android:textStyle="bold"
+                                        android:gravity="center" />
+
+                                </LinearLayout>
+
+                            </com.google.android.material.card.MaterialCardView>
+
+                            <!-- Agent Box -->
+                            <com.google.android.material.card.MaterialCardView
+                                android:id="@+id/agentBox"
+                                android:layout_width="140dp"
+                                android:layout_height="100dp"
+                                android:layout_marginEnd="12dp"
+                                app:cardCornerRadius="12dp"
+                                app:cardElevation="2dp"
+                                app:cardBackgroundColor="#FFFFFF">
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:orientation="vertical"
+                                    android:padding="12dp"
+                                    android:gravity="center">
+
+                                    <ImageView
+                                        android:layout_width="32dp"
+                                        android:layout_height="32dp"
+                                        android:src="@drawable/ic_agent"
+                                        android:tint="@color/light_green"
+                                        android:layout_marginBottom="8dp" />
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="Agents"
+                                        android:textSize="12sp"
+                                        android:textColor="#2C3E50"
+                                        android:textStyle="bold"
+                                        android:gravity="center" />
+
+                                </LinearLayout>
+
+                            </com.google.android.material.card.MaterialCardView>
+
+                            <!-- Payout Box -->
+                            <com.google.android.material.card.MaterialCardView
+                                android:id="@+id/payoutBox"
+                                android:layout_width="140dp"
+                                android:layout_height="100dp"
+                                android:layout_marginEnd="12dp"
+                                app:cardCornerRadius="12dp"
+                                app:cardElevation="2dp"
+                                app:cardBackgroundColor="#FFFFFF">
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:orientation="vertical"
+                                    android:padding="12dp"
+                                    android:gravity="center">
+
+                                    <ImageView
+                                        android:layout_width="32dp"
+                                        android:layout_height="32dp"
+                                        android:src="@drawable/ic_payout"
+                                        android:tint="@color/light_green"
+                                        android:layout_marginBottom="8dp" />
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="Payouts"
+                                        android:textSize="12sp"
+                                        android:textColor="#2C3E50"
+                                        android:textStyle="bold"
+                                        android:gravity="center" />
+
+                                </LinearLayout>
+
+                            </com.google.android.material.card.MaterialCardView>
+
+                            <!-- DSA Codes Box -->
+                            <com.google.android.material.card.MaterialCardView
+                                android:id="@+id/dsaCodesBox"
+                                android:layout_width="140dp"
+                                android:layout_height="100dp"
+                                android:layout_marginEnd="12dp"
+                                app:cardCornerRadius="12dp"
+                                app:cardElevation="2dp"
+                                app:cardBackgroundColor="#FFFFFF">
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:orientation="vertical"
+                                    android:padding="12dp"
+                                    android:gravity="center">
+
+                                    <ImageView
+                                        android:layout_width="32dp"
+                                        android:layout_height="32dp"
+                                        android:src="@drawable/ic_dsa_code"
+                                        android:tint="@color/light_green"
+                                        android:layout_marginBottom="8dp" />
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="DSA Codes"
+                                        android:textSize="12sp"
+                                        android:textColor="#2C3E50"
+                                        android:textStyle="bold"
+                                        android:gravity="center" />
+
+                                </LinearLayout>
+
+                            </com.google.android.material.card.MaterialCardView>
+
+                            <!-- Bankers Box -->
+                            <com.google.android.material.card.MaterialCardView
+                                android:id="@+id/bankersBox"
+                                android:layout_width="140dp"
+                                android:layout_height="100dp"
+                                android:layout_marginEnd="12dp"
+                                app:cardCornerRadius="12dp"
+                                app:cardElevation="2dp"
+                                app:cardBackgroundColor="#FFFFFF">
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:orientation="vertical"
+                                    android:padding="12dp"
+                                    android:gravity="center">
+
+                                    <ImageView
+                                        android:layout_width="32dp"
+                                        android:layout_height="32dp"
+                                        android:src="@drawable/ic_banker"
+                                        android:tint="@color/light_green"
+                                        android:layout_marginBottom="8dp" />
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="Bankers"
+                                        android:textSize="12sp"
+                                        android:textColor="#2C3E50"
+                                        android:textStyle="bold"
+                                        android:gravity="center" />
+
+                                </LinearLayout>
+
+                            </com.google.android.material.card.MaterialCardView>
+
+                            <!-- Portfolio Box -->
+                            <com.google.android.material.card.MaterialCardView
+                                android:id="@+id/portfolioBox"
+                                android:layout_width="140dp"
+                                android:layout_height="100dp"
+                                android:layout_marginEnd="12dp"
+                                app:cardCornerRadius="12dp"
+                                app:cardElevation="2dp"
+                                app:cardBackgroundColor="#FFFFFF">
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:orientation="vertical"
+                                    android:padding="12dp"
+                                    android:gravity="center">
+
+                                    <ImageView
+                                        android:layout_width="32dp"
+                                        android:layout_height="32dp"
+                                        android:src="@drawable/ic_portfolio"
+                                        android:tint="@color/light_green"
+                                        android:layout_marginBottom="8dp" />
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="Portfolio"
+                                        android:textSize="12sp"
+                                        android:textColor="#2C3E50"
+                                        android:textStyle="bold"
+                                        android:gravity="center" />
+
+                                </LinearLayout>
+
+                            </com.google.android.material.card.MaterialCardView>
+
+                            <!-- Add Insurance Box -->
+                            <com.google.android.material.card.MaterialCardView
+                                android:id="@+id/addInsuranceBox"
+                                android:layout_width="140dp"
+                                android:layout_height="100dp"
+                                app:cardCornerRadius="12dp"
+                                app:cardElevation="2dp"
+                                app:cardBackgroundColor="#FFFFFF">
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:orientation="vertical"
+                                    android:padding="12dp"
+                                    android:gravity="center">
+
+                                    <ImageView
+                                        android:layout_width="32dp"
+                                        android:layout_height="32dp"
+                                        android:src="@drawable/ic_insurance"
+                                        android:tint="@color/light_green"
+                                        android:layout_marginBottom="8dp" />
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="Add Insurance"
+                                        android:textSize="12sp"
+                                        android:textColor="#2C3E50"
+                                        android:textStyle="bold"
+                                        android:gravity="center" />
+
+                                </LinearLayout>
+
+                            </com.google.android.material.card.MaterialCardView>
+
+                        </LinearLayout>
+                    </HorizontalScrollView>
 
                 </LinearLayout>
 

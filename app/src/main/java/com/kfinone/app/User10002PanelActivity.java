@@ -290,7 +290,7 @@ public class User10002PanelActivity extends AppCompatActivity implements Navigat
         });
 
         partnerBox.setOnClickListener(v -> {
-            Intent intent = new Intent(this, ManagingDirectorPartnerMasterActivity.class);
+            Intent intent = new Intent(this, DirectorPartnerActivity.class);
             passUserDataToIntent(intent);
             startActivity(intent);
         });
@@ -302,7 +302,7 @@ public class User10002PanelActivity extends AppCompatActivity implements Navigat
         });
 
         payoutBox.setOnClickListener(v -> {
-            Intent intent = new Intent(this, ManagingDirectorPayoutPanelActivity.class);
+            Intent intent = new Intent(this, DirectorPayoutActivity.class);
             passUserDataToIntent(intent);
             startActivity(intent);
         });
