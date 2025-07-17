@@ -259,32 +259,31 @@ public class User10002PanelActivity extends AppCompatActivity implements Navigat
 
         // Quick access boxes
         empLinksBox.setOnClickListener(v -> {
-            Intent intent = new Intent(this, EmpLinksActivity.class);
-            intent.putExtra("SOURCE_PANEL", "USER_10002_PANEL");
+            Intent intent = new Intent(this, DirectorEmpLinksActivity.class);
             passUserDataToIntent(intent);
             startActivity(intent);
         });
 
         dataLinksBox.setOnClickListener(v -> {
-            Intent intent = new Intent(this, DataLinksActivity.class);
+            Intent intent = new Intent(this, DirectorDataLinksActivity.class);
             passUserDataToIntent(intent);
             startActivity(intent);
         });
 
         workLinksBox.setOnClickListener(v -> {
-            Intent intent = new Intent(this, WorkLinksActivity.class);
+            Intent intent = new Intent(this, DirectorWorkLinksActivity.class);
             passUserDataToIntent(intent);
             startActivity(intent);
         });
 
         employeeBox.setOnClickListener(v -> {
-            Intent intent = new Intent(this, EmployeePanelActivity.class);
+            Intent intent = new Intent(this, DirectorEmployeeActivity.class);
             passUserDataToIntent(intent);
             startActivity(intent);
         });
 
         sdsaBox.setOnClickListener(v -> {
-            Intent intent = new Intent(this, SdsaPanelActivity.class);
+            Intent intent = new Intent(this, DirectorSdsaActivity.class);
             passUserDataToIntent(intent);
             startActivity(intent);
         });
@@ -296,7 +295,7 @@ public class User10002PanelActivity extends AppCompatActivity implements Navigat
         });
 
         agentBox.setOnClickListener(v -> {
-            Intent intent = new Intent(this, AgentActivity.class);
+            Intent intent = new Intent(this, DirectorAgentActivity.class);
             passUserDataToIntent(intent);
             startActivity(intent);
         });
@@ -308,20 +307,19 @@ public class User10002PanelActivity extends AppCompatActivity implements Navigat
         });
 
         dsaCodesBox.setOnClickListener(v -> {
-            Intent intent = new Intent(this, DsaCodeListActivity.class);
+            Intent intent = new Intent(this, DirectorDsaCodeActivity.class);
             passUserDataToIntent(intent);
-            intent.putExtra("SOURCE_PANEL", "USER_10002_PANEL");
             startActivity(intent);
         });
 
         bankersBox.setOnClickListener(v -> {
-            Intent intent = new Intent(this, BankersPanelActivity.class);
+            Intent intent = new Intent(this, DirectorBankersActivity.class);
             passUserDataToIntent(intent);
             startActivity(intent);
         });
 
         portfolioBox.setOnClickListener(v -> {
-            Intent intent = new Intent(this, PortfolioPanelActivity.class);
+            Intent intent = new Intent(this, DirectorPortfolioActivity.class);
             passUserDataToIntent(intent);
             startActivity(intent);
         });

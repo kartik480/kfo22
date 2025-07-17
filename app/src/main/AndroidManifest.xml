@@ -435,6 +435,51 @@
             android:exported="false"
             android:label="Director Payout Management"
             android:parentActivityName=".User10002PanelActivity" />
+        <activity
+            android:name=".DirectorEmpLinksActivity"
+            android:exported="false"
+            android:label="Director Employee Links"
+            android:parentActivityName=".User10002PanelActivity" />
+        <activity
+            android:name=".DirectorDataLinksActivity"
+            android:exported="false"
+            android:label="Director Data Links"
+            android:parentActivityName=".User10002PanelActivity" />
+        <activity
+            android:name=".DirectorWorkLinksActivity"
+            android:exported="false"
+            android:label="Director Work Links"
+            android:parentActivityName=".User10002PanelActivity" />
+        <activity
+            android:name=".DirectorEmployeeActivity"
+            android:exported="false"
+            android:label="Director Employee Management"
+            android:parentActivityName=".User10002PanelActivity" />
+        <activity
+            android:name=".DirectorSdsaActivity"
+            android:exported="false"
+            android:label="Director SDSA Management"
+            android:parentActivityName=".User10002PanelActivity" />
+        <activity
+            android:name=".DirectorAgentActivity"
+            android:exported="false"
+            android:label="Director Agent Management"
+            android:parentActivityName=".User10002PanelActivity" />
+        <activity
+            android:name=".DirectorDsaCodeActivity"
+            android:exported="false"
+            android:label="Director DSA Code Management"
+            android:parentActivityName=".User10002PanelActivity" />
+        <activity
+            android:name=".DirectorBankersActivity"
+            android:exported="false"
+            android:label="Director Bankers Management"
+            android:parentActivityName=".User10002PanelActivity" />
+        <activity
+            android:name=".DirectorPortfolioActivity"
+            android:exported="false"
+            android:label="Director Portfolio Management"
+            android:parentActivityName=".User10002PanelActivity" />
     </application>
 
 </manifest>

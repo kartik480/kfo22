@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import android.content.Intent;
 
 public class MyAgentActivity extends AppCompatActivity {
     private static final String TAG = "MyAgentActivity";
@@ -64,7 +65,7 @@ public class MyAgentActivity extends AppCompatActivity {
     }
 
     private void setupClickListeners() {
-        backButton.setOnClickListener(v -> finish());
+        backButton.setOnClickListener(v -> onBackPressed());
 
         filterButton.setOnClickListener(v -> {
             String selectedAgentType = agentTypeSpinner.getSelectedItem().toString();
@@ -650,18 +651,51 @@ public class MyAgentActivity extends AppCompatActivity {
     }
 
     private void displaySampleData() {
-        // Add sample agent data for testing
-        agentList.clear();
-        agentList.add(new AgentItem("Rahul Sharma", "Sharma Enterprises", "9876543210", "9876543211", "rahul@sharma.com", "Business", "Maharashtra", "Mumbai Central", "123 Andheri West, Mumbai", "", "Admin", "System"));
-        agentList.add(new AgentItem("Priya Patel", "Patel Solutions", "9876543212", "9876543213", "priya@patel.com", "Individual", "Delhi", "Andheri West", "456 Bandra West, Delhi", "", "Admin", "System"));
-        agentList.add(new AgentItem("Amit Kumar", "Kumar Associates", "9876543214", "9876543215", "amit@kumar.com", "Business", "Karnataka", "Bandra West", "789 Juhu Beach, Bangalore", "", "Admin", "System"));
-        agentList.add(new AgentItem("Neha Singh", "Singh Group", "9876543216", "9876543217", "neha@singh.com", "Individual", "Maharashtra", "Mumbai Central", "321 Powai, Mumbai", "", "Admin", "System"));
-        agentList.add(new AgentItem("Vikram Mehta", "Mehta Corp", "9876543218", "9876543219", "vikram@mehta.com", "Business", "Delhi", "Andheri West", "654 Vasant Vihar, Delhi", "", "Admin", "System"));
-        agentList.add(new AgentItem("Anjali Desai", "Desai Industries", "9876543220", "9876543221", "anjali@desai.com", "Individual", "Karnataka", "Bandra West", "987 Indiranagar, Bangalore", "", "Admin", "System"));
-        agentList.add(new AgentItem("Rajesh Verma", "Verma Solutions", "9876543222", "9876543223", "rajesh@verma.com", "Business", "Maharashtra", "Mumbai Central", "147 Worli, Mumbai", "", "Admin", "System"));
-        agentList.add(new AgentItem("Sneha Reddy", "Reddy Enterprises", "9876543224", "9876543225", "sneha@reddy.com", "Individual", "Delhi", "Andheri West", "258 Saket, Delhi", "", "Admin", "System"));
+        // Clear existing data
+        tableContent.removeAllViews();
         
-        displayAllAgents();
-        Toast.makeText(this, "Displaying sample data (8 agents)", Toast.LENGTH_SHORT).show();
+        // Add sample data for testing
+        addTableHeader();
+        
+        // Sample agent data with all required parameters
+        AgentItem sampleAgent1 = new AgentItem("John Doe", "ABC Corporation", "9876543210", "9876543211", "john@abc.com", "Business", "Maharashtra", "Mumbai Central", "123 Andheri West, Mumbai", "", "Admin", "System");
+        AgentItem sampleAgent2 = new AgentItem("Jane Smith", "XYZ Industries", "8765432109", "8765432110", "jane@xyz.com", "Individual", "Delhi", "Connaught Place", "456 Bandra West, Delhi", "", "Admin", "System");
+        AgentItem sampleAgent3 = new AgentItem("Bob Johnson", "Tech Solutions Ltd", "7654321098", "7654321099", "bob@tech.com", "Business", "Karnataka", "Bangalore Central", "789 Juhu Beach, Bangalore", "", "Admin", "System");
+        
+        addTableRow(sampleAgent1);
+        addTableRow(sampleAgent2);
+        addTableRow(sampleAgent3);
+    }
+
+    @Override
+    public void onBackPressed() {
+        // Check if we came from Director panel
+        String sourcePanel = getIntent().getStringExtra("SOURCE_PANEL");
+        if ("DIRECTOR_PANEL".equals(sourcePanel)) {
+            // Navigate back to Director Agent Activity
+            Intent intent = new Intent(this, DirectorAgentActivity.class);
+            passUserDataToIntent(intent);
+            startActivity(intent);
+            finish();
+        } else {
+            // Default behavior
+            super.onBackPressed();
+        }
+    }
+
+    private void passUserDataToIntent(Intent intent) {
+        // Get current user data and pass it to the new activity
+        Intent currentIntent = getIntent();
+        if (currentIntent != null) {
+            String userId = currentIntent.getStringExtra("USER_ID");
+            String firstName = currentIntent.getStringExtra("FIRST_NAME");
+            String lastName = currentIntent.getStringExtra("LAST_NAME");
+            String fullName = currentIntent.getStringExtra("USERNAME");
+            
+            if (userId != null) intent.putExtra("USER_ID", userId);
+            if (firstName != null) intent.putExtra("FIRST_NAME", firstName);
+            if (lastName != null) intent.putExtra("LAST_NAME", lastName);
+            if (fullName != null) intent.putExtra("USERNAME", fullName);
+        }
     }
 } 

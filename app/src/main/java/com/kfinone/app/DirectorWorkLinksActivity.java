@@ -9,12 +9,11 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-public class DirectorPartnerActivity extends AppCompatActivity {
+public class DirectorWorkLinksActivity extends AppCompatActivity {
 
-    private LinearLayout addPartnerButton;
-    private LinearLayout viewPartnersButton;
-    private LinearLayout partnerTeamButton;
-    private LinearLayout partnerAnalyticsButton;
+    private LinearLayout myWorkLinksButton;
+    private LinearLayout workAnalyticsButton;
+    private LinearLayout workReportsButton;
     
     private String userId;
     private String userName;
@@ -24,7 +23,7 @@ public class DirectorPartnerActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_director_partner);
+        setContentView(R.layout.activity_director_work_links);
 
         // Get user data from intent
         Intent intent = getIntent();
@@ -41,36 +40,25 @@ public class DirectorPartnerActivity extends AppCompatActivity {
     }
 
     private void initializeViews() {
-        addPartnerButton = findViewById(R.id.addPartnerButton);
-        viewPartnersButton = findViewById(R.id.viewPartnersButton);
-        partnerTeamButton = findViewById(R.id.partnerTeamButton);
-        partnerAnalyticsButton = findViewById(R.id.partnerAnalyticsButton);
+        myWorkLinksButton = findViewById(R.id.myWorkLinksButton);
+        workAnalyticsButton = findViewById(R.id.workAnalyticsButton);
+        workReportsButton = findViewById(R.id.workReportsButton);
     }
 
     private void setupClickListeners() {
-        addPartnerButton.setOnClickListener(v -> {
-            Intent intent = new Intent(this, AddPartnerActivity.class);
+        myWorkLinksButton.setOnClickListener(v -> {
+            Intent intent = new Intent(this, MyWorkLinksActivity.class);
             passUserDataToIntent(intent);
             intent.putExtra("SOURCE_PANEL", "DIRECTOR_PANEL");
             startActivity(intent);
         });
 
-        viewPartnersButton.setOnClickListener(v -> {
-            Intent intent = new Intent(this, MyPartnerActivity.class);
-            passUserDataToIntent(intent);
-            intent.putExtra("SOURCE_PANEL", "DIRECTOR_PANEL");
-            startActivity(intent);
+        workAnalyticsButton.setOnClickListener(v -> {
+            Toast.makeText(this, "Work Analytics - Coming Soon", Toast.LENGTH_SHORT).show();
         });
 
-        partnerTeamButton.setOnClickListener(v -> {
-            Intent intent = new Intent(this, PartnerTeamActivity.class);
-            passUserDataToIntent(intent);
-            intent.putExtra("SOURCE_PANEL", "DIRECTOR_PANEL");
-            startActivity(intent);
-        });
-
-        partnerAnalyticsButton.setOnClickListener(v -> {
-            Toast.makeText(this, "Partner Analytics - Coming Soon", Toast.LENGTH_SHORT).show();
+        workReportsButton.setOnClickListener(v -> {
+            Toast.makeText(this, "Work Reports - Coming Soon", Toast.LENGTH_SHORT).show();
         });
     }
 
@@ -79,7 +67,7 @@ public class DirectorPartnerActivity extends AppCompatActivity {
         if (toolbar != null) {
             setSupportActionBar(toolbar);
             if (getSupportActionBar() != null) {
-                getSupportActionBar().setTitle("Director Partner Management");
+                getSupportActionBar().setTitle("Director Work Links");
                 getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             }
         }

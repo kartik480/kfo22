@@ -160,10 +160,21 @@ public class MyDataLinksActivity extends AppCompatActivity {
     }
 
     private void goBack() {
-        Intent intent = new Intent(this, DataLinksActivity.class);
-        passUserDataToIntent(intent);
-        startActivity(intent);
-        finish();
+        // Check if we came from Director panel
+        String sourcePanel = getIntent().getStringExtra("SOURCE_PANEL");
+        if ("DIRECTOR_PANEL".equals(sourcePanel)) {
+            // Navigate back to Director Data Links Activity
+            Intent intent = new Intent(this, DirectorDataLinksActivity.class);
+            passUserDataToIntent(intent);
+            startActivity(intent);
+            finish();
+        } else {
+            // Default behavior - go back to DataLinksActivity
+            Intent intent = new Intent(this, DataLinksActivity.class);
+            passUserDataToIntent(intent);
+            startActivity(intent);
+            finish();
+        }
     }
 
     private void refreshData() {

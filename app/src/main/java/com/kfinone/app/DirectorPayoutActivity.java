@@ -94,4 +94,13 @@ public class DirectorPayoutActivity extends AppCompatActivity {
         onBackPressed();
         return true;
     }
+
+    @Override
+    public void onBackPressed() {
+        // Navigate back to Director panel
+        Intent intent = new Intent(this, User10002PanelActivity.class);
+        passUserDataToIntent(intent);
+        startActivity(intent);
+        finish();
+    }
 } 

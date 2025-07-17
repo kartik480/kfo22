@@ -9,12 +9,12 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-public class DirectorPartnerActivity extends AppCompatActivity {
+public class DirectorBankersActivity extends AppCompatActivity {
 
-    private LinearLayout addPartnerButton;
-    private LinearLayout viewPartnersButton;
-    private LinearLayout partnerTeamButton;
-    private LinearLayout partnerAnalyticsButton;
+    private LinearLayout viewBankersButton;
+    private LinearLayout addBankerButton;
+    private LinearLayout bankerAnalyticsButton;
+    private LinearLayout bankerReportsButton;
     
     private String userId;
     private String userName;
@@ -24,7 +24,7 @@ public class DirectorPartnerActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_director_partner);
+        setContentView(R.layout.activity_director_bankers);
 
         // Get user data from intent
         Intent intent = getIntent();
@@ -41,36 +41,33 @@ public class DirectorPartnerActivity extends AppCompatActivity {
     }
 
     private void initializeViews() {
-        addPartnerButton = findViewById(R.id.addPartnerButton);
-        viewPartnersButton = findViewById(R.id.viewPartnersButton);
-        partnerTeamButton = findViewById(R.id.partnerTeamButton);
-        partnerAnalyticsButton = findViewById(R.id.partnerAnalyticsButton);
+        viewBankersButton = findViewById(R.id.viewBankersButton);
+        addBankerButton = findViewById(R.id.addBankerButton);
+        bankerAnalyticsButton = findViewById(R.id.bankerAnalyticsButton);
+        bankerReportsButton = findViewById(R.id.bankerReportsButton);
     }
 
     private void setupClickListeners() {
-        addPartnerButton.setOnClickListener(v -> {
-            Intent intent = new Intent(this, AddPartnerActivity.class);
+        viewBankersButton.setOnClickListener(v -> {
+            Intent intent = new Intent(this, BankerListActivity.class);
             passUserDataToIntent(intent);
             intent.putExtra("SOURCE_PANEL", "DIRECTOR_PANEL");
             startActivity(intent);
         });
 
-        viewPartnersButton.setOnClickListener(v -> {
-            Intent intent = new Intent(this, MyPartnerActivity.class);
+        addBankerButton.setOnClickListener(v -> {
+            Intent intent = new Intent(this, AddBankerActivity.class);
             passUserDataToIntent(intent);
             intent.putExtra("SOURCE_PANEL", "DIRECTOR_PANEL");
             startActivity(intent);
         });
 
-        partnerTeamButton.setOnClickListener(v -> {
-            Intent intent = new Intent(this, PartnerTeamActivity.class);
-            passUserDataToIntent(intent);
-            intent.putExtra("SOURCE_PANEL", "DIRECTOR_PANEL");
-            startActivity(intent);
+        bankerAnalyticsButton.setOnClickListener(v -> {
+            Toast.makeText(this, "Banker Analytics - Coming Soon", Toast.LENGTH_SHORT).show();
         });
 
-        partnerAnalyticsButton.setOnClickListener(v -> {
-            Toast.makeText(this, "Partner Analytics - Coming Soon", Toast.LENGTH_SHORT).show();
+        bankerReportsButton.setOnClickListener(v -> {
+            Toast.makeText(this, "Banker Reports - Coming Soon", Toast.LENGTH_SHORT).show();
         });
     }
 
@@ -79,7 +76,7 @@ public class DirectorPartnerActivity extends AppCompatActivity {
         if (toolbar != null) {
             setSupportActionBar(toolbar);
             if (getSupportActionBar() != null) {
-                getSupportActionBar().setTitle("Director Partner Management");
+                getSupportActionBar().setTitle("Director Bankers Management");
                 getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             }
         }

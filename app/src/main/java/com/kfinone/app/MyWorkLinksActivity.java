@@ -160,10 +160,21 @@ public class MyWorkLinksActivity extends AppCompatActivity {
     }
 
     private void goBack() {
-        Intent intent = new Intent(this, WorkLinksActivity.class);
-        passUserDataToIntent(intent);
-        startActivity(intent);
-        finish();
+        // Check if we came from Director panel
+        String sourcePanel = getIntent().getStringExtra("SOURCE_PANEL");
+        if ("DIRECTOR_PANEL".equals(sourcePanel)) {
+            // Navigate back to Director Work Links Activity
+            Intent intent = new Intent(this, DirectorWorkLinksActivity.class);
+            passUserDataToIntent(intent);
+            startActivity(intent);
+            finish();
+        } else {
+            // Default behavior - go back to WorkLinksActivity
+            Intent intent = new Intent(this, WorkLinksActivity.class);
+            passUserDataToIntent(intent);
+            startActivity(intent);
+            finish();
+        }
     }
 
     private void refreshData() {

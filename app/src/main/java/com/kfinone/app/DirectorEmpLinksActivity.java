@@ -9,12 +9,14 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-public class DirectorPartnerActivity extends AppCompatActivity {
+public class DirectorEmpLinksActivity extends AppCompatActivity {
 
-    private LinearLayout addPartnerButton;
-    private LinearLayout viewPartnersButton;
-    private LinearLayout partnerTeamButton;
-    private LinearLayout partnerAnalyticsButton;
+    private LinearLayout myEmpLinksButton;
+    private LinearLayout teamEmpLinksButton;
+    private LinearLayout empManageButton;
+    private LinearLayout empDataButton;
+    private LinearLayout empWorkButton;
+    private LinearLayout empAnalyticsButton;
     
     private String userId;
     private String userName;
@@ -24,7 +26,7 @@ public class DirectorPartnerActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_director_partner);
+        setContentView(R.layout.activity_director_emp_links);
 
         // Get user data from intent
         Intent intent = getIntent();
@@ -41,36 +43,52 @@ public class DirectorPartnerActivity extends AppCompatActivity {
     }
 
     private void initializeViews() {
-        addPartnerButton = findViewById(R.id.addPartnerButton);
-        viewPartnersButton = findViewById(R.id.viewPartnersButton);
-        partnerTeamButton = findViewById(R.id.partnerTeamButton);
-        partnerAnalyticsButton = findViewById(R.id.partnerAnalyticsButton);
+        myEmpLinksButton = findViewById(R.id.myEmpLinksButton);
+        teamEmpLinksButton = findViewById(R.id.teamEmpLinksButton);
+        empManageButton = findViewById(R.id.empManageButton);
+        empDataButton = findViewById(R.id.empDataButton);
+        empWorkButton = findViewById(R.id.empWorkButton);
+        empAnalyticsButton = findViewById(R.id.empAnalyticsButton);
     }
 
     private void setupClickListeners() {
-        addPartnerButton.setOnClickListener(v -> {
-            Intent intent = new Intent(this, AddPartnerActivity.class);
+        myEmpLinksButton.setOnClickListener(v -> {
+            Intent intent = new Intent(this, MyEmpLinksActivity.class);
             passUserDataToIntent(intent);
             intent.putExtra("SOURCE_PANEL", "DIRECTOR_PANEL");
             startActivity(intent);
         });
 
-        viewPartnersButton.setOnClickListener(v -> {
-            Intent intent = new Intent(this, MyPartnerActivity.class);
+        teamEmpLinksButton.setOnClickListener(v -> {
+            Intent intent = new Intent(this, TeamEmpLinksActivity.class);
             passUserDataToIntent(intent);
             intent.putExtra("SOURCE_PANEL", "DIRECTOR_PANEL");
             startActivity(intent);
         });
 
-        partnerTeamButton.setOnClickListener(v -> {
-            Intent intent = new Intent(this, PartnerTeamActivity.class);
+        empManageButton.setOnClickListener(v -> {
+            Intent intent = new Intent(this, EmpManageActivity.class);
             passUserDataToIntent(intent);
             intent.putExtra("SOURCE_PANEL", "DIRECTOR_PANEL");
             startActivity(intent);
         });
 
-        partnerAnalyticsButton.setOnClickListener(v -> {
-            Toast.makeText(this, "Partner Analytics - Coming Soon", Toast.LENGTH_SHORT).show();
+        empDataButton.setOnClickListener(v -> {
+            Intent intent = new Intent(this, EmpDataActivity.class);
+            passUserDataToIntent(intent);
+            intent.putExtra("SOURCE_PANEL", "DIRECTOR_PANEL");
+            startActivity(intent);
+        });
+
+        empWorkButton.setOnClickListener(v -> {
+            Intent intent = new Intent(this, EmpWorkActivity.class);
+            passUserDataToIntent(intent);
+            intent.putExtra("SOURCE_PANEL", "DIRECTOR_PANEL");
+            startActivity(intent);
+        });
+
+        empAnalyticsButton.setOnClickListener(v -> {
+            Toast.makeText(this, "Employee Analytics - Coming Soon", Toast.LENGTH_SHORT).show();
         });
     }
 
@@ -79,7 +97,7 @@ public class DirectorPartnerActivity extends AppCompatActivity {
         if (toolbar != null) {
             setSupportActionBar(toolbar);
             if (getSupportActionBar() != null) {
-                getSupportActionBar().setTitle("Director Partner Management");
+                getSupportActionBar().setTitle("Director Employee Links");
                 getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             }
         }

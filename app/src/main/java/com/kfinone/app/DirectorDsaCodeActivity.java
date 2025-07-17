@@ -9,12 +9,12 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-public class DirectorPartnerActivity extends AppCompatActivity {
+public class DirectorDsaCodeActivity extends AppCompatActivity {
 
-    private LinearLayout addPartnerButton;
-    private LinearLayout viewPartnersButton;
-    private LinearLayout partnerTeamButton;
-    private LinearLayout partnerAnalyticsButton;
+    private LinearLayout viewDsaCodesButton;
+    private LinearLayout addDsaCodeButton;
+    private LinearLayout dsaCodeAnalyticsButton;
+    private LinearLayout dsaCodeReportsButton;
     
     private String userId;
     private String userName;
@@ -24,7 +24,7 @@ public class DirectorPartnerActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_director_partner);
+        setContentView(R.layout.activity_director_dsa_code);
 
         // Get user data from intent
         Intent intent = getIntent();
@@ -41,36 +41,33 @@ public class DirectorPartnerActivity extends AppCompatActivity {
     }
 
     private void initializeViews() {
-        addPartnerButton = findViewById(R.id.addPartnerButton);
-        viewPartnersButton = findViewById(R.id.viewPartnersButton);
-        partnerTeamButton = findViewById(R.id.partnerTeamButton);
-        partnerAnalyticsButton = findViewById(R.id.partnerAnalyticsButton);
+        viewDsaCodesButton = findViewById(R.id.viewDsaCodesButton);
+        addDsaCodeButton = findViewById(R.id.addDsaCodeButton);
+        dsaCodeAnalyticsButton = findViewById(R.id.dsaCodeAnalyticsButton);
+        dsaCodeReportsButton = findViewById(R.id.dsaCodeReportsButton);
     }
 
     private void setupClickListeners() {
-        addPartnerButton.setOnClickListener(v -> {
-            Intent intent = new Intent(this, AddPartnerActivity.class);
+        viewDsaCodesButton.setOnClickListener(v -> {
+            Intent intent = new Intent(this, DsaListActivity.class);
             passUserDataToIntent(intent);
             intent.putExtra("SOURCE_PANEL", "DIRECTOR_PANEL");
             startActivity(intent);
         });
 
-        viewPartnersButton.setOnClickListener(v -> {
-            Intent intent = new Intent(this, MyPartnerActivity.class);
+        addDsaCodeButton.setOnClickListener(v -> {
+            Intent intent = new Intent(this, AddDsaActivity.class);
             passUserDataToIntent(intent);
             intent.putExtra("SOURCE_PANEL", "DIRECTOR_PANEL");
             startActivity(intent);
         });
 
-        partnerTeamButton.setOnClickListener(v -> {
-            Intent intent = new Intent(this, PartnerTeamActivity.class);
-            passUserDataToIntent(intent);
-            intent.putExtra("SOURCE_PANEL", "DIRECTOR_PANEL");
-            startActivity(intent);
+        dsaCodeAnalyticsButton.setOnClickListener(v -> {
+            Toast.makeText(this, "DSA Code Analytics - Coming Soon", Toast.LENGTH_SHORT).show();
         });
 
-        partnerAnalyticsButton.setOnClickListener(v -> {
-            Toast.makeText(this, "Partner Analytics - Coming Soon", Toast.LENGTH_SHORT).show();
+        dsaCodeReportsButton.setOnClickListener(v -> {
+            Toast.makeText(this, "DSA Code Reports - Coming Soon", Toast.LENGTH_SHORT).show();
         });
     }
 
@@ -79,7 +76,7 @@ public class DirectorPartnerActivity extends AppCompatActivity {
         if (toolbar != null) {
             setSupportActionBar(toolbar);
             if (getSupportActionBar() != null) {
-                getSupportActionBar().setTitle("Director Partner Management");
+                getSupportActionBar().setTitle("Director DSA Code Management");
                 getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             }
         }

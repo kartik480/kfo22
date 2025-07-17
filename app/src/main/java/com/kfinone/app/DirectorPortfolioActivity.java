@@ -9,12 +9,12 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-public class DirectorPartnerActivity extends AppCompatActivity {
+public class DirectorPortfolioActivity extends AppCompatActivity {
 
-    private LinearLayout addPartnerButton;
-    private LinearLayout viewPartnersButton;
-    private LinearLayout partnerTeamButton;
-    private LinearLayout partnerAnalyticsButton;
+    private LinearLayout viewPortfolioButton;
+    private LinearLayout addPortfolioButton;
+    private LinearLayout portfolioAnalyticsButton;
+    private LinearLayout portfolioReportsButton;
     
     private String userId;
     private String userName;
@@ -24,7 +24,7 @@ public class DirectorPartnerActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_director_partner);
+        setContentView(R.layout.activity_director_portfolio);
 
         // Get user data from intent
         Intent intent = getIntent();
@@ -41,36 +41,33 @@ public class DirectorPartnerActivity extends AppCompatActivity {
     }
 
     private void initializeViews() {
-        addPartnerButton = findViewById(R.id.addPartnerButton);
-        viewPartnersButton = findViewById(R.id.viewPartnersButton);
-        partnerTeamButton = findViewById(R.id.partnerTeamButton);
-        partnerAnalyticsButton = findViewById(R.id.partnerAnalyticsButton);
+        viewPortfolioButton = findViewById(R.id.viewPortfolioButton);
+        addPortfolioButton = findViewById(R.id.addPortfolioButton);
+        portfolioAnalyticsButton = findViewById(R.id.portfolioAnalyticsButton);
+        portfolioReportsButton = findViewById(R.id.portfolioReportsButton);
     }
 
     private void setupClickListeners() {
-        addPartnerButton.setOnClickListener(v -> {
-            Intent intent = new Intent(this, AddPartnerActivity.class);
+        viewPortfolioButton.setOnClickListener(v -> {
+            Intent intent = new Intent(this, MyPortfolioActivity.class);
             passUserDataToIntent(intent);
             intent.putExtra("SOURCE_PANEL", "DIRECTOR_PANEL");
             startActivity(intent);
         });
 
-        viewPartnersButton.setOnClickListener(v -> {
-            Intent intent = new Intent(this, MyPartnerActivity.class);
+        addPortfolioButton.setOnClickListener(v -> {
+            Intent intent = new Intent(this, AddPortfolioActivity.class);
             passUserDataToIntent(intent);
             intent.putExtra("SOURCE_PANEL", "DIRECTOR_PANEL");
             startActivity(intent);
         });
 
-        partnerTeamButton.setOnClickListener(v -> {
-            Intent intent = new Intent(this, PartnerTeamActivity.class);
-            passUserDataToIntent(intent);
-            intent.putExtra("SOURCE_PANEL", "DIRECTOR_PANEL");
-            startActivity(intent);
+        portfolioAnalyticsButton.setOnClickListener(v -> {
+            Toast.makeText(this, "Portfolio Analytics - Coming Soon", Toast.LENGTH_SHORT).show();
         });
 
-        partnerAnalyticsButton.setOnClickListener(v -> {
-            Toast.makeText(this, "Partner Analytics - Coming Soon", Toast.LENGTH_SHORT).show();
+        portfolioReportsButton.setOnClickListener(v -> {
+            Toast.makeText(this, "Portfolio Reports - Coming Soon", Toast.LENGTH_SHORT).show();
         });
     }
 
@@ -79,7 +76,7 @@ public class DirectorPartnerActivity extends AppCompatActivity {
         if (toolbar != null) {
             setSupportActionBar(toolbar);
             if (getSupportActionBar() != null) {
-                getSupportActionBar().setTitle("Director Partner Management");
+                getSupportActionBar().setTitle("Director Portfolio Management");
                 getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             }
         }

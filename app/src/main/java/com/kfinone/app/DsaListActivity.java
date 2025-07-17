@@ -26,6 +26,8 @@ import android.text.TextUtils;
 import android.widget.Toast;
 import java.net.URLEncoder;
 import org.json.JSONException;
+import android.content.Intent;
+import com.kfinone.app.DirectorDsaCodeActivity;
 
 public class DsaListActivity extends AppCompatActivity {
     private static final String TAG = "DsaListActivity";
@@ -819,7 +821,7 @@ public class DsaListActivity extends AppCompatActivity {
     }
 
     private void setupButtons() {
-        backButton.setOnClickListener(v -> finish());
+        backButton.setOnClickListener(v -> onBackPressed());
 
         binding.filterButton.setOnClickListener(v -> {
             // Get filter values
@@ -949,5 +951,37 @@ public class DsaListActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        // Check if we came from Director panel
+        String sourcePanel = getIntent().getStringExtra("SOURCE_PANEL");
+        if ("DIRECTOR_PANEL".equals(sourcePanel)) {
+            // Navigate back to Director DSA Code Activity
+            Intent intent = new Intent(this, DirectorDsaCodeActivity.class);
+            passUserDataToIntent(intent);
+            startActivity(intent);
+            finish();
+        } else {
+            // Default behavior
+            super.onBackPressed();
+        }
+    }
+
+    private void passUserDataToIntent(Intent intent) {
+        // Get current user data and pass it to the new activity
+        Intent currentIntent = getIntent();
+        if (currentIntent != null) {
+            String userId = currentIntent.getStringExtra("USER_ID");
+            String firstName = currentIntent.getStringExtra("FIRST_NAME");
+            String lastName = currentIntent.getStringExtra("LAST_NAME");
+            String fullName = currentIntent.getStringExtra("USERNAME");
+            
+            if (userId != null) intent.putExtra("USER_ID", userId);
+            if (firstName != null) intent.putExtra("FIRST_NAME", firstName);
+            if (lastName != null) intent.putExtra("LAST_NAME", lastName);
+            if (fullName != null) intent.putExtra("USERNAME", fullName);
+        }
     }
 } 
