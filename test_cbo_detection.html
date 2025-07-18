@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chief Business Officer Detection Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .test-section h3 {
+            margin-top: 0;
+            color: #333;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .result {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            white-space: pre-wrap;
+        }
+        .success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        .info {
+            background: #d1ecf1;
+            border: 1px solid #bee5eb;
+            color: #0c5460;
+        }
+        input[type="text"] {
+            width: 200px;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Chief Business Officer Detection Test</h1>
+        <p>This page tests the Chief Business Officer detection functionality for the KfinOne app.</p>
+
+        <div class="test-section">
+            <h3>1. Get All Chief Business Officer Users</h3>
+            <p>Fetch all users with "Chief Business Officer" designation and their team members.</p>
+            <button onclick="getCBOUsers()">Get CBO Users</button>
+            <div id="cboUsersResult" class="result"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>2. Check Specific User (CBO Detection)</h3>
+            <p>Check if a specific user is a Chief Business Officer.</p>
+            <input type="text" id="usernameInput" placeholder="Enter username">
+            <button onclick="checkCBOUser()">Check User</button>
+            <div id="cboCheckResult" class="result"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>3. Test Login API with CBO Detection</h3>
+            <p>Test the login API to see if it properly detects Chief Business Officer users.</p>
+            <input type="text" id="loginUsername" placeholder="Username">
+            <input type="password" id="loginPassword" placeholder="Password">
+            <button onclick="testLogin()">Test Login</button>
+            <div id="loginResult" class="result"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>4. Database Query Test</h3>
+            <p>Test the database queries to see Chief Business Officer designations.</p>
+            <button onclick="testDatabaseQueries()">Test Database</button>
+            <div id="databaseResult" class="result"></div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'https://emp.kfinone.com/mobile/api';
+
+        async function getCBOUsers() {
+            const resultDiv = document.getElementById('cboUsersResult');
+            resultDiv.innerHTML = 'Loading...';
+            resultDiv.className = 'result info';
+
+            try {
+                const response = await fetch(`${API_BASE}/get_chief_business_officer_users.php`);
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    resultDiv.className = 'result success';
+                    resultDiv.innerHTML = `✅ Success!\n\nCBO Users: ${data.counts.cbo_users_count}\nTeam Members: ${data.counts.team_members_count}\n\nCBO Users:\n${JSON.stringify(data.data.cbo_users, null, 2)}\n\nTeam Members:\n${JSON.stringify(data.data.team_members, null, 2)}`;
+                } else {
+                    resultDiv.className = 'result error';
+                    resultDiv.innerHTML = `❌ Error: ${data.message}`;
+                }
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.innerHTML = `❌ Network Error: ${error.message}`;
+            }
+        }
+
+        async function checkCBOUser() {
+            const username = document.getElementById('usernameInput').value;
+            const resultDiv = document.getElementById('cboCheckResult');
+            
+            if (!username) {
+                resultDiv.className = 'result error';
+                resultDiv.innerHTML = '❌ Please enter a username';
+                return;
+            }
+
+            resultDiv.innerHTML = 'Loading...';
+            resultDiv.className = 'result info';
+
+            try {
+                const response = await fetch(`${API_BASE}/check_cbo_user.php?username=${encodeURIComponent(username)}`);
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    if (data.is_cbo) {
+                        resultDiv.className = 'result success';
+                        resultDiv.innerHTML = `✅ User is a Chief Business Officer!\n\nUser Data:\n${JSON.stringify(data.user_data, null, 2)}`;
+                    } else {
+                        resultDiv.className = 'result info';
+                        resultDiv.innerHTML = `ℹ️ User is NOT a Chief Business Officer\n\nMessage: ${data.message}`;
+                    }
+                } else {
+                    resultDiv.className = 'result error';
+                    resultDiv.innerHTML = `❌ Error: ${data.message}`;
+                }
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.innerHTML = `❌ Network Error: ${error.message}`;
+            }
+        }
+
+        async function testLogin() {
+            const username = document.getElementById('loginUsername').value;
+            const password = document.getElementById('loginPassword').value;
+            const resultDiv = document.getElementById('loginResult');
+            
+            if (!username || !password) {
+                resultDiv.className = 'result error';
+                resultDiv.innerHTML = '❌ Please enter both username and password';
+                return;
+            }
+
+            resultDiv.innerHTML = 'Loading...';
+            resultDiv.className = 'result info';
+
+            try {
+                const response = await fetch(`${API_BASE}/login.php`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ username, password })
+                });
+                const data = await response.json();
+                
+                if (data.success) {
+                    resultDiv.className = 'result success';
+                    resultDiv.innerHTML = `✅ Login Successful!\n\nUser Data:\n${JSON.stringify(data.user, null, 2)}\n\nIs CBO: ${data.is_chief_business_officer}\nIs Special User: ${data.is_special_user}`;
+                } else {
+                    resultDiv.className = 'result error';
+                    resultDiv.innerHTML = `❌ Login Failed: ${data.message}`;
+                }
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.innerHTML = `❌ Network Error: ${error.message}`;
+            }
+        }
+
+        async function testDatabaseQueries() {
+            const resultDiv = document.getElementById('databaseResult');
+            resultDiv.innerHTML = 'Loading...';
+            resultDiv.className = 'result info';
+
+            try {
+                // Test the designated users API
+                const response = await fetch(`${API_BASE}/get_designated_users.php`);
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    resultDiv.className = 'result success';
+                    resultDiv.innerHTML = `✅ Database Query Successful!\n\nTotal Designated Users: ${data.count}\n\nUsers:\n${JSON.stringify(data.data, null, 2)}`;
+                } else {
+                    resultDiv.className = 'result error';
+                    resultDiv.innerHTML = `❌ Error: ${data.message}`;
+                }
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.innerHTML = `❌ Network Error: ${error.message}`;
+            }
+        }
+    </script>
+</body>
+</html> 

@@ -1,23 +1,23 @@
 package com.kfinone.app;
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 public class TeamMemberAdapter extends RecyclerView.Adapter<TeamMemberAdapter.TeamMemberViewHolder> {
-
-    private List<InsuranceTeamActivity.TeamMember> teamList;
+    private List<TeamMember> teamMembers;
     private Context context;
 
-    public TeamMemberAdapter(List<InsuranceTeamActivity.TeamMember> teamList, Context context) {
-        this.teamList = teamList;
+    public TeamMemberAdapter(List<TeamMember> teamMembers, Context context) {
+        this.teamMembers = teamMembers;
         this.context = context;
     }
 
@@ -30,70 +30,86 @@ public class TeamMemberAdapter extends RecyclerView.Adapter<TeamMemberAdapter.Te
 
     @Override
     public void onBindViewHolder(@NonNull TeamMemberViewHolder holder, int position) {
-        InsuranceTeamActivity.TeamMember member = teamList.get(position);
-        holder.bind(member);
+        TeamMember member = teamMembers.get(position);
+        
+        // Set member name
+        holder.memberName.setText(member.getFullName());
+        
+        // Set designation
+        holder.memberDesignation.setText(member.getDesignation());
+        
+        // Set avatar initials
+        String initials = getInitials(member.getFullName());
+        holder.avatarText.setText(initials);
+        
+        // Set status (assuming active for now)
+        holder.memberStatus.setText("Active");
+        
+        // Set location (using manager name as location for demo)
+        holder.memberLocation.setText(member.getManagerName() != null ? member.getManagerName() : "N/A");
+        
+        // Set click listeners for action buttons
+        holder.emailButton.setOnClickListener(v -> {
+            if (member.getEmail() != null && !member.getEmail().isEmpty()) {
+                Intent emailIntent = new Intent(Intent.ACTION_SENDTO);
+                emailIntent.setData(Uri.parse("mailto:" + member.getEmail()));
+                emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Message from CBO");
+                if (emailIntent.resolveActivity(context.getPackageManager()) != null) {
+                    context.startActivity(emailIntent);
+                }
+            }
+        });
+        
+        holder.phoneButton.setOnClickListener(v -> {
+            if (member.getMobile() != null && !member.getMobile().isEmpty()) {
+                Intent phoneIntent = new Intent(Intent.ACTION_DIAL);
+                phoneIntent.setData(Uri.parse("tel:" + member.getMobile()));
+                context.startActivity(phoneIntent);
+            }
+        });
+        
+        // Set card click listener
+        holder.itemView.setOnClickListener(v -> {
+            // Show member details or navigate to member profile
+            // For now, just show a toast
+            android.widget.Toast.makeText(context, 
+                "Viewing " + member.getFullName() + "'s profile", 
+                android.widget.Toast.LENGTH_SHORT).show();
+        });
     }
 
     @Override
     public int getItemCount() {
-        return teamList.size();
+        return teamMembers.size();
     }
 
-    public class TeamMemberViewHolder extends RecyclerView.ViewHolder {
-        private TextView nameText, userTypeText, emailText, phoneText, locationText, statusChip;
-        private Button viewButton, editButton, deleteButton;
+    private String getInitials(String fullName) {
+        if (fullName == null || fullName.trim().isEmpty()) {
+            return "NA";
+        }
+        
+        String[] names = fullName.trim().split("\\s+");
+        if (names.length >= 2) {
+            return (names[0].charAt(0) + "" + names[1].charAt(0)).toUpperCase();
+        } else if (names.length == 1) {
+            return names[0].substring(0, Math.min(2, names[0].length())).toUpperCase();
+        }
+        return "NA";
+    }
+
+    public static class TeamMemberViewHolder extends RecyclerView.ViewHolder {
+        TextView memberName, memberDesignation, memberStatus, memberLocation, avatarText;
+        ImageView emailButton, phoneButton;
 
         public TeamMemberViewHolder(@NonNull View itemView) {
             super(itemView);
-            
-            nameText = itemView.findViewById(R.id.nameText);
-            userTypeText = itemView.findViewById(R.id.userTypeText);
-            emailText = itemView.findViewById(R.id.emailText);
-            phoneText = itemView.findViewById(R.id.phoneText);
-            locationText = itemView.findViewById(R.id.locationText);
-            statusChip = itemView.findViewById(R.id.statusChip);
-            viewButton = itemView.findViewById(R.id.viewButton);
-            editButton = itemView.findViewById(R.id.editButton);
-            deleteButton = itemView.findViewById(R.id.deleteButton);
-        }
-
-        public void bind(InsuranceTeamActivity.TeamMember member) {
-            nameText.setText(member.getName());
-            userTypeText.setText(member.getUserType());
-            emailText.setText(member.getEmail());
-            phoneText.setText(member.getPhone());
-            locationText.setText(member.getLocation());
-            statusChip.setText(member.getStatus());
-
-            // Set status chip background color based on status
-            if (member.getStatus().equals("Active")) {
-                statusChip.setBackgroundResource(R.drawable.status_background);
-            } else {
-                statusChip.setBackgroundResource(R.drawable.status_inactive_background);
-            }
-
-            // Setup button click listeners
-            viewButton.setOnClickListener(v -> viewMember(member));
-            editButton.setOnClickListener(v -> editMember(member));
-            deleteButton.setOnClickListener(v -> deleteMember(member));
-
-            // Setup item click listener
-            itemView.setOnClickListener(v -> viewMember(member));
-        }
-
-        private void viewMember(InsuranceTeamActivity.TeamMember member) {
-            Toast.makeText(context, "Viewing member: " + member.getName(), Toast.LENGTH_SHORT).show();
-            // TODO: Navigate to member details activity
-        }
-
-        private void editMember(InsuranceTeamActivity.TeamMember member) {
-            Toast.makeText(context, "Editing member: " + member.getName(), Toast.LENGTH_SHORT).show();
-            // TODO: Navigate to edit member activity
-        }
-
-        private void deleteMember(InsuranceTeamActivity.TeamMember member) {
-            Toast.makeText(context, "Deleting member: " + member.getName(), Toast.LENGTH_SHORT).show();
-            // TODO: Show confirmation dialog and delete member
+            memberName = itemView.findViewById(R.id.memberName);
+            memberDesignation = itemView.findViewById(R.id.memberDesignation);
+            memberStatus = itemView.findViewById(R.id.memberStatus);
+            memberLocation = itemView.findViewById(R.id.memberLocation);
+            avatarText = itemView.findViewById(R.id.avatarText);
+            emailButton = itemView.findViewById(R.id.emailButton);
+            phoneButton = itemView.findViewById(R.id.phoneButton);
         }
     }
 } 

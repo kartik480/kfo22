@@ -490,6 +490,33 @@
             android:exported="false"
             android:label="Director Team Employee Links"
             android:parentActivityName=".DirectorEmpLinksActivity" />
+        
+        <!-- Chief Business Officer Activities -->
+        <activity
+            android:name=".ChiefBusinessOfficerPanelActivity"
+            android:exported="false"
+            android:label="Chief Business Officer Dashboard"
+            android:theme="@style/Theme.KfinOneApp" />
+        <activity
+            android:name=".CBOTeamActivity"
+            android:exported="false"
+            android:label="CBO Team Management"
+            android:parentActivityName=".ChiefBusinessOfficerPanelActivity" />
+        <activity
+            android:name=".CBOPortfolioActivity"
+            android:exported="false"
+            android:label="CBO Portfolio Management"
+            android:parentActivityName=".ChiefBusinessOfficerPanelActivity" />
+        <activity
+            android:name=".CBOReportsActivity"
+            android:exported="false"
+            android:label="CBO Reports &amp; Analytics"
+            android:parentActivityName=".ChiefBusinessOfficerPanelActivity" />
+        <activity
+            android:name=".CBOSettingsActivity"
+            android:exported="false"
+            android:label="CBO Settings"
+            android:parentActivityName=".ChiefBusinessOfficerPanelActivity" />
     </application>
 
 </manifest>

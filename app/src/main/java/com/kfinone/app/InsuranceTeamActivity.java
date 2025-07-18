@@ -121,7 +121,7 @@ public class InsuranceTeamActivity extends AppCompatActivity {
     private void filterByUserType(String userType) {
         filteredList.clear();
         for (TeamMember member : teamList) {
-            if (userType.equals("All") || member.getUserType().equals(userType)) {
+            if (userType.equals("All") || member.getDesignation().equals(userType)) {
                 filteredList.add(member);
             }
         }
@@ -146,75 +146,91 @@ public class InsuranceTeamActivity extends AppCompatActivity {
         
         // Add sample team members
         teamList.add(new TeamMember(
-            "John Smith",
+            "1",
+            "John",
+            "Smith",
             "Agent",
             "john.smith@example.com",
             "9876543210",
-            "Mumbai",
-            "Active"
+            "EMP001",
+            "Manager"
         ));
 
         teamList.add(new TeamMember(
-            "Sarah Johnson",
+            "2",
+            "Sarah",
+            "Johnson",
             "Manager",
             "sarah.johnson@example.com",
             "9876543211",
-            "Delhi",
-            "Active"
+            "EMP002",
+            "Supervisor"
         ));
 
         teamList.add(new TeamMember(
-            "Mike Davis",
+            "3",
+            "Mike",
+            "Davis",
             "Agent",
             "mike.davis@example.com",
             "9876543212",
-            "Bangalore",
-            "Active"
+            "EMP003",
+            "Manager"
         ));
 
         teamList.add(new TeamMember(
-            "Emily Wilson",
+            "4",
+            "Emily",
+            "Wilson",
             "Supervisor",
             "emily.wilson@example.com",
             "9876543213",
-            "Chennai",
-            "Active"
+            "EMP004",
+            "Admin"
         ));
 
         teamList.add(new TeamMember(
-            "David Brown",
+            "5",
+            "David",
+            "Brown",
             "Agent",
             "david.brown@example.com",
             "9876543214",
-            "Hyderabad",
-            "Inactive"
+            "EMP005",
+            "Manager"
         ));
 
         teamList.add(new TeamMember(
-            "Lisa Anderson",
+            "6",
+            "Lisa",
+            "Anderson",
             "Admin",
             "lisa.anderson@example.com",
             "9876543215",
-            "Pune",
-            "Active"
+            "EMP006",
+            "Supervisor"
         ));
 
         teamList.add(new TeamMember(
-            "Robert Taylor",
+            "7",
+            "Robert",
+            "Taylor",
             "Manager",
             "robert.taylor@example.com",
             "9876543216",
-            "Kolkata",
-            "Active"
+            "EMP007",
+            "Supervisor"
         ));
 
         teamList.add(new TeamMember(
-            "Jennifer Lee",
+            "8",
+            "Jennifer",
+            "Lee",
             "Agent",
             "jennifer.lee@example.com",
             "9876543217",
-            "Ahmedabad",
-            "Active"
+            "EMP008",
+            "Manager"
         ));
 
         // Initially show all team members
@@ -244,30 +260,4 @@ public class InsuranceTeamActivity extends AppCompatActivity {
         }
     }
 
-    // Team Member data class
-    public static class TeamMember {
-        private String name;
-        private String userType;
-        private String email;
-        private String phone;
-        private String location;
-        private String status;
-
-        public TeamMember(String name, String userType, String email, String phone, String location, String status) {
-            this.name = name;
-            this.userType = userType;
-            this.email = email;
-            this.phone = phone;
-            this.location = location;
-            this.status = status;
-        }
-
-        // Getters
-        public String getName() { return name; }
-        public String getUserType() { return userType; }
-        public String getEmail() { return email; }
-        public String getPhone() { return phone; }
-        public String getLocation() { return location; }
-        public String getStatus() { return status; }
-    }
 } 

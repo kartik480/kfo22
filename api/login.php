@@ -33,8 +33,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
         $conn = getConnection();
         
-        // First, let's check if the user exists
-        $stmt = $conn->prepare('SELECT * FROM tbl_user WHERE username = :username LIMIT 1');
+        // First, let's check if the user exists with designation information
+        $stmt = $conn->prepare('
+            SELECT u.*, d.designation_name 
+            FROM tbl_user u 
+            LEFT JOIN tbl_designation d ON u.designation_id = d.id 
+            WHERE u.username = :username 
+            LIMIT 1
+        ');
         $stmt->bindParam(':username', $username);
         $stmt->execute();
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -48,7 +54,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     'id' => $user['id'],
                     'username' => $user['username'],
                     'firstName' => $user['firstName'] ?? '',
-                    'lastName' => $user['lastName'] ?? ''
+                    'lastName' => $user['lastName'] ?? '',
+                    'designation_name' => $user['designation_name'] ?? ''
                 );
                 
                 // Check if this is the special user (ID 8)
@@ -57,6 +64,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $response['special_message'] = 'Welcome to your special panel!';
                 } else {
                     $response['is_special_user'] = false;
+                }
+                
+                // Check if user is Chief Business Officer
+                if ($user['designation_name'] === 'Chief Business Officer') {
+                    $response['is_chief_business_officer'] = true;
+                } else {
+                    $response['is_chief_business_officer'] = false;
                 }
             } else {
                 $response['success'] = false;

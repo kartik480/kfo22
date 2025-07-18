@@ -209,15 +209,29 @@ public class EnhancedLoginActivity extends AppCompatActivity {
                         // Check if this is user 10002
                         boolean isUser10002 = "10002".equals(username);
                         
+                        // Check if user is Chief Business Officer
+                        boolean isChiefBusinessOfficer = jsonResponse.optBoolean("is_chief_business_officer", false);
+                        
                         Log.d(TAG, "Username: " + username + ", isUser10002: " + isUser10002);
                         Log.d(TAG, "User ID from server: " + userId);
+                        Log.d(TAG, "Is Chief Business Officer: " + isChiefBusinessOfficer);
                         Log.d(TAG, "Full response: " + responseBody);
 
                         runOnUiThread(() -> {
                             try {
                                 showSuccessMessage("Login successful!");
                                 
-                                if (isUser10002 || "10002".equals(userId)) {
+                                if (isChiefBusinessOfficer) {
+                                    Log.d(TAG, "Navigating to ChiefBusinessOfficerPanelActivity");
+                                    // Navigate to Chief Business Officer panel
+                                    Intent intent = new Intent(EnhancedLoginActivity.this, ChiefBusinessOfficerPanelActivity.class);
+                                    intent.putExtra("USERNAME", displayName);
+                                    intent.putExtra("FIRST_NAME", firstName);
+                                    intent.putExtra("LAST_NAME", lastName);
+                                    intent.putExtra("USER_ID", userId);
+                                    startActivity(intent);
+                                    finish();
+                                } else if (isUser10002 || "10002".equals(userId)) {
                                     Log.d(TAG, "Navigating to User10002PanelActivity");
                                     // Navigate to new enhanced panel for user 10002
                                     Intent intent = new Intent(EnhancedLoginActivity.this, User10002PanelActivity.class);
