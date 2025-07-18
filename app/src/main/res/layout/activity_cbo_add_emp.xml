@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -27,7 +26,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="CBO SDSA"
+            android:text="Add Employee"
             android:textSize="18sp"
             android:textStyle="bold"
             android:textColor="#2C3E50"
@@ -48,7 +47,7 @@
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:src="@drawable/ic_add"
-            android:contentDescription="Add"
+            android:contentDescription="Save"
             android:layout_gravity="center_vertical" />
 
     </LinearLayout>
@@ -78,7 +77,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="SDSA Management"
+                    android:text="Add New Employee"
                     android:textSize="24sp"
                     android:textStyle="bold"
                     android:textColor="#2C3E50"
@@ -87,113 +86,75 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Manage your SDSA information and team details"
+                    android:text="Enter employee details to add a new employee to the system"
                     android:textSize="14sp"
                     android:textColor="#7F8C8D" />
 
             </LinearLayout>
 
-            <!-- CBO SDSA Boxes -->
+            <!-- Form Placeholder -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:layout_marginBottom="16dp">
+                android:background="#FFFFFF"
+                android:padding="20dp"
+                android:elevation="2dp">
 
-                <!-- My SDSA Box -->
+                <ImageView
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    android:src="@drawable/ic_add_emp"
+                    android:background="@drawable/gradient_icon_background"
+                    android:padding="16dp"
+                    android:layout_marginBottom="16dp"
+                    android:layout_gravity="center_horizontal"
+                    android:contentDescription="Add Employee" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Employee Registration Form"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="#2C3E50"
+                    android:layout_marginBottom="8dp"
+                    android:layout_gravity="center_horizontal" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="This form will contain fields for employee details like name, email, designation, etc."
+                    android:textSize="14sp"
+                    android:textColor="#7F8C8D"
+                    android:gravity="center"
+                    android:layout_marginBottom="16dp" />
+
+                <!-- Sample Form Fields -->
                 <LinearLayout
-                    android:id="@+id/mySdsaBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:background="#FFFFFF"
-                    android:padding="20dp"
-                    android:elevation="2dp"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:foreground="?attr/selectableItemBackground"
-                    android:layout_marginBottom="12dp">
+                    android:orientation="vertical"
+                    android:background="#F8F9FA"
+                    android:padding="16dp"
+                    android:layout_marginBottom="16dp">
 
-                    <LinearLayout
-                        android:layout_width="0dp"
+                    <TextView
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
+                        android:text="Sample Form Fields:"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:textColor="#2C3E50"
+                        android:layout_marginBottom="8dp" />
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="My SDSA"
-                            android:textSize="18sp"
-                            android:textStyle="bold"
-                            android:textColor="#2C3E50"
-                            android:layout_marginBottom="8dp" />
-
-                        <TextView
-                            android:id="@+id/mySdsaCount"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="My SDSA"
-                            android:textSize="14sp"
-                            android:textColor="#7F8C8D" />
-
-                    </LinearLayout>
-
-                    <ImageView
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"
-                        android:src="@drawable/ic_people"
-                        android:background="@drawable/gradient_icon_background"
-                        android:padding="12dp"
-                        android:contentDescription="My SDSA" />
-
-                </LinearLayout>
-
-                <!-- Team SDSA Box -->
-                <LinearLayout
-                    android:id="@+id/teamSdsaBox"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:background="#FFFFFF"
-                    android:padding="20dp"
-                    android:elevation="2dp"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:foreground="?attr/selectableItemBackground">
-
-                    <LinearLayout
-                        android:layout_width="0dp"
+                    <TextView
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Team SDSA"
-                            android:textSize="18sp"
-                            android:textStyle="bold"
-                            android:textColor="#2C3E50"
-                            android:layout_marginBottom="8dp" />
-
-                        <TextView
-                            android:id="@+id/teamSdsaCount"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Team SDSA"
-                            android:textSize="14sp"
-                            android:textColor="#7F8C8D" />
-
-                    </LinearLayout>
-
-                    <ImageView
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"
-                        android:src="@drawable/ic_team"
-                        android:background="@drawable/gradient_icon_background"
-                        android:padding="12dp"
-                        android:contentDescription="Team SDSA" />
+                        android:text="• Employee Name\n• Email Address\n• Phone Number\n• Designation\n• Department\n• Joining Date\n• Salary\n• Reporting Manager"
+                        android:textSize="14sp"
+                        android:textColor="#7F8C8D"
+                        android:lineSpacingExtra="4dp" />
 
                 </LinearLayout>
 

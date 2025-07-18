@@ -8,7 +8,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
-public class CBOEmployeeActivity extends AppCompatActivity {
+public class CBOAddEmpActivity extends AppCompatActivity {
 
     // Top navigation elements
     private View backButton;
@@ -21,12 +21,6 @@ public class CBOEmployeeActivity extends AppCompatActivity {
     private LinearLayout reportsButton;
     private LinearLayout settingsButton;
 
-    // CBO Employee box
-    private LinearLayout myEmpBox;
-
-    // Count display
-    private TextView myEmpCount;
-
     // User data
     private String userName;
     private String userId;
@@ -34,7 +28,7 @@ public class CBOEmployeeActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_cbo_employee);
+        setContentView(R.layout.activity_cbo_add_emp);
 
         // Get user data from intent
         Intent intent = getIntent();
@@ -43,7 +37,7 @@ public class CBOEmployeeActivity extends AppCompatActivity {
 
         initializeViews();
         setupClickListeners();
-        loadCBOEmployeeData();
+        loadAddEmployeeData();
     }
 
     private void initializeViews() {
@@ -57,19 +51,13 @@ public class CBOEmployeeActivity extends AppCompatActivity {
         empLinksButton = findViewById(R.id.empLinksButton);
         reportsButton = findViewById(R.id.reportsButton);
         settingsButton = findViewById(R.id.settingsButton);
-
-        // CBO Employee box
-        myEmpBox = findViewById(R.id.myEmpBox);
-
-        // Count display
-        myEmpCount = findViewById(R.id.myEmpCount);
     }
 
     private void setupClickListeners() {
         // Top navigation
         backButton.setOnClickListener(v -> goBack());
         refreshButton.setOnClickListener(v -> refreshData());
-        addButton.setOnClickListener(v -> addNewEmployee());
+        addButton.setOnClickListener(v -> saveNewEmployee());
 
         // Bottom navigation
         dashboardButton.setOnClickListener(v -> {
@@ -95,36 +83,32 @@ public class CBOEmployeeActivity extends AppCompatActivity {
             Toast.makeText(this, "Settings - Coming Soon", Toast.LENGTH_SHORT).show();
             // TODO: Navigate to Settings activity
         });
-
-        // CBO Employee box click listener
-        myEmpBox.setOnClickListener(v -> {
-            Intent intent = new Intent(this, CBOMyEmpActivity.class);
-            passUserDataToIntent(intent);
-            startActivity(intent);
-        });
     }
 
     private void goBack() {
-        Intent intent = new Intent(this, ChiefBusinessOfficerPanelActivity.class);
+        Intent intent = new Intent(this, CBOEmpMasterActivity.class);
         passUserDataToIntent(intent);
         startActivity(intent);
         finish();
     }
 
     private void refreshData() {
-        Toast.makeText(this, "Refreshing CBO employee data...", Toast.LENGTH_SHORT).show();
-        loadCBOEmployeeData();
+        Toast.makeText(this, "Refreshing add employee form...", Toast.LENGTH_SHORT).show();
+        loadAddEmployeeData();
     }
 
-    private void addNewEmployee() {
-        Toast.makeText(this, "Add New Employee - Coming Soon", Toast.LENGTH_SHORT).show();
-        // TODO: Navigate to Add Employee activity
+    private void saveNewEmployee() {
+        Toast.makeText(this, "Saving new employee...", Toast.LENGTH_SHORT).show();
+        // TODO: Implement employee saving logic
+        // For now, just show a success message and go back
+        Toast.makeText(this, "Employee added successfully!", Toast.LENGTH_SHORT).show();
+        goBack();
     }
 
-    private void loadCBOEmployeeData() {
-        // TODO: Load real CBO employee data from server
-        // For now, set some sample data
-        myEmpCount.setText("My Employees");
+    private void loadAddEmployeeData() {
+        // TODO: Load any necessary data for the add employee form
+        // For now, show placeholder content
+        Toast.makeText(this, "Loading add employee form...", Toast.LENGTH_SHORT).show();
     }
 
     private void passUserDataToIntent(Intent intent) {

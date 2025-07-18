@@ -562,8 +562,51 @@
             android:exported="false"
             android:label="CBO Team Work Links"
             android:parentActivityName=".CBOWorkLinksActivity" />
-        <activity android:name=".CBOEmployeeActivity" />
-        <activity android:name=".CBOSdsaActivity" />
+        <activity
+            android:name=".CBOEmpMasterActivity"
+            android:exported="false"
+            android:label="CBO Employee Master"
+            android:parentActivityName=".ChiefBusinessOfficerPanelActivity" />
+        <activity
+            android:name=".CBOAddEmpActivity"
+            android:exported="false"
+            android:label="CBO Add Employee"
+            android:parentActivityName=".CBOEmpMasterActivity" />
+        <activity
+            android:name=".CBOActiveEmpListActivity"
+            android:exported="false"
+            android:label="CBO Active Employee List"
+            android:parentActivityName=".CBOEmpMasterActivity" />
+        <activity
+            android:name=".CBOInactiveEmpListActivity"
+            android:exported="false"
+            android:label="CBO Inactive Employee List"
+            android:parentActivityName=".CBOEmpMasterActivity" />
+        <activity
+            android:name=".CBOEmployeeActivity"
+            android:exported="false"
+            android:label="CBO Employee"
+            android:parentActivityName=".ChiefBusinessOfficerPanelActivity" />
+        <activity
+            android:name=".CBOMyEmpActivity"
+            android:exported="false"
+            android:label="CBO My Employee"
+            android:parentActivityName=".CBOEmployeeActivity" />
+        <activity
+            android:name=".CBOSdsaActivity"
+            android:exported="false"
+            android:label="CBO SDSA"
+            android:parentActivityName=".ChiefBusinessOfficerPanelActivity" />
+        <activity
+            android:name=".CBOMySdsaActivity"
+            android:exported="false"
+            android:label="CBO My SDSA"
+            android:parentActivityName=".CBOSdsaActivity" />
+        <activity
+            android:name=".CBOTeamSdsaActivity"
+            android:exported="false"
+            android:label="CBO Team SDSA"
+            android:parentActivityName=".CBOSdsaActivity" />
         <activity android:name=".CBOPartnerActivity" />
         <activity android:name=".CBOAgentActivity" />
         <activity android:name=".CBOPayoutActivity" />

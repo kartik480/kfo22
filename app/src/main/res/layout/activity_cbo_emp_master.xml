@@ -27,7 +27,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="CBO SDSA"
+            android:text="CBO Employee Master"
             android:textSize="18sp"
             android:textStyle="bold"
             android:textColor="#2C3E50"
@@ -78,7 +78,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="SDSA Management"
+                    android:text="Employee Master Management"
                     android:textSize="24sp"
                     android:textStyle="bold"
                     android:textColor="#2C3E50"
@@ -87,32 +87,32 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Manage your SDSA information and team details"
+                    android:text="Manage employee data, add new employees, and view active/inactive lists"
                     android:textSize="14sp"
                     android:textColor="#7F8C8D" />
 
             </LinearLayout>
 
-            <!-- CBO SDSA Boxes -->
+            <!-- CBO Emp Master Boxes -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:layout_marginBottom="16dp">
 
-                <!-- My SDSA Box -->
+                <!-- Add Emp Box -->
                 <LinearLayout
-                    android:id="@+id/mySdsaBox"
+                    android:id="@+id/addEmpBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:background="#FFFFFF"
                     android:padding="20dp"
+                    android:layout_marginBottom="12dp"
                     android:elevation="2dp"
                     android:clickable="true"
                     android:focusable="true"
-                    android:foreground="?attr/selectableItemBackground"
-                    android:layout_marginBottom="12dp">
+                    android:foreground="?attr/selectableItemBackground">
 
                     <LinearLayout
                         android:layout_width="0dp"
@@ -123,17 +123,17 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="My SDSA"
+                            android:text="Add Employee"
                             android:textSize="18sp"
                             android:textStyle="bold"
                             android:textColor="#2C3E50"
                             android:layout_marginBottom="8dp" />
 
                         <TextView
-                            android:id="@+id/mySdsaCount"
+                            android:id="@+id/addEmpCount"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="My SDSA"
+                            android:text="Add New Employee"
                             android:textSize="14sp"
                             android:textColor="#7F8C8D" />
 
@@ -142,16 +142,65 @@
                     <ImageView
                         android:layout_width="48dp"
                         android:layout_height="48dp"
-                        android:src="@drawable/ic_people"
+                        android:src="@drawable/ic_add_emp"
                         android:background="@drawable/gradient_icon_background"
                         android:padding="12dp"
-                        android:contentDescription="My SDSA" />
+                        android:contentDescription="Add Employee" />
 
                 </LinearLayout>
 
-                <!-- Team SDSA Box -->
+                <!-- Active Emp List Box -->
                 <LinearLayout
-                    android:id="@+id/teamSdsaBox"
+                    android:id="@+id/activeEmpListBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:background="#FFFFFF"
+                    android:padding="20dp"
+                    android:layout_marginBottom="12dp"
+                    android:elevation="2dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?attr/selectableItemBackground">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Active Employee List"
+                            android:textSize="18sp"
+                            android:textStyle="bold"
+                            android:textColor="#2C3E50"
+                            android:layout_marginBottom="8dp" />
+
+                        <TextView
+                            android:id="@+id/activeEmpListCount"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Active Employees"
+                            android:textSize="14sp"
+                            android:textColor="#7F8C8D" />
+
+                    </LinearLayout>
+
+                    <ImageView
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:src="@drawable/ic_active_emp"
+                        android:background="@drawable/gradient_icon_background"
+                        android:padding="12dp"
+                        android:contentDescription="Active Employee List" />
+
+                </LinearLayout>
+
+                <!-- Inactive Emp List Box -->
+                <LinearLayout
+                    android:id="@+id/inactiveEmpListBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
@@ -171,17 +220,17 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Team SDSA"
+                            android:text="Inactive Employee List"
                             android:textSize="18sp"
                             android:textStyle="bold"
                             android:textColor="#2C3E50"
                             android:layout_marginBottom="8dp" />
 
                         <TextView
-                            android:id="@+id/teamSdsaCount"
+                            android:id="@+id/inactiveEmpListCount"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Team SDSA"
+                            android:text="Inactive Employees"
                             android:textSize="14sp"
                             android:textColor="#7F8C8D" />
 
@@ -190,10 +239,10 @@
                     <ImageView
                         android:layout_width="48dp"
                         android:layout_height="48dp"
-                        android:src="@drawable/ic_team"
+                        android:src="@drawable/ic_inactive_emp"
                         android:background="@drawable/gradient_icon_background"
                         android:padding="12dp"
-                        android:contentDescription="Team SDSA" />
+                        android:contentDescription="Inactive Employee List" />
 
                 </LinearLayout>
 

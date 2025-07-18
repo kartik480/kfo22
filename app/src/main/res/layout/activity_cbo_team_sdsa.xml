@@ -27,7 +27,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="CBO SDSA"
+            android:text="Team SDSA"
             android:textSize="18sp"
             android:textStyle="bold"
             android:textColor="#2C3E50"
@@ -78,7 +78,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="SDSA Management"
+                    android:text="Team SDSA Management"
                     android:textSize="24sp"
                     android:textStyle="bold"
                     android:textColor="#2C3E50"
@@ -87,113 +87,212 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Manage your SDSA information and team details"
+                    android:text="Manage your team SDSA information and details"
                     android:textSize="14sp"
                     android:textColor="#7F8C8D" />
 
             </LinearLayout>
 
-            <!-- CBO SDSA Boxes -->
+            <!-- Team Statistics Card -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:layout_marginBottom="16dp">
+                android:background="#FFFFFF"
+                android:padding="20dp"
+                android:layout_marginBottom="16dp"
+                android:elevation="2dp">
 
-                <!-- My SDSA Box -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Team Statistics"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="#2C3E50"
+                    android:layout_marginBottom="16dp" />
+
+                <!-- Total Team Members -->
                 <LinearLayout
-                    android:id="@+id/mySdsaBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:background="#FFFFFF"
-                    android:padding="20dp"
-                    android:elevation="2dp"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:foreground="?attr/selectableItemBackground"
                     android:layout_marginBottom="12dp">
 
-                    <LinearLayout
-                        android:layout_width="0dp"
+                    <TextView
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
+                        android:text="Total Team Members:"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:textColor="#34495E"
+                        android:layout_marginEnd="8dp" />
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="My SDSA"
-                            android:textSize="18sp"
-                            android:textStyle="bold"
-                            android:textColor="#2C3E50"
-                            android:layout_marginBottom="8dp" />
-
-                        <TextView
-                            android:id="@+id/mySdsaCount"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="My SDSA"
-                            android:textSize="14sp"
-                            android:textColor="#7F8C8D" />
-
-                    </LinearLayout>
-
-                    <ImageView
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"
-                        android:src="@drawable/ic_people"
-                        android:background="@drawable/gradient_icon_background"
-                        android:padding="12dp"
-                        android:contentDescription="My SDSA" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="25"
+                        android:textSize="14sp"
+                        android:textColor="#7F8C8D" />
 
                 </LinearLayout>
 
-                <!-- Team SDSA Box -->
+                <!-- Active Members -->
                 <LinearLayout
-                    android:id="@+id/teamSdsaBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:background="#FFFFFF"
-                    android:padding="20dp"
-                    android:elevation="2dp"
+                    android:layout_marginBottom="12dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Active Members:"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:textColor="#34495E"
+                        android:layout_marginEnd="8dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="22"
+                        android:textSize="14sp"
+                        android:textColor="#27AE60"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+                <!-- Inactive Members -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="12dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Inactive Members:"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:textColor="#34495E"
+                        android:layout_marginEnd="8dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="3"
+                        android:textSize="14sp"
+                        android:textColor="#E74C3C"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <!-- Quick Actions Card -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="#FFFFFF"
+                android:padding="20dp"
+                android:layout_marginBottom="16dp"
+                android:elevation="2dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Quick Actions"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="#2C3E50"
+                    android:layout_marginBottom="16dp" />
+
+                <!-- View All Team Members Button -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:background="?attr/selectableItemBackground"
                     android:clickable="true"
                     android:focusable="true"
-                    android:foreground="?attr/selectableItemBackground">
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Team SDSA"
-                            android:textSize="18sp"
-                            android:textStyle="bold"
-                            android:textColor="#2C3E50"
-                            android:layout_marginBottom="8dp" />
-
-                        <TextView
-                            android:id="@+id/teamSdsaCount"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Team SDSA"
-                            android:textSize="14sp"
-                            android:textColor="#7F8C8D" />
-
-                    </LinearLayout>
+                    android:padding="12dp"
+                    android:layout_marginBottom="8dp">
 
                     <ImageView
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"
-                        android:src="@drawable/ic_team"
-                        android:background="@drawable/gradient_icon_background"
-                        android:padding="12dp"
-                        android:contentDescription="Team SDSA" />
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/ic_people"
+                        android:contentDescription="Team Members"
+                        android:layout_gravity="center_vertical" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="View All Team Members"
+                        android:textSize="16sp"
+                        android:textColor="#2C3E50"
+                        android:layout_marginStart="12dp"
+                        android:layout_gravity="center_vertical" />
+
+                </LinearLayout>
+
+                <!-- Add New Team Member Button -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:background="?attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:padding="12dp"
+                    android:layout_marginBottom="8dp">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/ic_add"
+                        android:contentDescription="Add Member"
+                        android:layout_gravity="center_vertical" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Add New Team Member"
+                        android:textSize="16sp"
+                        android:textColor="#2C3E50"
+                        android:layout_marginStart="12dp"
+                        android:layout_gravity="center_vertical" />
+
+                </LinearLayout>
+
+                <!-- Team Reports Button -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:background="?attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:padding="12dp">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/ic_reports"
+                        android:contentDescription="Reports"
+                        android:layout_gravity="center_vertical" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Team Reports"
+                        android:textSize="16sp"
+                        android:textColor="#2C3E50"
+                        android:layout_marginStart="12dp"
+                        android:layout_gravity="center_vertical" />
 
                 </LinearLayout>
 
