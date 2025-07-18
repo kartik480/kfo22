@@ -3,27 +3,22 @@ package com.kfinone.app;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
-import androidx.cardview.widget.CardView;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import java.util.ArrayList;
-import java.util.List;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class ChiefBusinessOfficerPanelActivity extends AppCompatActivity {
-    private RecyclerView teamRecyclerView;
-    private TeamMemberAdapter teamAdapter;
-    private List<TeamMember> teamMembers;
-    private TextView totalEmpCount, totalSdsaCount, totalPartnerCount, totalPortfolioCount, totalAgentCount, welcomeText, viewAllButton;
-    private CardView teamCard, portfolioCard, reportsCard, settingsCard;
-    private Button logoutButton;
+    private TextView totalEmpCount, totalSdsaCount, totalPartnerCount, totalPortfolioCount, totalAgentCount, welcomeText;
     private View notificationIcon, profileIcon, menuButton;
     private String userName;
     private BottomNavigationView cboBottomNav;
+    
+    // Action card views
+    private View cardPortfolio, cardTeam, cardReports, cardAnalytics, cardStrategy, 
+                 cardPerformance, cardGrowth, cardInnovation, cardPartnerships, 
+                 cardMarketAnalysis, cardRiskManagement, cardCompliance, cardBudget, 
+                 cardGoals, cardSettings;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,83 +33,46 @@ public class ChiefBusinessOfficerPanelActivity extends AppCompatActivity {
         }
         
         initializeViews();
-        setupRecyclerView();
-        loadSampleData();
         setupClickListeners();
         updateStats();
         updateWelcomeMessage();
     }
 
     private void initializeViews() {
-        teamRecyclerView = findViewById(R.id.teamRecyclerView);
         totalEmpCount = findViewById(R.id.totalEmpCount);
         totalSdsaCount = findViewById(R.id.totalSdsaCount);
         totalPartnerCount = findViewById(R.id.totalPartnerCount);
         totalPortfolioCount = findViewById(R.id.totalPortfolioCount);
         totalAgentCount = findViewById(R.id.totalAgentCount);
         welcomeText = findViewById(R.id.welcomeText);
-        viewAllButton = findViewById(R.id.viewAllButton);
         
-        teamCard = findViewById(R.id.teamCard);
-        portfolioCard = findViewById(R.id.portfolioCard);
-        reportsCard = findViewById(R.id.reportsCard);
-        settingsCard = findViewById(R.id.settingsCard);
+        // Initialize action cards
+        cardPortfolio = findViewById(R.id.cardPortfolio);
+        cardTeam = findViewById(R.id.cardTeam);
+        cardReports = findViewById(R.id.cardReports);
+        cardAnalytics = findViewById(R.id.cardAnalytics);
+        cardStrategy = findViewById(R.id.cardStrategy);
+        cardPerformance = findViewById(R.id.cardPerformance);
+        cardGrowth = findViewById(R.id.cardGrowth);
+        cardInnovation = findViewById(R.id.cardInnovation);
+        cardPartnerships = findViewById(R.id.cardPartnerships);
+        cardMarketAnalysis = findViewById(R.id.cardMarketAnalysis);
+        cardRiskManagement = findViewById(R.id.cardRiskManagement);
+        cardCompliance = findViewById(R.id.cardCompliance);
+        cardBudget = findViewById(R.id.cardBudget);
+        cardGoals = findViewById(R.id.cardGoals);
+        cardSettings = findViewById(R.id.cardSettings);
         
-        logoutButton = findViewById(R.id.logoutButton);
         notificationIcon = findViewById(R.id.notificationIcon);
         profileIcon = findViewById(R.id.profileIcon);
         menuButton = findViewById(R.id.menuButton);
         cboBottomNav = findViewById(R.id.cboBottomNav);
     }
 
-    private void setupRecyclerView() {
-        teamMembers = new ArrayList<>();
-        teamAdapter = new TeamMemberAdapter(teamMembers, this);
-        teamRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        teamRecyclerView.setAdapter(teamAdapter);
-    }
-
     private void setupClickListeners() {
         // Menu button click listener
         menuButton.setOnClickListener(v -> {
             showMenuOptions();
-        });
-
-        // Card click listeners
-        teamCard.setOnClickListener(v -> {
-            Intent intent = new Intent(this, CBOTeamActivity.class);
-            intent.putExtra("USERNAME", userName);
-            startActivity(intent);
-        });
-
-        portfolioCard.setOnClickListener(v -> {
-            Intent intent = new Intent(this, CBOPortfolioActivity.class);
-            intent.putExtra("USERNAME", userName);
-            startActivity(intent);
-        });
-
-        reportsCard.setOnClickListener(v -> {
-            Intent intent = new Intent(this, CBOReportsActivity.class);
-            intent.putExtra("USERNAME", userName);
-            startActivity(intent);
-        });
-
-        settingsCard.setOnClickListener(v -> {
-            Intent intent = new Intent(this, CBOSettingsActivity.class);
-            intent.putExtra("USERNAME", userName);
-            startActivity(intent);
-        });
-
-        // Button click listeners
-        logoutButton.setOnClickListener(v -> {
-            // Show confirmation dialog
-            showLogoutConfirmation();
-        });
-
-        viewAllButton.setOnClickListener(v -> {
-            Intent intent = new Intent(this, CBOTeamActivity.class);
-            intent.putExtra("USERNAME", userName);
-            startActivity(intent);
         });
 
         notificationIcon.setOnClickListener(v -> {
@@ -125,6 +83,98 @@ public class ChiefBusinessOfficerPanelActivity extends AppCompatActivity {
         profileIcon.setOnClickListener(v -> {
             Toast.makeText(this, "Profile Settings", Toast.LENGTH_SHORT).show();
             // TODO: Open profile settings
+        });
+
+        // Action Card Click Listeners
+        cardPortfolio.setOnClickListener(v -> {
+            Intent intent = new Intent(this, EmpLinksActivity.class);
+            intent.putExtra("USERNAME", userName);
+            intent.putExtra("SOURCE_PANEL", "CBO_PANEL");
+            startActivity(intent);
+        });
+        
+        cardTeam.setOnClickListener(v -> {
+            Intent intent = new Intent(this, DataLinksActivity.class);
+            intent.putExtra("USERNAME", userName);
+            startActivity(intent);
+        });
+        
+        cardReports.setOnClickListener(v -> {
+            Intent intent = new Intent(this, WorkLinksActivity.class);
+            intent.putExtra("USERNAME", userName);
+            startActivity(intent);
+        });
+        
+        cardAnalytics.setOnClickListener(v -> {
+            Intent intent = new Intent(this, EmpMasterActivity.class);
+            intent.putExtra("USERNAME", userName);
+            startActivity(intent);
+        });
+        
+        cardStrategy.setOnClickListener(v -> {
+            Intent intent = new Intent(this, EmployeePanelActivity.class);
+            intent.putExtra("USERNAME", userName);
+            startActivity(intent);
+        });
+        
+        cardPerformance.setOnClickListener(v -> {
+            Intent intent = new Intent(this, SdsaPanelActivity.class);
+            intent.putExtra("USERNAME", userName);
+            startActivity(intent);
+        });
+        
+        cardGrowth.setOnClickListener(v -> {
+            Intent intent = new Intent(this, ManagingDirectorPartnerMasterActivity.class);
+            intent.putExtra("USERNAME", userName);
+            startActivity(intent);
+        });
+        
+        cardInnovation.setOnClickListener(v -> {
+            Intent intent = new Intent(this, AgentActivity.class);
+            intent.putExtra("USERNAME", userName);
+            startActivity(intent);
+        });
+        
+        cardPartnerships.setOnClickListener(v -> {
+            Intent intent = new Intent(this, ManagingDirectorPayoutPanelActivity.class);
+            intent.putExtra("USERNAME", userName);
+            startActivity(intent);
+        });
+        
+        cardMarketAnalysis.setOnClickListener(v -> {
+            Intent intent = new Intent(this, DsaCodeListActivity.class);
+            intent.putExtra("USERNAME", userName);
+            intent.putExtra("SOURCE_PANEL", "CBO_PANEL");
+            startActivity(intent);
+        });
+        
+        cardRiskManagement.setOnClickListener(v -> {
+            Intent intent = new Intent(this, BankersPanelActivity.class);
+            intent.putExtra("USERNAME", userName);
+            startActivity(intent);
+        });
+        
+        cardCompliance.setOnClickListener(v -> {
+            Intent intent = new Intent(this, PortfolioPanelActivity.class);
+            intent.putExtra("USERNAME", userName);
+            startActivity(intent);
+        });
+        
+        cardBudget.setOnClickListener(v -> {
+            Toast.makeText(this, "Add Insurance - Coming Soon", Toast.LENGTH_SHORT).show();
+        });
+        
+        cardGoals.setOnClickListener(v -> {
+            Intent intent = new Intent(this, DocCheckListActivity.class);
+            intent.putExtra("USERNAME", userName);
+            startActivity(intent);
+        });
+        
+        cardSettings.setOnClickListener(v -> {
+            Intent intent = new Intent(this, PolicyActivity.class);
+            intent.putExtra("USERNAME", userName);
+            intent.putExtra("SOURCE_PANEL", "CBO_PANEL");
+            startActivity(intent);
         });
 
         cboBottomNav.setOnItemSelectedListener(item -> {
@@ -227,40 +277,8 @@ public class ChiefBusinessOfficerPanelActivity extends AppCompatActivity {
             .show();
     }
 
-    private void loadSampleData() {
-        teamMembers.clear();
-        
-        // Add sample team members
-        teamMembers.add(new TeamMember(
-            "1", "John", "Smith", "Senior Manager",
-            "john.smith@kfinone.com", "9876543210", "EMP001", "CBO"
-        ));
-        
-        teamMembers.add(new TeamMember(
-            "2", "Sarah", "Johnson", "Team Lead",
-            "sarah.johnson@kfinone.com", "9876543211", "EMP002", "CBO"
-        ));
-        
-        teamMembers.add(new TeamMember(
-            "3", "Michael", "Davis", "Project Manager",
-            "michael.davis@kfinone.com", "9876543212", "EMP003", "CBO"
-        ));
-        
-        teamMembers.add(new TeamMember(
-            "4", "Emily", "Wilson", "Business Analyst",
-            "emily.wilson@kfinone.com", "9876543213", "EMP004", "CBO"
-        ));
-        
-        teamMembers.add(new TeamMember(
-            "5", "David", "Brown", "Senior Developer",
-            "david.brown@kfinone.com", "9876543214", "EMP005", "CBO"
-        ));
-
-        teamAdapter.notifyDataSetChanged();
-    }
-
     private void updateStats() {
-        // Update all stats with sample data
+        // Update statistics with sample data
         totalEmpCount.setText("156");
         totalSdsaCount.setText("89");
         totalPartnerCount.setText("45");
@@ -273,7 +291,7 @@ public class ChiefBusinessOfficerPanelActivity extends AppCompatActivity {
             .setTitle("Logout")
             .setMessage("Are you sure you want to logout?")
             .setPositiveButton("Yes", (dialog, which) -> {
-                // Perform logout
+                // Navigate back to login
                 Intent intent = new Intent(this, EnhancedLoginActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(intent);
@@ -285,14 +303,7 @@ public class ChiefBusinessOfficerPanelActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        // Show exit confirmation
-        new androidx.appcompat.app.AlertDialog.Builder(this)
-            .setTitle("Exit App")
-            .setMessage("Are you sure you want to exit the application?")
-            .setPositiveButton("Yes", (dialog, which) -> {
-                finish();
-            })
-            .setNegativeButton("No", null)
-            .show();
+        // Show logout confirmation when back button is pressed
+        showLogoutConfirmation();
     }
 } 
