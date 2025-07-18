@@ -18,7 +18,7 @@ public class ChiefBusinessOfficerPanelActivity extends AppCompatActivity {
     private RecyclerView teamRecyclerView;
     private TeamMemberAdapter teamAdapter;
     private List<TeamMember> teamMembers;
-    private TextView totalTeamCount, activeProjectsCount, welcomeText, viewAllButton;
+    private TextView totalEmpCount, totalSdsaCount, totalPartnerCount, totalPortfolioCount, totalAgentCount, welcomeText, viewAllButton;
     private CardView teamCard, portfolioCard, reportsCard, settingsCard;
     private Button logoutButton;
     private View notificationIcon, profileIcon, menuButton;
@@ -47,8 +47,11 @@ public class ChiefBusinessOfficerPanelActivity extends AppCompatActivity {
 
     private void initializeViews() {
         teamRecyclerView = findViewById(R.id.teamRecyclerView);
-        totalTeamCount = findViewById(R.id.totalTeamCount);
-        activeProjectsCount = findViewById(R.id.activeProjectsCount);
+        totalEmpCount = findViewById(R.id.totalEmpCount);
+        totalSdsaCount = findViewById(R.id.totalSdsaCount);
+        totalPartnerCount = findViewById(R.id.totalPartnerCount);
+        totalPortfolioCount = findViewById(R.id.totalPortfolioCount);
+        totalAgentCount = findViewById(R.id.totalAgentCount);
         welcomeText = findViewById(R.id.welcomeText);
         viewAllButton = findViewById(R.id.viewAllButton);
         
@@ -257,11 +260,12 @@ public class ChiefBusinessOfficerPanelActivity extends AppCompatActivity {
     }
 
     private void updateStats() {
-        // Update team count
-        totalTeamCount.setText(String.valueOf(teamMembers.size()));
-        
-        // Update active projects count (sample data)
-        activeProjectsCount.setText("23");
+        // Update all stats with sample data
+        totalEmpCount.setText("156");
+        totalSdsaCount.setText("89");
+        totalPartnerCount.setText("45");
+        totalPortfolioCount.setText("234");
+        totalAgentCount.setText("67");
     }
 
     private void showLogoutConfirmation() {
