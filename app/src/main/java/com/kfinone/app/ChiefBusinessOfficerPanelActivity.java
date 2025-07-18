@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.List;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class ChiefBusinessOfficerPanelActivity extends AppCompatActivity {
     private RecyclerView teamRecyclerView;
@@ -22,6 +23,7 @@ public class ChiefBusinessOfficerPanelActivity extends AppCompatActivity {
     private Button logoutButton;
     private View notificationIcon, profileIcon, menuButton;
     private String userName;
+    private BottomNavigationView cboBottomNav;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +61,7 @@ public class ChiefBusinessOfficerPanelActivity extends AppCompatActivity {
         notificationIcon = findViewById(R.id.notificationIcon);
         profileIcon = findViewById(R.id.profileIcon);
         menuButton = findViewById(R.id.menuButton);
+        cboBottomNav = findViewById(R.id.cboBottomNav);
     }
 
     private void setupRecyclerView() {
@@ -119,6 +122,27 @@ public class ChiefBusinessOfficerPanelActivity extends AppCompatActivity {
         profileIcon.setOnClickListener(v -> {
             Toast.makeText(this, "Profile Settings", Toast.LENGTH_SHORT).show();
             // TODO: Open profile settings
+        });
+
+        cboBottomNav.setOnItemSelectedListener(item -> {
+            int itemId = item.getItemId();
+            if (itemId == R.id.nav_dashboard) {
+                // Already on dashboard
+                return true;
+            } else if (itemId == R.id.nav_team) {
+                startActivity(new Intent(this, CBOTeamActivity.class).putExtra("USERNAME", userName));
+                return true;
+            } else if (itemId == R.id.nav_portfolio) {
+                startActivity(new Intent(this, CBOPortfolioActivity.class).putExtra("USERNAME", userName));
+                return true;
+            } else if (itemId == R.id.nav_reports) {
+                startActivity(new Intent(this, CBOReportsActivity.class).putExtra("USERNAME", userName));
+                return true;
+            } else if (itemId == R.id.nav_settings) {
+                startActivity(new Intent(this, CBOSettingsActivity.class).putExtra("USERNAME", userName));
+                return true;
+            }
+            return false;
         });
     }
 
