@@ -8,7 +8,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
-public class CBODataLinksActivity extends AppCompatActivity {
+public class CBOMyWorkLinksActivity extends AppCompatActivity {
 
     // Top navigation elements
     private View backButton;
@@ -21,14 +21,6 @@ public class CBODataLinksActivity extends AppCompatActivity {
     private LinearLayout reportsButton;
     private LinearLayout settingsButton;
 
-    // CBO Data Links boxes
-    private LinearLayout myDataLinksBox;
-    private LinearLayout teamDataLinksBox;
-
-    // Count displays
-    private TextView myDataLinksCount;
-    private TextView teamDataLinksCount;
-
     // User data
     private String userName;
     private String userId;
@@ -36,7 +28,7 @@ public class CBODataLinksActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_cbo_data_links);
+        setContentView(R.layout.activity_cbo_my_work_links);
 
         // Get user data from intent
         Intent intent = getIntent();
@@ -45,7 +37,7 @@ public class CBODataLinksActivity extends AppCompatActivity {
 
         initializeViews();
         setupClickListeners();
-        loadCBODataLinksData();
+        loadMyWorkLinksData();
     }
 
     private void initializeViews() {
@@ -59,21 +51,13 @@ public class CBODataLinksActivity extends AppCompatActivity {
         empLinksButton = findViewById(R.id.empLinksButton);
         reportsButton = findViewById(R.id.reportsButton);
         settingsButton = findViewById(R.id.settingsButton);
-
-        // CBO Data Links boxes
-        myDataLinksBox = findViewById(R.id.myDataLinksBox);
-        teamDataLinksBox = findViewById(R.id.teamDataLinksBox);
-
-        // Count displays
-        myDataLinksCount = findViewById(R.id.myDataLinksCount);
-        teamDataLinksCount = findViewById(R.id.teamDataLinksCount);
     }
 
     private void setupClickListeners() {
         // Top navigation
         backButton.setOnClickListener(v -> goBack());
         refreshButton.setOnClickListener(v -> refreshData());
-        addButton.setOnClickListener(v -> addNewDataLink());
+        addButton.setOnClickListener(v -> addNewWorkLink());
 
         // Bottom navigation
         dashboardButton.setOnClickListener(v -> {
@@ -99,43 +83,29 @@ public class CBODataLinksActivity extends AppCompatActivity {
             Toast.makeText(this, "Settings - Coming Soon", Toast.LENGTH_SHORT).show();
             // TODO: Navigate to Settings activity
         });
-
-        // CBO Data Links boxes click listeners
-        myDataLinksBox.setOnClickListener(v -> {
-            Intent intent = new Intent(this, CBOMyDataLinksActivity.class);
-            passUserDataToIntent(intent);
-            startActivity(intent);
-        });
-
-        teamDataLinksBox.setOnClickListener(v -> {
-            Intent intent = new Intent(this, CBOTeamDataLinksActivity.class);
-            passUserDataToIntent(intent);
-            startActivity(intent);
-        });
     }
 
     private void goBack() {
-        Intent intent = new Intent(this, ChiefBusinessOfficerPanelActivity.class);
+        Intent intent = new Intent(this, CBOWorkLinksActivity.class);
         passUserDataToIntent(intent);
         startActivity(intent);
         finish();
     }
 
     private void refreshData() {
-        Toast.makeText(this, "Refreshing CBO data links...", Toast.LENGTH_SHORT).show();
-        loadCBODataLinksData();
+        Toast.makeText(this, "Refreshing my work links...", Toast.LENGTH_SHORT).show();
+        loadMyWorkLinksData();
     }
 
-    private void addNewDataLink() {
-        Toast.makeText(this, "Add New Data Link - Coming Soon", Toast.LENGTH_SHORT).show();
-        // TODO: Navigate to Add Data Link activity
+    private void addNewWorkLink() {
+        Toast.makeText(this, "Add New Work Link - Coming Soon", Toast.LENGTH_SHORT).show();
+        // TODO: Navigate to Add Work Link activity
     }
 
-    private void loadCBODataLinksData() {
-        // TODO: Load real CBO data links data from server
-        // For now, set some sample data
-        myDataLinksCount.setText("My Data Links");
-        teamDataLinksCount.setText("Team Data Links");
+    private void loadMyWorkLinksData() {
+        // TODO: Load real my work links data from server
+        // For now, show placeholder content
+        Toast.makeText(this, "Loading my work links...", Toast.LENGTH_SHORT).show();
     }
 
     private void passUserDataToIntent(Intent intent) {

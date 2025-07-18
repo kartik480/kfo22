@@ -94,14 +94,16 @@ public class ChiefBusinessOfficerPanelActivity extends AppCompatActivity {
         });
         
         cardTeam.setOnClickListener(v -> {
-            Intent intent = new Intent(this, DataLinksActivity.class);
+            Intent intent = new Intent(this, CBODataLinksActivity.class);
             intent.putExtra("USERNAME", userName);
+            intent.putExtra("SOURCE_PANEL", "CBO_PANEL");
             startActivity(intent);
         });
         
         cardReports.setOnClickListener(v -> {
-            Intent intent = new Intent(this, WorkLinksActivity.class);
+            Intent intent = new Intent(this, CBOWorkLinksActivity.class);
             intent.putExtra("USERNAME", userName);
+            intent.putExtra("SOURCE_PANEL", "CBO_PANEL");
             startActivity(intent);
         });
         
