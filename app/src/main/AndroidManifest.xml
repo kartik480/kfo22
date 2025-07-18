@@ -517,7 +517,21 @@
             android:exported="false"
             android:label="CBO Settings"
             android:parentActivityName=".ChiefBusinessOfficerPanelActivity" />
-        <activity android:name=".CBOEmpLinksActivity" />
+        <activity
+            android:name=".CBOEmpLinksActivity"
+            android:exported="false"
+            android:label="CBO Employee Links"
+            android:parentActivityName=".ChiefBusinessOfficerPanelActivity" />
+        <activity
+            android:name=".CBOMyEmpLinksActivity"
+            android:exported="false"
+            android:label="CBO My Employee Links"
+            android:parentActivityName=".CBOEmpLinksActivity" />
+        <activity
+            android:name=".CBOTeamEmpLinksActivity"
+            android:exported="false"
+            android:label="CBO Team Employee Links"
+            android:parentActivityName=".CBOEmpLinksActivity" />
         <activity android:name=".CBODataLinksActivity" />
         <activity android:name=".CBOWorkLinksActivity" />
         <activity android:name=".CBOEmployeeActivity" />

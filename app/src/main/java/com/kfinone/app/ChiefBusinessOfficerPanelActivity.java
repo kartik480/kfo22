@@ -87,7 +87,7 @@ public class ChiefBusinessOfficerPanelActivity extends AppCompatActivity {
 
         // Action Card Click Listeners
         cardPortfolio.setOnClickListener(v -> {
-            Intent intent = new Intent(this, EmpLinksActivity.class);
+            Intent intent = new Intent(this, CBOEmpLinksActivity.class);
             intent.putExtra("USERNAME", userName);
             intent.putExtra("SOURCE_PANEL", "CBO_PANEL");
             startActivity(intent);

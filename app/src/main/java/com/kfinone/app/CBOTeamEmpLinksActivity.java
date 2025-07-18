@@ -8,7 +8,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
-public class CBOEmpLinksActivity extends AppCompatActivity {
+public class CBOTeamEmpLinksActivity extends AppCompatActivity {
 
     // Top navigation elements
     private View backButton;
@@ -21,14 +21,6 @@ public class CBOEmpLinksActivity extends AppCompatActivity {
     private LinearLayout reportsButton;
     private LinearLayout settingsButton;
 
-    // CBO Emp Links boxes
-    private LinearLayout myEmpLinksBox;
-    private LinearLayout teamEmpLinksBox;
-
-    // Count displays
-    private TextView myEmpLinksCount;
-    private TextView teamEmpLinksCount;
-
     // User data
     private String userName;
     private String userId;
@@ -36,7 +28,7 @@ public class CBOEmpLinksActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_cbo_emp_links);
+        setContentView(R.layout.activity_cbo_team_emp_links);
 
         // Get user data from intent
         Intent intent = getIntent();
@@ -45,7 +37,7 @@ public class CBOEmpLinksActivity extends AppCompatActivity {
 
         initializeViews();
         setupClickListeners();
-        loadCBOEmpLinksData();
+        loadTeamEmpLinksData();
     }
 
     private void initializeViews() {
@@ -59,21 +51,13 @@ public class CBOEmpLinksActivity extends AppCompatActivity {
         empLinksButton = findViewById(R.id.empLinksButton);
         reportsButton = findViewById(R.id.reportsButton);
         settingsButton = findViewById(R.id.settingsButton);
-
-        // CBO Emp Links boxes
-        myEmpLinksBox = findViewById(R.id.myEmpLinksBox);
-        teamEmpLinksBox = findViewById(R.id.teamEmpLinksBox);
-
-        // Count displays
-        myEmpLinksCount = findViewById(R.id.myEmpLinksCount);
-        teamEmpLinksCount = findViewById(R.id.teamEmpLinksCount);
     }
 
     private void setupClickListeners() {
         // Top navigation
         backButton.setOnClickListener(v -> goBack());
         refreshButton.setOnClickListener(v -> refreshData());
-        addButton.setOnClickListener(v -> addNewEmpLink());
+        addButton.setOnClickListener(v -> addNewTeamMember());
 
         // Bottom navigation
         dashboardButton.setOnClickListener(v -> {
@@ -84,8 +68,10 @@ public class CBOEmpLinksActivity extends AppCompatActivity {
         });
 
         empLinksButton.setOnClickListener(v -> {
-            // Already on emp links page, just show feedback
-            Toast.makeText(this, "Employee Links", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(this, CBOEmpLinksActivity.class);
+            passUserDataToIntent(intent);
+            startActivity(intent);
+            finish();
         });
 
         reportsButton.setOnClickListener(v -> {
@@ -97,43 +83,29 @@ public class CBOEmpLinksActivity extends AppCompatActivity {
             Toast.makeText(this, "Settings - Coming Soon", Toast.LENGTH_SHORT).show();
             // TODO: Navigate to Settings activity
         });
-
-        // CBO Emp Links boxes click listeners
-        myEmpLinksBox.setOnClickListener(v -> {
-            Intent intent = new Intent(this, CBOMyEmpLinksActivity.class);
-            passUserDataToIntent(intent);
-            startActivity(intent);
-        });
-
-        teamEmpLinksBox.setOnClickListener(v -> {
-            Intent intent = new Intent(this, CBOTeamEmpLinksActivity.class);
-            passUserDataToIntent(intent);
-            startActivity(intent);
-        });
     }
 
     private void goBack() {
-        Intent intent = new Intent(this, ChiefBusinessOfficerPanelActivity.class);
+        Intent intent = new Intent(this, CBOEmpLinksActivity.class);
         passUserDataToIntent(intent);
         startActivity(intent);
         finish();
     }
 
     private void refreshData() {
-        Toast.makeText(this, "Refreshing CBO employee links data...", Toast.LENGTH_SHORT).show();
-        loadCBOEmpLinksData();
+        Toast.makeText(this, "Refreshing team employee links data...", Toast.LENGTH_SHORT).show();
+        loadTeamEmpLinksData();
     }
 
-    private void addNewEmpLink() {
-        Toast.makeText(this, "Add New Emp Link - Coming Soon", Toast.LENGTH_SHORT).show();
-        // TODO: Navigate to Add Emp Link activity
+    private void addNewTeamMember() {
+        Toast.makeText(this, "Add New Team Member - Coming Soon", Toast.LENGTH_SHORT).show();
+        // TODO: Navigate to Add Team Member activity
     }
 
-    private void loadCBOEmpLinksData() {
-        // TODO: Load real CBO employee links data from server
-        // For now, set some sample data
-        myEmpLinksCount.setText("My Employee Links");
-        teamEmpLinksCount.setText("Team Employee Links");
+    private void loadTeamEmpLinksData() {
+        // TODO: Load real team employee links data from server
+        // For now, show placeholder content
+        Toast.makeText(this, "Loading team employee links...", Toast.LENGTH_SHORT).show();
     }
 
     private void passUserDataToIntent(Intent intent) {
