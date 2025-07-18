@@ -198,9 +198,6 @@ public class ChiefBusinessOfficerPanelActivity extends AppCompatActivity {
             } else if (itemId == R.id.nav_reports) {
                 startActivity(new Intent(this, CBOReportsActivity.class).putExtra("USERNAME", userName));
                 return true;
-            } else if (itemId == R.id.nav_settings) {
-                startActivity(new Intent(this, CBOSettingsActivity.class).putExtra("USERNAME", userName));
-                return true;
             }
             return false;
         });
@@ -218,7 +215,6 @@ public class ChiefBusinessOfficerPanelActivity extends AppCompatActivity {
             "Team Management", 
             "Portfolio Management",
             "Reports & Analytics",
-            "Settings",
             "Profile",
             "Notifications",
             "Help & Support",
@@ -248,24 +244,19 @@ public class ChiefBusinessOfficerPanelActivity extends AppCompatActivity {
                         reportsIntent.putExtra("USERNAME", userName);
                         startActivity(reportsIntent);
                         break;
-                    case 4: // Settings
-                        Intent settingsIntent = new Intent(this, CBOSettingsActivity.class);
-                        settingsIntent.putExtra("USERNAME", userName);
-                        startActivity(settingsIntent);
-                        break;
-                    case 5: // Profile
+                    case 4: // Profile
                         Toast.makeText(this, "Profile Settings", Toast.LENGTH_SHORT).show();
                         break;
-                    case 6: // Notifications
+                    case 5: // Notifications
                         Toast.makeText(this, "Notifications", Toast.LENGTH_SHORT).show();
                         break;
-                    case 7: // Help & Support
+                    case 6: // Help & Support
                         Toast.makeText(this, "Help & Support", Toast.LENGTH_SHORT).show();
                         break;
-                    case 8: // About
+                    case 7: // About
                         showAboutDialog();
                         break;
-                    case 9: // Logout
+                    case 8: // Logout
                         showLogoutConfirmation();
                         break;
                 }
