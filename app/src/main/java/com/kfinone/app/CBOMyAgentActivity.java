@@ -8,7 +8,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
-public class CBOPartnerActivity extends AppCompatActivity {
+public class CBOMyAgentActivity extends AppCompatActivity {
 
     // Top navigation elements
     private View backButton;
@@ -21,16 +21,6 @@ public class CBOPartnerActivity extends AppCompatActivity {
     private LinearLayout reportsButton;
     private LinearLayout settingsButton;
 
-    // CBO Partner boxes
-    private LinearLayout addPartnerBox;
-    private LinearLayout myPartnerBox;
-    private LinearLayout partnerTeamBox;
-
-    // Count displays
-    private TextView addPartnerCount;
-    private TextView myPartnerCount;
-    private TextView partnerTeamCount;
-
     // User data
     private String userName;
     private String userId;
@@ -38,7 +28,7 @@ public class CBOPartnerActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_cbo_partner);
+        setContentView(R.layout.activity_cbo_my_agent);
 
         // Get user data from intent
         Intent intent = getIntent();
@@ -47,7 +37,7 @@ public class CBOPartnerActivity extends AppCompatActivity {
 
         initializeViews();
         setupClickListeners();
-        loadCBOPartnerData();
+        loadMyAgentData();
     }
 
     private void initializeViews() {
@@ -61,23 +51,13 @@ public class CBOPartnerActivity extends AppCompatActivity {
         empLinksButton = findViewById(R.id.empLinksButton);
         reportsButton = findViewById(R.id.reportsButton);
         settingsButton = findViewById(R.id.settingsButton);
-
-        // CBO Partner boxes
-        addPartnerBox = findViewById(R.id.addPartnerBox);
-        myPartnerBox = findViewById(R.id.myPartnerBox);
-        partnerTeamBox = findViewById(R.id.partnerTeamBox);
-
-        // Count displays
-        addPartnerCount = findViewById(R.id.addPartnerCount);
-        myPartnerCount = findViewById(R.id.myPartnerCount);
-        partnerTeamCount = findViewById(R.id.partnerTeamCount);
     }
 
     private void setupClickListeners() {
         // Top navigation
         backButton.setOnClickListener(v -> goBack());
         refreshButton.setOnClickListener(v -> refreshData());
-        addButton.setOnClickListener(v -> addNewPartner());
+        addButton.setOnClickListener(v -> addNewAgent());
 
         // Bottom navigation
         dashboardButton.setOnClickListener(v -> {
@@ -103,50 +83,29 @@ public class CBOPartnerActivity extends AppCompatActivity {
             Toast.makeText(this, "Settings - Coming Soon", Toast.LENGTH_SHORT).show();
             // TODO: Navigate to Settings activity
         });
-
-        // CBO Partner box click listeners
-        addPartnerBox.setOnClickListener(v -> {
-            Intent intent = new Intent(this, CBOAddPartnerActivity.class);
-            passUserDataToIntent(intent);
-            startActivity(intent);
-        });
-
-        myPartnerBox.setOnClickListener(v -> {
-            Intent intent = new Intent(this, CBOMyPartnerActivity.class);
-            passUserDataToIntent(intent);
-            startActivity(intent);
-        });
-
-        partnerTeamBox.setOnClickListener(v -> {
-            Intent intent = new Intent(this, CBOPartnerTeamActivity.class);
-            passUserDataToIntent(intent);
-            startActivity(intent);
-        });
     }
 
     private void goBack() {
-        Intent intent = new Intent(this, ChiefBusinessOfficerPanelActivity.class);
+        Intent intent = new Intent(this, CBOAgentActivity.class);
         passUserDataToIntent(intent);
         startActivity(intent);
         finish();
     }
 
     private void refreshData() {
-        Toast.makeText(this, "Refreshing CBO partner data...", Toast.LENGTH_SHORT).show();
-        loadCBOPartnerData();
+        Toast.makeText(this, "Refreshing my agent data...", Toast.LENGTH_SHORT).show();
+        loadMyAgentData();
     }
 
-    private void addNewPartner() {
-        Toast.makeText(this, "Add New Partner - Coming Soon", Toast.LENGTH_SHORT).show();
-        // TODO: Navigate to Add Partner activity
+    private void addNewAgent() {
+        Toast.makeText(this, "Add New Agent - Coming Soon", Toast.LENGTH_SHORT).show();
+        // TODO: Navigate to Add Agent activity
     }
 
-    private void loadCBOPartnerData() {
-        // TODO: Load real CBO partner data from server
-        // For now, set some sample data
-        addPartnerCount.setText("Add Partner");
-        myPartnerCount.setText("My Partner");
-        partnerTeamCount.setText("Partner Team");
+    private void loadMyAgentData() {
+        // TODO: Load real my agent data from server
+        // For now, show placeholder content
+        Toast.makeText(this, "Loading my agent data...", Toast.LENGTH_SHORT).show();
     }
 
     private void passUserDataToIntent(Intent intent) {

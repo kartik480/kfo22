@@ -27,7 +27,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="CBO Partner"
+            android:text="Partner Team"
             android:textSize="18sp"
             android:textStyle="bold"
             android:textColor="#2C3E50"
@@ -78,7 +78,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Partner Management"
+                    android:text="Partner Team Management"
                     android:textSize="24sp"
                     android:textStyle="bold"
                     android:textColor="#2C3E50"
@@ -87,164 +87,195 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Manage your partner information and team details"
+                    android:text="Manage your partner team and view team performance"
                     android:textSize="14sp"
                     android:textColor="#7F8C8D" />
 
             </LinearLayout>
 
-            <!-- CBO Partner Boxes -->
+            <!-- Team Stats Card -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:layout_marginBottom="16dp">
+                android:background="#FFFFFF"
+                android:padding="20dp"
+                android:layout_marginBottom="16dp"
+                android:elevation="2dp">
 
-                <!-- Add Partner Box -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Team Statistics"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="#2C3E50"
+                    android:layout_marginBottom="16dp" />
+
+                <!-- Stats Grid -->
                 <LinearLayout
-                    android:id="@+id/addPartnerBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:background="#FFFFFF"
-                    android:padding="20dp"
-                    android:elevation="2dp"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:foreground="?attr/selectableItemBackground"
-                    android:layout_marginBottom="12dp">
+                    android:layout_marginBottom="16dp">
 
                     <LinearLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:orientation="vertical">
+                        android:orientation="vertical"
+                        android:gravity="center"
+                        android:background="#F8F9FA"
+                        android:padding="16dp"
+                        android:layout_marginEnd="8dp">
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Add Partner"
-                            android:textSize="18sp"
+                            android:text="15"
+                            android:textSize="24sp"
                             android:textStyle="bold"
-                            android:textColor="#2C3E50"
-                            android:layout_marginBottom="8dp" />
+                            android:textColor="#2C3E50" />
 
                         <TextView
-                            android:id="@+id/addPartnerCount"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Add Partner"
-                            android:textSize="14sp"
+                            android:text="Total Partners"
+                            android:textSize="12sp"
                             android:textColor="#7F8C8D" />
 
                     </LinearLayout>
-
-                    <ImageView
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"
-                        android:src="@drawable/ic_add"
-                        android:background="@drawable/gradient_icon_background"
-                        android:padding="12dp"
-                        android:contentDescription="Add Partner" />
-
-                </LinearLayout>
-
-                <!-- My Partner Box -->
-                <LinearLayout
-                    android:id="@+id/myPartnerBox"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:background="#FFFFFF"
-                    android:padding="20dp"
-                    android:elevation="2dp"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:foreground="?attr/selectableItemBackground"
-                    android:layout_marginBottom="12dp">
 
                     <LinearLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:orientation="vertical">
+                        android:orientation="vertical"
+                        android:gravity="center"
+                        android:background="#F8F9FA"
+                        android:padding="16dp"
+                        android:layout_marginStart="8dp">
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="My Partner"
-                            android:textSize="18sp"
+                            android:text="12"
+                            android:textSize="24sp"
                             android:textStyle="bold"
-                            android:textColor="#2C3E50"
-                            android:layout_marginBottom="8dp" />
+                            android:textColor="#27AE60" />
 
                         <TextView
-                            android:id="@+id/myPartnerCount"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="My Partner"
-                            android:textSize="14sp"
+                            android:text="Active Partners"
+                            android:textSize="12sp"
                             android:textColor="#7F8C8D" />
 
                     </LinearLayout>
 
-                    <ImageView
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"
-                        android:src="@drawable/ic_partner"
-                        android:background="@drawable/gradient_icon_background"
-                        android:padding="12dp"
-                        android:contentDescription="My Partner" />
-
                 </LinearLayout>
 
-                <!-- Partner Team Box -->
                 <LinearLayout
-                    android:id="@+id/partnerTeamBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:background="#FFFFFF"
-                    android:padding="20dp"
-                    android:elevation="2dp"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:foreground="?attr/selectableItemBackground">
+                    android:orientation="horizontal">
 
                     <LinearLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:orientation="vertical">
+                        android:orientation="vertical"
+                        android:gravity="center"
+                        android:background="#F8F9FA"
+                        android:padding="16dp"
+                        android:layout_marginEnd="8dp">
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Partner Team"
-                            android:textSize="18sp"
+                            android:text="3"
+                            android:textSize="24sp"
                             android:textStyle="bold"
-                            android:textColor="#2C3E50"
-                            android:layout_marginBottom="8dp" />
+                            android:textColor="#E74C3C" />
 
                         <TextView
-                            android:id="@+id/partnerTeamCount"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Partner Team"
-                            android:textSize="14sp"
+                            android:text="Inactive Partners"
+                            android:textSize="12sp"
                             android:textColor="#7F8C8D" />
 
                     </LinearLayout>
 
-                    <ImageView
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"
-                        android:src="@drawable/ic_team"
-                        android:background="@drawable/gradient_icon_background"
-                        android:padding="12dp"
-                        android:contentDescription="Partner Team" />
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:gravity="center"
+                        android:background="#F8F9FA"
+                        android:padding="16dp"
+                        android:layout_marginStart="8dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="85%"
+                            android:textSize="24sp"
+                            android:textStyle="bold"
+                            android:textColor="#3498DB" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Performance"
+                            android:textSize="12sp"
+                            android:textColor="#7F8C8D" />
+
+                    </LinearLayout>
 
                 </LinearLayout>
+
+            </LinearLayout>
+
+            <!-- Action Buttons -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="#FFFFFF"
+                android:padding="20dp"
+                android:elevation="2dp">
+
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="View All Partners"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="#FFFFFF"
+                    android:background="@drawable/button_background"
+                    android:padding="16dp"
+                    android:layout_marginBottom="12dp" />
+
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Add New Partner"
+                    android:textSize="16sp"
+                    android:textColor="#2C3E50"
+                    android:background="@drawable/button_background_white"
+                    android:padding="16dp"
+                    android:layout_marginBottom="12dp" />
+
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Generate Report"
+                    android:textSize="16sp"
+                    android:textColor="#2C3E50"
+                    android:background="@drawable/button_background_white"
+                    android:padding="16dp" />
 
             </LinearLayout>
 

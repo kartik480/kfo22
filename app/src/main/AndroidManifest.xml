@@ -607,8 +607,46 @@
             android:exported="false"
             android:label="CBO Team SDSA"
             android:parentActivityName=".CBOSdsaActivity" />
-        <activity android:name=".CBOPartnerActivity" />
-        <activity android:name=".CBOAgentActivity" />
+        <activity
+            android:name=".CBOPartnerActivity"
+            android:exported="false"
+            android:label="CBO Partner"
+            android:parentActivityName=".ChiefBusinessOfficerPanelActivity" />
+        <activity
+            android:name=".CBOAddPartnerActivity"
+            android:exported="false"
+            android:label="CBO Add Partner"
+            android:parentActivityName=".CBOPartnerActivity" />
+        <activity
+            android:name=".CBOMyPartnerActivity"
+            android:exported="false"
+            android:label="CBO My Partner"
+            android:parentActivityName=".CBOPartnerActivity" />
+        <activity
+            android:name=".CBOPartnerTeamActivity"
+            android:exported="false"
+            android:label="CBO Partner Team"
+            android:parentActivityName=".CBOPartnerActivity" />
+        <activity
+            android:name=".CBOAgentActivity"
+            android:exported="false"
+            android:label="CBO Agent"
+            android:parentActivityName=".ChiefBusinessOfficerPanelActivity" />
+        <activity
+            android:name=".CBOAddAgentActivity"
+            android:exported="false"
+            android:label="CBO Add Agent"
+            android:parentActivityName=".CBOAgentActivity" />
+        <activity
+            android:name=".CBOMyAgentActivity"
+            android:exported="false"
+            android:label="CBO My Agent"
+            android:parentActivityName=".CBOAgentActivity" />
+        <activity
+            android:name=".CBOAgentTeamActivity"
+            android:exported="false"
+            android:label="CBO Agent Team"
+            android:parentActivityName=".CBOAgentActivity" />
         <activity android:name=".CBOPayoutActivity" />
         <activity android:name=".CBODsaCodeActivity" />
         <activity android:name=".CBOBankersActivity" />

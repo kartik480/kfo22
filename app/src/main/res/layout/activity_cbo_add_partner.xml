@@ -27,7 +27,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="CBO Partner"
+            android:text="Add Partner"
             android:textSize="18sp"
             android:textStyle="bold"
             android:textColor="#2C3E50"
@@ -78,7 +78,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Partner Management"
+                    android:text="Add New Partner"
                     android:textSize="24sp"
                     android:textStyle="bold"
                     android:textColor="#2C3E50"
@@ -87,162 +87,187 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Manage your partner information and team details"
+                    android:text="Fill in the details to add a new partner"
                     android:textSize="14sp"
                     android:textColor="#7F8C8D" />
 
             </LinearLayout>
 
-            <!-- CBO Partner Boxes -->
+            <!-- Partner Form Card -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:layout_marginBottom="16dp">
+                android:background="#FFFFFF"
+                android:padding="20dp"
+                android:layout_marginBottom="16dp"
+                android:elevation="2dp">
 
-                <!-- Add Partner Box -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Partner Information"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="#2C3E50"
+                    android:layout_marginBottom="16dp" />
+
+                <!-- Partner Name -->
                 <LinearLayout
-                    android:id="@+id/addPartnerBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:background="#FFFFFF"
-                    android:padding="20dp"
-                    android:elevation="2dp"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:foreground="?attr/selectableItemBackground"
-                    android:layout_marginBottom="12dp">
+                    android:orientation="vertical"
+                    android:layout_marginBottom="16dp">
 
-                    <LinearLayout
-                        android:layout_width="0dp"
+                    <TextView
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
+                        android:text="Partner Name *"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:textColor="#34495E"
+                        android:layout_marginBottom="8dp" />
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Add Partner"
-                            android:textSize="18sp"
-                            android:textStyle="bold"
-                            android:textColor="#2C3E50"
-                            android:layout_marginBottom="8dp" />
-
-                        <TextView
-                            android:id="@+id/addPartnerCount"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Add Partner"
-                            android:textSize="14sp"
-                            android:textColor="#7F8C8D" />
-
-                    </LinearLayout>
-
-                    <ImageView
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"
-                        android:src="@drawable/ic_add"
-                        android:background="@drawable/gradient_icon_background"
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Enter partner name"
                         android:padding="12dp"
-                        android:contentDescription="Add Partner" />
+                        android:background="@drawable/input_field_background"
+                        android:textSize="14sp" />
 
                 </LinearLayout>
 
-                <!-- My Partner Box -->
+                <!-- Partner Type -->
                 <LinearLayout
-                    android:id="@+id/myPartnerBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:background="#FFFFFF"
-                    android:padding="20dp"
-                    android:elevation="2dp"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:foreground="?attr/selectableItemBackground"
-                    android:layout_marginBottom="12dp">
+                    android:orientation="vertical"
+                    android:layout_marginBottom="16dp">
 
-                    <LinearLayout
-                        android:layout_width="0dp"
+                    <TextView
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
+                        android:text="Partner Type *"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:textColor="#34495E"
+                        android:layout_marginBottom="8dp" />
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="My Partner"
-                            android:textSize="18sp"
-                            android:textStyle="bold"
-                            android:textColor="#2C3E50"
-                            android:layout_marginBottom="8dp" />
-
-                        <TextView
-                            android:id="@+id/myPartnerCount"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="My Partner"
-                            android:textSize="14sp"
-                            android:textColor="#7F8C8D" />
-
-                    </LinearLayout>
-
-                    <ImageView
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"
-                        android:src="@drawable/ic_partner"
-                        android:background="@drawable/gradient_icon_background"
+                    <Spinner
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
                         android:padding="12dp"
-                        android:contentDescription="My Partner" />
+                        android:background="@drawable/input_field_background" />
 
                 </LinearLayout>
 
-                <!-- Partner Team Box -->
+                <!-- Contact Number -->
                 <LinearLayout
-                    android:id="@+id/partnerTeamBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:background="#FFFFFF"
-                    android:padding="20dp"
-                    android:elevation="2dp"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:foreground="?attr/selectableItemBackground">
+                    android:orientation="vertical"
+                    android:layout_marginBottom="16dp">
 
-                    <LinearLayout
-                        android:layout_width="0dp"
+                    <TextView
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
+                        android:text="Contact Number *"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:textColor="#34495E"
+                        android:layout_marginBottom="8dp" />
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Partner Team"
-                            android:textSize="18sp"
-                            android:textStyle="bold"
-                            android:textColor="#2C3E50"
-                            android:layout_marginBottom="8dp" />
-
-                        <TextView
-                            android:id="@+id/partnerTeamCount"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Partner Team"
-                            android:textSize="14sp"
-                            android:textColor="#7F8C8D" />
-
-                    </LinearLayout>
-
-                    <ImageView
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"
-                        android:src="@drawable/ic_team"
-                        android:background="@drawable/gradient_icon_background"
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Enter contact number"
+                        android:inputType="phone"
                         android:padding="12dp"
-                        android:contentDescription="Partner Team" />
+                        android:background="@drawable/input_field_background"
+                        android:textSize="14sp" />
+
+                </LinearLayout>
+
+                <!-- Email -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginBottom="16dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Email Address"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:textColor="#34495E"
+                        android:layout_marginBottom="8dp" />
+
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Enter email address"
+                        android:inputType="textEmailAddress"
+                        android:padding="12dp"
+                        android:background="@drawable/input_field_background"
+                        android:textSize="14sp" />
+
+                </LinearLayout>
+
+                <!-- Location -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginBottom="16dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Location *"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:textColor="#34495E"
+                        android:layout_marginBottom="8dp" />
+
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Enter location"
+                        android:padding="12dp"
+                        android:background="@drawable/input_field_background"
+                        android:textSize="14sp" />
+
+                </LinearLayout>
+
+                <!-- Submit Button -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginTop="16dp">
+
+                    <Button
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Add Partner"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:textColor="#FFFFFF"
+                        android:background="@drawable/button_background"
+                        android:padding="16dp"
+                        android:layout_marginBottom="8dp" />
+
+                    <Button
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Clear Form"
+                        android:textSize="16sp"
+                        android:textColor="#2C3E50"
+                        android:background="@drawable/button_background_white"
+                        android:padding="16dp" />
 
                 </LinearLayout>
 
