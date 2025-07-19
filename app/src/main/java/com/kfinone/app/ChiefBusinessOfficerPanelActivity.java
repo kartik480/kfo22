@@ -143,7 +143,7 @@ public class ChiefBusinessOfficerPanelActivity extends AppCompatActivity {
         });
         
         cardPartnerships.setOnClickListener(v -> {
-            Intent intent = new Intent(this, ManagingDirectorPayoutPanelActivity.class);
+            Intent intent = new Intent(this, CBOPayoutPanelActivity.class);
             intent.putExtra("USERNAME", userName);
             startActivity(intent);
         });
@@ -156,19 +156,21 @@ public class ChiefBusinessOfficerPanelActivity extends AppCompatActivity {
         });
         
         cardRiskManagement.setOnClickListener(v -> {
-            Intent intent = new Intent(this, BankersPanelActivity.class);
+            Intent intent = new Intent(this, CBOBankersPanelActivity.class);
             intent.putExtra("USERNAME", userName);
             startActivity(intent);
         });
         
         cardCompliance.setOnClickListener(v -> {
-            Intent intent = new Intent(this, PortfolioPanelActivity.class);
+            Intent intent = new Intent(this, CBOPortfolioPanelActivity.class);
             intent.putExtra("USERNAME", userName);
             startActivity(intent);
         });
         
         cardBudget.setOnClickListener(v -> {
-            Toast.makeText(this, "Add Insurance - Coming Soon", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(this, CBOInsurancePanelActivity.class);
+            intent.putExtra("USERNAME", userName);
+            startActivity(intent);
         });
         
         cardGoals.setOnClickListener(v -> {

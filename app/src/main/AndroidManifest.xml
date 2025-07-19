@@ -647,6 +647,26 @@
             android:exported="false"
             android:label="CBO Agent Team"
             android:parentActivityName=".CBOAgentActivity" />
+        <activity
+            android:name=".CBOPayoutPanelActivity"
+            android:exported="false"
+            android:label="CBO Payout Management"
+            android:parentActivityName=".ChiefBusinessOfficerPanelActivity" />
+        <activity
+            android:name=".CBOBankersPanelActivity"
+            android:exported="false"
+            android:label="CBO Bankers Management"
+            android:parentActivityName=".ChiefBusinessOfficerPanelActivity" />
+        <activity
+            android:name=".CBOPortfolioPanelActivity"
+            android:exported="false"
+            android:label="CBO Portfolio Management"
+            android:parentActivityName=".ChiefBusinessOfficerPanelActivity" />
+        <activity
+            android:name=".CBOInsurancePanelActivity"
+            android:exported="false"
+            android:label="CBO Insurance Management"
+            android:parentActivityName=".ChiefBusinessOfficerPanelActivity" />
         <activity android:name=".CBOPayoutActivity" />
         <activity android:name=".CBODsaCodeActivity" />
         <activity android:name=".CBOBankersActivity" />

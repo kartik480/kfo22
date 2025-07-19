@@ -1,0 +1,327 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/cbo_gradient_background">
+
+    <!-- Professional Header -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@drawable/cbo_header_gradient"
+        android:padding="20dp"
+        android:elevation="8dp">
+
+        <!-- Top Bar with Back Button and Title -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="16dp">
+
+            <!-- Back Button -->
+            <ImageButton
+                android:id="@+id/backButton"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:src="@drawable/ic_back"
+                android:background="@drawable/circle_background_white_alpha"
+                android:padding="12dp"
+                android:layout_marginEnd="16dp"
+                android:contentDescription="Back" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="CBO Insurance Management"
+                    android:textSize="24sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/white"
+                    android:fontFamily="sans-serif-medium" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Manage insurance policies and operations"
+                    android:textSize="16sp"
+                    android:textColor="@color/white"
+                    android:alpha="0.9"
+                    android:layout_marginTop="2dp" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <!-- Content Area -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="24dp">
+
+            <!-- Add Insurance Box -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/addInsuranceBox"
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                android:layout_marginBottom="16dp"
+                android:clickable="true"
+                android:focusable="true"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="8dp"
+                app:cardBackgroundColor="@color/white">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:padding="20dp"
+                    android:gravity="center_vertical">
+
+                    <!-- Icon with Background -->
+                    <LinearLayout
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:background="@drawable/circle_background_green"
+                        android:gravity="center"
+                        android:layout_marginEnd="16dp">
+
+                        <ImageView
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:src="@drawable/ic_add"
+                            android:tint="#4CAF50"
+                            android:contentDescription="Add Insurance" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Add Insurance"
+                            android:textSize="18sp"
+                            android:textStyle="bold"
+                            android:textColor="#2C3E50"
+                            android:layout_marginBottom="4dp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Create new insurance policies"
+                            android:textSize="14sp"
+                            android:textColor="#7F8C8D" />
+
+                    </LinearLayout>
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/ic_arrow_right"
+                        android:tint="#4CAF50" />
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- My Insurance Box -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/myInsuranceBox"
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                android:layout_marginBottom="16dp"
+                android:clickable="true"
+                android:focusable="true"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="8dp"
+                app:cardBackgroundColor="@color/white">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:padding="20dp"
+                    android:gravity="center_vertical">
+
+                    <!-- Icon with Background -->
+                    <LinearLayout
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:background="@drawable/circle_background_blue"
+                        android:gravity="center"
+                        android:layout_marginEnd="16dp">
+
+                        <ImageView
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:src="@drawable/ic_insurance"
+                            android:tint="#2196F3"
+                            android:contentDescription="My Insurance" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="My Insurance"
+                            android:textSize="18sp"
+                            android:textStyle="bold"
+                            android:textColor="#2C3E50"
+                            android:layout_marginBottom="4dp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="View and manage your insurance policies"
+                            android:textSize="14sp"
+                            android:textColor="#7F8C8D" />
+
+                    </LinearLayout>
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/ic_arrow_right"
+                        android:tint="#2196F3" />
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Team Insurance Box -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/teamInsuranceBox"
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                android:layout_marginBottom="24dp"
+                android:clickable="true"
+                android:focusable="true"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="8dp"
+                app:cardBackgroundColor="@color/white">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:padding="20dp"
+                    android:gravity="center_vertical">
+
+                    <!-- Icon with Background -->
+                    <LinearLayout
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:background="@drawable/circle_background_orange"
+                        android:gravity="center"
+                        android:layout_marginEnd="16dp">
+
+                        <ImageView
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:src="@drawable/ic_team"
+                            android:tint="#FF9800"
+                            android:contentDescription="Team Insurance" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Team Insurance"
+                            android:textSize="18sp"
+                            android:textStyle="bold"
+                            android:textColor="#2C3E50"
+                            android:layout_marginBottom="4dp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Manage team insurance operations"
+                            android:textSize="14sp"
+                            android:textColor="#7F8C8D" />
+
+                    </LinearLayout>
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/ic_arrow_right"
+                        android:tint="#FF9800" />
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Additional Info Card -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="4dp"
+                app:cardBackgroundColor="#F8F9FA">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="20dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Insurance Management Overview"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:textColor="#2C3E50"
+                        android:layout_marginBottom="12dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="• Add new insurance policies to the system\n• View and manage your personal insurance\n• Monitor team insurance performance\n• Track insurance analytics and reports"
+                        android:textSize="14sp"
+                        android:textColor="#5A6C7D"
+                        android:lineSpacingExtra="4dp" />
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</LinearLayout> 
