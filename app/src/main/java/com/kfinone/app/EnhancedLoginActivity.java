@@ -212,9 +212,23 @@ public class EnhancedLoginActivity extends AppCompatActivity {
                         // Check if user is Chief Business Officer
                         boolean isChiefBusinessOfficer = jsonResponse.optBoolean("is_chief_business_officer", false);
                         
+                        // Check if user is Regional Business Head
+                        boolean isRegionalBusinessHead = jsonResponse.optBoolean("is_regional_business_head", false);
+                        
+                        // Fallback: Check designation directly if API flag is not present
+                        if (!isRegionalBusinessHead && user.has("designation_name")) {
+                            String designation = user.getString("designation_name");
+                            isRegionalBusinessHead = "Regional Business Head".equals(designation);
+                        }
+                        
+                        // Make final for lambda
+                        final boolean finalIsRegionalBusinessHead = isRegionalBusinessHead;
+                        
                         Log.d(TAG, "Username: " + username + ", isUser10002: " + isUser10002);
                         Log.d(TAG, "User ID from server: " + userId);
                         Log.d(TAG, "Is Chief Business Officer: " + isChiefBusinessOfficer);
+                        Log.d(TAG, "Is Regional Business Head: " + isRegionalBusinessHead);
+                        Log.d(TAG, "Designation: " + user.optString("designation_name", "N/A"));
                         Log.d(TAG, "Full response: " + responseBody);
 
                         runOnUiThread(() -> {
@@ -225,6 +239,16 @@ public class EnhancedLoginActivity extends AppCompatActivity {
                                     Log.d(TAG, "Navigating to ChiefBusinessOfficerPanelActivity");
                                     // Navigate to Chief Business Officer panel
                                     Intent intent = new Intent(EnhancedLoginActivity.this, ChiefBusinessOfficerPanelActivity.class);
+                                    intent.putExtra("USERNAME", displayName);
+                                    intent.putExtra("FIRST_NAME", firstName);
+                                    intent.putExtra("LAST_NAME", lastName);
+                                    intent.putExtra("USER_ID", userId);
+                                    startActivity(intent);
+                                    finish();
+                                } else if (finalIsRegionalBusinessHead) {
+                                    Log.d(TAG, "Navigating to RegionalBusinessHeadPanelActivity");
+                                    // Navigate to Regional Business Head panel
+                                    Intent intent = new Intent(EnhancedLoginActivity.this, RegionalBusinessHeadPanelActivity.class);
                                     intent.putExtra("USERNAME", displayName);
                                     intent.putExtra("FIRST_NAME", firstName);
                                     intent.putExtra("LAST_NAME", lastName);

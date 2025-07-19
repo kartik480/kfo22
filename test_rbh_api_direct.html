@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Direct RBH API Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .result { 
+            background: #f0f0f0; 
+            padding: 15px; 
+            margin: 10px 0; 
+            border-radius: 5px; 
+            white-space: pre-wrap; 
+            font-family: monospace; 
+        }
+        button { padding: 10px 20px; margin: 5px; }
+    </style>
+</head>
+<body>
+    <h1>Direct RBH API Test</h1>
+    <button onclick="testRBHLogin()">Test RBH Login (30000/30000)</button>
+    <button onclick="testCBOLogin()">Test CBO Login</button>
+    <button onclick="testRegularLogin()">Test Regular Login</button>
+    <div id="output"></div>
+
+    <script>
+        async function testLogin(username, password, testName) {
+            const output = document.getElementById('output');
+            output.innerHTML += `\n\n=== ${testName} ===\n`;
+            
+            try {
+                const response = await fetch('https://emp.kfinone.com/mobile/api/login.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+                
+                const responseText = await response.text();
+                const jsonResponse = JSON.parse(responseText);
+                
+                output.innerHTML += `Response: ${JSON.stringify(jsonResponse, null, 2)}\n`;
+                
+                if (jsonResponse.success) {
+                    const designation = jsonResponse.user?.designation_name;
+                    const isRBH = jsonResponse.is_regional_business_head;
+                    const isCBO = jsonResponse.is_chief_business_officer;
+                    
+                    output.innerHTML += `\nAnalysis:\n`;
+                    output.innerHTML += `- Designation: "${designation}"\n`;
+                    output.innerHTML += `- is_regional_business_head: ${isRBH}\n`;
+                    output.innerHTML += `- is_chief_business_officer: ${isCBO}\n`;
+                    output.innerHTML += `- Should be RBH: ${designation === 'Regional Business Head'}\n`;
+                    output.innerHTML += `- Should be CBO: ${designation === 'Chief Business Officer'}\n`;
+                }
+            } catch (error) {
+                output.innerHTML += `Error: ${error.message}\n`;
+            }
+        }
+        
+        function testRBHLogin() {
+            testLogin('30000', '30000', 'RBH Login Test');
+        }
+        
+        function testCBOLogin() {
+            testLogin('10002', '10002', 'CBO Login Test');
+        }
+        
+        function testRegularLogin() {
+            testLogin('admin', 'admin', 'Regular Login Test');
+        }
+    </script>
+</body>
+</html> 

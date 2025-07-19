@@ -72,6 +72,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 } else {
                     $response['is_chief_business_officer'] = false;
                 }
+                
+                // Check if user is Regional Business Head
+                if ($user['designation_name'] === 'Regional Business Head') {
+                    $response['is_regional_business_head'] = true;
+                } else {
+                    $response['is_regional_business_head'] = false;
+                }
             } else {
                 $response['success'] = false;
                 $response['message'] = 'Invalid password.';

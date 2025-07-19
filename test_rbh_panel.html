@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RBH Panel API Testing</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        h1 {
+            color: #2196F3;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        h2 {
+            color: #333;
+            border-bottom: 2px solid #2196F3;
+            padding-bottom: 10px;
+            margin-top: 30px;
+        }
+        .api-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #fafafa;
+        }
+        .api-title {
+            font-weight: bold;
+            color: #2196F3;
+            margin-bottom: 10px;
+        }
+        .api-url {
+            background-color: #f0f0f0;
+            padding: 10px;
+            border-radius: 5px;
+            font-family: monospace;
+            margin: 10px 0;
+            word-break: break-all;
+        }
+        button {
+            background-color: #2196F3;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px 5px;
+            font-size: 14px;
+        }
+        button:hover {
+            background-color: #1976D2;
+        }
+        .result {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 15px;
+            margin-top: 15px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .success {
+            border-left: 4px solid #28a745;
+        }
+        .error {
+            border-left: 4px solid #dc3545;
+        }
+        .info {
+            background-color: #e3f2fd;
+            border: 1px solid #2196F3;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        .stat-number {
+            font-size: 24px;
+            font-weight: bold;
+            color: #2196F3;
+        }
+        .stat-label {
+            color: #666;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Regional Business Head (RBH) Panel API Testing</h1>
+        
+        <div class="info">
+            <strong>About:</strong> This page tests the APIs for the Regional Business Head panel. 
+            The RBH panel is designed for users with designation "Regional Business Head" in the database.
+        </div>
+
+        <h2>API Endpoints</h2>
+
+        <!-- Get RBH Users API -->
+        <div class="api-section">
+            <div class="api-title">1. Get RBH Users API</div>
+            <div class="api-url">GET: https://emp.kfinone.com/mobile/api/get_rbh_users.php</div>
+            <p>This API fetches all Regional Business Head users and their team members.</p>
+            <button onclick="testGetRBHUsers()">Test Get RBH Users</button>
+            <div id="rbhUsersResult" class="result" style="display: none;"></div>
+        </div>
+
+        <!-- Check RBH User API -->
+        <div class="api-section">
+            <div class="api-title">2. Check RBH User API</div>
+            <div class="api-url">GET: https://emp.kfinone.com/mobile/api/check_rbh_user.php?username=USERNAME</div>
+            <p>This API checks if a specific user is a Regional Business Head.</p>
+            <input type="text" id="checkUsername" placeholder="Enter username to check" style="padding: 8px; margin: 5px; border: 1px solid #ddd; border-radius: 4px; width: 200px;">
+            <button onclick="testCheckRBHUser()">Test Check RBH User</button>
+            <div id="checkRBHResult" class="result" style="display: none;"></div>
+        </div>
+
+        <!-- RBH Statistics -->
+        <div class="api-section">
+            <div class="api-title">3. RBH Statistics</div>
+            <p>Statistics from the RBH users API:</p>
+            <div id="rbhStats" class="stats-grid" style="display: none;">
+                <!-- Stats will be populated here -->
+            </div>
+        </div>
+
+        <h2>Test Results</h2>
+        <div id="overallResult" class="result" style="display: none;"></div>
+    </div>
+
+    <script>
+        const BASE_URL = 'https://emp.kfinone.com/mobile/api/';
+
+        async function testGetRBHUsers() {
+            const resultDiv = document.getElementById('rbhUsersResult');
+            resultDiv.style.display = 'block';
+            resultDiv.className = 'result';
+            resultDiv.textContent = 'Loading...';
+
+            try {
+                const response = await fetch(BASE_URL + 'get_rbh_users.php');
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    resultDiv.className = 'result success';
+                    resultDiv.textContent = JSON.stringify(data, null, 2);
+                    
+                    // Display statistics
+                    displayRBHStats(data.data.statistics);
+                } else {
+                    resultDiv.className = 'result error';
+                    resultDiv.textContent = 'Error: ' + data.message;
+                }
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.textContent = 'Network Error: ' + error.message;
+            }
+        }
+
+        async function testCheckRBHUser() {
+            const username = document.getElementById('checkUsername').value.trim();
+            if (!username) {
+                alert('Please enter a username');
+                return;
+            }
+
+            const resultDiv = document.getElementById('checkRBHResult');
+            resultDiv.style.display = 'block';
+            resultDiv.className = 'result';
+            resultDiv.textContent = 'Loading...';
+
+            try {
+                const response = await fetch(`${BASE_URL}check_rbh_user.php?username=${encodeURIComponent(username)}`);
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    resultDiv.className = 'result success';
+                    resultDiv.textContent = JSON.stringify(data, null, 2);
+                } else {
+                    resultDiv.className = 'result error';
+                    resultDiv.textContent = 'Error: ' + data.message;
+                }
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.textContent = 'Network Error: ' + error.message;
+            }
+        }
+
+        function displayRBHStats(stats) {
+            const statsDiv = document.getElementById('rbhStats');
+            statsDiv.style.display = 'grid';
+            
+            statsDiv.innerHTML = `
+                <div class="stat-card">
+                    <div class="stat-number">${stats.total_rbh_users || 0}</div>
+                    <div class="stat-label">Total RBH Users</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${stats.active_rbh_users || 0}</div>
+                    <div class="stat-label">Active RBH Users</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${stats.total_team_members || 0}</div>
+                    <div class="stat-label">Total Team Members</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${stats.active_team_members || 0}</div>
+                    <div class="stat-label">Active Team Members</div>
+                </div>
+            `;
+        }
+
+        // Auto-test on page load
+        window.onload = function() {
+            console.log('RBH Panel API Testing Page Loaded');
+            console.log('Available APIs:');
+            console.log('1. get_rbh_users.php - Get all RBH users and team members');
+            console.log('2. check_rbh_user.php - Check if a user is RBH');
+        };
+    </script>
+</body>
+</html> 
