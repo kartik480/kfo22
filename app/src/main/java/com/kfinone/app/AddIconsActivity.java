@@ -215,7 +215,7 @@ public class AddIconsActivity extends AppCompatActivity {
             try {
                 // Create request
                 Request request = new Request.Builder()
-                    .url(BASE_URL + "get_data_icons.php")
+                    .url(BASE_URL + "get_manage_icons.php") // Changed endpoint
                     .get()
                     .build();
 
@@ -236,10 +236,10 @@ public class AddIconsActivity extends AppCompatActivity {
                                         org.json.JSONArray dataArray = jsonResponse.getJSONArray("data");
                                         for (int i = 0; i < dataArray.length(); i++) {
                                             org.json.JSONObject iconObj = dataArray.getJSONObject(i);
-                                            String iconName = iconObj.getString("icon_name");
-                                            String iconUrl = iconObj.getString("icon_url");
-                                            String iconImage = iconObj.getString("icon_image");
-                                            String iconDescription = iconObj.getString("icon_description");
+                                            String iconName = iconObj.optString("icon_name", "");
+                                            String iconUrl = iconObj.optString("icon_url", ""); // May not exist
+                                            String iconImage = iconObj.optString("icon_image", "");
+                                            String iconDescription = iconObj.optString("icon_description", "");
                                             
                                             // Create IconItem and add to list
                                             IconItem iconItem = new IconItem(iconName, iconDescription, iconImage, iconUrl);
