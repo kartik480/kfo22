@@ -191,7 +191,7 @@ public class MyEmpLinksActivity extends AppCompatActivity {
             return;
         }
 
-        String url = BASE_URL + "get_user_permissions_simple.php";
+        String url = BASE_URL + "get_user_manage_icons.php";
         Log.d(TAG, "Making API request to: " + url);
         
         JSONObject requestBody = new JSONObject();
@@ -211,12 +211,11 @@ public class MyEmpLinksActivity extends AppCompatActivity {
                         try {
                             String status = response.getString("status");
                             if ("success".equals(status)) {
-                                parsePermissionsData(response.getJSONObject("data"));
+                                parseManageIconsData(response.getJSONArray("data"));
                             } else {
                                 String message = response.getString("message");
                                 Log.e(TAG, "API Error: " + message);
                                 Toast.makeText(MyEmpLinksActivity.this, "API Error: " + message, Toast.LENGTH_LONG).show();
-                                // Show empty state with helpful message
                                 showEmptyStateWithMessage("API Error: " + message);
                             }
                         } catch (JSONException e) {
@@ -243,100 +242,31 @@ public class MyEmpLinksActivity extends AppCompatActivity {
         queue.add(request);
     }
 
-    private void parsePermissionsData(JSONObject data) {
-        Log.d(TAG, "parsePermissionsData called with data: " + data.toString());
+    private void parseManageIconsData(JSONArray data) {
+        Log.d(TAG, "parseManageIconsData called with data: " + data.toString());
         iconList.clear();
-        
         int manageCount = 0;
-        int dataCount = 0;
-        int workCount = 0;
-        
         try {
-            // Parse manage icons
-            if (data.has("manage_icons")) {
-                JSONArray manageIcons = data.getJSONArray("manage_icons");
-                Log.d(TAG, "Found " + manageIcons.length() + " manage icons");
-                for (int i = 0; i < manageIcons.length(); i++) {
-                    JSONObject icon = manageIcons.getJSONObject(i);
-                    String hasPermission = icon.getString("has_permission");
-                    
-                    if ("Yes".equals(hasPermission)) {
-                        manageCount++;
-                        IconPermissionItem item = new IconPermissionItem(
-                            icon.getString("id"),
-                            icon.getString("icon_name"),
-                            icon.getString("icon_image"),
-                            icon.getString("icon_description"),
-                            hasPermission,
-                            "Manage"
-                        );
-                        iconList.add(item);
-                        Log.d(TAG, "Added manage icon: " + icon.getString("icon_name"));
-                    }
-                }
+            for (int i = 0; i < data.length(); i++) {
+                JSONObject icon = data.getJSONObject(i);
+                IconPermissionItem item = new IconPermissionItem(
+                    null, // id not used
+                    icon.optString("icon_name", ""),
+                    icon.optString("icon_image", ""),
+                    icon.optString("icon_description", ""),
+                    "Yes", // always granted if present in manage_icons
+                    "Manage"
+                );
+                iconList.add(item);
+                manageCount++;
+                Log.d(TAG, "Added manage icon: " + icon.optString("icon_name", ""));
             }
-
-            // Parse data icons - REMOVED: Data icons are now displayed in My Data Links
-            // if (data.has("data_icons")) {
-            //     JSONArray dataIcons = data.getJSONArray("data_icons");
-            //     Log.d(TAG, "Found " + dataIcons.length() + " data icons");
-            //     for (int i = 0; i < dataIcons.length(); i++) {
-            //         JSONObject icon = dataIcons.getJSONObject(i);
-            //         String hasPermission = icon.getString("has_permission");
-            //         
-            //         if ("Yes".equals(hasPermission)) {
-            //             dataCount++;
-            //             IconPermissionItem item = new IconPermissionItem(
-            //                 icon.getString("id"),
-            //                 icon.getString("icon_name"),
-            //                 icon.getString("icon_image"),
-            //                 icon.getString("icon_description"),
-            //                 hasPermission,
-            //                 "Data"
-            //             );
-            //             iconList.add(item);
-            //             Log.d(TAG, "Added data icon: " + icon.getString("icon_name"));
-            //         }
-            //     }
-            // }
-
-            // Parse work icons - REMOVED: Work icons are now displayed in My Work Links
-            // if (data.has("work_icons")) {
-            //     JSONArray workIcons = data.getJSONArray("work_icons");
-            //     Log.d(TAG, "Found " + workIcons.length() + " work icons");
-            //     for (int i = 0; i < workIcons.length(); i++) {
-            //         JSONObject icon = workIcons.getJSONObject(i);
-            //         String hasPermission = icon.getString("has_permission");
-            //         
-            //         if ("Yes".equals(hasPermission)) {
-            //             workCount++;
-            //             IconPermissionItem item = new IconPermissionItem(
-            //                 icon.getString("id"),
-            //                 icon.getString("icon_name"),
-            //                 icon.getString("icon_image"),
-            //                 icon.getString("icon_description"),
-            //                 hasPermission,
-            //                 "Work"
-            //             );
-            //             iconList.add(item);
-            //             Log.d(TAG, "Added work icon: " + icon.getString("icon_name"));
-            //         }
-            //     }
-            // }
-            workCount = 0;
-
-            Log.d(TAG, "Total items added to list: " + iconList.size() + " (Manage: " + manageCount + ", Data: " + dataCount + ", Work: " + workCount + ")");
-
-            // Update permissions summary - Data count is now 0 since data icons are in My Data Links
-            updatePermissionsSummary(manageCount, 0, workCount);
-
-            adapter.notifyDataSetChanged();
-            updateEmptyState();
-
         } catch (JSONException e) {
-            Log.e(TAG, "Error parsing permissions data", e);
-            Toast.makeText(this, "Error parsing data", Toast.LENGTH_SHORT).show();
+            Log.e(TAG, "Error parsing manage icons data", e);
         }
+        adapter.notifyDataSetChanged();
+        updatePermissionsSummary(manageCount, 0, 0);
+        updateEmptyState();
     }
 
     private void updatePermissionsSummary(int manageCount, int dataCount, int workCount) {

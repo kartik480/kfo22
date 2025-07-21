@@ -192,31 +192,23 @@ public class MyWorkLinksActivity extends AppCompatActivity {
             Toast.makeText(this, "User ID not found. Please login again.", Toast.LENGTH_LONG).show();
             return;
         }
-
-        Log.d(TAG, "loadWorkIconPermissions called for user ID: " + userId);
-
         new Thread(() -> {
             try {
-                URL url = new URL(BASE_URL + "get_user_permissions_simple.php");
+                URL url = new URL(BASE_URL + "get_user_work_icons.php");
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestMethod("POST");
                 conn.setRequestProperty("Content-Type", "application/json");
                 conn.setDoOutput(true);
                 conn.setConnectTimeout(5000);
                 conn.setReadTimeout(5000);
-
                 // Send the user ID
                 String jsonInput = "{\"userId\":\"" + userId + "\"}";
-                Log.d(TAG, "Sending request to server: " + jsonInput);
-                
                 try (java.io.OutputStream os = conn.getOutputStream()) {
                     byte[] input = jsonInput.getBytes("utf-8");
                     os.write(input, 0, input.length);
                 }
-
                 int responseCode = conn.getResponseCode();
                 Log.d(TAG, "Server response code: " + responseCode);
-
                 if (responseCode == HttpURLConnection.HTTP_OK) {
                     BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
                     StringBuilder response = new StringBuilder();
@@ -225,25 +217,19 @@ public class MyWorkLinksActivity extends AppCompatActivity {
                         response.append(line);
                     }
                     in.close();
-
                     String responseString = response.toString();
                     Log.d(TAG, "Server response: " + responseString);
-
                     JSONObject json = new JSONObject(responseString);
                     if (json.getString("status").equals("success")) {
-                        JSONObject data = json.getJSONObject("data");
-                        Log.d(TAG, "Data object keys: " + data.keys());
-                        runOnUiThread(() -> parseWorkIconPermissions(data));
+                        JSONArray data = json.getJSONArray("data");
+                        runOnUiThread(() -> parseWorkIcons(data));
                     } else {
-                        String errorMsg = json.optString("message", "Unknown error");
-                        Log.e(TAG, "Server returned error: " + errorMsg);
                         runOnUiThread(() -> {
-                            Toast.makeText(this, "Error: " + errorMsg, Toast.LENGTH_LONG).show();
+                            Toast.makeText(this, "Error: " + json.optString("message"), Toast.LENGTH_LONG).show();
                             updateEmptyState();
                         });
                     }
                 } else {
-                    Log.e(TAG, "Server error with response code: " + responseCode);
                     runOnUiThread(() -> {
                         Toast.makeText(this, "Server error: " + responseCode, Toast.LENGTH_LONG).show();
                         updateEmptyState();
@@ -259,48 +245,27 @@ public class MyWorkLinksActivity extends AppCompatActivity {
             }
         }).start();
     }
-
-    private void parseWorkIconPermissions(JSONObject data) {
-        Log.d(TAG, "parseWorkIconPermissions called with data: " + data.toString());
+    private void parseWorkIcons(JSONArray data) {
+        Log.d(TAG, "parseWorkIcons called with data: " + data.toString());
         iconList.clear();
-        
         try {
-            // Parse work icons only
-            if (data.has("work_icons")) {
-                JSONArray workIcons = data.getJSONArray("work_icons");
-                Log.d(TAG, "Found " + workIcons.length() + " work icons");
-                for (int i = 0; i < workIcons.length(); i++) {
-                    JSONObject icon = workIcons.getJSONObject(i);
-                    String hasPermission = icon.getString("has_permission");
-                    String iconName = icon.getString("icon_name");
-                    
-                    Log.d(TAG, "Processing work icon: " + iconName + " - Permission: " + hasPermission);
-                    
-                    if ("Yes".equals(hasPermission)) {
-                        WorkIconItem item = new WorkIconItem(
-                            icon.getString("id"),
-                            iconName,
-                            icon.getString("icon_image"),
-                            icon.getString("icon_description"),
-                            hasPermission
-                        );
-                        iconList.add(item);
-                        Log.d(TAG, "Added work icon: " + iconName);
-                    } else {
-                        Log.d(TAG, "Skipping work icon: " + iconName + " - Permission is not 'Yes'");
-                    }
-                }
-            } else {
-                Log.d(TAG, "No 'work_icons' field found in data");
+            for (int i = 0; i < data.length(); i++) {
+                JSONObject icon = data.getJSONObject(i);
+                WorkIconItem item = new WorkIconItem(
+                    null,
+                    icon.optString("icon_name", ""),
+                    icon.optString("icon_image", ""),
+                    icon.optString("icon_description", ""),
+                    "Yes"
+                );
+                iconList.add(item);
+                Log.d(TAG, "Added work icon: " + icon.optString("icon_name", ""));
             }
-
             Log.d(TAG, "Total work icon items added to list: " + iconList.size());
-
             adapter.notifyDataSetChanged();
             updateEmptyState();
-
         } catch (Exception e) {
-            Log.e(TAG, "Error parsing work icon permissions", e);
+            Log.e(TAG, "Error parsing work icons", e);
             Toast.makeText(this, "Error parsing data", Toast.LENGTH_SHORT).show();
         }
     }

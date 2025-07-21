@@ -7,6 +7,19 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CBOMyWorkLinksActivity extends AppCompatActivity {
 
@@ -25,6 +38,10 @@ public class CBOMyWorkLinksActivity extends AppCompatActivity {
     private String userName;
     private String userId;
 
+    private RecyclerView recyclerView;
+    private MyEmpLinksAdapter adapter;
+    private List<MyEmpLinksActivity.IconPermissionItem> iconList;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,6 +54,11 @@ public class CBOMyWorkLinksActivity extends AppCompatActivity {
 
         initializeViews();
         setupClickListeners();
+        recyclerView = findViewById(R.id.recyclerView); // Add a RecyclerView to your layout
+        iconList = new ArrayList<>();
+        adapter = new MyEmpLinksAdapter(iconList);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setAdapter(adapter);
         loadMyWorkLinksData();
     }
 
@@ -103,9 +125,45 @@ public class CBOMyWorkLinksActivity extends AppCompatActivity {
     }
 
     private void loadMyWorkLinksData() {
-        // TODO: Load real my work links data from server
-        // For now, show placeholder content
-        Toast.makeText(this, "Loading my work links...", Toast.LENGTH_SHORT).show();
+        if (userId == null || userId.isEmpty()) return;
+        String url = "https://emp.kfinone.com/mobile/api/get_user_work_icons.php";
+        JSONObject requestBody = new JSONObject();
+        try { requestBody.put("userId", userId); } catch (JSONException e) { return; }
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, requestBody,
+            new Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject response) {
+                    try {
+                        if ("success".equals(response.getString("status"))) {
+                            parseWorkIcons(response.getJSONArray("data"));
+                        }
+                    } catch (JSONException e) { }
+                }
+            },
+            new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) { }
+            });
+        RequestQueue queue = Volley.newRequestQueue(this);
+        queue.add(request);
+    }
+    private void parseWorkIcons(JSONArray data) {
+        iconList.clear();
+        try {
+            for (int i = 0; i < data.length(); i++) {
+                JSONObject icon = data.getJSONObject(i);
+                MyEmpLinksActivity.IconPermissionItem item = new MyEmpLinksActivity.IconPermissionItem(
+                    null,
+                    icon.optString("icon_name", ""),
+                    icon.optString("icon_image", ""),
+                    icon.optString("icon_description", ""),
+                    "Yes",
+                    "Work"
+                );
+                iconList.add(item);
+            }
+        } catch (JSONException e) { }
+        adapter.notifyDataSetChanged();
     }
 
     private void passUserDataToIntent(Intent intent) {

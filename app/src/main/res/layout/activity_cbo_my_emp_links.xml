@@ -134,6 +134,16 @@
 
     </ScrollView>
 
+    <!-- RecyclerView for icon list -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="2"
+        android:padding="8dp"
+        android:clipToPadding="false"
+        android:scrollbars="vertical" />
+
     <!-- Bottom Navigation -->
     <LinearLayout
         android:layout_width="match_parent"

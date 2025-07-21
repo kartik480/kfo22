@@ -117,6 +117,67 @@ try {
         $insertStmt->close();
     }
 
+    // After updating/inserting permission, update manage_icons in tbl_user
+    // Fetch icon_name for the given iconId
+    $iconName = '';
+    $iconNameQuery = $conn->prepare("SELECT icon_name FROM tbl_manage_icon WHERE id = ?");
+    if ($iconNameQuery) {
+        $iconNameQuery->bind_param('s', $iconId);
+        $iconNameQuery->execute();
+        $iconNameResult = $iconNameQuery->get_result();
+        if ($iconNameResult && $iconNameResult->num_rows > 0) {
+            $row = $iconNameResult->fetch_assoc();
+            $iconName = $row['icon_name'];
+        }
+        $iconNameQuery->close();
+    }
+    if ($iconName !== '') {
+        // Get permission type (manage, data, work)
+        $permissionType = isset($input['permissionType']) ? trim($input['permissionType']) : 'manage';
+        $columnMap = [
+            'manage' => 'manage_icons',
+            'data' => 'data_icons',
+            'work' => 'work_icons'
+        ];
+        $columnName = isset($columnMap[$permissionType]) ? $columnMap[$permissionType] : 'manage_icons';
+
+        // Get current icons for the user for the correct column
+        $iconsValue = '';
+        $iconsQuery = $conn->prepare("SELECT $columnName FROM tbl_user WHERE id = ?");
+        if ($iconsQuery) {
+            $iconsQuery->bind_param('s', $userId);
+            $iconsQuery->execute();
+            $iconsResult = $iconsQuery->get_result();
+            if ($iconsResult && $iconsResult->num_rows > 0) {
+                $row = $iconsResult->fetch_assoc();
+                $iconsValue = $row[$columnName];
+            }
+            $iconsQuery->close();
+        }
+        // Convert to array
+        $iconArray = array_filter(array_map('trim', explode(',', $iconsValue)));
+        if ($hasPermission === 'Yes') {
+            // Add iconName if not present
+            if (!in_array($iconName, $iconArray)) {
+                $iconArray[] = $iconName;
+            }
+        } else {
+            // Remove iconName if present
+            $iconArray = array_filter($iconArray, function($name) use ($iconName) {
+                return $name !== $iconName;
+            });
+        }
+        // Convert back to comma-separated string
+        $newIconsValue = implode(',', $iconArray);
+        // Update tbl_user
+        $updateUserQuery = $conn->prepare("UPDATE tbl_user SET $columnName = ? WHERE id = ?");
+        if ($updateUserQuery) {
+            $updateUserQuery->bind_param('ss', $newIconsValue, $userId);
+            $updateUserQuery->execute();
+            $updateUserQuery->close();
+        }
+    }
+
     $checkStmt->close();
 
 } catch (Exception $e) {

@@ -27,11 +27,11 @@
             android:orientation="vertical"
             android:padding="16dp">
 
-            <!-- Active Employees -->
+            <!-- My Emp Box -->
             <LinearLayout
-                android:id="@+id/activeEmpButton"
+                android:id="@+id/myEmpBox"
                 android:layout_width="match_parent"
-                android:layout_height="80dp"
+                android:layout_height="100dp"
                 android:background="@drawable/edit_text_background"
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
@@ -39,11 +39,11 @@
                 android:clickable="true"
                 android:focusable="true"
                 android:foreground="?android:attr/selectableItemBackground"
-                android:layout_marginBottom="12dp">
+                android:layout_marginBottom="16dp">
 
                 <ImageView
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
                     android:src="@drawable/ic_people"
                     android:tint="#4A90E2"
                     android:layout_marginEnd="16dp" />
@@ -52,18 +52,17 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Active Employees"
-                    android:textSize="16sp"
+                    android:text="My Emp"
+                    android:textSize="20sp"
                     android:textStyle="bold"
                     android:textColor="#2C3E50" />
-
             </LinearLayout>
 
-            <!-- Inactive Employees -->
+            <!-- Team Emp Box -->
             <LinearLayout
-                android:id="@+id/inactiveEmpButton"
+                android:id="@+id/teamEmpBox"
                 android:layout_width="match_parent"
-                android:layout_height="80dp"
+                android:layout_height="100dp"
                 android:background="@drawable/edit_text_background"
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
@@ -71,44 +70,12 @@
                 android:clickable="true"
                 android:focusable="true"
                 android:foreground="?android:attr/selectableItemBackground"
-                android:layout_marginBottom="12dp">
+                android:layout_marginBottom="16dp">
 
                 <ImageView
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
                     android:src="@drawable/ic_people"
-                    android:tint="#E74C3C"
-                    android:layout_marginEnd="16dp" />
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Inactive Employees"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
-                    android:textColor="#2C3E50" />
-
-            </LinearLayout>
-
-            <!-- Add Employee -->
-            <LinearLayout
-                android:id="@+id/addEmpButton"
-                android:layout_width="match_parent"
-                android:layout_height="80dp"
-                android:background="@drawable/edit_text_background"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:padding="16dp"
-                android:clickable="true"
-                android:focusable="true"
-                android:foreground="?android:attr/selectableItemBackground"
-                android:layout_marginBottom="12dp">
-
-                <ImageView
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
-                    android:src="@drawable/ic_add"
                     android:tint="#27AE60"
                     android:layout_marginEnd="16dp" />
 
@@ -116,46 +83,12 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Add Employee"
-                    android:textSize="16sp"
+                    android:text="Team Emp"
+                    android:textSize="20sp"
                     android:textStyle="bold"
                     android:textColor="#2C3E50" />
-
-            </LinearLayout>
-
-            <!-- Employee Analytics -->
-            <LinearLayout
-                android:id="@+id/empAnalyticsButton"
-                android:layout_width="match_parent"
-                android:layout_height="80dp"
-                android:background="@drawable/edit_text_background"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:padding="16dp"
-                android:clickable="true"
-                android:focusable="true"
-                android:foreground="?android:attr/selectableItemBackground">
-
-                <ImageView
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
-                    android:src="@drawable/ic_dashboard"
-                    android:tint="#4A90E2"
-                    android:layout_marginEnd="16dp" />
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Employee Analytics"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
-                    android:textColor="#2C3E50" />
-
             </LinearLayout>
 
         </LinearLayout>
-
     </ScrollView>
-
 </LinearLayout> 

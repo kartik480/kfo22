@@ -192,27 +192,23 @@ public class MyDataLinksActivity extends AppCompatActivity {
             Toast.makeText(this, "User ID not found. Please login again.", Toast.LENGTH_LONG).show();
             return;
         }
-
         new Thread(() -> {
             try {
-                URL url = new URL(BASE_URL + "get_user_permissions_simple.php");
+                URL url = new URL(BASE_URL + "get_user_data_icons.php");
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestMethod("POST");
                 conn.setRequestProperty("Content-Type", "application/json");
                 conn.setDoOutput(true);
                 conn.setConnectTimeout(5000);
                 conn.setReadTimeout(5000);
-
                 // Send the user ID
                 String jsonInput = "{\"userId\":\"" + userId + "\"}";
                 try (java.io.OutputStream os = conn.getOutputStream()) {
                     byte[] input = jsonInput.getBytes("utf-8");
                     os.write(input, 0, input.length);
                 }
-
                 int responseCode = conn.getResponseCode();
                 Log.d(TAG, "Server response code: " + responseCode);
-
                 if (responseCode == HttpURLConnection.HTTP_OK) {
                     BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
                     StringBuilder response = new StringBuilder();
@@ -221,14 +217,12 @@ public class MyDataLinksActivity extends AppCompatActivity {
                         response.append(line);
                     }
                     in.close();
-
                     String responseString = response.toString();
                     Log.d(TAG, "Server response: " + responseString);
-
                     JSONObject json = new JSONObject(responseString);
                     if (json.getString("status").equals("success")) {
-                        JSONObject data = json.getJSONObject("data");
-                        runOnUiThread(() -> parseDataIconPermissions(data));
+                        JSONArray data = json.getJSONArray("data");
+                        runOnUiThread(() -> parseDataIcons(data));
                     } else {
                         runOnUiThread(() -> {
                             Toast.makeText(this, "Error: " + json.optString("message"), Toast.LENGTH_LONG).show();
@@ -250,41 +244,27 @@ public class MyDataLinksActivity extends AppCompatActivity {
             }
         }).start();
     }
-
-    private void parseDataIconPermissions(JSONObject data) {
-        Log.d(TAG, "parseDataIconPermissions called with data: " + data.toString());
+    private void parseDataIcons(JSONArray data) {
+        Log.d(TAG, "parseDataIcons called with data: " + data.toString());
         iconList.clear();
-        
         try {
-            // Parse data icons only
-            if (data.has("data_icons")) {
-                JSONArray dataIcons = data.getJSONArray("data_icons");
-                Log.d(TAG, "Found " + dataIcons.length() + " data icons");
-                for (int i = 0; i < dataIcons.length(); i++) {
-                    JSONObject icon = dataIcons.getJSONObject(i);
-                    String hasPermission = icon.getString("has_permission");
-                    
-                    if ("Yes".equals(hasPermission)) {
-                        DataIconItem item = new DataIconItem(
-                            icon.getString("id"),
-                            icon.getString("icon_name"),
-                            icon.getString("icon_image"),
-                            icon.getString("icon_description"),
-                            hasPermission
-                        );
-                        iconList.add(item);
-                        Log.d(TAG, "Added data icon: " + icon.getString("icon_name"));
-                    }
-                }
+            for (int i = 0; i < data.length(); i++) {
+                JSONObject icon = data.getJSONObject(i);
+                DataIconItem item = new DataIconItem(
+                    null,
+                    icon.optString("icon_name", ""),
+                    icon.optString("icon_image", ""),
+                    icon.optString("icon_description", ""),
+                    "Yes"
+                );
+                iconList.add(item);
+                Log.d(TAG, "Added data icon: " + icon.optString("icon_name", ""));
             }
-
             Log.d(TAG, "Total data icon items added to list: " + iconList.size());
-
             adapter.notifyDataSetChanged();
             updateEmptyState();
-
         } catch (Exception e) {
-            Log.e(TAG, "Error parsing data icon permissions", e);
+            Log.e(TAG, "Error parsing data icons", e);
             Toast.makeText(this, "Error parsing data", Toast.LENGTH_SHORT).show();
         }
     }

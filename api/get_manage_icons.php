@@ -36,6 +36,7 @@ try {
     if (in_array('status', $columns)) $selectColumns[] = 'status';
     if (in_array('created_at', $columns)) $selectColumns[] = 'created_at';
     if (in_array('updated_at', $columns)) $selectColumns[] = 'updated_at';
+    if (in_array('icon_url', $columns)) $selectColumns[] = 'icon_url';
 
     if (empty($selectColumns)) {
         throw new Exception('No valid columns found in tbl_manage_icon');
@@ -67,6 +68,7 @@ try {
             $iconData = [
                 'id' => isset($row['id']) ? $row['id'] : '',
                 'icon_name' => isset($row['icon_name']) ? $row['icon_name'] : '',
+                'icon_url' => isset($row['icon_url']) ? $row['icon_url'] : '',
                 'icon_image' => isset($row['icon_image']) ? $row['icon_image'] : '',
                 'icon_description' => isset($row['icon_description']) ? $row['icon_description'] : '',
                 'status' => $status,

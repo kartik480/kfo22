@@ -3,11 +3,27 @@ package com.kfinone.app;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.LinearLayout;
+import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import android.widget.Spinner;
+import android.widget.ArrayAdapter;
+import androidx.annotation.NonNull;
+import org.json.JSONArray;
+import org.json.JSONObject;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
+import java.util.ArrayList;
+import java.util.List;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import android.widget.Button;
 
 public class DirectorTeamEmpLinksActivity extends AppCompatActivity {
     
@@ -15,6 +31,85 @@ public class DirectorTeamEmpLinksActivity extends AppCompatActivity {
     private String userName;
     private String firstName;
     private String lastName;
+    private Spinner userSpinner;
+    public static class UserItem {
+        public final String id;
+        public final String firstName;
+        public final String lastName;
+        public final String designationName;
+        public UserItem(String id, String firstName, String lastName, String designationName) {
+            this.id = id;
+            this.firstName = firstName;
+            this.lastName = lastName;
+            this.designationName = designationName;
+        }
+        public String getDisplayName() {
+            return firstName + " " + lastName + " (" + designationName + ")";
+        }
+        @Override
+        public String toString() { return getDisplayName(); }
+    }
+    private List<UserItem> userList = new ArrayList<>();
+    private ArrayAdapter<UserItem> userAdapter;
+    private RecyclerView reportingUsersRecyclerView;
+    private ReportingUserAdapter reportingUserAdapter;
+    private List<ReportingUser> reportingUserList = new ArrayList<>();
+    private UserItem selectedCboUser = null;
+
+    // Model for reporting user
+    public static class ReportingUser {
+        public final String username;
+        public final String fullname;
+        public final String mobile;
+        public final String email;
+        public final String reportingTo;
+        public ReportingUser(String username, String fullname, String mobile, String email, String reportingTo) {
+            this.username = username;
+            this.fullname = fullname;
+            this.mobile = mobile;
+            this.email = email;
+            this.reportingTo = reportingTo;
+        }
+    }
+
+    // Adapter for reporting users
+    public class ReportingUserAdapter extends RecyclerView.Adapter<ReportingUserAdapter.ViewHolder> {
+        private final List<ReportingUser> users;
+        public ReportingUserAdapter(List<ReportingUser> users) { this.users = users; }
+        @NonNull
+        @Override
+        public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            View view = getLayoutInflater().inflate(R.layout.item_reporting_user, parent, false);
+            return new ViewHolder(view);
+        }
+        @Override
+        public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+            ReportingUser user = users.get(position);
+            holder.usernameText.setText(user.username);
+            holder.fullnameText.setText(user.fullname);
+            holder.mobileText.setText(user.mobile);
+            holder.emailText.setText(user.email);
+            holder.reportingToText.setText(user.reportingTo);
+            holder.actionButton.setOnClickListener(v -> {
+                // Placeholder for action
+            });
+        }
+        @Override
+        public int getItemCount() { return users.size(); }
+        class ViewHolder extends RecyclerView.ViewHolder {
+            TextView usernameText, fullnameText, mobileText, emailText, reportingToText;
+            Button actionButton;
+            ViewHolder(View itemView) {
+                super(itemView);
+                usernameText = itemView.findViewById(R.id.usernameText);
+                fullnameText = itemView.findViewById(R.id.fullnameText);
+                mobileText = itemView.findViewById(R.id.mobileText);
+                emailText = itemView.findViewById(R.id.emailText);
+                reportingToText = itemView.findViewById(R.id.reportingToText);
+                actionButton = itemView.findViewById(R.id.actionButton);
+            }
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +126,47 @@ public class DirectorTeamEmpLinksActivity extends AppCompatActivity {
         }
 
         setupToolbar();
+        userSpinner = findViewById(R.id.userSpinner);
+        userAdapter = new ArrayAdapter<UserItem>(
+                this,
+                R.layout.item_user_spinner,
+                R.id.userSpinnerText,
+                userList
+        ) {
+            @NonNull
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent) {
+                View v = super.getView(position, convertView, parent);
+                TextView tv = v.findViewById(R.id.userSpinnerText);
+                tv.setText(getItem(position).getDisplayName());
+                return v;
+            }
+            @Override
+            public View getDropDownView(int position, View convertView, ViewGroup parent) {
+                View v = super.getDropDownView(position, convertView, parent);
+                TextView tv = v.findViewById(R.id.userSpinnerText);
+                tv.setText(getItem(position).getDisplayName());
+                return v;
+            }
+        };
+        userSpinner.setAdapter(userAdapter);
+        fetchChiefBusinessOfficers();
+        reportingUsersRecyclerView = findViewById(R.id.reportingUsersRecyclerView);
+        reportingUserAdapter = new ReportingUserAdapter(reportingUserList);
+        reportingUsersRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        reportingUsersRecyclerView.setAdapter(reportingUserAdapter);
+        userSpinner.setOnItemSelectedListener(new android.widget.AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(android.widget.AdapterView<?> parent, View view, int position, long id) {
+                selectedCboUser = userAdapter.getItem(position);
+                fetchReportingUsersForCbo(selectedCboUser);
+            }
+            @Override
+            public void onNothingSelected(android.widget.AdapterView<?> parent) {
+                reportingUserList.clear();
+                reportingUserAdapter.notifyDataSetChanged();
+            }
+        });
     }
 
     private void setupToolbar() {
@@ -49,6 +185,95 @@ public class DirectorTeamEmpLinksActivity extends AppCompatActivity {
         if (userName != null) intent.putExtra("USERNAME", userName);
         if (firstName != null) intent.putExtra("FIRST_NAME", firstName);
         if (lastName != null) intent.putExtra("LAST_NAME", lastName);
+    }
+
+    private void fetchChiefBusinessOfficers() {
+        String url = "https://emp.kfinone.com/mobile/api/get_chief_business_officers.php";
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
+            new Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject response) {
+                    try {
+                        if ("success".equals(response.getString("status"))) {
+                            JSONArray data = response.getJSONArray("data");
+                            userList.clear();
+                            if (data.length() == 0) {
+                                Toast.makeText(DirectorTeamEmpLinksActivity.this, "No Chief Business Officer found.", Toast.LENGTH_LONG).show();
+                            }
+                            for (int i = 0; i < data.length(); i++) {
+                                JSONObject user = data.getJSONObject(i);
+                                String id = user.optString("id", "");
+                                String firstName = user.optString("firstName", "");
+                                String lastName = user.optString("lastName", "");
+                                String designationName = user.optString("designation_name", "");
+                                userList.add(new UserItem(id, firstName, lastName, designationName));
+                            }
+                            userAdapter.notifyDataSetChanged();
+                        } else {
+                            Toast.makeText(DirectorTeamEmpLinksActivity.this, "API error: " + response.optString("message", "Unknown error"), Toast.LENGTH_LONG).show();
+                        }
+                    } catch (Exception e) {
+                        Toast.makeText(DirectorTeamEmpLinksActivity.this, "Parsing error: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                }
+            },
+            new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Toast.makeText(DirectorTeamEmpLinksActivity.this, "Network error: " + error.getMessage(), Toast.LENGTH_LONG).show();
+                }
+            });
+        RequestQueue queue = Volley.newRequestQueue(this);
+        queue.add(request);
+    }
+
+    private void fetchReportingUsersForCbo(UserItem cboUser) {
+        if (cboUser == null) return;
+        // You need the CBO's user id. For this, you must include 'id' in your UserItem and in the PHP response for CBOs.
+        // For now, let's assume you have it as cboUser.id. If not, update the PHP and Android code accordingly.
+        String cboId = cboUser.id; // <-- Make sure UserItem has an 'id' field and you set it when parsing CBOs
+        String url = "https://emp.kfinone.com/mobile/api/get_users_reporting_to.php?cbo_id=" + cboId;
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
+            new Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject response) {
+                    try {
+                        if ("success".equals(response.getString("status"))) {
+                            JSONArray data = response.getJSONArray("data");
+                            reportingUserList.clear();
+                            for (int i = 0; i < data.length(); i++) {
+                                JSONObject user = data.getJSONObject(i);
+                                reportingUserList.add(new ReportingUser(
+                                    user.optString("username", ""),
+                                    user.optString("fullname", ""),
+                                    user.optString("mobile", ""),
+                                    user.optString("email", ""),
+                                    user.optString("reportingTo", "")
+                                ));
+                            }
+                            reportingUserAdapter.notifyDataSetChanged();
+                        } else {
+                            Toast.makeText(DirectorTeamEmpLinksActivity.this, "API error: " + response.optString("message", "Unknown error"), Toast.LENGTH_LONG).show();
+                            reportingUserList.clear();
+                            reportingUserAdapter.notifyDataSetChanged();
+                        }
+                    } catch (Exception e) {
+                        Toast.makeText(DirectorTeamEmpLinksActivity.this, "Parsing error: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                        reportingUserList.clear();
+                        reportingUserAdapter.notifyDataSetChanged();
+                    }
+                }
+            },
+            new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Toast.makeText(DirectorTeamEmpLinksActivity.this, "Network error: " + error.getMessage(), Toast.LENGTH_LONG).show();
+                    reportingUserList.clear();
+                    reportingUserAdapter.notifyDataSetChanged();
+                }
+            });
+        RequestQueue queue = Volley.newRequestQueue(this);
+        queue.add(request);
     }
 
     @Override

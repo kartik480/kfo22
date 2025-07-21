@@ -11,10 +11,8 @@ import androidx.appcompat.widget.Toolbar;
 
 public class DirectorEmployeeActivity extends AppCompatActivity {
 
-    private LinearLayout activeEmpButton;
-    private LinearLayout inactiveEmpButton;
-    private LinearLayout addEmpButton;
-    private LinearLayout empAnalyticsButton;
+    private LinearLayout myEmpBox;
+    private LinearLayout teamEmpBox;
     
     private String userId;
     private String userName;
@@ -41,36 +39,20 @@ public class DirectorEmployeeActivity extends AppCompatActivity {
     }
 
     private void initializeViews() {
-        activeEmpButton = findViewById(R.id.activeEmpButton);
-        inactiveEmpButton = findViewById(R.id.inactiveEmpButton);
-        addEmpButton = findViewById(R.id.addEmpButton);
-        empAnalyticsButton = findViewById(R.id.empAnalyticsButton);
+        myEmpBox = findViewById(R.id.myEmpBox);
+        teamEmpBox = findViewById(R.id.teamEmpBox);
     }
 
     private void setupClickListeners() {
-        activeEmpButton.setOnClickListener(v -> {
-            Intent intent = new Intent(this, ActiveEmpListActivity.class);
+        myEmpBox.setOnClickListener(v -> {
+            Intent intent = new Intent(this, DirectorMyEmpLinksActivity.class);
             passUserDataToIntent(intent);
-            intent.putExtra("SOURCE_PANEL", "DIRECTOR_PANEL");
             startActivity(intent);
         });
-
-        inactiveEmpButton.setOnClickListener(v -> {
-            Intent intent = new Intent(this, InactiveEmpListActivity.class);
+        teamEmpBox.setOnClickListener(v -> {
+            Intent intent = new Intent(this, DirectorTeamEmpLinksActivity.class);
             passUserDataToIntent(intent);
-            intent.putExtra("SOURCE_PANEL", "DIRECTOR_PANEL");
             startActivity(intent);
-        });
-
-        addEmpButton.setOnClickListener(v -> {
-            Intent intent = new Intent(this, AddEmpDetailsActivity.class);
-            passUserDataToIntent(intent);
-            intent.putExtra("SOURCE_PANEL", "DIRECTOR_PANEL");
-            startActivity(intent);
-        });
-
-        empAnalyticsButton.setOnClickListener(v -> {
-            Toast.makeText(this, "Employee Analytics - Coming Soon", Toast.LENGTH_SHORT).show();
         });
     }
 
