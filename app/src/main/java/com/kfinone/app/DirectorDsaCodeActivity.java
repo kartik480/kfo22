@@ -12,9 +12,6 @@ import androidx.appcompat.widget.Toolbar;
 public class DirectorDsaCodeActivity extends AppCompatActivity {
 
     private LinearLayout viewDsaCodesButton;
-    private LinearLayout addDsaCodeButton;
-    private LinearLayout dsaCodeAnalyticsButton;
-    private LinearLayout dsaCodeReportsButton;
     
     private String userId;
     private String userName;
@@ -42,9 +39,6 @@ public class DirectorDsaCodeActivity extends AppCompatActivity {
 
     private void initializeViews() {
         viewDsaCodesButton = findViewById(R.id.viewDsaCodesButton);
-        addDsaCodeButton = findViewById(R.id.addDsaCodeButton);
-        dsaCodeAnalyticsButton = findViewById(R.id.dsaCodeAnalyticsButton);
-        dsaCodeReportsButton = findViewById(R.id.dsaCodeReportsButton);
     }
 
     private void setupClickListeners() {
@@ -53,21 +47,6 @@ public class DirectorDsaCodeActivity extends AppCompatActivity {
             passUserDataToIntent(intent);
             intent.putExtra("SOURCE_PANEL", "DIRECTOR_PANEL");
             startActivity(intent);
-        });
-
-        addDsaCodeButton.setOnClickListener(v -> {
-            Intent intent = new Intent(this, AddDsaActivity.class);
-            passUserDataToIntent(intent);
-            intent.putExtra("SOURCE_PANEL", "DIRECTOR_PANEL");
-            startActivity(intent);
-        });
-
-        dsaCodeAnalyticsButton.setOnClickListener(v -> {
-            Toast.makeText(this, "DSA Code Analytics - Coming Soon", Toast.LENGTH_SHORT).show();
-        });
-
-        dsaCodeReportsButton.setOnClickListener(v -> {
-            Toast.makeText(this, "DSA Code Reports - Coming Soon", Toast.LENGTH_SHORT).show();
         });
     }
 
