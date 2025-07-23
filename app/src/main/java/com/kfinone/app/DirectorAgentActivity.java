@@ -27,6 +27,11 @@ public class DirectorAgentActivity extends AppCompatActivity {
         myAgentBox = findViewById(R.id.myAgentBox);
         agentTeamBox = findViewById(R.id.agentTeamBox);
         // Set up click listeners for the new boxes as needed
+        addAgentBox.setOnClickListener(v -> {
+            Intent intent = new Intent(this, DirectorAddAgentActivity.class);
+            // Pass user data if needed
+            startActivity(intent);
+        });
 
         // Get user data from intent
         Intent intent = getIntent();

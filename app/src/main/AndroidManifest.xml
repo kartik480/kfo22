@@ -493,6 +493,7 @@
             android:parentActivityName=".DirectorEmpLinksActivity" />
         <activity android:name=".DirectorMySdsaActivity" />
         <activity android:name=".DirectorSdsaTeamActivity" />
+        <activity android:name=".DirectorAddAgentActivity" />
         
         <!-- Chief Business Officer Activities -->
         <activity

@@ -18,4 +18,7 @@
     <string name="prompt_state">Select State</string>
     <string name="prompt_location">Select Location</string>
     <string name="prompt_partner_type">Select Partner Type</string>
+    <string name="prompt_type_of_partner">Type Of Partner *</string>
+    <string name="prompt_branch_state">Branch State *</string>
+    <string name="prompt_branch_location">Branch Location *</string>
 </resources>
