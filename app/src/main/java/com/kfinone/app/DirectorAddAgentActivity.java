@@ -13,6 +13,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import android.util.Log;
+import android.widget.Toast;
 
 public class DirectorAddAgentActivity extends AppCompatActivity {
     private Spinner partnerTypeDropdown, branchStateDropdown, branchLocationDropdown;
@@ -25,14 +27,13 @@ public class DirectorAddAgentActivity extends AppCompatActivity {
         branchLocationDropdown = findViewById(R.id.branchLocationDropdown);
         MaterialToolbar backToolbar = findViewById(R.id.backToolbar);
         backToolbar.setNavigationOnClickListener(v -> finish());
-        loadPartnerTypeOptions();
-        loadBranchStateOptions();
-        loadBranchLocationOptions();
+        loadAllDropdownOptions();
     }
-    private void loadPartnerTypeOptions() {
+
+    private void loadAllDropdownOptions() {
         new Thread(() -> {
             try {
-                URL url = new URL("https://emp.kfinone.com/mobile/api/director_partner_type_dropdown.php");
+                URL url = new URL("https://emp.kfinone.com/mobile/api/director_agent_dropdowns.php");
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestMethod("GET");
                 conn.setConnectTimeout(5000);
@@ -46,92 +47,47 @@ public class DirectorAddAgentActivity extends AppCompatActivity {
                         response.append(line);
                     }
                     in.close();
+                    Log.d("DirectorAddAgent", "Dropdowns response: " + response.toString());
                     JSONObject json = new JSONObject(response.toString());
-                    JSONArray data = json.optJSONArray("data");
-                    if (data != null) {
-                        List<String> options = new ArrayList<>();
-                        for (int i = 0; i < data.length(); i++) {
-                            JSONObject item = data.getJSONObject(i);
-                            options.add(item.optString("partner_type", ""));
+                    // Partner Types
+                    JSONArray partnerTypes = json.optJSONArray("partner_types");
+                    List<String> partnerTypeOptions = new ArrayList<>();
+                    if (partnerTypes != null && partnerTypes.length() > 0) {
+                        for (int i = 0; i < partnerTypes.length(); i++) {
+                            JSONObject item = partnerTypes.getJSONObject(i);
+                            partnerTypeOptions.add(item.optString("name", ""));
                         }
-                        runOnUiThread(() -> {
-                            ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, options);
-                            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                            partnerTypeDropdown.setAdapter(adapter);
-                        });
                     }
-                }
-            } catch (Exception e) { e.printStackTrace(); }
-        }).start();
-    }
-    private void loadBranchStateOptions() {
-        new Thread(() -> {
-            try {
-                URL url = new URL("https://emp.kfinone.com/mobile/api/director_branch_state_dropdown.php");
-                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                conn.setRequestMethod("GET");
-                conn.setConnectTimeout(5000);
-                conn.setReadTimeout(5000);
-                int responseCode = conn.getResponseCode();
-                if (responseCode == HttpURLConnection.HTTP_OK) {
-                    BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-                    StringBuilder response = new StringBuilder();
-                    String line;
-                    while ((line = in.readLine()) != null) {
-                        response.append(line);
-                    }
-                    in.close();
-                    JSONObject json = new JSONObject(response.toString());
-                    JSONArray data = json.optJSONArray("data");
-                    if (data != null) {
-                        List<String> options = new ArrayList<>();
-                        for (int i = 0; i < data.length(); i++) {
-                            JSONObject item = data.getJSONObject(i);
-                            options.add(item.optString("branch_state_name", ""));
+                    // Branch States
+                    JSONArray branchStates = json.optJSONArray("branch_states");
+                    List<String> branchStateOptions = new ArrayList<>();
+                    if (branchStates != null && branchStates.length() > 0) {
+                        for (int i = 0; i < branchStates.length(); i++) {
+                            JSONObject item = branchStates.getJSONObject(i);
+                            branchStateOptions.add(item.optString("name", ""));
                         }
-                        runOnUiThread(() -> {
-                            ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, options);
-                            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                            branchStateDropdown.setAdapter(adapter);
-                        });
                     }
-                }
-            } catch (Exception e) { e.printStackTrace(); }
-        }).start();
-    }
-    private void loadBranchLocationOptions() {
-        new Thread(() -> {
-            try {
-                URL url = new URL("https://emp.kfinone.com/mobile/api/director_branch_location_dropdown.php");
-                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                conn.setRequestMethod("GET");
-                conn.setConnectTimeout(5000);
-                conn.setReadTimeout(5000);
-                int responseCode = conn.getResponseCode();
-                if (responseCode == HttpURLConnection.HTTP_OK) {
-                    BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-                    StringBuilder response = new StringBuilder();
-                    String line;
-                    while ((line = in.readLine()) != null) {
-                        response.append(line);
-                    }
-                    in.close();
-                    JSONObject json = new JSONObject(response.toString());
-                    JSONArray data = json.optJSONArray("data");
-                    if (data != null) {
-                        List<String> options = new ArrayList<>();
-                        for (int i = 0; i < data.length(); i++) {
-                            JSONObject item = data.getJSONObject(i);
-                            options.add(item.optString("branch_location", ""));
+                    // Branch Locations
+                    JSONArray branchLocations = json.optJSONArray("branch_locations");
+                    List<String> branchLocationOptions = new ArrayList<>();
+                    if (branchLocations != null && branchLocations.length() > 0) {
+                        for (int i = 0; i < branchLocations.length(); i++) {
+                            JSONObject item = branchLocations.getJSONObject(i);
+                            branchLocationOptions.add(item.optString("name", ""));
                         }
-                        runOnUiThread(() -> {
-                            ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, options);
-                            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                            branchLocationDropdown.setAdapter(adapter);
-                        });
                     }
+                    runOnUiThread(() -> {
+                        partnerTypeDropdown.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, partnerTypeOptions));
+                        branchStateDropdown.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, branchStateOptions));
+                        branchLocationDropdown.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, branchLocationOptions));
+                    });
+                } else {
+                    runOnUiThread(() -> Toast.makeText(this, "Dropdown API error: HTTP " + responseCode, Toast.LENGTH_SHORT).show());
                 }
-            } catch (Exception e) { e.printStackTrace(); }
+            } catch (Exception e) {
+                Log.e("DirectorAddAgent", "Dropdowns error: ", e);
+                runOnUiThread(() -> Toast.makeText(this, "Dropdown error: " + e.getMessage(), Toast.LENGTH_LONG).show());
+            }
         }).start();
     }
 } 
