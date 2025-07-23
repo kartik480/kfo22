@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -77,77 +78,7 @@
         </LinearLayout>
 
         <!-- Table Header -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:orientation="horizontal"
-            android:background="#E3F2FD"
-            android:paddingHorizontal="12dp"
-            android:gravity="center_vertical"
-            android:elevation="1dp"
-            android:layout_marginBottom="8dp">
-
-            <!-- Name Column -->
-            <TextView
-                android:id="@+id/colName"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="2"
-                android:text="Name"
-                android:textSize="12sp"
-                android:textStyle="bold"
-                android:textColor="#1976D2"
-                android:gravity="start" />
-
-            <!-- Phone Number Column -->
-            <TextView
-                android:id="@+id/colPhone"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1.5"
-                android:text="Phone Number"
-                android:textSize="12sp"
-                android:textStyle="bold"
-                android:textColor="#1976D2"
-                android:gravity="center" />
-
-            <!-- Email Column -->
-            <TextView
-                android:id="@+id/colEmail"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="2"
-                android:text="Email"
-                android:textSize="12sp"
-                android:textStyle="bold"
-                android:textColor="#1976D2"
-                android:gravity="center" />
-
-            <!-- Password Column -->
-            <TextView
-                android:id="@+id/colPassword"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1.5"
-                android:text="Password"
-                android:textSize="12sp"
-                android:textStyle="bold"
-                android:textColor="#1976D2"
-                android:gravity="center" />
-
-            <!-- Action Column -->
-            <TextView
-                android:id="@+id/colAction"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Action"
-                android:textSize="12sp"
-                android:textStyle="bold"
-                android:textColor="#1976D2"
-                android:gravity="center" />
-
-        </LinearLayout>
+        <!-- Removed table header for list box style -->
 
         <!-- SDSA List -->
         <androidx.recyclerview.widget.RecyclerView
