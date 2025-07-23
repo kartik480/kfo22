@@ -13,8 +13,6 @@ public class DirectorBankersActivity extends AppCompatActivity {
 
     private LinearLayout viewBankersButton;
     private LinearLayout addBankerButton;
-    private LinearLayout bankerAnalyticsButton;
-    private LinearLayout bankerReportsButton;
     
     private String userId;
     private String userName;
@@ -43,8 +41,6 @@ public class DirectorBankersActivity extends AppCompatActivity {
     private void initializeViews() {
         viewBankersButton = findViewById(R.id.viewBankersButton);
         addBankerButton = findViewById(R.id.addBankerButton);
-        bankerAnalyticsButton = findViewById(R.id.bankerAnalyticsButton);
-        bankerReportsButton = findViewById(R.id.bankerReportsButton);
     }
 
     private void setupClickListeners() {
@@ -60,14 +56,6 @@ public class DirectorBankersActivity extends AppCompatActivity {
             passUserDataToIntent(intent);
             intent.putExtra("SOURCE_PANEL", "DIRECTOR_PANEL");
             startActivity(intent);
-        });
-
-        bankerAnalyticsButton.setOnClickListener(v -> {
-            Toast.makeText(this, "Banker Analytics - Coming Soon", Toast.LENGTH_SHORT).show();
-        });
-
-        bankerReportsButton.setOnClickListener(v -> {
-            Toast.makeText(this, "Banker Reports - Coming Soon", Toast.LENGTH_SHORT).show();
         });
     }
 
