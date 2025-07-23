@@ -11,10 +11,9 @@ import androidx.appcompat.widget.Toolbar;
 
 public class DirectorPartnerActivity extends AppCompatActivity {
 
-    private LinearLayout addPartnerButton;
-    private LinearLayout viewPartnersButton;
-    private LinearLayout partnerTeamButton;
-    private LinearLayout partnerAnalyticsButton;
+    private LinearLayout addPartnerBox;
+    private LinearLayout myPartnerBox;
+    private LinearLayout teamPartnerBox;
     
     private String userId;
     private String userName;
@@ -41,36 +40,31 @@ public class DirectorPartnerActivity extends AppCompatActivity {
     }
 
     private void initializeViews() {
-        addPartnerButton = findViewById(R.id.addPartnerButton);
-        viewPartnersButton = findViewById(R.id.viewPartnersButton);
-        partnerTeamButton = findViewById(R.id.partnerTeamButton);
-        partnerAnalyticsButton = findViewById(R.id.partnerAnalyticsButton);
+        addPartnerBox = findViewById(R.id.addPartnerBox);
+        myPartnerBox = findViewById(R.id.myPartnerBox);
+        teamPartnerBox = findViewById(R.id.teamPartnerBox);
     }
 
     private void setupClickListeners() {
-        addPartnerButton.setOnClickListener(v -> {
+        addPartnerBox.setOnClickListener(v -> {
             Intent intent = new Intent(this, AddPartnerActivity.class);
             passUserDataToIntent(intent);
             intent.putExtra("SOURCE_PANEL", "DIRECTOR_PANEL");
             startActivity(intent);
         });
 
-        viewPartnersButton.setOnClickListener(v -> {
+        myPartnerBox.setOnClickListener(v -> {
             Intent intent = new Intent(this, MyPartnerActivity.class);
             passUserDataToIntent(intent);
             intent.putExtra("SOURCE_PANEL", "DIRECTOR_PANEL");
             startActivity(intent);
         });
 
-        partnerTeamButton.setOnClickListener(v -> {
+        teamPartnerBox.setOnClickListener(v -> {
             Intent intent = new Intent(this, PartnerTeamActivity.class);
             passUserDataToIntent(intent);
             intent.putExtra("SOURCE_PANEL", "DIRECTOR_PANEL");
             startActivity(intent);
-        });
-
-        partnerAnalyticsButton.setOnClickListener(v -> {
-            Toast.makeText(this, "Partner Analytics - Coming Soon", Toast.LENGTH_SHORT).show();
         });
     }
 

@@ -436,7 +436,7 @@ public class AddPartnerActivity extends AppCompatActivity {
     private void loadBanks() {
         executor.execute(() -> {
             try {
-                String urlString = "https://emp.kfinone.com/mobile/api/get_bank_list.php";
+                String urlString = "https://emp.kfinone.com/mobile/api/director_bank_dropdown.php";
                 URL url = new URL(urlString);
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                 connection.setRequestMethod("GET");
@@ -455,11 +455,10 @@ public class AddPartnerActivity extends AppCompatActivity {
 
                     try {
                         JSONObject jsonResponse = new JSONObject(response.toString());
-                        if (jsonResponse.getBoolean("success")) {
-                            JSONArray dataArray = jsonResponse.getJSONArray("data");
+                        JSONArray dataArray = jsonResponse.optJSONArray("data");
+                        if (dataArray != null) {
                             banks.clear();
                             banks.add(new SpinnerItem("0", "Select Bank"));
-                            
                             for (int i = 0; i < dataArray.length(); i++) {
                                 JSONObject item = dataArray.getJSONObject(i);
                                 banks.add(new SpinnerItem(
@@ -467,7 +466,6 @@ public class AddPartnerActivity extends AppCompatActivity {
                                     item.getString("bank_name")
                                 ));
                             }
-
                             runOnUiThread(() -> {
                                 ArrayAdapter<SpinnerItem> adapter = new ArrayAdapter<>(
                                     AddPartnerActivity.this,
@@ -477,13 +475,18 @@ public class AddPartnerActivity extends AppCompatActivity {
                                 adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                                 bankNameSpinner.setAdapter(adapter);
                             });
+                        } else {
+                            Log.e(TAG, "Bank API JSON missing 'data': " + response.toString());
+                            runOnUiThread(() -> Toast.makeText(AddPartnerActivity.this, "Bank API error: No data", Toast.LENGTH_LONG).show());
                         }
                     } catch (org.json.JSONException e) {
                         Log.e(TAG, "Error parsing banks JSON: " + e.getMessage());
+                        runOnUiThread(() -> Toast.makeText(AddPartnerActivity.this, "Bank API error: Parse error", Toast.LENGTH_LONG).show());
                     }
                 }
             } catch (Exception e) {
                 Log.e(TAG, "Error loading banks: " + e.getMessage());
+                runOnUiThread(() -> Toast.makeText(AddPartnerActivity.this, "Bank API error: Exception", Toast.LENGTH_LONG).show());
             }
         });
     }
