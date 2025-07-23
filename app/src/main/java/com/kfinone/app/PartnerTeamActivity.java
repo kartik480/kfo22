@@ -24,6 +24,10 @@ import com.google.android.material.textfield.TextInputEditText;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -43,39 +47,34 @@ public class PartnerTeamActivity extends AppCompatActivity implements TeamMember
     private ImageButton backButton;
     private TextView totalTeamsText;
     private TextView totalMembersText;
-    private TextView selectedUserText;
     private AutoCompleteTextView userSpinner;
     private MaterialButton showDataButton;
     private MaterialButton resetButton;
-    private TextInputEditText searchTeamInput;
     private MaterialButton filterButton;
     private LinearLayout noTeamMembersLayout;
     private LinearLayout loadingLayout;
 
+    // Remove all references to selectedUserText and searchTeamInput
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_partner_team);
-
-        initializeViews();
-        setupRecyclerView();
-        setupSearchFunctionality();
-        setupVolley();
-        loadUsersForDropdown();
-        setupClickListeners();
+        teamMembersRecyclerView = findViewById(R.id.teamMembersRecyclerView);
+        teamList = new ArrayList<>();
+        teamAdapter = new TeamMemberCardAdapter(this, teamList);
+        teamMembersRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        teamMembersRecyclerView.setAdapter(teamAdapter);
+        // No selectedUserText, no searchTeamInput
     }
 
     private void initializeViews() {
         backButton = findViewById(R.id.backButton);
         totalTeamsText = findViewById(R.id.totalTeamsText);
         totalMembersText = findViewById(R.id.totalMembersText);
-        selectedUserText = findViewById(R.id.selectedUserText);
         userSpinner = findViewById(R.id.userSpinner);
         showDataButton = findViewById(R.id.showDataButton);
         resetButton = findViewById(R.id.resetButton);
-        searchTeamInput = findViewById(R.id.searchTeamInput);
         filterButton = findViewById(R.id.filterButton);
-        teamMembersRecyclerView = findViewById(R.id.teamMembersRecyclerView);
         noTeamMembersLayout = findViewById(R.id.noTeamMembersLayout);
         loadingLayout = findViewById(R.id.loadingLayout);
 
@@ -94,18 +93,18 @@ public class PartnerTeamActivity extends AppCompatActivity implements TeamMember
     }
 
     private void setupSearchFunctionality() {
-        searchTeamInput.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+        // searchTeamInput.addTextChangedListener(new TextWatcher() {
+        //     @Override
+        //     public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                filterTeamMembers(s.toString());
-            }
+        //     @Override
+        //     public void onTextChanged(CharSequence s, int start, int before, int count) {
+        //         filterTeamMembers(s.toString());
+        //     }
 
-            @Override
-            public void afterTextChanged(Editable s) {}
-        });
+        //     @Override
+        //     public void afterTextChanged(Editable s) {}
+        // });
     }
 
     private void setupVolley() {
@@ -244,6 +243,57 @@ public class PartnerTeamActivity extends AppCompatActivity implements TeamMember
         requestQueue.add(request);
     }
 
+    // Add this method to fetch and display the team partner list (copied and adapted from DirectorMyPartnerActivity)
+    private void loadPartnerTeamData() {
+        new Thread(() -> {
+            try {
+                URL url = new URL("https://emp.kfinone.com/mobile/api/director_get_partner_list.php");
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setRequestMethod("GET");
+                conn.setConnectTimeout(5000);
+                conn.setReadTimeout(5000);
+                int responseCode = conn.getResponseCode();
+                if (responseCode == HttpURLConnection.HTTP_OK) {
+                    BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                    StringBuilder response = new StringBuilder();
+                    String line;
+                    while ((line = in.readLine()) != null) {
+                        response.append(line);
+                    }
+                    in.close();
+                    JSONObject json = new JSONObject(response.toString());
+                    JSONArray data = json.optJSONArray("data");
+                    if (data != null) {
+                        teamList.clear();
+                        for (int i = 0; i < data.length(); i++) {
+                            JSONObject partner = data.getJSONObject(i);
+                            teamList.add(new PartnerTeamMember(
+                                partner.optString("id", ""),
+                                partner.optString("first_name", "") + " " + partner.optString("last_name", ""),
+                                partner.optString("Phone_number", ""),
+                                partner.optString("email_id", ""),
+                                partner.optString("createdBy", "")
+                            ));
+                        }
+                        runOnUiThread(() -> teamAdapter.notifyDataSetChanged());
+                    } else {
+                        runOnUiThread(() -> Toast.makeText(PartnerTeamActivity.this, "No team partners found.", Toast.LENGTH_SHORT).show());
+                    }
+                } else {
+                    runOnUiThread(() -> Toast.makeText(PartnerTeamActivity.this, "Failed to load team partners.", Toast.LENGTH_SHORT).show());
+                }
+            } catch (Exception e) {
+                runOnUiThread(() -> Toast.makeText(PartnerTeamActivity.this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+            }
+        }).start();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        loadPartnerTeamData();
+    }
+
     private void filterTeamMembers(String query) {
         if (query.isEmpty()) {
             teamList.clear();
@@ -288,7 +338,7 @@ public class PartnerTeamActivity extends AppCompatActivity implements TeamMember
 
         totalTeamsText.setText(String.valueOf(totalTeams));
         totalMembersText.setText(String.valueOf(totalMembers));
-        selectedUserText.setText(selectedUser);
+        // selectedUserText.setText(selectedUser); // This line is removed
     }
 
     private void updateUI() {

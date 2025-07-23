@@ -167,5 +167,16 @@ public class DirectorAddPartnerActivity extends AppCompatActivity {
     private void submitForm() {
         // TODO: Collect all field values, validate, and send as multipart/form-data POST to director_add_partner.php
         // On success, show a message and finish or redirect to My Partner panel
+        // --- BEGIN DEMO SUCCESS HANDLING ---
+        // Replace this block with actual API call and success check
+        boolean success = true; // Replace with real result
+        if (success) {
+            Toast.makeText(this, "Partner added successfully!", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(this, DirectorMyPartnerActivity.class);
+            intent.putExtra("SHOW_LIST", true);
+            startActivity(intent);
+            finish();
+        }
+        // --- END DEMO SUCCESS HANDLING ---
     }
 } 
