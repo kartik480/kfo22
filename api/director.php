@@ -11,6 +11,52 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
 
 require_once 'db_config.php';
 
+// Move this block to the top so it always runs if requested
+if (isset($_GET['action']) && $_GET['action'] === 'fetch_cbo_rbh_users') {
+    global $conn;
+    $designationSql = "SELECT id, designation_name FROM tbl_designation WHERE designation_name IN ('Chief Business Officer', 'Regional Business Head')";
+    $designationResult = $conn->query($designationSql);
+    $targetDesignationIds = array();
+    $designationIdToName = array();
+    if ($designationResult && $designationResult->num_rows > 0) {
+        while($row = $designationResult->fetch_assoc()) {
+            $targetDesignationIds[] = $row['id'];
+            $designationIdToName[$row['id']] = $row['designation_name'];
+        }
+    }
+    if (empty($targetDesignationIds)) {
+        echo json_encode(array(
+            'status' => 'success',
+            'data' => array(),
+            'message' => 'No CBO or RBH designations found',
+            'count' => 0
+        ));
+        exit;
+    }
+    $designationPlaceholders = implode(',', $targetDesignationIds);
+    $userSql = "SELECT u.id, u.firstName, u.lastName, u.designation_id, d.designation_name FROM tbl_user u INNER JOIN tbl_designation d ON u.designation_id = d.id WHERE u.designation_id IN ($designationPlaceholders) AND (u.status = 'Active' OR u.status = 1 OR u.status IS NULL OR u.status = '') AND u.firstName IS NOT NULL AND u.firstName != '' ORDER BY u.firstName ASC, u.lastName ASC";
+    $userResult = $conn->query($userSql);
+    $users = array();
+    if ($userResult && $userResult->num_rows > 0) {
+        while($row = $userResult->fetch_assoc()) {
+            $users[] = array(
+                'id' => $row['id'],
+                'firstName' => $row['firstName'],
+                'lastName' => $row['lastName'],
+                'designation_id' => $row['designation_id'],
+                'designation_name' => $row['designation_name']
+            );
+        }
+    }
+    echo json_encode(array(
+        'status' => 'success',
+        'data' => $users,
+        'message' => 'CBO and RBH users fetched successfully',
+        'count' => count($users)
+    ));
+    exit;
+}
+
 try {
     global $conn;
     if (!$conn) {

@@ -37,7 +37,10 @@ public class DirectorMySdsaActivity extends AppCompatActivity {
 
         initializeViews();
         setupClickListeners();
-        loadSdsaData();
+        // Get directorId from intent or fallback to default (e.g., "8")
+        String directorId = getIntent().getStringExtra("DIRECTOR_ID");
+        if (directorId == null || directorId.isEmpty()) directorId = "8";
+        loadSdsaData(directorId);
     }
 
     private void initializeViews() {
@@ -56,11 +59,12 @@ public class DirectorMySdsaActivity extends AppCompatActivity {
         });
     }
 
-    private void loadSdsaData() {
+    // Update loadSdsaData to accept directorId
+    private void loadSdsaData(String directorId) {
         new Thread(() -> {
             try {
-                Log.d(TAG, "Loading SDSA data...");
-                URL url = new URL("https://emp.kfinone.com/mobile/api/fetch_active_sdsa.php");
+                Log.d(TAG, "Loading SDSA data for directorId: " + directorId);
+                URL url = new URL("https://emp.kfinone.com/mobile/api/fetch_active_sdsa.php?reportingTo=" + directorId);
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestMethod("GET");
                 conn.setConnectTimeout(5000);

@@ -21,7 +21,10 @@ try {
         throw new Exception("Database connection not available");
     }
     
-    // Query to fetch SDSA users who report to ID 8
+    // Get reportingTo parameter from GET (Director's user ID)
+    $reportingTo = isset($_GET['reportingTo']) ? $_GET['reportingTo'] : '';
+    
+    // Build SQL query
     $sql = "SELECT 
                 s.id,
                 s.first_name,
@@ -31,8 +34,11 @@ try {
                 s.password,
                 s.reportingTo
             FROM tbl_sdsa_users s
-            WHERE s.reportingTo = '8'
-            ORDER BY s.first_name ASC";
+            WHERE 1=1";
+    if (!empty($reportingTo)) {
+        $sql .= " AND s.reportingTo = '" . mysqli_real_escape_string($conn, $reportingTo) . "'";
+    }
+    $sql .= " ORDER BY s.first_name ASC";
     
     $result = $conn->query($sql);
     
@@ -43,27 +49,27 @@ try {
     $data = array();
     
     if ($result->num_rows > 0) {
-                                while($row = $result->fetch_assoc()) {
-                            $data[] = array(
-                                'id' => $row['id'],
-                                'fullName' => $row['first_name'] . ' ' . $row['last_name'],
-                                'phoneNumber' => $row['Phone_number'],
-                                'emailId' => $row['email_id'],
-                                'password' => $row['password'],
-                                'reportingTo' => $row['reportingTo']
-                            );
-                        }
+        while($row = $result->fetch_assoc()) {
+            $data[] = array(
+                'id' => $row['id'],
+                'fullName' => $row['first_name'] . ' ' . $row['last_name'],
+                'phoneNumber' => $row['Phone_number'],
+                'emailId' => $row['email_id'],
+                'password' => $row['password'],
+                'reportingTo' => $row['reportingTo']
+            );
+        }
         
         echo json_encode(array(
             'status' => 'success',
-            'message' => 'Users reporting to ID 8 fetched successfully',
+            'message' => 'Users fetched successfully',
             'data' => $data,
             'count' => count($data)
         ));
     } else {
         echo json_encode(array(
             'status' => 'success',
-            'message' => 'No users found reporting to ID 8',
+            'message' => 'No users found',
             'data' => array(),
             'count' => 0
         ));
