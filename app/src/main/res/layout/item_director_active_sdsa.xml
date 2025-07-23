@@ -47,6 +47,14 @@
             android:layout_height="wrap_content"
             android:textColor="#2C3E50"
             android:textSize="14sp"
+            android:layout_marginBottom="4dp" />
+
+        <TextView
+            android:id="@+id/reportingText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#1976D2"
+            android:textSize="13sp"
             android:layout_marginBottom="12dp" />
 
         <Button

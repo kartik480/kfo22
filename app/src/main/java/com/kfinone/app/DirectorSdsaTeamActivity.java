@@ -109,12 +109,13 @@ public class DirectorSdsaTeamActivity extends AppCompatActivity {
                         for (int i = 0; i < data.length(); i++) {
                             JSONObject sdsa = data.getJSONObject(i);
                             sdsaList.add(new SdsaItem(
-                                sdsa.getString("fullName"),
-                                sdsa.getString("phoneNumber"),
-                                sdsa.getString("emailId"),
-                                sdsa.getString("password"),
-                                sdsa.getString("id"),
-                                sdsa.getString("reportingTo")
+                                sdsa.optString("first_name", ""),
+                                sdsa.optString("last_name", ""),
+                                sdsa.optString("Phone_number", ""),
+                                sdsa.optString("email_id", ""),
+                                sdsa.optString("password", ""),
+                                sdsa.optString("id", ""),
+                                sdsa.optString("reportingTo", "")
                             ));
                         }
                         runOnUiThread(() -> adapter.notifyDataSetChanged());
@@ -183,14 +184,16 @@ public class DirectorSdsaTeamActivity extends AppCompatActivity {
     }
 
     private static class SdsaItem {
-        String name;
+        String firstName;
+        String lastName;
         String phoneNumber;
         String email;
         String password;
         String id;
         String reportingTo;
-        SdsaItem(String name, String phoneNumber, String email, String password, String id, String reportingTo) {
-            this.name = name;
+        SdsaItem(String firstName, String lastName, String phoneNumber, String email, String password, String id, String reportingTo) {
+            this.firstName = firstName;
+            this.lastName = lastName;
             this.phoneNumber = phoneNumber;
             this.email = email;
             this.password = password;
@@ -212,12 +215,12 @@ public class DirectorSdsaTeamActivity extends AppCompatActivity {
         @Override
         public void onBindViewHolder(ViewHolder holder, int position) {
             SdsaItem item = sdsaItems.get(position);
-            holder.nameText.setText(item.name);
-            holder.phoneText.setText(item.phoneNumber);
-            holder.emailText.setText(item.email);
-            holder.passwordText.setText(item.password);
+            holder.nameText.setText("Name: " + item.firstName + " " + item.lastName);
+            holder.phoneText.setText("Phone: " + item.phoneNumber);
+            holder.emailText.setText("Email: " + item.email);
+            holder.passwordText.setText("Password: " + item.password);
             holder.actionButton.setOnClickListener(v -> {
-                // TODO: Action for SDSA Team row
+                // TODO: Action for SDSA row
             });
         }
         @Override
