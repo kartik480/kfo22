@@ -11,10 +11,8 @@ import androidx.appcompat.widget.Toolbar;
 
 public class DirectorSdsaActivity extends AppCompatActivity {
 
-    private LinearLayout activeSdsaButton;
-    private LinearLayout inactiveSdsaButton;
-    private LinearLayout addSdsaButton;
-    private LinearLayout sdsaAnalyticsButton;
+    private LinearLayout mySdsaBox;
+    private LinearLayout sdsaTeamBox;
     
     private String userId;
     private String userName;
@@ -35,43 +33,17 @@ public class DirectorSdsaActivity extends AppCompatActivity {
             lastName = intent.getStringExtra("LAST_NAME");
         }
 
-        initializeViews();
-        setupClickListeners();
+        mySdsaBox = findViewById(R.id.mySdsaBox);
+        sdsaTeamBox = findViewById(R.id.sdsaTeamBox);
+
+        mySdsaBox.setOnClickListener(v -> {
+            startActivity(new Intent(this, DirectorMySdsaActivity.class));
+        });
+        sdsaTeamBox.setOnClickListener(v -> {
+            startActivity(new Intent(this, DirectorSdsaTeamActivity.class));
+        });
+
         setupToolbar();
-    }
-
-    private void initializeViews() {
-        activeSdsaButton = findViewById(R.id.activeSdsaButton);
-        inactiveSdsaButton = findViewById(R.id.inactiveSdsaButton);
-        addSdsaButton = findViewById(R.id.addSdsaButton);
-        sdsaAnalyticsButton = findViewById(R.id.sdsaAnalyticsButton);
-    }
-
-    private void setupClickListeners() {
-        activeSdsaButton.setOnClickListener(v -> {
-            Intent intent = new Intent(this, ActiveSdsaListActivity.class);
-            passUserDataToIntent(intent);
-            intent.putExtra("SOURCE_PANEL", "DIRECTOR_PANEL");
-            startActivity(intent);
-        });
-
-        inactiveSdsaButton.setOnClickListener(v -> {
-            Intent intent = new Intent(this, InactiveSdsaListActivity.class);
-            passUserDataToIntent(intent);
-            intent.putExtra("SOURCE_PANEL", "DIRECTOR_PANEL");
-            startActivity(intent);
-        });
-
-        addSdsaButton.setOnClickListener(v -> {
-            Intent intent = new Intent(this, AddSdsaActivity.class);
-            passUserDataToIntent(intent);
-            intent.putExtra("SOURCE_PANEL", "DIRECTOR_PANEL");
-            startActivity(intent);
-        });
-
-        sdsaAnalyticsButton.setOnClickListener(v -> {
-            Toast.makeText(this, "SDSA Analytics - Coming Soon", Toast.LENGTH_SHORT).show();
-        });
     }
 
     private void setupToolbar() {
@@ -100,10 +72,7 @@ public class DirectorSdsaActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        // Navigate back to Director panel
-        Intent intent = new Intent(this, User10002PanelActivity.class);
-        passUserDataToIntent(intent);
-        startActivity(intent);
-        finish();
+        super.onBackPressed();
+        // Navigate back to Director panel or previous activity if needed
     }
 } 

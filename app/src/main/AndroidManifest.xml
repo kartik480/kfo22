@@ -491,6 +491,8 @@
             android:exported="false"
             android:label="Director Team Employee Links"
             android:parentActivityName=".DirectorEmpLinksActivity" />
+        <activity android:name=".DirectorMySdsaActivity" />
+        <activity android:name=".DirectorSdsaTeamActivity" />
         
         <!-- Chief Business Officer Activities -->
         <activity
@@ -668,7 +670,6 @@
             android:exported="false"
             android:label="CBO Insurance Management"
             android:parentActivityName=".ChiefBusinessOfficerPanelActivity" />
-        <activity android:name=".CBOPayoutActivity" />
         <activity android:name=".CBODsaCodeActivity" />
         <activity android:name=".CBOBankersActivity" />
         <activity android:name=".CBOAddInsuranceActivity" />
