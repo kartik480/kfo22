@@ -27,41 +27,9 @@
             android:orientation="vertical"
             android:padding="16dp">
 
-            <!-- View Agents -->
-            <LinearLayout
-                android:id="@+id/viewAgentsButton"
-                android:layout_width="match_parent"
-                android:layout_height="80dp"
-                android:background="@drawable/edit_text_background"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:padding="16dp"
-                android:clickable="true"
-                android:focusable="true"
-                android:foreground="?android:attr/selectableItemBackground"
-                android:layout_marginBottom="12dp">
-
-                <ImageView
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
-                    android:src="@drawable/ic_agent"
-                    android:tint="#4A90E2"
-                    android:layout_marginEnd="16dp" />
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="View Agents"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
-                    android:textColor="#2C3E50" />
-
-            </LinearLayout>
-
             <!-- Add Agent -->
             <LinearLayout
-                android:id="@+id/addAgentButton"
+                android:id="@+id/addAgentBox"
                 android:layout_width="match_parent"
                 android:layout_height="80dp"
                 android:background="@drawable/edit_text_background"
@@ -91,9 +59,9 @@
 
             </LinearLayout>
 
-            <!-- Agent Analytics -->
+            <!-- My Agent -->
             <LinearLayout
-                android:id="@+id/agentAnalyticsButton"
+                android:id="@+id/myAgentBox"
                 android:layout_width="match_parent"
                 android:layout_height="80dp"
                 android:background="@drawable/edit_text_background"
@@ -108,7 +76,7 @@
                 <ImageView
                     android:layout_width="32dp"
                     android:layout_height="32dp"
-                    android:src="@drawable/ic_dashboard"
+                    android:src="@drawable/ic_agent"
                     android:tint="#4A90E2"
                     android:layout_marginEnd="16dp" />
 
@@ -116,16 +84,16 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Agent Analytics"
+                    android:text="My Agent"
                     android:textSize="16sp"
                     android:textStyle="bold"
                     android:textColor="#2C3E50" />
 
             </LinearLayout>
 
-            <!-- Agent Reports -->
+            <!-- Agent Team -->
             <LinearLayout
-                android:id="@+id/agentReportsButton"
+                android:id="@+id/agentTeamBox"
                 android:layout_width="match_parent"
                 android:layout_height="80dp"
                 android:background="@drawable/edit_text_background"
@@ -139,15 +107,15 @@
                 <ImageView
                     android:layout_width="32dp"
                     android:layout_height="32dp"
-                    android:src="@drawable/ic_reports"
-                    android:tint="#4A90E2"
+                    android:src="@drawable/ic_team"
+                    android:tint="#E67E22"
                     android:layout_marginEnd="16dp" />
 
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Agent Reports"
+                    android:text="Agent Team"
                     android:textSize="16sp"
                     android:textStyle="bold"
                     android:textColor="#2C3E50" />

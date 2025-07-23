@@ -11,10 +11,8 @@ import androidx.appcompat.widget.Toolbar;
 
 public class DirectorAgentActivity extends AppCompatActivity {
 
-    private LinearLayout viewAgentsButton;
-    private LinearLayout addAgentButton;
-    private LinearLayout agentAnalyticsButton;
-    private LinearLayout agentReportsButton;
+    // Remove old buttons and use new boxes
+    private LinearLayout addAgentBox, myAgentBox, agentTeamBox;
     
     private String userId;
     private String userName;
@@ -25,6 +23,10 @@ public class DirectorAgentActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_director_agent);
+        addAgentBox = findViewById(R.id.addAgentBox);
+        myAgentBox = findViewById(R.id.myAgentBox);
+        agentTeamBox = findViewById(R.id.agentTeamBox);
+        // Set up click listeners for the new boxes as needed
 
         // Get user data from intent
         Intent intent = getIntent();
@@ -41,34 +43,11 @@ public class DirectorAgentActivity extends AppCompatActivity {
     }
 
     private void initializeViews() {
-        viewAgentsButton = findViewById(R.id.viewAgentsButton);
-        addAgentButton = findViewById(R.id.addAgentButton);
-        agentAnalyticsButton = findViewById(R.id.agentAnalyticsButton);
-        agentReportsButton = findViewById(R.id.agentReportsButton);
+        // No longer needed as buttons are removed
     }
 
     private void setupClickListeners() {
-        viewAgentsButton.setOnClickListener(v -> {
-            Intent intent = new Intent(this, MyAgentActivity.class);
-            passUserDataToIntent(intent);
-            intent.putExtra("SOURCE_PANEL", "DIRECTOR_PANEL");
-            startActivity(intent);
-        });
-
-        addAgentButton.setOnClickListener(v -> {
-            Intent intent = new Intent(this, AddAgentActivity.class);
-            passUserDataToIntent(intent);
-            intent.putExtra("SOURCE_PANEL", "DIRECTOR_PANEL");
-            startActivity(intent);
-        });
-
-        agentAnalyticsButton.setOnClickListener(v -> {
-            Toast.makeText(this, "Agent Analytics - Coming Soon", Toast.LENGTH_SHORT).show();
-        });
-
-        agentReportsButton.setOnClickListener(v -> {
-            Toast.makeText(this, "Agent Reports - Coming Soon", Toast.LENGTH_SHORT).show();
-        });
+        // No longer needed as buttons are removed
     }
 
     private void setupToolbar() {
