@@ -335,7 +335,7 @@ public class AddAgentActivity extends AppCompatActivity {
         }
 
         // Submit to API
-        String url = BASE_URL + "add_agent.php";
+        String url = BASE_URL + "director_add_agent.php";
         
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, agentData,
             response -> {

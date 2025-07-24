@@ -33,6 +33,12 @@ public class DirectorAgentActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
+        myAgentBox.setOnClickListener(v -> {
+            Intent intent = new Intent(this, DirectorMyAgentActivity.class);
+            passUserDataToIntent(intent);
+            startActivity(intent);
+        });
+
         // Get user data from intent
         Intent intent = getIntent();
         if (intent != null) {
