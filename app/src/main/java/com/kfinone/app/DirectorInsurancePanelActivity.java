@@ -26,7 +26,7 @@ public class DirectorInsurancePanelActivity extends AppCompatActivity {
             startActivity(new Intent(this, DirectorAddInsuranceActivity.class));
         });
         directorMyInsuranceBox.setOnClickListener(v -> {
-            // TODO: Launch DirectorMyInsuranceActivity
+            startActivity(new Intent(this, DirectorMyInsuranceActivity.class));
         });
         directorTeamInsuranceBox.setOnClickListener(v -> {
             // TODO: Launch DirectorTeamInsuranceActivity
