@@ -13,8 +13,6 @@ public class DirectorPortfolioActivity extends AppCompatActivity {
 
     private LinearLayout viewPortfolioButton;
     private LinearLayout addPortfolioButton;
-    private LinearLayout portfolioAnalyticsButton;
-    private LinearLayout portfolioReportsButton;
     
     private String userId;
     private String userName;
@@ -43,8 +41,6 @@ public class DirectorPortfolioActivity extends AppCompatActivity {
     private void initializeViews() {
         viewPortfolioButton = findViewById(R.id.viewPortfolioButton);
         addPortfolioButton = findViewById(R.id.addPortfolioButton);
-        portfolioAnalyticsButton = findViewById(R.id.portfolioAnalyticsButton);
-        portfolioReportsButton = findViewById(R.id.portfolioReportsButton);
     }
 
     private void setupClickListeners() {
@@ -60,14 +56,6 @@ public class DirectorPortfolioActivity extends AppCompatActivity {
             passUserDataToIntent(intent);
             intent.putExtra("SOURCE_PANEL", "DIRECTOR_PANEL");
             startActivity(intent);
-        });
-
-        portfolioAnalyticsButton.setOnClickListener(v -> {
-            Toast.makeText(this, "Portfolio Analytics - Coming Soon", Toast.LENGTH_SHORT).show();
-        });
-
-        portfolioReportsButton.setOnClickListener(v -> {
-            Toast.makeText(this, "Portfolio Reports - Coming Soon", Toast.LENGTH_SHORT).show();
         });
     }
 

@@ -127,7 +127,7 @@ public class AddBankerActivity extends AppCompatActivity {
             BufferedReader reader = null;
             
             try {
-                String urlString = "https://pznstudio.shop/kfinone/get_vendor_bank_list.php";
+                String urlString = "https://emp.kfinone.com/mobile/api/get_vendor_bank_list.php";
                 
                 Log.d(TAG, "Loading vendor bank data from: " + urlString);
                 
@@ -215,7 +215,7 @@ public class AddBankerActivity extends AppCompatActivity {
             BufferedReader reader = null;
             
             try {
-                String urlString = "https://pznstudio.shop/kfinone/get_banker_designation_list.php";
+                String urlString = "https://emp.kfinone.com/mobile/api/get_banker_designation_list.php";
                 
                 Log.d(TAG, "Loading banker designation data from: " + urlString);
                 
@@ -303,7 +303,7 @@ public class AddBankerActivity extends AppCompatActivity {
             BufferedReader reader = null;
             
             try {
-                String urlString = "https://pznstudio.shop/kfinone/get_loan_type_list.php";
+                String urlString = "https://emp.kfinone.com/mobile/api/get_loan_type_list.php";
                 
                 Log.d(TAG, "Loading loan type data from: " + urlString);
                 
@@ -391,7 +391,7 @@ public class AddBankerActivity extends AppCompatActivity {
             BufferedReader reader = null;
             
             try {
-                String urlString = "https://pznstudio.shop/kfinone/fetch_banker_branch_states.php";
+                String urlString = "https://emp.kfinone.com/mobile/api/fetch_banker_branch_states.php";
                 
                 Log.d(TAG, "Loading branch state data from: " + urlString);
                 
@@ -472,7 +472,7 @@ public class AddBankerActivity extends AppCompatActivity {
             BufferedReader reader = null;
             
             try {
-                String urlString = "https://pznstudio.shop/kfinone/fetch_banker_branch_locations.php";
+                String urlString = "https://emp.kfinone.com/mobile/api/fetch_banker_branch_locations.php";
                 
                 Log.d(TAG, "Loading branch location data from: " + urlString);
                 
@@ -607,7 +607,7 @@ public class AddBankerActivity extends AppCompatActivity {
             BufferedReader reader = null;
             
             try {
-                String urlString = "https://pznstudio.shop/kfinone/fetch_banker_banks.php";
+                String urlString = "https://emp.kfinone.com/mobile/api/fetch_banker_banks.php";
                 
                 Log.d(TAG, "Loading bank data from: " + urlString);
                 
@@ -784,7 +784,7 @@ public class AddBankerActivity extends AppCompatActivity {
                 jsonData.put("visiting_card", ""); // TODO: Implement file upload
                 jsonData.put("address", addressInput.getText().toString().trim());
 
-                String urlString = "https://pznstudio.shop/kfinone/add_banker.php";
+                String urlString = "https://emp.kfinone.com/mobile/api/add_banker.php";
                 
                 Log.d(TAG, "Submitting banker data to: " + urlString);
                 Log.d(TAG, "JSON data: " + jsonData.toString());
