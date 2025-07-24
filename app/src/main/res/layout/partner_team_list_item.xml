@@ -2,100 +2,56 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:background="@drawable/table_row_background"
-    android:padding="8dp"
-    android:gravity="center_vertical">
+    android:orientation="vertical"
+    android:background="@drawable/edit_text_background"
+    android:padding="16dp"
+    android:layout_marginBottom="12dp"
+    android:elevation="2dp">
 
-    <!-- Full Name Column -->
     <TextView
-        android:id="@+id/fullName"
-        android:layout_width="0dp"
+        android:id="@+id/nameText"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="1.5"
-        android:text="John Doe"
-        android:textSize="12sp"
-        android:textColor="#2C3E50"
-        android:maxLines="2"
-        android:ellipsize="end"
-        android:gravity="center_vertical"
-        android:padding="4dp" />
+        android:text="Name: John Doe"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:textColor="#222"
+        android:layout_marginBottom="4dp" />
 
-    <!-- Mobile Column -->
     <TextView
-        android:id="@+id/mobile"
-        android:layout_width="0dp"
+        android:id="@+id/phoneText"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="1.2"
-        android:text="+91 98765 43210"
-        android:textSize="11sp"
-        android:textColor="#666666"
-        android:maxLines="1"
-        android:ellipsize="end"
-        android:gravity="center_vertical"
-        android:padding="4dp" />
+        android:text="Phone: 1234567890"
+        android:textSize="14sp"
+        android:textColor="#444"
+        android:layout_marginBottom="2dp" />
 
-    <!-- Email Column -->
     <TextView
-        android:id="@+id/email"
-        android:layout_width="0dp"
+        android:id="@+id/emailText"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="1.5"
-        android:text="john@example.com"
-        android:textSize="11sp"
-        android:textColor="#666666"
-        android:maxLines="1"
-        android:ellipsize="end"
-        android:gravity="center_vertical"
-        android:padding="4dp" />
+        android:text="Email: john@example.com"
+        android:textSize="14sp"
+        android:textColor="#444"
+        android:layout_marginBottom="2dp" />
 
-    <!-- Created By Column -->
     <TextView
-        android:id="@+id/createdBy"
-        android:layout_width="0dp"
+        android:id="@+id/createdByText"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="1.2"
-        android:text="Admin"
-        android:textSize="11sp"
-        android:textColor="#666666"
-        android:maxLines="1"
-        android:ellipsize="end"
-        android:gravity="center_vertical"
-        android:padding="4dp" />
+        android:text="Created By: "
+        android:textSize="14sp"
+        android:textColor="#444"
+        android:layout_marginBottom="8dp" />
 
-    <!-- Action Column -->
-    <LinearLayout
-        android:layout_width="0dp"
+    <Button
+        android:id="@+id/actionButton"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="0.8"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:padding="4dp">
-
-        <Button
-            android:id="@+id/editButton"
-            android:layout_width="32dp"
-            android:layout_height="28dp"
-            android:text="E"
-            android:textSize="10sp"
-            android:background="#3498DB"
-            android:textColor="#FFFFFF"
-            android:layout_marginEnd="2dp"
-            android:minWidth="0dp"
-            android:minHeight="0dp" />
-
-        <Button
-            android:id="@+id/deleteButton"
-            android:layout_width="32dp"
-            android:layout_height="28dp"
-            android:text="D"
-            android:textSize="10sp"
-            android:background="#E74C3C"
-            android:textColor="#FFFFFF"
-            android:layout_marginStart="2dp"
-            android:minWidth="0dp"
-            android:minHeight="0dp" />
-
-    </LinearLayout>
+        android:text="Action"
+        android:textSize="14sp"
+        android:backgroundTint="#7C5CFA"
+        android:textColor="#FFF" />
 
 </LinearLayout> 

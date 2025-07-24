@@ -165,18 +165,161 @@ public class DirectorAddPartnerActivity extends AppCompatActivity {
     }
 
     private void submitForm() {
-        // TODO: Collect all field values, validate, and send as multipart/form-data POST to director_add_partner.php
-        // On success, show a message and finish or redirect to My Partner panel
-        // --- BEGIN DEMO SUCCESS HANDLING ---
-        // Replace this block with actual API call and success check
-        boolean success = true; // Replace with real result
-        if (success) {
-            Toast.makeText(this, "Partner added successfully!", Toast.LENGTH_SHORT).show();
-            Intent intent = new Intent(this, DirectorMyPartnerActivity.class);
-            intent.putExtra("SHOW_LIST", true);
-            startActivity(intent);
-            finish();
+        // Collect all field values
+        String email = emailInput.getText().toString().trim();
+        String password = passwordInput.getText().toString().trim();
+        String firstName = firstNameInput.getText().toString().trim();
+        String lastName = lastNameInput.getText().toString().trim();
+        String aliasName = aliasNameInput.getText().toString().trim();
+        String phone = phoneInput.getText().toString().trim();
+        String altPhone = altPhoneInput.getText().toString().trim();
+        String companyName = companyNameInput.getText().toString().trim();
+        String officeAddress = officeAddressInput.getText().toString().trim();
+        String residentialAddress = residentialAddressInput.getText().toString().trim();
+        String aadhaarNumber = aadhaarInput.getText().toString().trim();
+        String panNumber = panInput.getText().toString().trim();
+        String accountNumber = accountNumberInput.getText().toString().trim();
+        String ifscCode = ifscInput.getText().toString().trim();
+        String partnerType = partnerTypeDropdown.getSelectedItem() != null ? partnerTypeDropdown.getSelectedItem().toString() : "";
+        String branchState = branchStateDropdown.getSelectedItem() != null ? branchStateDropdown.getSelectedItem().toString() : "";
+        String branchLocation = branchLocationDropdown.getSelectedItem() != null ? branchLocationDropdown.getSelectedItem().toString() : "";
+        String bankName = bankNameDropdown.getSelectedItem() != null ? bankNameDropdown.getSelectedItem().toString() : "";
+        String accountType = accountTypeDropdown.getSelectedItem() != null ? accountTypeDropdown.getSelectedItem().toString() : "";
+        // Get user_id from Intent
+        final String userId = getIntent().getStringExtra("USER_ID") != null ? getIntent().getStringExtra("USER_ID") : "";
+        // Timestamps
+        final String timestamp = String.valueOf(System.currentTimeMillis() / 1000L);
+
+        // Prepare multipart request
+        new Thread(() -> {
+            try {
+                String boundary = "----WebKitFormBoundary" + System.currentTimeMillis();
+                String LINE_FEED = "\r\n";
+                URL url = new URL("https://emp.kfinone.com/mobile/api/director_add_partner.php");
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setRequestMethod("POST");
+                conn.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + boundary);
+                conn.setDoOutput(true);
+                java.io.DataOutputStream request = new java.io.DataOutputStream(conn.getOutputStream());
+
+                // Helper to write form fields
+                java.util.Map<String, String> fields = new java.util.HashMap<>();
+                fields.put("username", email); // using email as username
+                fields.put("alias_name", aliasName);
+                fields.put("first_name", firstName);
+                fields.put("last_name", lastName);
+                fields.put("password", password);
+                fields.put("Phone_number", phone);
+                fields.put("email_id", email);
+                fields.put("alternative_mobile_number", altPhone);
+                fields.put("company_name", companyName);
+                fields.put("branch_state_name_id", branchState);
+                fields.put("branch_location_id", branchLocation);
+                fields.put("bank_id", bankName);
+                fields.put("account_type_id", accountType);
+                fields.put("office_address", officeAddress);
+                fields.put("residential_address", residentialAddress);
+                fields.put("aadhaar_number", aadhaarNumber);
+                fields.put("pan_number", panNumber);
+                fields.put("account_number", accountNumber);
+                fields.put("ifsc_code", ifscCode);
+                fields.put("rank", "");
+                fields.put("status", "Active");
+                fields.put("reportingTo", "");
+                fields.put("employee_no", "");
+                fields.put("department", "");
+                fields.put("designation", "");
+                fields.put("branchstate", branchState);
+                fields.put("branchloaction", branchLocation);
+                fields.put("bank_name", bankName);
+                fields.put("account_type", accountType);
+                fields.put("partner_type_id", partnerType);
+                fields.put("user_id", userId);
+                fields.put("created_at", timestamp);
+                fields.put("createdBy", userId);
+                fields.put("updated_at", timestamp);
+                // Write all fields
+                for (java.util.Map.Entry<String, String> entry : fields.entrySet()) {
+                    request.writeBytes("--" + boundary + LINE_FEED);
+                    request.writeBytes("Content-Disposition: form-data; name=\"" + entry.getKey() + "\"" + LINE_FEED);
+                    request.writeBytes(LINE_FEED);
+                    request.writeBytes(entry.getValue() != null ? entry.getValue() : "");
+                    request.writeBytes(LINE_FEED);
+                }
+                // Helper to write file
+                writeFilePart(request, boundary, "pan_img", panUri);
+                writeFilePart(request, boundary, "aadhaar_img", aadhaarUri);
+                writeFilePart(request, boundary, "photo_img", photoUri);
+                writeFilePart(request, boundary, "bankproof_img", bankProofUri);
+                // End boundary
+                request.writeBytes("--" + boundary + "--" + LINE_FEED);
+                request.flush();
+                request.close();
+                int responseCode = conn.getResponseCode();
+                java.io.InputStream is = (responseCode == HttpURLConnection.HTTP_OK) ? conn.getInputStream() : conn.getErrorStream();
+                java.io.BufferedReader in = new java.io.BufferedReader(new java.io.InputStreamReader(is));
+                StringBuilder response = new StringBuilder();
+                String line;
+                while ((line = in.readLine()) != null) {
+                    response.append(line);
+                }
+                in.close();
+                org.json.JSONObject json = new org.json.JSONObject(response.toString());
+                runOnUiThread(() -> {
+                    if (json.optString("status").equals("success")) {
+                        Toast.makeText(this, "Partner added successfully!", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(this, DirectorMyPartnerActivity.class);
+                        intent.putExtra("SHOW_LIST", true);
+                        startActivity(intent);
+                        finish();
+                    } else {
+                        Toast.makeText(this, "Error: " + json.optString("message"), Toast.LENGTH_LONG).show();
+                    }
+                });
+            } catch (Exception e) {
+                e.printStackTrace();
+                runOnUiThread(() -> Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_LONG).show());
+            }
+        }).start();
+    }
+
+    // Helper method to write a file part to the multipart request
+    private void writeFilePart(java.io.DataOutputStream request, String boundary, String fieldName, Uri fileUri) {
+        try {
+            if (fileUri == null) return;
+            String LINE_FEED = "\r\n";
+            String fileName = getFileNameFromUri(fileUri);
+            request.writeBytes("--" + boundary + LINE_FEED);
+            request.writeBytes("Content-Disposition: form-data; name=\"" + fieldName + "\"; filename=\"" + fileName + "\"" + LINE_FEED);
+            request.writeBytes("Content-Type: image/jpeg" + LINE_FEED);
+            request.writeBytes(LINE_FEED);
+            java.io.InputStream inputStream = getContentResolver().openInputStream(fileUri);
+            byte[] buffer = new byte[4096];
+            int bytesRead;
+            while ((bytesRead = inputStream.read(buffer)) != -1) {
+                request.write(buffer, 0, bytesRead);
+            }
+            inputStream.close();
+            request.writeBytes(LINE_FEED);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        // --- END DEMO SUCCESS HANDLING ---
+    }
+
+    // Helper to get file name from Uri
+    private String getFileNameFromUri(Uri uri) {
+        String result = null;
+        if (uri.getScheme().equals("content")) {
+            try (android.database.Cursor cursor = getContentResolver().query(uri, null, null, null, null)) {
+                if (cursor != null && cursor.moveToFirst()) {
+                    int idx = cursor.getColumnIndex(android.provider.OpenableColumns.DISPLAY_NAME);
+                    if (idx != -1) result = cursor.getString(idx);
+                }
+            }
+        }
+        if (result == null) {
+            result = uri.getLastPathSegment();
+        }
+        return result != null ? result : "file.jpg";
     }
 } 

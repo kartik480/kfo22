@@ -52,10 +52,9 @@ public class MyPartnerActivity extends AppCompatActivity implements PartnerUserA
         setContentView(R.layout.activity_my_partner);
 
         initializeViews();
-        setupRecyclerView();
-        setupSearchFunctionality();
-        setupVolley();
-        loadPartnerData();
+        // Hide all content except the empty state
+        showNoPartnersMessage();
+        // Do not load or display any partner data
     }
 
     private void initializeViews() {
@@ -69,8 +68,17 @@ public class MyPartnerActivity extends AppCompatActivity implements PartnerUserA
         noPartnersLayout = findViewById(R.id.noPartnersLayout);
         loadingLayout = findViewById(R.id.loadingLayout);
 
+        // Hide stats and search/filter UI
+        totalPartnersText.setVisibility(View.GONE);
+        activePartnersText.setVisibility(View.GONE);
+        inactivePartnersText.setVisibility(View.GONE);
+        searchPartnerInput.setVisibility(View.GONE);
+        filterButton.setVisibility(View.GONE);
+        partnersRecyclerView.setVisibility(View.GONE);
+        loadingLayout.setVisibility(View.GONE);
+        noPartnersLayout.setVisibility(View.VISIBLE);
+
         backButton.setOnClickListener(v -> onBackPressed());
-        filterButton.setOnClickListener(v -> showFilterDialog());
     }
 
     private void setupRecyclerView() {

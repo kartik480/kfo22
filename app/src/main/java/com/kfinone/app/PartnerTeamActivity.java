@@ -6,7 +6,7 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
+import android.widget.Spinner;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -31,13 +31,16 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import android.view.LayoutInflater;
+import android.view.ViewGroup;
+import android.widget.Button;
 
-public class PartnerTeamActivity extends AppCompatActivity implements TeamMemberCardAdapter.OnTeamMemberActionListener {
+public class PartnerTeamActivity extends AppCompatActivity {
     private static final String TAG = "PartnerTeamActivity";
     private static final String BASE_URL = "https://emp.kfinone.com/mobile/api/";
 
     private RecyclerView teamMembersRecyclerView;
-    private TeamMemberCardAdapter teamAdapter;
+    private RecyclerView.Adapter<?> teamAdapter;
     private List<PartnerTeamMember> teamList;
     private List<PartnerTeamMember> allTeamList;
     private RequestQueue requestQueue;
@@ -45,49 +48,53 @@ public class PartnerTeamActivity extends AppCompatActivity implements TeamMember
 
     // UI Elements
     private ImageButton backButton;
-    private TextView totalTeamsText;
-    private TextView totalMembersText;
-    private AutoCompleteTextView userSpinner;
+    private Spinner userSpinner;
     private MaterialButton showDataButton;
     private MaterialButton resetButton;
     private MaterialButton filterButton;
     private LinearLayout noTeamMembersLayout;
     private LinearLayout loadingLayout;
 
-    // Remove all references to selectedUserText and searchTeamInput
+    // Remove all references to selectedUserText, searchTeamInput, and TeamMemberCardAdapter.OnTeamMemberActionListener
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_partner_team);
-        teamMembersRecyclerView = findViewById(R.id.teamMembersRecyclerView);
-        teamList = new ArrayList<>();
-        teamAdapter = new TeamMemberCardAdapter(this, teamList);
-        teamMembersRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        teamMembersRecyclerView.setAdapter(teamAdapter);
-        // No selectedUserText, no searchTeamInput
+        // DIRECTOR: Initialize dropdown, buttons, and list
+        initializeViews();
+        setupRecyclerView();
+        setupClickListeners();
+        setupVolley();
+        loadUsersForDropdown();
     }
 
     private void initializeViews() {
         backButton = findViewById(R.id.backButton);
-        totalTeamsText = findViewById(R.id.totalTeamsText);
-        totalMembersText = findViewById(R.id.totalMembersText);
         userSpinner = findViewById(R.id.userSpinner);
         showDataButton = findViewById(R.id.showDataButton);
         resetButton = findViewById(R.id.resetButton);
-        filterButton = findViewById(R.id.filterButton);
+        // filterButton = findViewById(R.id.filterButton); // Not present in layout, comment out
         noTeamMembersLayout = findViewById(R.id.noTeamMembersLayout);
         loadingLayout = findViewById(R.id.loadingLayout);
+        teamMembersRecyclerView = findViewById(R.id.teamMembersRecyclerView);
+
+        if (showDataButton == null || resetButton == null) {
+            android.util.Log.e("PartnerTeamActivity", "ShowDataButton or ResetButton is null! Check layout IDs.");
+            throw new RuntimeException("ShowDataButton or ResetButton is null! Check layout IDs.");
+        }
+        if (teamMembersRecyclerView == null) {
+            android.util.Log.e("PartnerTeamActivity", "teamMembersRecyclerView is null! Check layout IDs.");
+            throw new RuntimeException("teamMembersRecyclerView is null! Check layout IDs.");
+        }
 
         backButton.setOnClickListener(v -> onBackPressed());
-        filterButton.setOnClickListener(v -> showFilterDialog());
+        // filterButton.setOnClickListener(v -> showFilterDialog()); // Not present in layout
     }
 
     private void setupRecyclerView() {
         teamList = new ArrayList<>();
         allTeamList = new ArrayList<>();
-        teamAdapter = new TeamMemberCardAdapter(this, teamList);
-        teamAdapter.setActionListener(this);
-        
+        teamAdapter = new DirectorTeamAdapter(teamList);
         teamMembersRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         teamMembersRecyclerView.setAdapter(teamAdapter);
     }
@@ -113,41 +120,89 @@ public class PartnerTeamActivity extends AppCompatActivity implements TeamMember
 
     private void setupClickListeners() {
         showDataButton.setOnClickListener(v -> {
-            if (userSpinner.getText() != null && !userSpinner.getText().toString().isEmpty()) {
-                String selectedUserId = getSelectedUserId();
-                if (selectedUserId != null) {
-                    loadPartnerTeamData(selectedUserId);
-                } else {
-                    Toast.makeText(this, "Please select a valid user first", Toast.LENGTH_SHORT).show();
-                }
+            int selectedPosition = userSpinner.getSelectedItemPosition();
+            if (selectedPosition == 0) {
+                // Show all users (fetch all from backend)
+                fetchPartnerTeamForDirector("");
+            } else if (selectedPosition > 0 && selectedPosition <= userList.size()) {
+                User selectedUser = userList.get(selectedPosition - 1); // -1 because first is 'Select User'
+                // Fetch from backend for users created by this user
+                fetchPartnerTeamForDirector(selectedUser.getId());
             } else {
                 Toast.makeText(this, "Please select a user first", Toast.LENGTH_SHORT).show();
             }
         });
 
         resetButton.setOnClickListener(v -> {
-            userSpinner.setText("");
-            teamList.clear();
-            allTeamList.clear();
-            teamAdapter.notifyDataSetChanged();
-            updateStats();
-            showNoTeamMembersMessage();
+            userSpinner.setSelection(0);
+            fetchPartnerTeamForDirector("");
         });
     }
 
-    private String getSelectedUserId() {
-        String selectedText = userSpinner.getText().toString();
-        for (User user : userList) {
-            if (user.getName().equals(selectedText)) {
-                return user.getId();
-            }
+    // Fetch users from tbl_partner_users where createdBy = selected user id
+    private void fetchPartnerTeamForDirector(String createdById) {
+        showLoading(true);
+        String url = "https://emp.kfinone.com/mobile/api/director_fetch_users_with_creator.php";
+        if (createdById != null && !createdById.isEmpty()) {
+            url += "?createdBy=" + createdById;
         }
-        return null;
+        Log.d("PartnerTeamActivity", "Fetching users with creator for createdBy: " + createdById + " URL: " + url);
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
+            response -> {
+                showLoading(false);
+                try {
+                    String status = response.getString("status");
+                    if ("success".equals(status)) {
+                        JSONArray data = response.getJSONArray("data");
+                        Log.d("PartnerTeamActivity", "API returned " + data.length() + " users");
+                        allTeamList = new ArrayList<>();
+                        for (int i = 0; i < data.length(); i++) {
+                            JSONObject userObj = data.getJSONObject(i);
+                            String fullName = userObj.optString("first_name", "") + " " + userObj.optString("last_name", "");
+                            String phone = userObj.optString("Phone_number", "");
+                            String email = userObj.optString("email_id", "");
+                            String creatorName = userObj.optString("creator_name", "");
+                            if (creatorName == null || creatorName.trim().isEmpty() || creatorName.equalsIgnoreCase("null")) {
+                                creatorName = "Unknown Creator";
+                            }
+                            allTeamList.add(new PartnerTeamMember(
+                                userObj.optString("id", ""),
+                                fullName,
+                                phone,
+                                email,
+                                creatorName
+                            ));
+                        }
+                        teamList.clear();
+                        teamList.addAll(allTeamList);
+                        teamAdapter.notifyDataSetChanged();
+                        updateUI();
+                    } else {
+                        String message = response.getString("message");
+                        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+                        showNoTeamMembersMessage();
+                    }
+                } catch (JSONException e) {
+                    Log.e(TAG, "Error parsing JSON: " + e.getMessage());
+                    Toast.makeText(this, "Error parsing response", Toast.LENGTH_SHORT).show();
+                    showNoTeamMembersMessage();
+                }
+            },
+            error -> {
+                showLoading(false);
+                Log.e(TAG, "Error fetching users with creator: " + error.getMessage());
+                Toast.makeText(this, "Error fetching users with creator: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                showNoTeamMembersMessage();
+            }
+        );
+        requestQueue.add(request);
     }
 
+    // getSelectedUserId is no longer needed with Spinner usage
+
     private void loadUsersForDropdown() {
-        String url = BASE_URL + "get_users_for_dropdown.php";
-        
+        // Fetch all users with designation for the dropdown
+        String url = "https://emp.kfinone.com/mobile/api/director_fetch_all_users_with_designation.php";
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
             response -> {
                 try {
@@ -155,23 +210,24 @@ public class PartnerTeamActivity extends AppCompatActivity implements TeamMember
                     if ("success".equals(status)) {
                         JSONArray data = response.getJSONArray("data");
                         userList = new ArrayList<>();
-                        
+                        List<String> userNames = new ArrayList<>();
+                        userNames.add("Select User");
                         for (int i = 0; i < data.length(); i++) {
                             JSONObject userObj = data.getJSONObject(i);
-                            User user = new User(
-                                userObj.getString("id"),
-                                userObj.getString("name")
-                            );
-                            userList.add(user);
+                            String fullName = userObj.getString("fullName");
+                            String designation = userObj.optString("designation_name", "");
+                            String display = fullName;
+                            if (designation != null && !designation.isEmpty() && !"null".equalsIgnoreCase(designation)) {
+                                display += " (" + designation + ")";
+                            }
+                            userNames.add(display);
+                            userList.add(new User(userObj.getString("id"), fullName));
                         }
-                        
-                        ArrayAdapter<User> spinnerAdapter = new ArrayAdapter<>(
-                            this, android.R.layout.simple_dropdown_item_1line, userList
+                        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(
+                            this, android.R.layout.simple_spinner_item, userNames
                         );
+                        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                         userSpinner.setAdapter(spinnerAdapter);
-                        
-                        updateStats();
-                        
                     } else {
                         String message = response.getString("message");
                         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
@@ -186,112 +242,15 @@ public class PartnerTeamActivity extends AppCompatActivity implements TeamMember
                 Toast.makeText(this, "Error fetching users: " + error.getMessage(), Toast.LENGTH_SHORT).show();
             }
         );
-        
         requestQueue.add(request);
     }
 
-    private void loadPartnerTeamData(String userId) {
-        showLoading(true);
-        String url = BASE_URL + "get_partner_team_data.php?user_id=" + userId;
-        
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
-            response -> {
-                showLoading(false);
-                try {
-                    String status = response.getString("status");
-                    if ("success".equals(status)) {
-                        JSONArray data = response.getJSONArray("data");
-                        allTeamList = new ArrayList<>();
-                        
-                        for (int i = 0; i < data.length(); i++) {
-                            JSONObject teamObj = data.getJSONObject(i);
-                            PartnerTeamMember member = new PartnerTeamMember(
-                                teamObj.getString("id"),
-                                teamObj.getString("full_name"),
-                                teamObj.getString("mobile"),
-                                teamObj.getString("email"),
-                                teamObj.getString("created_by")
-                            );
-                            allTeamList.add(member);
-                        }
-                        
-                        teamList.clear();
-                        teamList.addAll(allTeamList);
-                        teamAdapter.notifyDataSetChanged();
-                        updateStats();
-                        updateUI();
-                        
-                    } else {
-                        String message = response.getString("message");
-                        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
-                        showNoTeamMembersMessage();
-                    }
-                } catch (JSONException e) {
-                    Log.e(TAG, "Error parsing JSON: " + e.getMessage());
-                    Toast.makeText(this, "Error parsing response", Toast.LENGTH_SHORT).show();
-                    showNoTeamMembersMessage();
-                }
-            },
-            error -> {
-                showLoading(false);
-                Log.e(TAG, "Error fetching team data: " + error.getMessage());
-                Toast.makeText(this, "Error fetching team data: " + error.getMessage(), Toast.LENGTH_SHORT).show();
-                showNoTeamMembersMessage();
-            }
-        );
-        
-        requestQueue.add(request);
-    }
-
-    // Add this method to fetch and display the team partner list (copied and adapted from DirectorMyPartnerActivity)
-    private void loadPartnerTeamData() {
-        new Thread(() -> {
-            try {
-                URL url = new URL("https://emp.kfinone.com/mobile/api/director_get_partner_list.php");
-                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                conn.setRequestMethod("GET");
-                conn.setConnectTimeout(5000);
-                conn.setReadTimeout(5000);
-                int responseCode = conn.getResponseCode();
-                if (responseCode == HttpURLConnection.HTTP_OK) {
-                    BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-                    StringBuilder response = new StringBuilder();
-                    String line;
-                    while ((line = in.readLine()) != null) {
-                        response.append(line);
-                    }
-                    in.close();
-                    JSONObject json = new JSONObject(response.toString());
-                    JSONArray data = json.optJSONArray("data");
-                    if (data != null) {
-                        teamList.clear();
-                        for (int i = 0; i < data.length(); i++) {
-                            JSONObject partner = data.getJSONObject(i);
-                            teamList.add(new PartnerTeamMember(
-                                partner.optString("id", ""),
-                                partner.optString("first_name", "") + " " + partner.optString("last_name", ""),
-                                partner.optString("Phone_number", ""),
-                                partner.optString("email_id", ""),
-                                partner.optString("createdBy", "")
-                            ));
-                        }
-                        runOnUiThread(() -> teamAdapter.notifyDataSetChanged());
-                    } else {
-                        runOnUiThread(() -> Toast.makeText(PartnerTeamActivity.this, "No team partners found.", Toast.LENGTH_SHORT).show());
-                    }
-                } else {
-                    runOnUiThread(() -> Toast.makeText(PartnerTeamActivity.this, "Failed to load team partners.", Toast.LENGTH_SHORT).show());
-                }
-            } catch (Exception e) {
-                runOnUiThread(() -> Toast.makeText(PartnerTeamActivity.this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show());
-            }
-        }).start();
-    }
+    // Old loadPartnerTeamData methods removed; only fetchPartnerTeamForDirector is used for the director panel
 
     @Override
     protected void onResume() {
         super.onResume();
-        loadPartnerTeamData();
+        // No-op: do not auto-load team data; only load when user selects and presses Show Data
     }
 
     private void filterTeamMembers(String query) {
@@ -299,15 +258,14 @@ public class PartnerTeamActivity extends AppCompatActivity implements TeamMember
             teamList.clear();
             teamList.addAll(allTeamList);
         } else {
-            List<PartnerTeamMember> filteredList = allTeamList.stream()
-                .filter(member -> 
-                    member.getFullName().toLowerCase().contains(query.toLowerCase()) ||
+            List<PartnerTeamMember> filteredList = new ArrayList<>();
+            for (PartnerTeamMember member : allTeamList) {
+                if (member.getFullName().toLowerCase().contains(query.toLowerCase()) ||
                     member.getEmail().toLowerCase().contains(query.toLowerCase()) ||
-                    member.getMobile().contains(query) ||
-                    member.getCreatedBy().toLowerCase().contains(query.toLowerCase())
-                )
-                .collect(Collectors.toList());
-            
+                    member.getMobile().contains(query)) {
+                    filteredList.add(member); // Just add the existing member, do not create a new one
+                }
+            }
             teamList.clear();
             teamList.addAll(filteredList);
         }
@@ -327,19 +285,7 @@ public class PartnerTeamActivity extends AppCompatActivity implements TeamMember
                .show();
     }
 
-    private void updateStats() {
-        int totalTeams = userList != null ? userList.size() : 0;
-        int totalMembers = allTeamList.size();
-        String selectedUser = userSpinner.getText().toString();
-        
-        if (selectedUser.isEmpty()) {
-            selectedUser = "None";
-        }
-
-        totalTeamsText.setText(String.valueOf(totalTeams));
-        totalMembersText.setText(String.valueOf(totalMembers));
-        // selectedUserText.setText(selectedUser); // This line is removed
-    }
+    // updateStats removed (no longer needed)
 
     private void updateUI() {
         if (teamList.isEmpty()) {
@@ -367,25 +313,6 @@ public class PartnerTeamActivity extends AppCompatActivity implements TeamMember
         loadingLayout.setVisibility(View.GONE);
     }
 
-    @Override
-    public void onEditTeamMember(PartnerTeamMember member) {
-        Toast.makeText(this, "Edit team member: " + member.getFullName(), Toast.LENGTH_SHORT).show();
-        // TODO: Navigate to edit team member activity
-    }
-
-    @Override
-    public void onDeleteTeamMember(PartnerTeamMember member) {
-        new AlertDialog.Builder(this)
-            .setTitle("Remove Team Member")
-            .setMessage("Are you sure you want to remove " + member.getFullName() + " from the team?")
-            .setPositiveButton("Remove", (dialog, which) -> {
-                Toast.makeText(this, "Remove team member: " + member.getFullName(), Toast.LENGTH_SHORT).show();
-                // TODO: Implement remove functionality
-            })
-            .setNegativeButton("Cancel", null)
-            .show();
-    }
-
     // User data class
     public static class User {
         private String id;
@@ -405,26 +332,60 @@ public class PartnerTeamActivity extends AppCompatActivity implements TeamMember
         }
     }
 
-    // Partner Team Member data class
+    // Update PartnerTeamMember to match new API: id, fullName, mobile, email, creatorName
     public static class PartnerTeamMember {
         private String id;
         private String fullName;
         private String mobile;
         private String email;
-        private String createdBy;
-
-        public PartnerTeamMember(String id, String fullName, String mobile, String email, String createdBy) {
+        private String creatorName;
+        public PartnerTeamMember(String id, String fullName, String mobile, String email, String creatorName) {
             this.id = id;
             this.fullName = fullName;
             this.mobile = mobile;
             this.email = email;
-            this.createdBy = createdBy;
+            this.creatorName = creatorName;
         }
-
         public String getId() { return id; }
         public String getFullName() { return fullName; }
         public String getMobile() { return mobile; }
         public String getEmail() { return email; }
-        public String getCreatedBy() { return createdBy; }
+        public String getCreatorName() { return creatorName; }
+    }
+
+    // Replace TeamMemberCardAdapter with a simple RecyclerView.Adapter for the new box layout
+    private class DirectorTeamAdapter extends RecyclerView.Adapter<DirectorTeamAdapter.ViewHolder> {
+        private List<PartnerTeamMember> members;
+        DirectorTeamAdapter(List<PartnerTeamMember> members) { this.members = members; }
+        @Override
+        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.partner_team_list_item, parent, false);
+            return new ViewHolder(view);
+        }
+        @Override
+        public void onBindViewHolder(ViewHolder holder, int position) {
+            PartnerTeamMember member = members.get(position);
+            holder.nameText.setText("Name: " + member.getFullName());
+            holder.phoneText.setText("Phone: " + member.getMobile());
+            holder.emailText.setText("Email: " + member.getEmail());
+            holder.createdByText.setText("Created By: " + member.getCreatorName());
+            holder.actionButton.setOnClickListener(v -> {
+                Toast.makeText(PartnerTeamActivity.this, "Action for " + member.getFullName(), Toast.LENGTH_SHORT).show();
+            });
+        }
+        @Override
+        public int getItemCount() { return members.size(); }
+        class ViewHolder extends RecyclerView.ViewHolder {
+            TextView nameText, phoneText, emailText, createdByText;
+            Button actionButton;
+            ViewHolder(View view) {
+                super(view);
+                nameText = view.findViewById(R.id.nameText);
+                phoneText = view.findViewById(R.id.phoneText);
+                emailText = view.findViewById(R.id.emailText);
+                createdByText = view.findViewById(R.id.createdByText);
+                actionButton = view.findViewById(R.id.actionButton);
+            }
+        }
     }
 } 
