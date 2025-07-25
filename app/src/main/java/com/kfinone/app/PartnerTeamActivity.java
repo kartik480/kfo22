@@ -143,10 +143,8 @@ public class PartnerTeamActivity extends AppCompatActivity {
     private void fetchPartnerTeamForDirector(String createdById) {
         showLoading(true);
         String url = "https://emp.kfinone.com/mobile/api/director_fetch_users_with_creator.php";
-        if (createdById != null && !createdById.isEmpty()) {
-            url += "?createdBy=" + createdById;
-        }
-        Log.d("PartnerTeamActivity", "Fetching users with creator for createdBy: " + createdById + " URL: " + url);
+        // No createdBy parameter needed, backend handles filtering by CBO/RBH
+        Log.d("PartnerTeamActivity", "Fetching users with creator (CBO/RBH only) URL: " + url);
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
             response -> {
                 showLoading(false);
@@ -161,7 +159,7 @@ public class PartnerTeamActivity extends AppCompatActivity {
                             String fullName = userObj.optString("first_name", "") + " " + userObj.optString("last_name", "");
                             String phone = userObj.optString("Phone_number", "");
                             String email = userObj.optString("email_id", "");
-                            String creatorName = userObj.optString("creator_name", "");
+                            String creatorName = userObj.optString("creator_username", "");
                             if (creatorName == null || creatorName.trim().isEmpty() || creatorName.equalsIgnoreCase("null")) {
                                 creatorName = "Unknown Creator";
                             }
@@ -189,10 +187,8 @@ public class PartnerTeamActivity extends AppCompatActivity {
                 }
             },
             error -> {
-                showLoading(false);
-                Log.e(TAG, "Error fetching users with creator: " + error.getMessage());
-                Toast.makeText(this, "Error fetching users with creator: " + error.getMessage(), Toast.LENGTH_SHORT).show();
-                showNoTeamMembersMessage();
+                Log.e(TAG, "Error fetching users: " + error.getMessage());
+                Toast.makeText(this, "Error fetching users: " + error.getMessage(), Toast.LENGTH_SHORT).show();
             }
         );
         requestQueue.add(request);
