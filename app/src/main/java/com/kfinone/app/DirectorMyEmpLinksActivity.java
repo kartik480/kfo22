@@ -83,11 +83,6 @@ public class DirectorMyEmpLinksActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
-        // Navigate back to Director Employee Links Activity
-        Intent intent = new Intent(this, DirectorEmpLinksActivity.class);
-        passUserDataToIntent(intent);
-        startActivity(intent);
         finish();
     }
 
@@ -119,15 +114,32 @@ public class DirectorMyEmpLinksActivity extends AppCompatActivity {
         }
         @Override
         public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-            // No data to bind for now (empty state)
+            Employee emp = employees.get(position);
+            holder.fullNameText.setText("Name: " + emp.fullName);
+            holder.employeeIdText.setText("Employee ID: " + emp.employeeId);
+            holder.mobileText.setText("Phone: " + emp.mobile);
+            holder.emailText.setText("Email: " + emp.email);
+            holder.passwordText.setText("Password: ******");
+            holder.actionButton.setText("View");
+            holder.actionButton.setOnClickListener(v -> {
+                Toast.makeText(holder.itemView.getContext(), "Action for " + emp.fullName, Toast.LENGTH_SHORT).show();
+            });
         }
         @Override
         public int getItemCount() {
             return employees.size();
         }
         class ViewHolder extends RecyclerView.ViewHolder {
+            TextView fullNameText, employeeIdText, mobileText, emailText, passwordText;
+            android.widget.Button actionButton;
             ViewHolder(View itemView) {
                 super(itemView);
+                fullNameText = itemView.findViewById(R.id.fullNameText);
+                employeeIdText = itemView.findViewById(R.id.employeeIdText);
+                mobileText = itemView.findViewById(R.id.mobileText);
+                emailText = itemView.findViewById(R.id.emailText);
+                passwordText = itemView.findViewById(R.id.passwordText);
+                actionButton = itemView.findViewById(R.id.actionButton);
             }
         }
     }

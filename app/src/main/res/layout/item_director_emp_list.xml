@@ -2,54 +2,68 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:padding="8dp"
-    android:background="#FFFFFF">
+    android:orientation="vertical"
+    android:padding="12dp"
+    android:background="#FFFFFF"
+    android:elevation="2dp"
+    android:layout_marginBottom="12dp"
+    android:layout_marginTop="4dp"
+    android:layout_marginLeft="8dp"
+    android:layout_marginRight="8dp">
 
     <TextView
         android:id="@+id/fullNameText"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="2"
-        android:text=""
+        android:text="Name: John Doe"
         android:textColor="#2C3E50"
-        android:textSize="14sp" />
+        android:textStyle="bold"
+        android:textSize="16sp" />
 
     <TextView
         android:id="@+id/employeeIdText"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:text=""
+        android:text="Employee ID: 12345"
         android:textColor="#2C3E50"
-        android:textSize="14sp" />
+        android:textSize="14sp"
+        android:layout_marginTop="2dp" />
 
     <TextView
         android:id="@+id/mobileText"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="2"
-        android:text=""
+        android:text="Phone: 1234567890"
         android:textColor="#2C3E50"
-        android:textSize="14sp" />
+        android:textSize="14sp"
+        android:layout_marginTop="2dp" />
 
     <TextView
         android:id="@+id/emailText"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="2"
-        android:text=""
+        android:text="Email: john@example.com"
         android:textColor="#2C3E50"
-        android:textSize="14sp" />
+        android:textSize="14sp"
+        android:layout_marginTop="2dp" />
 
     <TextView
-        android:id="@+id/actionText"
-        android:layout_width="0dp"
+        android:id="@+id/passwordText"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:text=""
-        android:textColor="#1976D2"
-        android:textStyle="bold"
-        android:textSize="14sp" />
+        android:text="Password: ******"
+        android:textColor="#2C3E50"
+        android:textSize="14sp"
+        android:layout_marginTop="2dp" />
+
+    <Button
+        android:id="@+id/actionButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Action"
+        android:textColor="#FFFFFF"
+        android:backgroundTint="#1976D2"
+        android:layout_gravity="end"
+        android:layout_marginTop="8dp" />
 
 </LinearLayout> 
