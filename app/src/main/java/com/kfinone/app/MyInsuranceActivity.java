@@ -163,62 +163,8 @@ public class MyInsuranceActivity extends AppCompatActivity {
 
     private void loadSampleData() {
         insuranceList.clear();
-        
-        // Add sample insurance policies
-        insuranceList.add(new InsurancePolicy(
-            "John Doe",
-            "POL123456789",
-            "Life Insurance",
-            "₹5,000/month",
-            "₹5,00,000",
-            "31/12/2024",
-            "Active"
-        ));
-
-        insuranceList.add(new InsurancePolicy(
-            "Jane Smith",
-            "POL987654321",
-            "Health Insurance",
-            "₹3,500/month",
-            "₹3,00,000",
-            "15/06/2024",
-            "Active"
-        ));
-
-        insuranceList.add(new InsurancePolicy(
-            "Mike Johnson",
-            "POL456789123",
-            "Motor Insurance",
-            "₹2,000/month",
-            "₹2,50,000",
-            "30/09/2023",
-            "Expired"
-        ));
-
-        insuranceList.add(new InsurancePolicy(
-            "Sarah Wilson",
-            "POL789123456",
-            "Home Insurance",
-            "₹1,500/month",
-            "₹10,00,000",
-            "01/03/2025",
-            "Pending"
-        ));
-
-        insuranceList.add(new InsurancePolicy(
-            "David Brown",
-            "POL321654987",
-            "Travel Insurance",
-            "₹800/month",
-            "₹1,00,000",
-            "28/02/2024",
-            "Active"
-        ));
-
-        // Initially show all policies
-        filteredList.clear();
-        filteredList.addAll(insuranceList);
-        insuranceAdapter.notifyDataSetChanged();
+        // Only fetch real data here. No sample data.
+        // insuranceAdapter.notifyDataSetChanged();
     }
 
     private void showLoading(boolean show) {

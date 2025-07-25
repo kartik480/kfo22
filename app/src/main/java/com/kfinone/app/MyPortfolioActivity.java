@@ -54,20 +54,9 @@ public class MyPortfolioActivity extends AppCompatActivity {
 
     private void loadPortfolioData() {
         // TODO: Load portfolio data from server
-        // For now, show sample data
         portfolioList.clear();
-        
-        // Add sample portfolios with all required fields
-        portfolioList.add(new PortfolioItem("1", "John Doe", "ABC Corporation", "9876543210", "Maharashtra", "Mumbai", "Admin"));
-        portfolioList.add(new PortfolioItem("2", "Jane Smith", "XYZ Industries", "8765432109", "Delhi", "New Delhi", "Manager"));
-        portfolioList.add(new PortfolioItem("3", "Mike Johnson", "Tech Solutions Ltd", "7654321098", "Karnataka", "Bangalore", "Admin"));
-        portfolioList.add(new PortfolioItem("4", "Sarah Wilson", "Global Enterprises", "6543210987", "Tamil Nadu", "Chennai", "Supervisor"));
-        portfolioList.add(new PortfolioItem("5", "David Brown", "Innovation Corp", "5432109876", "Gujarat", "Ahmedabad", "Manager"));
-        portfolioList.add(new PortfolioItem("6", "Emily Davis", "Future Tech", "4321098765", "Uttar Pradesh", "Lucknow", "Admin"));
-        portfolioList.add(new PortfolioItem("7", "Robert Wilson", "Smart Solutions", "3210987654", "West Bengal", "Kolkata", "Supervisor"));
-        portfolioList.add(new PortfolioItem("8", "Lisa Anderson", "Digital Dynamics", "2109876543", "Telangana", "Hyderabad", "Manager"));
-        
-        portfolioAdapter.notifyDataSetChanged();
+        // Only fetch real data here. No sample data.
+        // portfolioAdapter.notifyDataSetChanged();
         updateEmptyState();
     }
 

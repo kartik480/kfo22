@@ -194,7 +194,6 @@ public class DocCheckListActivity extends AppCompatActivity {
                         runOnUiThread(() -> {
                             showLoading(false);
                             Toast.makeText(DocCheckListActivity.this, "Error: " + errorMsg, Toast.LENGTH_LONG).show();
-                            loadSampleData(); // Fallback to sample data
                         });
                     }
                 } else {
@@ -202,7 +201,6 @@ public class DocCheckListActivity extends AppCompatActivity {
                     runOnUiThread(() -> {
                         showLoading(false);
                         Toast.makeText(DocCheckListActivity.this, "Server error: " + responseCode, Toast.LENGTH_LONG).show();
-                        loadSampleData(); // Fallback to sample data
                     });
                 }
             } catch (Exception e) {
@@ -210,7 +208,6 @@ public class DocCheckListActivity extends AppCompatActivity {
                 runOnUiThread(() -> {
                     showLoading(false);
                     Toast.makeText(DocCheckListActivity.this, "Error loading documents: " + e.getMessage(), Toast.LENGTH_LONG).show();
-                    loadSampleData(); // Fallback to sample data
                 });
             }
         }).start();
@@ -218,42 +215,8 @@ public class DocCheckListActivity extends AppCompatActivity {
 
     private void loadSampleData() {
         documentList.clear();
-        
-        // Add sample documents as fallback
-        documentList.add(new DocumentItem(
-            "Aadhar Card",
-            "aadhar_john_doe.pdf",
-            "https://example.com/docs/aadhar_john_doe.pdf"
-        ));
-
-        documentList.add(new DocumentItem(
-            "PAN Card",
-            "pan_jane_smith.pdf",
-            "https://example.com/docs/pan_jane_smith.pdf"
-        ));
-
-        documentList.add(new DocumentItem(
-            "Passport",
-            "passport_mike_johnson.pdf",
-            "https://example.com/docs/passport_mike_johnson.pdf"
-        ));
-
-        documentList.add(new DocumentItem(
-            "Driving License",
-            "dl_sarah_wilson.pdf",
-            "https://example.com/docs/dl_sarah_wilson.pdf"
-        ));
-
-        documentList.add(new DocumentItem(
-            "Voter ID",
-            "voter_david_brown.pdf",
-            "https://example.com/docs/voter_david_brown.pdf"
-        ));
-
-        // Initially show all documents
-        filteredList.clear();
-        filteredList.addAll(documentList);
-        documentAdapter.notifyDataSetChanged();
+        // Only fetch real data here. No sample data.
+        // documentAdapter.notifyDataSetChanged();
     }
 
     private void showLoading(boolean show) {

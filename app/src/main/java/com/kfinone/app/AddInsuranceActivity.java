@@ -237,14 +237,6 @@ public class AddInsuranceActivity extends AppCompatActivity {
     }
 
     private void loadSampleData() {
-        // Load sample data for testing
-        customerNameInput.setText("John Doe");
-        mobileNumberInput.setText("9876543210");
-        emailInput.setText("john.doe@example.com");
-        addressInput.setText("123 Main Street, City, State - 123456");
-        policyNumberInput.setText("POL123456789");
-        premiumAmountInput.setText("5000");
-        coverageAmountInput.setText("500000");
-        insuranceTypeDropdown.setText("Life Insurance");
+        // Only fetch real data here. No sample data.
     }
 } 

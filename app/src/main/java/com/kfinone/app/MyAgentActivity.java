@@ -651,20 +651,7 @@ public class MyAgentActivity extends AppCompatActivity {
     }
 
     private void displaySampleData() {
-        // Clear existing data
-        tableContent.removeAllViews();
-        
-        // Add sample data for testing
-        addTableHeader();
-        
-        // Sample agent data with all required parameters
-        AgentItem sampleAgent1 = new AgentItem("John Doe", "ABC Corporation", "9876543210", "9876543211", "john@abc.com", "Business", "Maharashtra", "Mumbai Central", "123 Andheri West, Mumbai", "", "Admin", "System");
-        AgentItem sampleAgent2 = new AgentItem("Jane Smith", "XYZ Industries", "8765432109", "8765432110", "jane@xyz.com", "Individual", "Delhi", "Connaught Place", "456 Bandra West, Delhi", "", "Admin", "System");
-        AgentItem sampleAgent3 = new AgentItem("Bob Johnson", "Tech Solutions Ltd", "7654321098", "7654321099", "bob@tech.com", "Business", "Karnataka", "Bangalore Central", "789 Juhu Beach, Bangalore", "", "Admin", "System");
-        
-        addTableRow(sampleAgent1);
-        addTableRow(sampleAgent2);
-        addTableRow(sampleAgent3);
+        // Only fetch real data here. No sample data.
     }
 
     @Override

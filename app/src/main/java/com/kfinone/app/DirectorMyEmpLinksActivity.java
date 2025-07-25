@@ -24,6 +24,7 @@ import java.util.List;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import androidx.annotation.NonNull;
+import com.android.volley.toolbox.StringRequest;
 
 public class DirectorMyEmpLinksActivity extends AppCompatActivity {
     
@@ -55,6 +56,8 @@ public class DirectorMyEmpLinksActivity extends AppCompatActivity {
         adapter = new EmployeeAdapter(employeeList);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
+
+        fetchEmployeeData();
     }
 
     private void setupToolbar() {
@@ -73,6 +76,47 @@ public class DirectorMyEmpLinksActivity extends AppCompatActivity {
         if (userName != null) intent.putExtra("USERNAME", userName);
         if (firstName != null) intent.putExtra("FIRST_NAME", firstName);
         if (lastName != null) intent.putExtra("LAST_NAME", lastName);
+    }
+
+    private void fetchEmployeeData() {
+        String url = "https://emp.kfinone.com/mobile/api/director_my_emp_list.php";
+        RequestQueue queue = Volley.newRequestQueue(this);
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
+            Request.Method.GET, url, null,
+            new Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject response) {
+                    try {
+                        if (response.getBoolean("success")) {
+                            JSONArray data = response.getJSONArray("data");
+                            employeeList.clear();
+                            for (int i = 0; i < data.length(); i++) {
+                                JSONObject obj = data.getJSONObject(i);
+                                String fullName = obj.optString("firstName", "") + " " + obj.optString("lastName", "");
+                                String employeeId = obj.optString("employee_no", "");
+                                String mobile = obj.optString("mobile", "");
+                                String email = obj.optString("email_id", "");
+                                employeeList.add(new Employee(fullName, employeeId, mobile, email));
+                            }
+                            adapter.notifyDataSetChanged();
+                        } else {
+                            Toast.makeText(DirectorMyEmpLinksActivity.this, "No employees found", Toast.LENGTH_SHORT).show();
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        Toast.makeText(DirectorMyEmpLinksActivity.this, "Error parsing data", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            },
+            new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    error.printStackTrace();
+                    Toast.makeText(DirectorMyEmpLinksActivity.this, "Failed to fetch employees", Toast.LENGTH_SHORT).show();
+                }
+            }
+        );
+        queue.add(jsonObjectRequest);
     }
 
     @Override
