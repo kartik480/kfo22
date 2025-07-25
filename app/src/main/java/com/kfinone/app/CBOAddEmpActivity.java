@@ -12,14 +12,6 @@ public class CBOAddEmpActivity extends AppCompatActivity {
 
     // Top navigation elements
     private View backButton;
-    private View refreshButton;
-    private View addButton;
-
-    // Bottom navigation elements
-    private LinearLayout dashboardButton;
-    private LinearLayout empLinksButton;
-    private LinearLayout reportsButton;
-    private LinearLayout settingsButton;
 
     // User data
     private String userName;
@@ -43,46 +35,11 @@ public class CBOAddEmpActivity extends AppCompatActivity {
     private void initializeViews() {
         // Top navigation
         backButton = findViewById(R.id.backButton);
-        refreshButton = findViewById(R.id.refreshButton);
-        addButton = findViewById(R.id.addButton);
-
-        // Bottom navigation
-        dashboardButton = findViewById(R.id.dashboardButton);
-        empLinksButton = findViewById(R.id.empLinksButton);
-        reportsButton = findViewById(R.id.reportsButton);
-        settingsButton = findViewById(R.id.settingsButton);
     }
 
     private void setupClickListeners() {
         // Top navigation
         backButton.setOnClickListener(v -> goBack());
-        refreshButton.setOnClickListener(v -> refreshData());
-        addButton.setOnClickListener(v -> saveNewEmployee());
-
-        // Bottom navigation
-        dashboardButton.setOnClickListener(v -> {
-            Intent intent = new Intent(this, ChiefBusinessOfficerPanelActivity.class);
-            passUserDataToIntent(intent);
-            startActivity(intent);
-            finish();
-        });
-
-        empLinksButton.setOnClickListener(v -> {
-            Intent intent = new Intent(this, CBOEmpLinksActivity.class);
-            passUserDataToIntent(intent);
-            startActivity(intent);
-            finish();
-        });
-
-        reportsButton.setOnClickListener(v -> {
-            Toast.makeText(this, "Reports - Coming Soon", Toast.LENGTH_SHORT).show();
-            // TODO: Navigate to Reports activity
-        });
-
-        settingsButton.setOnClickListener(v -> {
-            Toast.makeText(this, "Settings - Coming Soon", Toast.LENGTH_SHORT).show();
-            // TODO: Navigate to Settings activity
-        });
     }
 
     private void goBack() {
