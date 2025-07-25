@@ -21,4 +21,9 @@
     <string name="prompt_type_of_partner">Type of Partner</string>
     <string name="prompt_branch_state">Branch State</string>
     <string name="prompt_branch_location">Branch Location</string>
+
+    <string name="team_agent_heading">Team Agent</string>
+    <string name="select_user">Select User</string>
+    <string name="show_data">Show Data</string>
+    <string name="reset">Reset</string>
 </resources>

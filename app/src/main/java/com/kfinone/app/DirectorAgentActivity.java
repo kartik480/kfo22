@@ -39,6 +39,12 @@ public class DirectorAgentActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
+        agentTeamBox.setOnClickListener(v -> {
+            Intent intent = new Intent(this, DirectorAgentTeamActivity.class);
+            passUserDataToIntent(intent);
+            startActivity(intent);
+        });
+
         // Get user data from intent
         Intent intent = getIntent();
         if (intent != null) {

@@ -498,6 +498,7 @@
         <activity android:name=".DirectorInsurancePanelActivity" />
         <activity android:name=".DirectorAddInsuranceActivity" />
         <activity android:name=".DirectorMyInsuranceActivity" />
+        <activity android:name=".DirectorAgentTeamActivity" />
         
         <!-- Chief Business Officer Activities -->
         <activity
