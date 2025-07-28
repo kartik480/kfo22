@@ -60,8 +60,8 @@ public class MySdsaActivity extends AppCompatActivity {
     private void loadSdsaData() {
         new Thread(() -> {
             try {
-                Log.d(TAG, "Loading SDSA data...");
-                URL url = new URL("https://emp.kfinone.com/mobile/api/fetch_active_sdsa.php");
+                Log.d(TAG, "Loading SDSA data for K RAJESH KUMAR's team...");
+                URL url = new URL("https://emp.kfinone.com/mobile/api/get_my_sdsa_users.php");
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestMethod("GET");
                 conn.setConnectTimeout(5000);
@@ -90,12 +90,19 @@ public class MySdsaActivity extends AppCompatActivity {
                         for (int i = 0; i < data.length(); i++) {
                             JSONObject sdsa = data.getJSONObject(i);
                             sdsaList.add(new SdsaItem(
-                                sdsa.getString("fullName"),
-                                sdsa.getString("phoneNumber"),
-                                sdsa.getString("emailId"),
-                                sdsa.getString("password"),
-                                sdsa.getString("id"),
-                                sdsa.getString("reportingTo")
+                                sdsa.optString("id", ""),
+                                sdsa.optString("username", ""),
+                                sdsa.optString("first_name", ""),
+                                sdsa.optString("last_name", ""),
+                                sdsa.optString("full_name", ""),
+                                sdsa.optString("phone_number", ""),
+                                sdsa.optString("email_id", ""),
+                                sdsa.optString("employee_no", ""),
+                                sdsa.optString("department", ""),
+                                sdsa.optString("designation", ""),
+                                sdsa.optString("branchloaction", ""),
+                                sdsa.optString("status", ""),
+                                sdsa.optString("reportingTo", "")
                             ));
                         }
                         
@@ -103,7 +110,7 @@ public class MySdsaActivity extends AppCompatActivity {
                             adapter.notifyDataSetChanged();
                             Log.d(TAG, "Updated SDSA list with " + sdsaList.size() + " items");
                             Toast.makeText(MySdsaActivity.this, 
-                                "Loaded " + sdsaList.size() + " SDSA records", Toast.LENGTH_SHORT).show();
+                                "Loaded " + sdsaList.size() + " SDSA users reporting to K RAJESH KUMAR", Toast.LENGTH_SHORT).show();
                         });
                     } else {
                         String errorMsg = json.optString("message");
@@ -127,21 +134,38 @@ public class MySdsaActivity extends AppCompatActivity {
         }).start();
     }
 
-    // SDSA Item data class
+    // SDSA Item data class with essential fields only
     private static class SdsaItem {
-        String name;
-        String phoneNumber;
-        String email;
-        String password;
         String id;
+        String username;
+        String firstName;
+        String lastName;
+        String fullName;
+        String phoneNumber;
+        String emailId;
+        String employeeNo;
+        String department;
+        String designation;
+        String branchLocation;
+        String status;
         String reportingTo;
 
-        SdsaItem(String name, String phoneNumber, String email, String password, String id, String reportingTo) {
-            this.name = name;
-            this.phoneNumber = phoneNumber;
-            this.email = email;
-            this.password = password;
+        SdsaItem(String id, String username, String firstName, String lastName, 
+                String fullName, String phoneNumber, String emailId, String employeeNo, 
+                String department, String designation, String branchLocation, 
+                String status, String reportingTo) {
             this.id = id;
+            this.username = username;
+            this.firstName = firstName;
+            this.lastName = lastName;
+            this.fullName = fullName;
+            this.phoneNumber = phoneNumber;
+            this.emailId = emailId;
+            this.employeeNo = employeeNo;
+            this.department = department;
+            this.designation = designation;
+            this.branchLocation = branchLocation;
+            this.status = status;
             this.reportingTo = reportingTo;
         }
     }
@@ -165,19 +189,43 @@ public class MySdsaActivity extends AppCompatActivity {
         @Override
         public void onBindViewHolder(ViewHolder holder, int position) {
             SdsaItem item = sdsaItems.get(position);
-            holder.nameText.setText(item.name);
-            holder.phoneText.setText(item.phoneNumber);
-            holder.emailText.setText(item.email);
-            holder.passwordText.setText(item.password);
+            
+            // Set comprehensive user information
+            holder.nameText.setText("Name: " + item.fullName);
+            holder.phoneText.setText("Phone: " + item.phoneNumber);
+            holder.emailText.setText("Email: " + item.emailId);
+            holder.passwordText.setText("Employee ID: " + item.employeeNo);
+            
+            // Add additional information if available
+            String additionalInfo = "";
+            if (!item.designation.isEmpty()) {
+                additionalInfo += "Designation: " + item.designation + "\n";
+            }
+            if (!item.department.isEmpty()) {
+                additionalInfo += "Department: " + item.department + "\n";
+            }
+            if (!item.branchLocation.isEmpty()) {
+                additionalInfo += "Branch: " + item.branchLocation + "\n";
+            }
+            if (!item.status.isEmpty()) {
+                additionalInfo += "Status: " + item.status;
+            }
+            
+            if (!additionalInfo.isEmpty()) {
+                holder.additionalInfoText.setText(additionalInfo);
+                holder.additionalInfoText.setVisibility(View.VISIBLE);
+            } else {
+                holder.additionalInfoText.setVisibility(View.GONE);
+            }
 
             holder.editButton.setOnClickListener(v -> {
                 Toast.makeText(MySdsaActivity.this, 
-                    "Edit " + item.name, Toast.LENGTH_SHORT).show();
+                    "Edit " + item.fullName, Toast.LENGTH_SHORT).show();
             });
 
             holder.deleteButton.setOnClickListener(v -> {
                 Toast.makeText(MySdsaActivity.this, 
-                    "Delete " + item.name, Toast.LENGTH_SHORT).show();
+                    "Delete " + item.fullName, Toast.LENGTH_SHORT).show();
             });
         }
 
@@ -191,6 +239,7 @@ public class MySdsaActivity extends AppCompatActivity {
             TextView phoneText;
             TextView emailText;
             TextView passwordText;
+            TextView additionalInfoText;
             Button editButton;
             Button deleteButton;
 
@@ -200,6 +249,7 @@ public class MySdsaActivity extends AppCompatActivity {
                 phoneText = view.findViewById(R.id.phoneText);
                 emailText = view.findViewById(R.id.emailText);
                 passwordText = view.findViewById(R.id.passwordText);
+                additionalInfoText = view.findViewById(R.id.additionalInfoText);
                 editButton = view.findViewById(R.id.editButton);
                 deleteButton = view.findViewById(R.id.deleteButton);
             }

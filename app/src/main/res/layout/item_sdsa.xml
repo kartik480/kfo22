@@ -2,83 +2,113 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
+    android:orientation="vertical"
     android:background="@drawable/table_row_background"
-    android:paddingHorizontal="12dp"
-    android:paddingVertical="12dp"
-    android:layout_marginBottom="4dp"
-    android:gravity="center_vertical">
+    android:padding="16dp"
+    android:layout_marginBottom="8dp"
+    android:elevation="2dp">
 
-    <!-- Name Column -->
-    <TextView
-        android:id="@+id/nameText"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="2"
-        android:text="John Doe"
-        android:textSize="12sp"
-        android:textColor="#2C3E50"
-        android:gravity="start"
-        android:maxLines="2"
-        android:ellipsize="end"
-        android:fontFamily="sans-serif-medium" />
-
-    <!-- Phone Number Column -->
-    <TextView
-        android:id="@+id/phoneText"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1.5"
-        android:text="+91 98765 43210"
-        android:textSize="11sp"
-        android:textColor="#34495E"
-        android:gravity="center"
-        android:maxLines="1"
-        android:ellipsize="end" />
-
-    <!-- Email Column -->
-    <TextView
-        android:id="@+id/emailText"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="2"
-        android:text="john.doe@example.com"
-        android:textSize="11sp"
-        android:textColor="#34495E"
-        android:gravity="center"
-        android:maxLines="2"
-        android:ellipsize="end" />
-
-    <!-- Password Column -->
-    <TextView
-        android:id="@+id/passwordText"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1.5"
-        android:text="••••••••"
-        android:textSize="11sp"
-        android:textColor="#34495E"
-        android:gravity="center"
-        android:maxLines="1"
-        android:ellipsize="end" />
-
-    <!-- Action Column -->
+    <!-- Main Information Row -->
     <LinearLayout
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
         android:orientation="horizontal"
-        android:gravity="center">
+        android:gravity="center_vertical"
+        android:layout_marginBottom="8dp">
+
+        <!-- Name Column -->
+        <TextView
+            android:id="@+id/nameText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:text="Name: John Doe"
+            android:textSize="14sp"
+            android:textColor="#2C3E50"
+            android:gravity="start"
+            android:maxLines="2"
+            android:ellipsize="end"
+            android:fontFamily="sans-serif-medium" />
+
+        <!-- Phone Number Column -->
+        <TextView
+            android:id="@+id/phoneText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.5"
+            android:text="Phone: +91 98765 43210"
+            android:textSize="12sp"
+            android:textColor="#34495E"
+            android:gravity="center"
+            android:maxLines="2"
+            android:ellipsize="end" />
+
+    </LinearLayout>
+
+    <!-- Secondary Information Row -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="8dp">
+
+        <!-- Email Column -->
+        <TextView
+            android:id="@+id/emailText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:text="Email: john.doe@example.com"
+            android:textSize="12sp"
+            android:textColor="#34495E"
+            android:gravity="start"
+            android:maxLines="2"
+            android:ellipsize="end" />
+
+        <!-- Employee ID Column -->
+        <TextView
+            android:id="@+id/passwordText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.5"
+            android:text="Employee ID: EMP001"
+            android:textSize="12sp"
+            android:textColor="#34495E"
+            android:gravity="center"
+            android:maxLines="1"
+            android:ellipsize="end" />
+
+    </LinearLayout>
+
+    <!-- Additional Information -->
+    <TextView
+        android:id="@+id/additionalInfoText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Designation: Manager\nDepartment: Sales\nBranch: Mumbai\nStatus: Active"
+        android:textSize="11sp"
+        android:textColor="#7F8C8D"
+        android:gravity="start"
+        android:layout_marginBottom="8dp"
+        android:visibility="visible" />
+
+    <!-- Action Buttons Row -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="end">
 
         <!-- Edit Button -->
         <Button
             android:id="@+id/editButton"
-            android:layout_width="28dp"
-            android:layout_height="28dp"
-            android:layout_marginEnd="4dp"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginEnd="8dp"
             android:background="@drawable/circle_background"
             android:text="✏"
-            android:textSize="10sp"
+            android:textSize="12sp"
             android:textColor="#FFFFFF"
             android:padding="0dp"
             android:minWidth="0dp"
@@ -87,12 +117,12 @@
         <!-- Delete Button -->
         <Button
             android:id="@+id/deleteButton"
-            android:layout_width="28dp"
-            android:layout_height="28dp"
-            android:layout_marginStart="4dp"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginStart="8dp"
             android:background="@drawable/circle_background"
             android:text="🗑"
-            android:textSize="10sp"
+            android:textSize="12sp"
             android:textColor="#FFFFFF"
             android:padding="0dp"
             android:minWidth="0dp"

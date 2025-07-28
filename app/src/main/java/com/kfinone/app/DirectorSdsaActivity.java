@@ -12,7 +12,6 @@ import androidx.appcompat.widget.Toolbar;
 public class DirectorSdsaActivity extends AppCompatActivity {
 
     private LinearLayout mySdsaBox;
-    private LinearLayout sdsaTeamBox;
     
     private String userId;
     private String userName;
@@ -34,13 +33,11 @@ public class DirectorSdsaActivity extends AppCompatActivity {
         }
 
         mySdsaBox = findViewById(R.id.mySdsaBox);
-        sdsaTeamBox = findViewById(R.id.sdsaTeamBox);
 
         mySdsaBox.setOnClickListener(v -> {
-            startActivity(new Intent(this, DirectorMySdsaActivity.class));
-        });
-        sdsaTeamBox.setOnClickListener(v -> {
-            startActivity(new Intent(this, DirectorSdsaTeamActivity.class));
+            Intent mySdsaIntent = new Intent(this, DirectorMySdsaActivity.class);
+            passUserDataToIntent(mySdsaIntent);
+            startActivity(mySdsaIntent);
         });
 
         setupToolbar();

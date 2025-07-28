@@ -58,37 +58,6 @@
                     android:textColor="#2C3E50" />
             </LinearLayout>
 
-            <!-- SDSA Team Box -->
-            <LinearLayout
-                android:id="@+id/sdsaTeamBox"
-                android:layout_width="match_parent"
-                android:layout_height="100dp"
-                android:background="@drawable/edit_text_background"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:padding="16dp"
-                android:clickable="true"
-                android:focusable="true"
-                android:foreground="?android:attr/selectableItemBackground"
-                android:layout_marginBottom="16dp">
-
-                <ImageView
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:src="@drawable/ic_dsa"
-                    android:tint="#27AE60"
-                    android:layout_marginEnd="16dp" />
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="SDSA Team"
-                    android:textSize="20sp"
-                    android:textStyle="bold"
-                    android:textColor="#2C3E50" />
-            </LinearLayout>
-
         </LinearLayout>
     </ScrollView>
 </LinearLayout> 

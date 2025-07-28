@@ -81,7 +81,7 @@ public class DataService {
 
     private static int fetchSdsaCount() {
         try {
-            URL url = new URL("https://emp.kfinone.com/mobile/api/fetch_active_sdsa.php");
+            URL url = new URL("https://emp.kfinone.com/mobile/api/get_my_sdsa_users.php");
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
             conn.setConnectTimeout(5000);
@@ -99,12 +99,14 @@ public class DataService {
 
                 JSONObject json = new JSONObject(response.toString());
                 if (json.getString("status").equals("success")) {
-                    JSONArray data = json.getJSONArray("data");
-                    return data.length();
+                    // Use the count field from the API response
+                    int count = json.optInt("count", 0);
+                    Log.d(TAG, "My SDSA users count: " + count);
+                    return count;
                 }
             }
         } catch (Exception e) {
-            Log.e(TAG, "Error fetching SDSA count: " + e.getMessage(), e);
+            Log.e(TAG, "Error fetching My SDSA count: " + e.getMessage(), e);
         }
         return 0;
     }
