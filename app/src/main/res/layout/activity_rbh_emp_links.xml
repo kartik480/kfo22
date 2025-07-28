@@ -36,32 +36,13 @@
 
     </LinearLayout>
 
-    <!-- Content -->
-    <LinearLayout
+    <!-- RecyclerView for RBH Work Links -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:orientation="vertical"
-        android:gravity="center"
-        android:padding="32dp">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Employee Links"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            android:textColor="@color/primary"
-            android:layout_marginBottom="16dp" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Coming Soon"
-            android:textSize="16sp"
-            android:textColor="@color/gray"
-            android:gravity="center" />
-
-    </LinearLayout>
+        android:padding="8dp"
+        android:clipToPadding="false" />
 
 </LinearLayout> 

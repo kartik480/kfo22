@@ -37,7 +37,7 @@ public class CBOAddEmpActivity extends AppCompatActivity {
 
     // Dropdown fields
     private AutoCompleteTextView branchStateInput, branchLocationInput, bankNameInput, accountTypeInput, reportingToInput;
-
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
