@@ -41,7 +41,7 @@ public class DirectorActiveSdsaListActivity extends AppCompatActivity {
     private void loadSdsaData() {
         new Thread(() -> {
             try {
-                URL url = new URL("https://emp.kfinone.com/mobile/api/fetch_active_sdsa.php");
+                URL url = new URL("https://emp.kfinone.com/mobile/api/get_sdsa_users_reporting_to_11.php");
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestMethod("GET");
                 conn.setConnectTimeout(5000);
@@ -64,12 +64,12 @@ public class DirectorActiveSdsaListActivity extends AppCompatActivity {
                             sdsaList.add(new SdsaItem(
                                 sdsa.optString("first_name", ""),
                                 sdsa.optString("last_name", ""),
-                                sdsa.optString("Phone_number", ""),
+                                sdsa.optString("phone_number", ""),
                                 sdsa.optString("email_id", ""),
                                 sdsa.optString("password", ""),
-                                sdsa.optString("reporting_firstName", ""),
-                                sdsa.optString("reporting_lastName", ""),
-                                sdsa.optString("reporting_designation_name", "")
+                                sdsa.optString("full_name", ""),
+                                sdsa.optString("employee_no", ""),
+                                sdsa.optString("department", "")
                             ));
                         }
                         runOnUiThread(() -> adapter.notifyDataSetChanged());
@@ -87,16 +87,16 @@ public class DirectorActiveSdsaListActivity extends AppCompatActivity {
     }
 
     private static class SdsaItem {
-        String firstName, lastName, phone, email, password, reportingFirstName, reportingLastName, reportingDesignation;
-        SdsaItem(String firstName, String lastName, String phone, String email, String password, String reportingFirstName, String reportingLastName, String reportingDesignation) {
+        String firstName, lastName, phone, email, password, fullName, employeeNo, department;
+        SdsaItem(String firstName, String lastName, String phone, String email, String password, String fullName, String employeeNo, String department) {
             this.firstName = firstName;
             this.lastName = lastName;
             this.phone = phone;
             this.email = email;
             this.password = password;
-            this.reportingFirstName = reportingFirstName;
-            this.reportingLastName = reportingLastName;
-            this.reportingDesignation = reportingDesignation;
+            this.fullName = fullName;
+            this.employeeNo = employeeNo;
+            this.department = department;
         }
     }
 
@@ -113,11 +113,11 @@ public class DirectorActiveSdsaListActivity extends AppCompatActivity {
         @Override
         public void onBindViewHolder(ViewHolder holder, int position) {
             SdsaItem item = sdsaItems.get(position);
-            holder.nameText.setText("Name: " + item.firstName + " " + item.lastName);
+            holder.nameText.setText("Name: " + item.fullName);
             holder.phoneText.setText("Phone: " + item.phone);
             holder.emailText.setText("Email: " + item.email);
             holder.passwordText.setText("Password: " + item.password);
-            holder.reportingText.setText("Reporting To: " + item.reportingFirstName + " " + item.reportingLastName + " (" + item.reportingDesignation + ")");
+            holder.reportingText.setText("Employee No: " + item.employeeNo + " | Department: " + item.department);
             holder.actionButton.setOnClickListener(v -> {
                 // TODO: Action for SDSA row
             });

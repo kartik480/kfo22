@@ -514,6 +514,7 @@
         <activity android:name=".DirectorMyAgentActivity" />
         <activity android:name=".DirectorMySdsaActivity" />
         <activity android:name=".DirectorSdsaTeamActivity" />
+        <activity android:name=".DirectorSdsaTeamNewActivity" />
         <activity android:name=".DirectorAddAgentActivity" />
         <activity android:name=".DirectorInsurancePanelActivity" />
         <activity android:name=".DirectorAddInsuranceActivity" />

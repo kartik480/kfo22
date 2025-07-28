@@ -90,13 +90,18 @@ public class DirectorMySdsaActivity extends AppCompatActivity {
                         sdsaList.clear();
                         for (int i = 0; i < data.length(); i++) {
                             JSONObject sdsa = data.getJSONObject(i);
+                            // Construct full name from first_name and last_name
+                            String firstName = sdsa.optString("first_name", "");
+                            String lastName = sdsa.optString("last_name", "");
+                            String fullName = (firstName + " " + lastName).trim();
+                            
                             sdsaList.add(new SdsaItem(
-                                sdsa.getString("fullName"),
-                                sdsa.getString("phoneNumber"),
-                                sdsa.getString("emailId"),
-                                sdsa.getString("password"),
-                                sdsa.getString("id"),
-                                sdsa.getString("reportingTo")
+                                fullName,
+                                sdsa.optString("Phone_number", ""),
+                                sdsa.optString("email_id", ""),
+                                sdsa.optString("password", ""),
+                                sdsa.optString("id", ""),
+                                sdsa.optString("reportingTo", "")
                             ));
                         }
                         runOnUiThread(() -> adapter.notifyDataSetChanged());

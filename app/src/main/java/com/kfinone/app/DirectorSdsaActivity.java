@@ -33,11 +33,18 @@ public class DirectorSdsaActivity extends AppCompatActivity {
         }
 
         mySdsaBox = findViewById(R.id.mySdsaBox);
+        LinearLayout sdsaTeamBox = findViewById(R.id.sdsaTeamBox);
 
         mySdsaBox.setOnClickListener(v -> {
             Intent mySdsaIntent = new Intent(this, DirectorMySdsaActivity.class);
             passUserDataToIntent(mySdsaIntent);
             startActivity(mySdsaIntent);
+        });
+
+        sdsaTeamBox.setOnClickListener(v -> {
+            Intent sdsaTeamIntent = new Intent(this, DirectorSdsaTeamNewActivity.class);
+            passUserDataToIntent(sdsaTeamIntent);
+            startActivity(sdsaTeamIntent);
         });
 
         setupToolbar();

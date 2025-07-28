@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/edit_text_background"
+    android:padding="16dp"
+    android:layout_marginBottom="8dp"
+    android:elevation="2dp">
+
+    <TextView
+        android:id="@+id/nameText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Name: John Doe"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:textColor="#2C3E50"
+        android:layout_marginBottom="4dp"/>
+
+    <TextView
+        android:id="@+id/phoneText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Phone: 1234567890"
+        android:textSize="14sp"
+        android:textColor="#34495E"
+        android:layout_marginBottom="4dp"/>
+
+    <TextView
+        android:id="@+id/emailText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Email: john@example.com"
+        android:textSize="14sp"
+        android:textColor="#34495E"
+        android:layout_marginBottom="4dp"/>
+
+    <TextView
+        android:id="@+id/employeeText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Employee No: EMP001"
+        android:textSize="14sp"
+        android:textColor="#34495E"
+        android:layout_marginBottom="4dp"/>
+
+    <TextView
+        android:id="@+id/departmentText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Department: IT"
+        android:textSize="14sp"
+        android:textColor="#34495E"
+        android:layout_marginBottom="4dp"/>
+
+    <TextView
+        android:id="@+id/designationText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Designation: Developer"
+        android:textSize="14sp"
+        android:textColor="#34495E"/>
+
+</LinearLayout> 
