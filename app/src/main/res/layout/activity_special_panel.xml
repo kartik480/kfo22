@@ -146,7 +146,10 @@
                             android:padding="16dp"
                             android:layout_marginEnd="6dp"
                             android:elevation="2dp"
-                            android:gravity="center">
+                            android:gravity="center"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:foreground="?attr/selectableItemBackground">
 
                             <LinearLayout
                                 android:layout_width="40dp"
@@ -204,7 +207,10 @@
                             android:padding="16dp"
                             android:layout_marginStart="6dp"
                             android:elevation="2dp"
-                            android:gravity="center">
+                            android:gravity="center"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:foreground="?attr/selectableItemBackground">
 
                             <LinearLayout
                                 android:layout_width="40dp"
@@ -271,7 +277,10 @@
                             android:padding="16dp"
                             android:layout_marginEnd="6dp"
                             android:elevation="2dp"
-                            android:gravity="center">
+                            android:gravity="center"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:foreground="?attr/selectableItemBackground">
 
                             <LinearLayout
                                 android:layout_width="40dp"
@@ -329,7 +338,10 @@
                             android:padding="16dp"
                             android:layout_marginStart="6dp"
                             android:elevation="2dp"
-                            android:gravity="center">
+                            android:gravity="center"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:foreground="?attr/selectableItemBackground">
 
                             <LinearLayout
                                 android:layout_width="40dp"
@@ -395,7 +407,10 @@
                             android:padding="16dp"
                             android:layout_marginEnd="6dp"
                             android:elevation="2dp"
-                            android:gravity="center">
+                            android:gravity="center"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:foreground="?attr/selectableItemBackground">
 
                             <LinearLayout
                                 android:layout_width="40dp"

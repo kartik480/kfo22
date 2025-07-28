@@ -159,45 +159,33 @@ public class SpecialPanelActivity extends AppCompatActivity implements Navigatio
 
         // Card click listeners
         findViewById(R.id.totalEmpCard).setOnClickListener(v -> {
-            String empCount = totalEmpCount.getText().toString();
-            Toast.makeText(this, "Total Employees: " + empCount, Toast.LENGTH_SHORT).show();
-            // TODO: Navigate to employee details
+            Intent intent = new Intent(this, MyEmpActivity.class);
+            passUserDataToIntent(intent);
+            startActivity(intent);
         });
 
         findViewById(R.id.totalSdsaCard).setOnClickListener(v -> {
-            String sdsaCount = totalSdsaCount.getText().toString();
-            Toast.makeText(this, "Total SDSA: " + sdsaCount, Toast.LENGTH_SHORT).show();
-            // TODO: Navigate to SDSA details
+            Intent intent = new Intent(this, MySdsaActivity.class);
+            passUserDataToIntent(intent);
+            startActivity(intent);
         });
 
         findViewById(R.id.totalPartnerCard).setOnClickListener(v -> {
-            String partnerCount = totalPartnerCount.getText().toString();
-            if (partnerCount.equals("--")) {
-                Toast.makeText(this, "Partner data not available yet", Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(this, "Total Partners: " + partnerCount, Toast.LENGTH_SHORT).show();
-            }
-            // TODO: Navigate to partner details
+            Intent intent = new Intent(this, MyPartnerActivity.class);
+            passUserDataToIntent(intent);
+            startActivity(intent);
         });
 
         findViewById(R.id.totalPortfolioCard).setOnClickListener(v -> {
-            String portfolioCount = totalPortfolioCount.getText().toString();
-            if (portfolioCount.equals("--")) {
-                Toast.makeText(this, "Portfolio data not available yet", Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(this, "Total Portfolio: " + portfolioCount, Toast.LENGTH_SHORT).show();
-            }
-            // TODO: Navigate to portfolio details
+            Intent intent = new Intent(this, PortfolioPanelActivity.class);
+            passUserDataToIntent(intent);
+            startActivity(intent);
         });
 
         findViewById(R.id.totalAgentCard).setOnClickListener(v -> {
-            String agentCount = totalAgentCount.getText().toString();
-            if (agentCount.equals("--")) {
-                Toast.makeText(this, "Agent data not available yet", Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(this, "Total Agents: " + agentCount, Toast.LENGTH_SHORT).show();
-            }
-            // TODO: Navigate to agent details
+            Intent intent = new Intent(this, MyAgentActivity.class);
+            passUserDataToIntent(intent);
+            startActivity(intent);
         });
 
         // Quick Access Boxes - Row 1
