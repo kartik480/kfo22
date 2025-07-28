@@ -1,176 +1,177 @@
 package com.kfinone.app;
 
+import android.app.DatePickerDialog;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
-import com.kfinone.app.databinding.ActivityAddEmpDetailsBinding;
-import org.json.JSONArray;
+import androidx.lifecycle.LifecycleOwner;
+import com.google.android.material.button.MaterialButton;
+import com.google.android.material.textfield.TextInputEditText;
 import org.json.JSONObject;
+import org.json.JSONArray;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import org.json.JSONException;
 
 public class AddEmpDetailsActivity extends AppCompatActivity {
-    private ActivityAddEmpDetailsBinding binding;
-    private ExecutorService executorService;
-    private static final String BASE_URL = "https://emp.kfinone.com/mobile/api/";
+    
+    // Form fields
+    private TextInputEditText firstNameInput;
+    private TextInputEditText lastNameInput;
+    private TextInputEditText personalPhoneInput;
+    private TextInputEditText officialPhoneInput;
+    private TextInputEditText dateOfBirthInput;
+    private AutoCompleteTextView branchStateDropdown;
+    private TextInputEditText aadhaarNumberInput;
+    private TextInputEditText presentAddressInput;
+    private MaterialButton employeeImageUploadButton;
+    private TextView employeeImageText;
+    private TextInputEditText personalEmailInput;
+    private TextInputEditText officialEmailInput;
+    private TextInputEditText anniversaryDateInput;
+    private AutoCompleteTextView branchLocationDropdown;
+    private TextInputEditText panNumberInput;
+    private TextInputEditText permanentAddressInput;
+    private MaterialButton nextButton;
+
+    private Uri employeeImageUri = null;
+    private final Calendar calendar = Calendar.getInstance();
+    private final SimpleDateFormat dateFormatter = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+    private final ExecutorService executor = Executors.newSingleThreadExecutor();
+
+    // User data from previous activity
+    private String userId;
+    private String userName;
+
+    private final ActivityResultLauncher<String> employeeImageLauncher = registerForActivityResult(
+        new ActivityResultContracts.GetContent(),
+        uri -> {
+            if (uri != null) {
+                employeeImageUri = uri;
+                employeeImageText.setText("File selected");
+            }
+        }
+    );
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding = ActivityAddEmpDetailsBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
+        setContentView(R.layout.activity_add_emp_details);
 
-        executorService = Executors.newFixedThreadPool(2);
+        // Get user data from intent
+        Intent intent = getIntent();
+        if (intent != null) {
+            userId = intent.getStringExtra("USER_ID");
+            if (userId == null) {
+                userId = intent.getStringExtra("userId");
+            }
+            userName = intent.getStringExtra("USERNAME");
+            if (userName == null) {
+                userName = intent.getStringExtra("userName");
+            }
+        }
 
-        // Setup back button
+        // Set up back button
         ImageButton backButton = findViewById(R.id.backButton);
         backButton.setOnClickListener(v -> finish());
 
-        // Load dropdown data
-        loadBranchStateDropdown();
-        loadBranchLocationDropdown();
-        loadDepartmentDropdown();
-        loadDesignationDropdown();
-        loadBankDropdown();
-        loadAccountTypeDropdown();
-        loadReportingToDropdown();
-
-        // Setup submit button
-        binding.submitButton.setOnClickListener(v -> submitEmployeeDetails());
+        // Initialize views
+        initializeViews();
+        setupDatePickers();
+        setupDropdowns();
+        setupImageUpload();
+        setupNextButton();
     }
 
-    private void loadBranchStateDropdown() {
-        executorService.execute(() -> {
-            try {
-                URL url = new URL(BASE_URL + "get_branch_state_list.php");
-                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                connection.setRequestMethod("GET");
-                connection.setConnectTimeout(5000);
-                connection.setReadTimeout(5000);
+    private void initializeViews() {
+        firstNameInput = findViewById(R.id.firstNameInput);
+        lastNameInput = findViewById(R.id.lastNameInput);
+        personalPhoneInput = findViewById(R.id.personalPhoneInput);
+        officialPhoneInput = findViewById(R.id.officialPhoneInput);
+        dateOfBirthInput = findViewById(R.id.dateOfBirthInput);
+        branchStateDropdown = findViewById(R.id.branchStateInput);
+        aadhaarNumberInput = findViewById(R.id.aadhaarNumberInput);
+        presentAddressInput = findViewById(R.id.presentAddressInput);
+        employeeImageUploadButton = findViewById(R.id.employeeImageUploadButton);
+        employeeImageText = findViewById(R.id.employeeImageText);
+        personalEmailInput = findViewById(R.id.personalEmailInput);
+        officialEmailInput = findViewById(R.id.officialEmailInput);
+        anniversaryDateInput = findViewById(R.id.anniversaryDateInput);
+        branchLocationDropdown = findViewById(R.id.branchLocationInput);
+        panNumberInput = findViewById(R.id.panNumberInput);
+        permanentAddressInput = findViewById(R.id.permanentAddressInput);
+        nextButton = findViewById(R.id.nextButton);
+    }
 
-                int responseCode = connection.getResponseCode();
-                if (responseCode == HttpURLConnection.HTTP_OK) {
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-                    StringBuilder response = new StringBuilder();
-                    String line;
-                    while ((line = reader.readLine()) != null) {
-                        response.append(line);
-                    }
-                    reader.close();
-
-                    JSONObject jsonResponse = new JSONObject(response.toString());
-                    if (jsonResponse.getString("status").equals("success")) {
-                        JSONArray data = jsonResponse.getJSONArray("data");
-                        List<String> branchStates = new ArrayList<>();
-                        for (int i = 0; i < data.length(); i++) {
-                            JSONObject stateObj = data.getJSONObject(i);
-                            branchStates.add(stateObj.getString("branch_state_name"));
-                        }
-
-                        // Update UI on main thread
-                        runOnUiThread(() -> {
-                            AutoCompleteTextView branchStateInput = findViewById(R.id.branchStateInput);
-                            ArrayAdapter<String> adapter = new ArrayAdapter<>(
-                                this, 
-                                android.R.layout.simple_dropdown_item_1line, 
-                                branchStates
-                            );
-                            branchStateInput.setAdapter(adapter);
-                        });
-                    } else {
-                        runOnUiThread(() -> {
-                            Toast.makeText(this, "Failed to load branch states", Toast.LENGTH_SHORT).show();
-                        });
-                    }
-                } else {
-                    runOnUiThread(() -> {
-                        Toast.makeText(this, "Network error: " + responseCode, Toast.LENGTH_SHORT).show();
-                    });
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-                runOnUiThread(() -> {
-                    Toast.makeText(this, "Error loading branch states: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                });
+    private void setupDatePickers() {
+        DatePickerDialog.OnDateSetListener datePickerListener = (view, year, month, dayOfMonth) -> {
+            calendar.set(Calendar.YEAR, year);
+            calendar.set(Calendar.MONTH, month);
+            calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+            String selectedDate = dateFormatter.format(calendar.getTime());
+            
+            if (view.getId() == dateOfBirthInput.getId()) {
+                dateOfBirthInput.setText(selectedDate);
+            } else if (view.getId() == anniversaryDateInput.getId()) {
+                anniversaryDateInput.setText(selectedDate);
             }
+        };
+
+        dateOfBirthInput.setOnClickListener(v -> {
+            DatePickerDialog datePickerDialog = new DatePickerDialog(
+                this, datePickerListener,
+                calendar.get(Calendar.YEAR),
+                calendar.get(Calendar.MONTH),
+                calendar.get(Calendar.DAY_OF_MONTH)
+            );
+            datePickerDialog.show();
+        });
+
+        anniversaryDateInput.setOnClickListener(v -> {
+            DatePickerDialog datePickerDialog = new DatePickerDialog(
+                this, datePickerListener,
+                calendar.get(Calendar.YEAR),
+                calendar.get(Calendar.MONTH),
+                calendar.get(Calendar.DAY_OF_MONTH)
+            );
+            datePickerDialog.show();
         });
     }
 
-    private void loadBranchLocationDropdown() {
-        executorService.execute(() -> {
-            try {
-                URL url = new URL(BASE_URL + "get_branch_location_list.php");
-                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                connection.setRequestMethod("GET");
-                connection.setConnectTimeout(5000);
-                connection.setReadTimeout(5000);
-
-                int responseCode = connection.getResponseCode();
-                if (responseCode == HttpURLConnection.HTTP_OK) {
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-                    StringBuilder response = new StringBuilder();
-                    String line;
-                    while ((line = reader.readLine()) != null) {
-                        response.append(line);
-                    }
-                    reader.close();
-
-                    JSONObject jsonResponse = new JSONObject(response.toString());
-                    if (jsonResponse.getString("status").equals("success")) {
-                        JSONArray data = jsonResponse.getJSONArray("data");
-                        List<String> branchLocations = new ArrayList<>();
-                        for (int i = 0; i < data.length(); i++) {
-                            JSONObject locationObj = data.getJSONObject(i);
-                            branchLocations.add(locationObj.getString("branch_location"));
-                        }
-                        runOnUiThread(() -> {
-                            AutoCompleteTextView branchLocationInput = findViewById(R.id.branchLocationInput);
-                            ArrayAdapter<String> adapter = new ArrayAdapter<>(
-                                this,
-                                android.R.layout.simple_dropdown_item_1line,
-                                branchLocations
-                            );
-                            branchLocationInput.setAdapter(adapter);
-                        });
-                    } else {
-                        runOnUiThread(() -> {
-                            Toast.makeText(this, "Failed to load branch locations", Toast.LENGTH_SHORT).show();
-                        });
-                    }
-                } else {
-                    runOnUiThread(() -> {
-                        Toast.makeText(this, "Network error: " + responseCode, Toast.LENGTH_SHORT).show();
-                    });
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-                runOnUiThread(() -> {
-                    Toast.makeText(this, "Error loading branch locations: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                });
-            }
-        });
+    private void setupDropdowns() {
+        fetchBranchStates();
+        fetchBranchLocations();
     }
 
-    private void loadDepartmentDropdown() {
-        executorService.execute(() -> {
+    private void fetchBranchStates() {
+        executor.execute(() -> {
             try {
-                URL url = new URL(BASE_URL + "get_department_list.php");
+                URL url = new URL("https://emp.kfinone.com/mobile/api/get_branch_states_dropdown.php");
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                 connection.setRequestMethod("GET");
-                connection.setConnectTimeout(5000);
-                connection.setReadTimeout(5000);
-
+                connection.setConnectTimeout(15000);
+                connection.setReadTimeout(15000);
+                
                 int responseCode = connection.getResponseCode();
                 if (responseCode == HttpURLConnection.HTTP_OK) {
                     BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
@@ -180,427 +181,258 @@ public class AddEmpDetailsActivity extends AppCompatActivity {
                         response.append(line);
                     }
                     reader.close();
-
+                    
                     JSONObject jsonResponse = new JSONObject(response.toString());
                     if (jsonResponse.getString("status").equals("success")) {
-                        JSONArray data = jsonResponse.getJSONArray("data");
-                        List<String> departments = new ArrayList<>();
-                        for (int i = 0; i < data.length(); i++) {
-                            JSONObject deptObj = data.getJSONObject(i);
-                            departments.add(deptObj.getString("department_name"));
-                        }
-                        runOnUiThread(() -> {
-                            AutoCompleteTextView departmentInput = findViewById(R.id.departmentInput);
-                            ArrayAdapter<String> adapter = new ArrayAdapter<>(
-                                this,
-                                android.R.layout.simple_dropdown_item_1line,
-                                departments
-                            );
-                            departmentInput.setAdapter(adapter);
-                        });
-                    } else {
-                        runOnUiThread(() -> {
-                            Toast.makeText(this, "Failed to load departments", Toast.LENGTH_SHORT).show();
-                        });
-                    }
-                } else {
-                    runOnUiThread(() -> {
-                        Toast.makeText(this, "Network error: " + responseCode, Toast.LENGTH_SHORT).show();
-                    });
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-                runOnUiThread(() -> {
-                    Toast.makeText(this, "Error loading departments: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                });
-            }
-        });
-    }
-
-    private void loadDesignationDropdown() {
-        executorService.execute(() -> {
-            try {
-                URL url = new URL(BASE_URL + "get_designation_list.php");
-                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                connection.setRequestMethod("GET");
-                connection.setConnectTimeout(5000);
-                connection.setReadTimeout(5000);
-
-                int responseCode = connection.getResponseCode();
-                if (responseCode == HttpURLConnection.HTTP_OK) {
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-                    StringBuilder response = new StringBuilder();
-                    String line;
-                    while ((line = reader.readLine()) != null) {
-                        response.append(line);
-                    }
-                    reader.close();
-
-                    JSONObject jsonResponse = new JSONObject(response.toString());
-                    if (jsonResponse.getString("status").equals("success")) {
-                        JSONArray data = jsonResponse.getJSONArray("data");
-                        List<String> designations = new ArrayList<>();
-                        for (int i = 0; i < data.length(); i++) {
-                            JSONObject desigObj = data.getJSONObject(i);
-                            designations.add(desigObj.getString("designation_name"));
-                        }
-                        runOnUiThread(() -> {
-                            AutoCompleteTextView designationInput = findViewById(R.id.designationInput);
-                            ArrayAdapter<String> adapter = new ArrayAdapter<>(
-                                this,
-                                android.R.layout.simple_dropdown_item_1line,
-                                designations
-                            );
-                            designationInput.setAdapter(adapter);
-                        });
-                    } else {
-                        runOnUiThread(() -> {
-                            Toast.makeText(this, "Failed to load designations", Toast.LENGTH_SHORT).show();
-                        });
-                    }
-                } else {
-                    runOnUiThread(() -> {
-                        Toast.makeText(this, "Network error: " + responseCode, Toast.LENGTH_SHORT).show();
-                    });
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-                runOnUiThread(() -> {
-                    Toast.makeText(this, "Error loading designations: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                });
-            }
-        });
-    }
-
-    private void loadBankDropdown() {
-        executorService.execute(() -> {
-            try {
-                URL url = new URL(BASE_URL + "get_bank_list.php");
-                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                connection.setRequestMethod("GET");
-                connection.setConnectTimeout(5000);
-                connection.setReadTimeout(5000);
-
-                int responseCode = connection.getResponseCode();
-                if (responseCode == HttpURLConnection.HTTP_OK) {
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-                    StringBuilder response = new StringBuilder();
-                    String line;
-                    while ((line = reader.readLine()) != null) {
-                        response.append(line);
-                    }
-                    reader.close();
-
-                    JSONObject jsonResponse = new JSONObject(response.toString());
-                    if (jsonResponse.getString("status").equals("success")) {
-                        JSONArray data = jsonResponse.getJSONArray("data");
-                        List<String> banks = new ArrayList<>();
-                        for (int i = 0; i < data.length(); i++) {
-                            banks.add(data.getString(i));
-                        }
-                        runOnUiThread(() -> {
-                            AutoCompleteTextView bankNameInput = findViewById(R.id.bankNameInput);
-                            ArrayAdapter<String> adapter = new ArrayAdapter<>(
-                                this,
-                                android.R.layout.simple_dropdown_item_1line,
-                                banks
-                            );
-                            bankNameInput.setAdapter(adapter);
-                        });
-                    } else {
-                        runOnUiThread(() -> {
-                            Toast.makeText(this, "Failed to load banks", Toast.LENGTH_SHORT).show();
-                        });
-                    }
-                } else {
-                    runOnUiThread(() -> {
-                        Toast.makeText(this, "Network error: " + responseCode, Toast.LENGTH_SHORT).show();
-                    });
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-                runOnUiThread(() -> {
-                    Toast.makeText(this, "Error loading banks: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                });
-            }
-        });
-    }
-
-    private void loadAccountTypeDropdown() {
-        executorService.execute(() -> {
-            try {
-                URL url = new URL(BASE_URL + "get_account_type_list.php");
-                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                connection.setRequestMethod("GET");
-                connection.setConnectTimeout(5000);
-                connection.setReadTimeout(5000);
-
-                int responseCode = connection.getResponseCode();
-                if (responseCode == HttpURLConnection.HTTP_OK) {
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-                    StringBuilder response = new StringBuilder();
-                    String line;
-                    while ((line = reader.readLine()) != null) {
-                        response.append(line);
-                    }
-                    reader.close();
-
-                    JSONObject jsonResponse = new JSONObject(response.toString());
-                    if (jsonResponse.getBoolean("success")) {
-                        JSONArray data = jsonResponse.getJSONArray("data");
-                        List<String> accountTypes = new ArrayList<>();
-                        for (int i = 0; i < data.length(); i++) {
-                            JSONObject accountType = data.getJSONObject(i);
-                            accountTypes.add(accountType.getString("account_type"));
-                        }
-                        runOnUiThread(() -> {
-                            AutoCompleteTextView accountTypeInput = findViewById(R.id.accountTypeInput);
-                            ArrayAdapter<String> adapter = new ArrayAdapter<>(
-                                this,
-                                android.R.layout.simple_dropdown_item_1line,
-                                accountTypes
-                            );
-                            accountTypeInput.setAdapter(adapter);
-                        });
-                    } else {
-                        String errorMessage = jsonResponse.optString("error", "Unknown error");
-                        runOnUiThread(() -> {
-                            Toast.makeText(this, "Failed to load account types: " + errorMessage, Toast.LENGTH_SHORT).show();
-                        });
-                    }
-                } else {
-                    runOnUiThread(() -> {
-                        Toast.makeText(this, "Network error: " + responseCode, Toast.LENGTH_SHORT).show();
-                    });
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-                runOnUiThread(() -> {
-                    Toast.makeText(this, "Error loading account types: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                });
-            }
-        });
-    }
-
-    private void loadReportingToDropdown() {
-        executorService.execute(() -> {
-            try {
-                // Fetch reporting users from tbl_user table
-                URL url = new URL(BASE_URL + "get_reporting_users_list.php");
-                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                connection.setRequestMethod("GET");
-                connection.setConnectTimeout(10000); // Increased timeout
-                connection.setReadTimeout(10000);
-
-                int responseCode = connection.getResponseCode();
-                if (responseCode == HttpURLConnection.HTTP_OK) {
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-                    StringBuilder response = new StringBuilder();
-                    String line;
-                    while ((line = reader.readLine()) != null) {
-                        response.append(line);
-                    }
-                    reader.close();
-
-                    JSONObject jsonResponse = new JSONObject(response.toString());
-                    if (jsonResponse.getString("status").equals("success")) {
-                        JSONArray data = jsonResponse.getJSONArray("data");
-                        List<String> users = new ArrayList<>();
+                        JSONArray dataArray = jsonResponse.getJSONArray("data");
+                        List<String> states = new ArrayList<>();
                         
-                        // Add a default "Select Reporting To" option
-                        users.add("Select Reporting To");
-                        
-                        for (int i = 0; i < data.length(); i++) {
-                            JSONObject user = data.getJSONObject(i);
-                            String fullName = user.getString("full_name");
-                            if (fullName != null && !fullName.trim().isEmpty()) {
-                                users.add(fullName.trim());
-                            }
+                        for (int i = 0; i < dataArray.length(); i++) {
+                            JSONObject stateObj = dataArray.getJSONObject(i);
+                            states.add(stateObj.getString("name"));
                         }
                         
                         runOnUiThread(() -> {
-                            AutoCompleteTextView reportingToInput = findViewById(R.id.reportingToInput);
                             ArrayAdapter<String> adapter = new ArrayAdapter<>(
-                                this,
-                                android.R.layout.simple_dropdown_item_1line,
-                                users
+                                this, android.R.layout.simple_dropdown_item_1line, states
                             );
-                            reportingToInput.setAdapter(adapter);
-                            reportingToInput.setText("Select Reporting To", false);
-                            
-                            // Show success message if users were loaded
-                            if (users.size() > 1) { // More than just the default option
-                                Toast.makeText(this, "Loaded " + (users.size() - 1) + " reporting users", Toast.LENGTH_SHORT).show();
-                            } else {
-                                Toast.makeText(this, "No active users found for reporting", Toast.LENGTH_LONG).show();
-                            }
+                            branchStateDropdown.setAdapter(adapter);
+                            Log.d("AddEmpDetailsActivity", "Loaded " + states.size() + " branch states");
                         });
                     } else {
-                        String errorMessage = jsonResponse.optString("message", "Unknown error");
-                        runOnUiThread(() -> {
-                            AutoCompleteTextView reportingToInput = findViewById(R.id.reportingToInput);
-                            reportingToInput.setText("Error loading users");
-                            reportingToInput.setEnabled(false);
-                            Toast.makeText(this, "Failed to load reporting users: " + errorMessage, Toast.LENGTH_LONG).show();
-                        });
+                        Log.e("AddEmpDetailsActivity", "API error: " + jsonResponse.optString("message", "Unknown error"));
                     }
                 } else {
-                    runOnUiThread(() -> {
-                        AutoCompleteTextView reportingToInput = findViewById(R.id.reportingToInput);
-                        reportingToInput.setText("Network error");
-                        reportingToInput.setEnabled(false);
-                        Toast.makeText(this, "Network error: " + responseCode, Toast.LENGTH_LONG).show();
-                    });
+                    Log.e("AddEmpDetailsActivity", "HTTP error: " + responseCode);
                 }
+                connection.disconnect();
             } catch (Exception e) {
-                e.printStackTrace();
-                runOnUiThread(() -> {
-                    AutoCompleteTextView reportingToInput = findViewById(R.id.reportingToInput);
-                    reportingToInput.setText("Error loading users");
-                    reportingToInput.setEnabled(false);
-                    Toast.makeText(this, "Error loading users: " + e.getMessage(), Toast.LENGTH_LONG).show();
-                });
+                Log.e("AddEmpDetailsActivity", "Error fetching branch states", e);
             }
         });
     }
 
-    private void submitEmployeeDetails() {
-        // Get all form data
-        String firstName = binding.firstNameInput.getText().toString().trim();
-        String lastName = binding.lastNameInput.getText().toString().trim();
-        String employeeId = binding.employeeIdInput.getText().toString().trim();
-        String password = binding.passwordInput.getText().toString().trim();
-        String personalPhone = binding.personalPhoneInput.getText().toString().trim();
-        String personalEmail = binding.personalEmailInput.getText().toString().trim();
-        String officialPhone = binding.officialPhoneInput.getText().toString().trim();
-        String officialEmail = binding.officialEmailInput.getText().toString().trim();
-        String branchState = binding.branchStateInput.getText().toString().trim();
-        String branchLocation = binding.branchLocationInput.getText().toString().trim();
-        String department = binding.departmentInput.getText().toString().trim();
-        String designation = binding.designationInput.getText().toString().trim();
-        String aadhaarNumber = binding.aadhaarNumberInput.getText().toString().trim();
-        String panNumber = binding.panNumberInput.getText().toString().trim();
-        String accountNumber = binding.accountNumberInput.getText().toString().trim();
-        String ifscCode = binding.ifscCodeInput.getText().toString().trim();
-        String bankName = binding.bankNameInput.getText().toString().trim();
-        String accountType = binding.accountTypeInput.getText().toString().trim();
-        String presentAddress = binding.presentAddressInput.getText().toString().trim();
-        String permanentAddress = binding.permanentAddressInput.getText().toString().trim();
-        String reportingTo = binding.reportingToInput.getText().toString().trim();
+    private void fetchBranchLocations() {
+        executor.execute(() -> {
+            try {
+                URL url = new URL("https://emp.kfinone.com/mobile/api/get_branch_locations_dropdown.php");
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                connection.setRequestMethod("GET");
+                connection.setConnectTimeout(15000);
+                connection.setReadTimeout(15000);
+                
+                int responseCode = connection.getResponseCode();
+                if (responseCode == HttpURLConnection.HTTP_OK) {
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                    StringBuilder response = new StringBuilder();
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        response.append(line);
+                    }
+                    reader.close();
+                    
+                    JSONObject jsonResponse = new JSONObject(response.toString());
+                    if (jsonResponse.getString("status").equals("success")) {
+                        JSONArray dataArray = jsonResponse.getJSONArray("data");
+                        List<String> locations = new ArrayList<>();
+                        
+                        for (int i = 0; i < dataArray.length(); i++) {
+                            JSONObject locationObj = dataArray.getJSONObject(i);
+                            locations.add(locationObj.getString("name"));
+                        }
+                        
+                        runOnUiThread(() -> {
+                            ArrayAdapter<String> adapter = new ArrayAdapter<>(
+                                this, android.R.layout.simple_dropdown_item_1line, locations
+                            );
+                            branchLocationDropdown.setAdapter(adapter);
+                            Log.d("AddEmpDetailsActivity", "Loaded " + locations.size() + " branch locations");
+                        });
+                    } else {
+                        Log.e("AddEmpDetailsActivity", "API error: " + jsonResponse.optString("message", "Unknown error"));
+                    }
+                } else {
+                    Log.e("AddEmpDetailsActivity", "HTTP error: " + responseCode);
+                }
+                connection.disconnect();
+            } catch (Exception e) {
+                Log.e("AddEmpDetailsActivity", "Error fetching branch locations", e);
+            }
+        });
+    }
 
-        // Validate required fields
-        if (firstName.isEmpty() || lastName.isEmpty() || employeeId.isEmpty() || password.isEmpty()) {
-            Toast.makeText(this, "Please fill all required fields", Toast.LENGTH_SHORT).show();
-            return;
+    private void setupImageUpload() {
+        employeeImageUploadButton.setOnClickListener(v -> {
+            employeeImageLauncher.launch("image/*");
+        });
+    }
+
+    private void setupNextButton() {
+        nextButton.setOnClickListener(v -> {
+            if (validateForm()) {
+                submitForm();
+            }
+        });
+    }
+
+    private boolean validateForm() {
+        List<String> errors = new ArrayList<>();
+        
+        // Required field validations
+        if (firstNameInput.getText().toString().trim().isEmpty()) {
+            errors.add("First Name is required");
+        }
+        if (lastNameInput.getText().toString().trim().isEmpty()) {
+            errors.add("Last Name is required");
+        }
+        if (personalPhoneInput.getText().toString().trim().isEmpty()) {
+            errors.add("Personal Phone Number is required");
+        } else if (personalPhoneInput.getText().toString().length() != 10) {
+            errors.add("Personal Phone Number must be 10 digits");
+        }
+        if (officialPhoneInput.getText().toString().trim().isEmpty()) {
+            errors.add("Official Phone Number is required");
+        } else if (officialPhoneInput.getText().toString().length() != 10) {
+            errors.add("Official Phone Number must be 10 digits");
+        }
+        if (personalEmailInput.getText().toString().trim().isEmpty()) {
+            errors.add("Personal Email is required");
+        } else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(personalEmailInput.getText().toString()).matches()) {
+            errors.add("Personal Email format is invalid");
+        }
+        if (officialEmailInput.getText().toString().trim().isEmpty()) {
+            errors.add("Official Email is required");
+        } else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(officialEmailInput.getText().toString()).matches()) {
+            errors.add("Official Email format is invalid");
+        }
+        if (branchStateDropdown.getText().toString().trim().isEmpty()) {
+            errors.add("Branch State is required");
+        }
+        if (branchLocationDropdown.getText().toString().trim().isEmpty()) {
+            errors.add("Branch Location is required");
+        }
+        if (aadhaarNumberInput.getText().toString().trim().isEmpty()) {
+            errors.add("Aadhaar Number is required");
+        } else if (aadhaarNumberInput.getText().toString().length() != 12) {
+            errors.add("Aadhaar Number must be 12 digits");
+        }
+        if (panNumberInput.getText().toString().trim().isEmpty()) {
+            errors.add("PAN Number is required");
+        } else if (panNumberInput.getText().toString().length() != 10) {
+            errors.add("PAN Number must be 10 characters");
+        }
+        if (presentAddressInput.getText().toString().trim().isEmpty()) {
+            errors.add("Present Address is required");
+        }
+        if (permanentAddressInput.getText().toString().trim().isEmpty()) {
+            errors.add("Permanent Address is required");
+        }
+
+        if (!errors.isEmpty()) {
+            String errorMessage = String.join("\n", errors);
+            Toast.makeText(this, errorMessage, Toast.LENGTH_LONG).show();
+            return false;
         }
         
-        // Validate reporting to field
-        if (reportingTo.isEmpty() || reportingTo.equals("Select Reporting To")) {
-            Toast.makeText(this, "Please select a reporting user", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        // Create JSON data
-        JSONObject jsonData = new JSONObject();
-        try {
-            jsonData.put("firstName", firstName);
-            jsonData.put("lastName", lastName);
-            jsonData.put("employeeId", employeeId);
-            jsonData.put("password", password);
-            jsonData.put("personalPhone", personalPhone);
-            jsonData.put("personalEmail", personalEmail);
-            jsonData.put("officialPhone", officialPhone);
-            jsonData.put("officialEmail", officialEmail);
-            jsonData.put("branchState", branchState);
-            jsonData.put("branchLocation", branchLocation);
-            jsonData.put("department", department);
-            jsonData.put("designation", designation);
-            jsonData.put("aadhaarNumber", aadhaarNumber);
-            jsonData.put("panNumber", panNumber);
-            jsonData.put("accountNumber", accountNumber);
-            jsonData.put("ifscCode", ifscCode);
-            jsonData.put("bankName", bankName);
-            jsonData.put("accountType", accountType);
-            jsonData.put("presentAddress", presentAddress);
-            jsonData.put("permanentAddress", permanentAddress);
-            jsonData.put("reportingTo", reportingTo);
-
-            // Send data to server
-            Log.d("AddEmployee", "Sending data: " + jsonData.toString());
-            sendEmployeeData(jsonData.toString());
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-            Toast.makeText(this, "Error creating data: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-        }
+        return true;
     }
 
-    private void sendEmployeeData(String jsonData) {
-        executorService.execute(() -> {
+    private void submitForm() {
+        // Show loading message
+        Toast.makeText(this, "Saving employee details...", Toast.LENGTH_SHORT).show();
+        
+        executor.execute(() -> {
             try {
-                URL url = new URL(BASE_URL + "test_add_employee_simple.php");
+                // Prepare form data
+                JSONObject formData = new JSONObject();
+                formData.put("firstName", firstNameInput.getText().toString().trim());
+                formData.put("lastName", lastNameInput.getText().toString().trim());
+                formData.put("personalPhone", personalPhoneInput.getText().toString().trim());
+                formData.put("officialPhone", officialPhoneInput.getText().toString().trim());
+                formData.put("dateOfBirth", dateOfBirthInput.getText().toString().trim());
+                formData.put("branchState", branchStateDropdown.getText().toString().trim());
+                formData.put("aadhaarNumber", aadhaarNumberInput.getText().toString().trim());
+                formData.put("presentAddress", presentAddressInput.getText().toString().trim());
+                formData.put("personalEmail", personalEmailInput.getText().toString().trim());
+                formData.put("officialEmail", officialEmailInput.getText().toString().trim());
+                formData.put("anniversaryDate", anniversaryDateInput.getText().toString().trim());
+                formData.put("branchLocation", branchLocationDropdown.getText().toString().trim());
+                formData.put("panNumber", panNumberInput.getText().toString().trim());
+                formData.put("permanentAddress", permanentAddressInput.getText().toString().trim());
+                
+                // Send data to API
+                URL url = new URL("https://emp.kfinone.com/mobile/api/add_employee_details.php");
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                 connection.setRequestMethod("POST");
                 connection.setRequestProperty("Content-Type", "application/json");
                 connection.setDoOutput(true);
-                connection.setConnectTimeout(5000);
-                connection.setReadTimeout(5000);
-
-                // Send JSON data
-                try (java.io.OutputStream os = connection.getOutputStream()) {
-                    byte[] input = jsonData.getBytes("utf-8");
-                    os.write(input, 0, input.length);
-                }
-
+                connection.setConnectTimeout(15000);
+                connection.setReadTimeout(15000);
+                
+                // Write data
+                OutputStream os = connection.getOutputStream();
+                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os, "UTF-8"));
+                writer.write(formData.toString());
+                writer.flush();
+                writer.close();
+                os.close();
+                
+                // Read response
                 int responseCode = connection.getResponseCode();
                 BufferedReader reader;
-                StringBuilder response = new StringBuilder();
-                
-                // Read response from either input stream or error stream
                 if (responseCode == HttpURLConnection.HTTP_OK) {
                     reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
                 } else {
                     reader = new BufferedReader(new InputStreamReader(connection.getErrorStream()));
                 }
                 
+                StringBuilder response = new StringBuilder();
                 String line;
                 while ((line = reader.readLine()) != null) {
                     response.append(line);
                 }
                 reader.close();
-
-                String responseText = response.toString();
-                Log.d("AddEmployee", "Response Code: " + responseCode);
-                Log.d("AddEmployee", "Response: " + responseText);
-
-                if (responseCode == HttpURLConnection.HTTP_OK) {
-                    try {
-                        JSONObject jsonResponse = new JSONObject(responseText);
-                        if (jsonResponse.getString("status").equals("success")) {
-                            runOnUiThread(() -> {
-                                Toast.makeText(this, "Employee added successfully!", Toast.LENGTH_LONG).show();
-                                finish(); // Close the activity
-                            });
-                        } else {
-                            String errorMessage = jsonResponse.optString("message", "Unknown error");
-                            runOnUiThread(() -> {
-                                Toast.makeText(this, "Failed to add employee: " + errorMessage, Toast.LENGTH_LONG).show();
-                            });
-                        }
-                    } catch (JSONException e) {
-                        runOnUiThread(() -> {
-                            Toast.makeText(this, "Invalid JSON response: " + responseText, Toast.LENGTH_LONG).show();
-                        });
-                    }
-                } else {
+                
+                JSONObject jsonResponse = new JSONObject(response.toString());
+                
+                if (jsonResponse.getString("status").equals("success")) {
+                    JSONObject data = jsonResponse.getJSONObject("data");
+                    String username = data.getString("username");
+                    String employeeNo = data.getString("employee_no");
+                    String password = data.getString("password");
+                    
                     runOnUiThread(() -> {
-                        Toast.makeText(this, "Server error " + responseCode + ": " + responseText, Toast.LENGTH_LONG).show();
+                        String successMessage = "Employee saved successfully!\n\n" +
+                            "Username: " + username + "\n" +
+                            "Employee No: " + employeeNo + "\n" +
+                            "Password: " + password + "\n\n" +
+                            "Redirecting to Active User List...";
+                        
+                        Toast.makeText(AddEmpDetailsActivity.this, successMessage, Toast.LENGTH_LONG).show();
+                        
+                        // Navigate to Active User List after a short delay
+                        new android.os.Handler().postDelayed(() -> {
+                            Intent intent = new Intent(AddEmpDetailsActivity.this, ActiveEmpListActivity.class);
+                            // Pass user data to maintain context
+                            if (userId != null) intent.putExtra("USER_ID", userId);
+                            if (userName != null) intent.putExtra("USERNAME", userName);
+                            startActivity(intent);
+                            finish(); // Close the current activity
+                        }, 3000); // 3 second delay to show the success message
+                    });
+                } else {
+                    String errorMessage = jsonResponse.optString("message", "Unknown error occurred");
+                    runOnUiThread(() -> {
+                        Toast.makeText(AddEmpDetailsActivity.this, "Error: " + errorMessage, Toast.LENGTH_LONG).show();
                     });
                 }
+                
+                connection.disconnect();
+                
             } catch (Exception e) {
-                e.printStackTrace();
+                Log.e("AddEmpDetailsActivity", "Error submitting form", e);
                 runOnUiThread(() -> {
-                    Toast.makeText(this, "Error submitting data: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(AddEmpDetailsActivity.this, "Error saving employee: " + e.getMessage(), Toast.LENGTH_LONG).show();
                 });
             }
         });
@@ -609,8 +441,6 @@ public class AddEmpDetailsActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (executorService != null) {
-            executorService.shutdown();
-        }
+        executor.shutdown();
     }
 } 

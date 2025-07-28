@@ -10,6 +10,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -33,6 +34,8 @@ public class EmpDesignationActivity extends AppCompatActivity {
     private TextInputEditText designationNameInput;
     private MaterialButton submitButton;
     private String selectedDepartment;
+    private List<String> departmentNames = new ArrayList<>();
+    private List<String> departmentIds = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,21 +111,28 @@ public class EmpDesignationActivity extends AppCompatActivity {
                         JSONArray data = json.getJSONArray("data");
                         Log.d(TAG, "Found " + data.length() + " departments in response");
                         
-                        List<String> departmentNames = new ArrayList<>();
+                        departmentNames.clear();
+                        departmentIds.clear();
+                        
                         for (int i = 0; i < data.length(); i++) {
                             JSONObject dept = data.getJSONObject(i);
                             departmentNames.add(dept.getString("departmentName"));
+                            departmentIds.add(dept.getString("id"));
                         }
                         
                         runOnUiThread(() -> {
-                            // Setup department dropdown
-                            ArrayAdapter<String> departmentAdapter = new ArrayAdapter<>(this,
-                                    android.R.layout.simple_dropdown_item_1line, departmentNames);
-                            departmentDropdown.setAdapter(departmentAdapter);
+                            ArrayAdapter<String> adapter = new ArrayAdapter<>(
+                                this, android.R.layout.simple_dropdown_item_1line, departmentNames
+                            );
+                            departmentDropdown.setAdapter(adapter);
+                            
+                            // Set up item click listener to capture selected department
                             departmentDropdown.setOnItemClickListener((parent, view, position, id) -> {
-                                selectedDepartment = departmentNames.get(position);
+                                selectedDepartment = departmentIds.get(position);
+                                Log.d(TAG, "Selected department: " + departmentNames.get(position) + " (ID: " + selectedDepartment + ")");
                             });
-                            Log.d(TAG, "Department dropdown populated with " + departmentNames.size() + " departments");
+                            
+                            Log.d(TAG, "Loaded " + departmentNames.size() + " departments");
                         });
                     } else {
                         String errorMsg = json.optString("message");
@@ -144,21 +154,17 @@ public class EmpDesignationActivity extends AppCompatActivity {
     private void addDesignationToServer(String designationName) {
         new Thread(() -> {
             try {
-                Log.d(TAG, "Adding designation: " + designationName);
-                URL url = new URL("https://emp.kfinone.com/mobile/api/add_designation_simple.php");
+                URL url = new URL("https://emp.kfinone.com/mobile/api/add_designation.php");
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestMethod("POST");
-                conn.setRequestProperty("Content-Type", "application/json");
+                conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
                 conn.setDoOutput(true);
-                conn.setConnectTimeout(5000);
-                conn.setReadTimeout(5000);
 
-                // Send JSON data
-                String jsonInput = "{\"designationName\":\"" + designationName + "\"}";
-                try (java.io.OutputStream os = conn.getOutputStream()) {
-                    byte[] input = jsonInput.getBytes("utf-8");
-                    os.write(input, 0, input.length);
+                String postData = "designation_name=" + designationName;
+                if (selectedDepartment != null) {
+                    postData += "&department_id=" + selectedDepartment;
                 }
+                conn.getOutputStream().write(postData.getBytes());
 
                 int responseCode = conn.getResponseCode();
                 if (responseCode == HttpURLConnection.HTTP_OK) {
@@ -174,12 +180,59 @@ public class EmpDesignationActivity extends AppCompatActivity {
                     if (json.getString("status").equals("success")) {
                         runOnUiThread(() -> {
                             // Add to local list
-                            designationList.add(new Designation(designationName, "N/A", "Active"));
+                            designationList.add(new Designation("", designationName, "N/A", "Active"));
                             adapter.notifyItemInserted(designationList.size() - 1);
                             designationNameInput.setText("");
                             departmentDropdown.setText("");
                             selectedDepartment = null;
                             Toast.makeText(this, "Designation added successfully", Toast.LENGTH_SHORT).show();
+                            
+                            // Refresh the list to show the new designation with proper department name
+                            fetchDesignationsFromServer();
+                        });
+                    } else {
+                        runOnUiThread(() -> Toast.makeText(this, "Error: " + json.optString("message"), Toast.LENGTH_LONG).show());
+                    }
+                } else {
+                    runOnUiThread(() -> Toast.makeText(this, "Server error: " + responseCode, Toast.LENGTH_LONG).show());
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                runOnUiThread(() -> Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_LONG).show());
+            }
+        }).start();
+    }
+
+    private void deleteDesignationFromServer(String designationId, int position) {
+        new Thread(() -> {
+            try {
+                URL url = new URL("https://emp.kfinone.com/mobile/api/delete_designation.php");
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setRequestMethod("POST");
+                conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+                conn.setDoOutput(true);
+
+                String postData = "designation_id=" + designationId;
+                conn.getOutputStream().write(postData.getBytes());
+
+                int responseCode = conn.getResponseCode();
+                if (responseCode == HttpURLConnection.HTTP_OK) {
+                    BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                    StringBuilder response = new StringBuilder();
+                    String line;
+                    while ((line = in.readLine()) != null) {
+                        response.append(line);
+                    }
+                    in.close();
+
+                    JSONObject json = new JSONObject(response.toString());
+                    if (json.getString("status").equals("success")) {
+                        runOnUiThread(() -> {
+                            // Remove from local list
+                            designationList.remove(position);
+                            adapter.notifyItemRemoved(position);
+                            adapter.notifyItemRangeChanged(position, designationList.size());
+                            Toast.makeText(this, "Designation deleted successfully", Toast.LENGTH_SHORT).show();
                         });
                     } else {
                         runOnUiThread(() -> Toast.makeText(this, "Error: " + json.optString("message"), Toast.LENGTH_LONG).show());
@@ -198,7 +251,7 @@ public class EmpDesignationActivity extends AppCompatActivity {
         new Thread(() -> {
             try {
                 Log.d(TAG, "Starting to fetch designations from server...");
-                URL url = new URL("https://emp.kfinone.com/mobile/api/get_designations.php");
+                URL url = new URL("https://emp.kfinone.com/mobile/api/get_designations_with_departments.php");
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestMethod("GET");
                 conn.setConnectTimeout(5000);
@@ -227,16 +280,15 @@ public class EmpDesignationActivity extends AppCompatActivity {
                         designationList.clear();
                         for (int i = 0; i < data.length(); i++) {
                             JSONObject desig = data.getJSONObject(i);
-                            String designationName = desig.optString("designationName", "");
+                            String designationId = desig.optString("id", "");
+                            String designationName = desig.optString("designation_name", "");
                             String status = desig.optString("status", "Active");
-                            String departmentId = desig.optString("department_id", "");
-                            
-                            // Use department ID if available, otherwise "N/A"
-                            String department = departmentId.isEmpty() ? "N/A" : "Dept ID: " + departmentId;
+                            String departmentName = desig.optString("department_name", "N/A");
                             
                             designationList.add(new Designation(
+                                    designationId,
                                     designationName,
-                                    department,
+                                    departmentName,
                                     status
                             ));
                         }
@@ -270,11 +322,13 @@ public class EmpDesignationActivity extends AppCompatActivity {
     }
 
     private static class Designation {
+        String id;
         String name;
         String department;
         String status;
 
-        Designation(String name, String department, String status) {
+        Designation(String id, String name, String department, String status) {
+            this.id = id;
             this.name = name;
             this.department = department;
             this.status = status;
@@ -308,8 +362,15 @@ public class EmpDesignationActivity extends AppCompatActivity {
             });
 
             holder.deleteButton.setOnClickListener(v -> {
-                // TODO: Implement delete functionality
-                Toast.makeText(EmpDesignationActivity.this, "Delete clicked for " + designation.name, Toast.LENGTH_SHORT).show();
+                // Show confirmation dialog
+                new android.app.AlertDialog.Builder(EmpDesignationActivity.this)
+                    .setTitle("Delete Designation")
+                    .setMessage("Are you sure you want to delete '" + designation.name + "'?")
+                    .setPositiveButton("Delete", (dialog, which) -> {
+                        deleteDesignationFromServer(designation.id, position);
+                    })
+                    .setNegativeButton("Cancel", null)
+                    .show();
             });
         }
 
@@ -319,19 +380,16 @@ public class EmpDesignationActivity extends AppCompatActivity {
         }
 
         class ViewHolder extends RecyclerView.ViewHolder {
-            TextView nameText;
-            TextView departmentText;
-            TextView statusText;
-            ImageButton editButton;
-            ImageButton deleteButton;
+            TextView nameText, departmentText, statusText;
+            ImageButton editButton, deleteButton;
 
-            ViewHolder(View itemView) {
-                super(itemView);
-                nameText = itemView.findViewById(R.id.nameText);
-                departmentText = itemView.findViewById(R.id.departmentText);
-                statusText = itemView.findViewById(R.id.statusText);
-                editButton = itemView.findViewById(R.id.editButton);
-                deleteButton = itemView.findViewById(R.id.deleteButton);
+            ViewHolder(View view) {
+                super(view);
+                nameText = view.findViewById(R.id.nameText);
+                departmentText = view.findViewById(R.id.departmentText);
+                statusText = view.findViewById(R.id.statusText);
+                editButton = view.findViewById(R.id.editButton);
+                deleteButton = view.findViewById(R.id.deleteButton);
             }
         }
     }

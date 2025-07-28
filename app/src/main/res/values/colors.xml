@@ -7,17 +7,27 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    
+    <!-- Professional Colors -->
+    <color name="blue_500">#3498DB</color>
+    <color name="blue_700">#2980B9</color>
+    <color name="green">#27AE60</color>
+    <color name="light_green">#2ECC71</color>
+    <color name="red">#E74C3C</color>
+    <color name="orange">#F39C12</color>
+    <color name="purple">#8E44AD</color>
+    <color name="gray">#95A5A6</color>
+    <color name="dark_gray">#2C3E50</color>
+    <color name="light_gray">#ECF0F1</color>
+    <color name="background_light">#F8F9FA</color>
+    
+    <!-- Legacy Colors for compatibility -->
     <color name="colorPrimary">#FF6200EE</color>
     <color name="colorPrimaryDark">#FF3700B3</color>
     <color name="colorAccent">#FF03DAC5</color>
-    <color name="light_green">#90EE90</color>
     <color name="dark_green">#006400</color>
-    <color name="light_gray">#F5F5F5</color>
     <color name="ripple_color">#1F000000</color>
-    <color name="green">#4CAF50</color>
-    <color name="red">#F44336</color>
     <color name="blue">#2196F3</color>
-    <color name="gray">#CCCCCC</color>
     <color name="gray_light">#F5F5F5</color>
     
     <!-- Additional colors for Policy panel -->
@@ -31,7 +41,6 @@
     <color name="text_primary">#212121</color>
     <color name="text_secondary">#757575</color>
     <color name="surface_white">#FFFFFF</color>
-    <color name="background_light">#FAFAFA</color>
     
     <!-- Director Panel Colors -->
     <color name="light_pink">#FFE4E1</color>

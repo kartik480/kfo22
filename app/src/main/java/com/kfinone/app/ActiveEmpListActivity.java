@@ -61,6 +61,14 @@ public class ActiveEmpListActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Refresh the list when activity is resumed (e.g., after adding new employee)
+        Log.d(TAG, "Activity resumed - refreshing employee list");
+        fetchUsersFromServer();
+    }
+
     private void fetchUsersFromServer() {
         new Thread(() -> {
             try {
@@ -123,6 +131,9 @@ public class ActiveEmpListActivity extends AppCompatActivity {
                         runOnUiThread(() -> {
                             adapter.notifyDataSetChanged();
                             Log.d(TAG, "Adapter notified of data change");
+                            // Show a toast with the updated count
+                            Toast.makeText(ActiveEmpListActivity.this, 
+                                "Active Users: " + employeeList.size(), Toast.LENGTH_SHORT).show();
                         });
                     } else {
                         String errorMsg = json.optString("message");
@@ -141,57 +152,38 @@ public class ActiveEmpListActivity extends AppCompatActivity {
         }).start();
     }
 
-    private void handlePermissionAction(Employee employee, String selectedPermission, Spinner spinner) {
-        // Reset spinner to "Select Action"
+    private void handlePermissionAction(Employee employee, String permissionType, Spinner spinner) {
+        // Reset spinner to first item
         spinner.setSelection(0);
         
-        // Handle different permission actions
-        switch (selectedPermission) {
+        // Handle permission action based on type
+        switch (permissionType) {
             case "Emp Manage Permission":
-                // Launch Manage Icon Permission Activity
-                Intent intent = new Intent(ActiveEmpListActivity.this, ManageIconPermissionActivity.class);
-                intent.putExtra("userId", employee.userId);
-                intent.putExtra("userName", employee.fullName);
-                startActivity(intent);
+                updatePermission(employee.userId, "emp_manage_permission", "Yes");
                 break;
             case "Emp Data Permission":
-                // Launch Data Icon Permission Activity
-                Intent dataIntent = new Intent(ActiveEmpListActivity.this, DataIconPermissionActivity.class);
-                dataIntent.putExtra("userId", employee.userId);
-                dataIntent.putExtra("userName", employee.fullName);
-                startActivity(dataIntent);
+                updatePermission(employee.userId, "emp_data_permission", "Yes");
                 break;
             case "Emp Work Permission":
-                // Launch Work Icon Permission Activity
-                Intent workIntent = new Intent(ActiveEmpListActivity.this, WorkIconPermissionActivity.class);
-                workIntent.putExtra("userId", employee.userId);
-                workIntent.putExtra("userName", employee.fullName);
-                startActivity(workIntent);
+                updatePermission(employee.userId, "emp_work_permission", "Yes");
                 break;
             case "Payout Permission":
-                updateEmployeePermission(employee.userId, "payout_permission", "Yes");
-                Toast.makeText(this, "Payout Permission granted to " + employee.fullName, Toast.LENGTH_SHORT).show();
+                updatePermission(employee.userId, "payout_permission", "Yes");
                 break;
         }
     }
 
-    private void updateEmployeePermission(String userId, String permissionType, String permissionValue) {
+    private void updatePermission(String userId, String permissionType, String value) {
         new Thread(() -> {
             try {
                 URL url = new URL("https://emp.kfinone.com/mobile/api/update_user_permission.php");
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestMethod("POST");
-                conn.setRequestProperty("Content-Type", "application/json");
+                conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
                 conn.setDoOutput(true);
-                conn.setConnectTimeout(5000);
-                conn.setReadTimeout(5000);
 
-                // Send the user ID, permission type, and permission value
-                String jsonInput = "{\"userId\":\"" + userId + "\",\"permissionType\":\"" + permissionType + "\",\"permissionValue\":\"" + permissionValue + "\"}";
-                try (java.io.OutputStream os = conn.getOutputStream()) {
-                    byte[] input = jsonInput.getBytes("utf-8");
-                    os.write(input, 0, input.length);
-                }
+                String postData = "user_id=" + userId + "&permission_type=" + permissionType + "&value=" + value;
+                conn.getOutputStream().write(postData.getBytes());
 
                 int responseCode = conn.getResponseCode();
                 if (responseCode == HttpURLConnection.HTTP_OK) {
@@ -207,6 +199,8 @@ public class ActiveEmpListActivity extends AppCompatActivity {
                     if (json.getString("status").equals("success")) {
                         runOnUiThread(() -> {
                             Toast.makeText(this, "Permission updated successfully", Toast.LENGTH_SHORT).show();
+                            // Refresh the list to show updated permissions
+                            fetchUsersFromServer();
                         });
                     } else {
                         runOnUiThread(() -> Toast.makeText(this, "Error: " + json.optString("message"), Toast.LENGTH_LONG).show());
@@ -227,17 +221,11 @@ public class ActiveEmpListActivity extends AppCompatActivity {
                 URL url = new URL("https://emp.kfinone.com/mobile/api/update_user_status.php");
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestMethod("POST");
-                conn.setRequestProperty("Content-Type", "application/json");
+                conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
                 conn.setDoOutput(true);
-                conn.setConnectTimeout(5000);
-                conn.setReadTimeout(5000);
 
-                // Send the user ID and new status
-                String jsonInput = "{\"userId\":\"" + userId + "\",\"status\":\"" + newStatus + "\"}";
-                try (java.io.OutputStream os = conn.getOutputStream()) {
-                    byte[] input = jsonInput.getBytes("utf-8");
-                    os.write(input, 0, input.length);
-                }
+                String postData = "user_id=" + userId + "&status=" + newStatus;
+                conn.getOutputStream().write(postData.getBytes());
 
                 int responseCode = conn.getResponseCode();
                 if (responseCode == HttpURLConnection.HTTP_OK) {
@@ -382,27 +370,21 @@ public class ActiveEmpListActivity extends AppCompatActivity {
         }
 
         class ViewHolder extends RecyclerView.ViewHolder {
-            TextView fullNameText;
-            TextView empIdText;
-            TextView mobileText;
-            TextView emailText;
-            TextView statusText;
-            TextView permissionsText;
+            TextView fullNameText, empIdText, mobileText, emailText, statusText, permissionsText;
+            ImageButton editButton, deleteButton;
             Spinner actionSpinner;
-            ImageButton editButton;
-            ImageButton deleteButton;
 
-            ViewHolder(View view) {
-                super(view);
-                fullNameText = view.findViewById(R.id.fullNameText);
-                empIdText = view.findViewById(R.id.empIdText);
-                mobileText = view.findViewById(R.id.mobileText);
-                emailText = view.findViewById(R.id.emailText);
-                statusText = view.findViewById(R.id.statusText);
-                permissionsText = view.findViewById(R.id.permissionsText);
-                actionSpinner = view.findViewById(R.id.actionSpinner);
-                editButton = view.findViewById(R.id.editButton);
-                deleteButton = view.findViewById(R.id.deleteButton);
+            ViewHolder(View itemView) {
+                super(itemView);
+                fullNameText = itemView.findViewById(R.id.fullNameText);
+                empIdText = itemView.findViewById(R.id.empIdText);
+                mobileText = itemView.findViewById(R.id.mobileText);
+                emailText = itemView.findViewById(R.id.emailText);
+                statusText = itemView.findViewById(R.id.statusText);
+                permissionsText = itemView.findViewById(R.id.permissionsText);
+                editButton = itemView.findViewById(R.id.editButton);
+                deleteButton = itemView.findViewById(R.id.deleteButton);
+                actionSpinner = itemView.findViewById(R.id.actionSpinner);
             }
         }
     }

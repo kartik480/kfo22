@@ -21,6 +21,7 @@ try {
     $vendorBank = $_POST['vendor_bank'] ?? '';
     $bankerName = $_POST['banker_name'] ?? '';
     $phoneNumber = $_POST['phone_number'] ?? '';
+    
     $email = $_POST['email'] ?? '';
     $bankerDesignation = $_POST['banker_designation'] ?? '';
     $loanType = $_POST['loan_type'] ?? '';

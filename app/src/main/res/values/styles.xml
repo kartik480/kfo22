@@ -1,0 +1,47 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Professional Input Field Style -->
+    <style name="ProfessionalInputField" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="boxStrokeColor">@color/blue_500</item>
+        <item name="boxStrokeWidth">1.5dp</item>
+        <item name="boxCornerRadiusTopStart">12dp</item>
+        <item name="boxCornerRadiusTopEnd">12dp</item>
+        <item name="boxCornerRadiusBottomStart">12dp</item>
+        <item name="boxCornerRadiusBottomEnd">12dp</item>
+        <item name="hintTextColor">@color/blue_500</item>
+        <item name="android:background">@drawable/input_field_background</item>
+        <item name="android:elevation">2dp</item>
+    </style>
+
+    <!-- Professional Dropdown Style -->
+    <style name="ProfessionalDropdown" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
+        <item name="boxStrokeColor">@color/blue_500</item>
+        <item name="boxStrokeWidth">1.5dp</item>
+        <item name="boxCornerRadiusTopStart">12dp</item>
+        <item name="boxCornerRadiusTopEnd">12dp</item>
+        <item name="boxCornerRadiusBottomStart">12dp</item>
+        <item name="boxCornerRadiusBottomEnd">12dp</item>
+        <item name="hintTextColor">@color/blue_500</item>
+        <item name="android:background">@drawable/dropdown_background</item>
+        <item name="android:elevation">2dp</item>
+    </style>
+
+    <!-- Professional Button Style -->
+    <style name="ProfessionalButton" parent="Widget.MaterialComponents.Button">
+        <item name="android:background">@drawable/next_button_background</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:elevation">4dp</item>
+        <item name="cornerRadius">12dp</item>
+    </style>
+
+    <!-- Professional File Upload Button Style -->
+    <style name="ProfessionalFileButton" parent="Widget.MaterialComponents.Button">
+        <item name="android:background">@drawable/button_background_red</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:elevation">3dp</item>
+        <item name="cornerRadius">8dp</item>
+    </style>
+</resources> 

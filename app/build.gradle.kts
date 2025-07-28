@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.kfinoneapp"
+    namespace = "com.kfinone.app"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.example.kfinoneapp"
+        applicationId = "com.kfinone.app"
         minSdk = 26
         targetSdk = 34
         versionCode = 11

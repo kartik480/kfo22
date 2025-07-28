@@ -3,6 +3,7 @@ package com.kfinone.app;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ImageButton;
+import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.material.card.MaterialCardView;
 
@@ -43,9 +44,15 @@ public class EmpMasterActivity extends AppCompatActivity {
 
         // Set click listeners
         addEmpCard.setOnClickListener(v -> {
-            Intent newIntent = new Intent(EmpMasterActivity.this, AddEmpDetailsActivity.class);
-            passUserDataToIntent(newIntent);
-            startActivity(newIntent);
+            try {
+                // Start AddEmpDetailsActivity using direct class reference
+                Intent newIntent = new Intent(EmpMasterActivity.this, AddEmpDetailsActivity.class);
+                passUserDataToIntent(newIntent);
+                startActivity(newIntent);
+            } catch (Exception e) {
+                Toast.makeText(EmpMasterActivity.this, "Error starting AddEmpDetailsActivity: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                e.printStackTrace();
+            }
         });
 
         activeEmpListCard.setOnClickListener(v -> {

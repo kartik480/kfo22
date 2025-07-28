@@ -4,16 +4,18 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/white">
+    android:background="#F8F9FA">
 
     <!-- Header -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:padding="16dp"
+        android:padding="20dp"
         android:layout_marginTop="48dp"
-        android:gravity="center_vertical">
+        android:gravity="center_vertical"
+        android:background="@color/white"
+        android:elevation="4dp">
 
         <ImageButton
             android:id="@+id/backButton"
@@ -23,15 +25,15 @@
             android:background="?attr/selectableItemBackgroundBorderless"
             android:contentDescription="Back"
             android:padding="12dp"
-            app:tint="@color/green"/>
+            app:tint="#2C3E50"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Add Employee Details"
-            android:textSize="24sp"
+            android:text="Add Emp Details"
+            android:textSize="28sp"
             android:textStyle="bold"
-            android:textColor="@color/black"
+            android:textColor="#2C3E50"
             android:layout_marginStart="16dp"/>
     </LinearLayout>
 
@@ -39,449 +41,467 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="16dp">
+        android:padding="20dp"
+        android:fillViewport="true">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <!-- Personal Details Section -->
-            <TextView
+            <!-- Form Container -->
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Personal Details"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:textColor="@color/light_green"
-                android:layout_marginBottom="16dp"/>
+                android:orientation="vertical"
+                android:background="@color/white"
+                android:padding="24dp"
+                android:elevation="4dp"
+                android:layout_marginBottom="20dp">
 
-            <!-- First Name -->
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/firstNameInput"
+                <!-- First Name -->
+                <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="First Name"
-                    android:inputType="textPersonName"/>
-            </com.google.android.material.textfield.TextInputLayout>
+                    android:text="First Name *"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="#2C3E50"
+                    android:layout_marginBottom="8dp"/>
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/lastNameInput"
+                <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Last Name"/>
-            </com.google.android.material.textfield.TextInputLayout>
+                    android:layout_marginBottom="20dp"
+                    style="@style/ProfessionalInputField">
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/firstNameInput"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="First Name"
+                        android:inputType="textPersonName"
+                        android:drawableStart="@drawable/ic_person"
+                        android:drawablePadding="12dp"
+                        android:padding="16dp"/>
+                </com.google.android.material.textfield.TextInputLayout>
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/employeeIdInput"
+                <!-- Personal Phone No -->
+                <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Employee ID"/>
-            </com.google.android.material.textfield.TextInputLayout>
+                    android:text="Personal Phone No *"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="#2C3E50"
+                    android:layout_marginBottom="8dp"/>
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/passwordInput"
+                <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Password"
-                    android:inputType="textPassword"/>
-            </com.google.android.material.textfield.TextInputLayout>
+                    android:layout_marginBottom="20dp"
+                    style="@style/ProfessionalInputField">
 
-            <!-- Contact Details -->
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/personalPhoneInput"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="658 799 8941"
+                        android:inputType="phone"
+                        android:maxLength="10"
+                        android:digits="0123456789"
+                        android:drawableStart="@drawable/ic_phone"
+                        android:drawablePadding="12dp"
+                        android:padding="16dp"/>
+                </com.google.android.material.textfield.TextInputLayout>
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/personalPhoneInput"
+                <!-- Official Phone No -->
+                <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Personal Phone No"
-                    android:inputType="phone"
-                    android:maxLength="10"
-                    android:digits="0123456789"/>
-            </com.google.android.material.textfield.TextInputLayout>
+                    android:text="Official Phone No *"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="#2C3E50"
+                    android:layout_marginBottom="8dp"/>
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/personalEmailInput"
+                <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Personal Email"
-                    android:inputType="textEmailAddress"/>
-            </com.google.android.material.textfield.TextInputLayout>
+                    android:layout_marginBottom="20dp"
+                    style="@style/ProfessionalInputField">
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/officialPhoneInput"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="080 799 8941"
+                        android:inputType="phone"
+                        android:maxLength="10"
+                        android:digits="0123456789"
+                        android:drawableStart="@drawable/ic_phone"
+                        android:drawablePadding="12dp"
+                        android:padding="16dp"/>
+                </com.google.android.material.textfield.TextInputLayout>
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/officialPhoneInput"
+                <!-- Date of Birth -->
+                <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Official Phone No"
-                    android:inputType="phone"
-                    android:maxLength="10"
-                    android:digits="0123456789"/>
-            </com.google.android.material.textfield.TextInputLayout>
+                    android:text="Date of Birth"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="#2C3E50"
+                    android:layout_marginBottom="8dp"/>
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/officialEmailInput"
+                <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Official Email"
-                    android:inputType="textEmailAddress"/>
-            </com.google.android.material.textfield.TextInputLayout>
+                    android:layout_marginBottom="20dp"
+                    style="@style/ProfessionalInputField">
 
-            <!-- Branch Details Section -->
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Branch Details"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:textColor="@color/light_green"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="16dp"/>
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/dateOfBirthInput"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="DD/MM/YYYY"
+                        android:inputType="date"
+                        android:focusable="false"
+                        android:clickable="true"
+                        android:drawableStart="@drawable/ic_calendar"
+                        android:drawablePadding="12dp"
+                        android:padding="16dp"/>
+                </com.google.android.material.textfield.TextInputLayout>
 
-            <!-- Branch State Dropdown -->
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
-
-                <AutoCompleteTextView
-                    android:id="@+id/branchStateInput"
+                <!-- Branch State -->
+                <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Select Branch State"
-                    android:inputType="none"
-                    android:focusable="false"
-                    android:clickable="true"/>
-            </com.google.android.material.textfield.TextInputLayout>
+                    android:text="Branch State *"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="#2C3E50"
+                    android:layout_marginBottom="8dp"/>
 
-            <!-- Branch Location Dropdown -->
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
-
-                <AutoCompleteTextView
-                    android:id="@+id/branchLocationInput"
+                <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Select Branch Location"
-                    android:inputType="none"
-                    android:focusable="false"
-                    android:clickable="true"/>
-            </com.google.android.material.textfield.TextInputLayout>
+                    android:layout_marginBottom="20dp"
+                    style="@style/ProfessionalDropdown">
 
-            <!-- Department Dropdown -->
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
+                    <AutoCompleteTextView
+                        android:id="@+id/branchStateInput"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Select Branch State"
+                        android:inputType="none"
+                        android:focusable="false"
+                        android:clickable="true"
+                        android:drawableStart="@drawable/ic_business"
+                        android:drawablePadding="12dp"
+                        android:padding="16dp"/>
+                </com.google.android.material.textfield.TextInputLayout>
 
-                <AutoCompleteTextView
-                    android:id="@+id/departmentInput"
+                <!-- Aadhaar Number -->
+                <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Select Department"
-                    android:inputType="none"
-                    android:focusable="false"
-                    android:clickable="true"/>
-            </com.google.android.material.textfield.TextInputLayout>
+                    android:text="Aadhaar Number *"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="#2C3E50"
+                    android:layout_marginBottom="8dp"/>
 
-            <!-- Designation Dropdown -->
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
-
-                <AutoCompleteTextView
-                    android:id="@+id/designationInput"
+                <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Select Designation"
-                    android:inputType="none"
-                    android:focusable="false"
-                    android:clickable="true"/>
-            </com.google.android.material.textfield.TextInputLayout>
+                    android:layout_marginBottom="20dp"
+                    style="@style/ProfessionalInputField">
 
-            <!-- Document Details Section -->
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Document Details"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:textColor="@color/light_green"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="16dp"/>
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/aadhaarNumberInput"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="8147 8147 8147"
+                        android:inputType="number"
+                        android:maxLength="12"
+                        android:digits="0123456789"
+                        android:drawableStart="@drawable/ic_id_card"
+                        android:drawablePadding="12dp"
+                        android:padding="16dp"/>
+                </com.google.android.material.textfield.TextInputLayout>
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/aadhaarNumberInput"
+                <!-- Present Address -->
+                <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Aadhaar Number"
-                    android:inputType="number"
-                    android:maxLength="12"
-                    android:digits="0123456789"/>
-            </com.google.android.material.textfield.TextInputLayout>
+                    android:text="Present Address *"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="#2C3E50"
+                    android:layout_marginBottom="8dp"/>
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/panNumberInput"
+                <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Pan Number"
-                    android:inputType="textCapCharacters"
-                    android:maxLength="10"/>
-            </com.google.android.material.textfield.TextInputLayout>
+                    android:layout_marginBottom="20dp"
+                    style="@style/ProfessionalInputField">
 
-            <!-- Bank Details Section -->
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Bank Details"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:textColor="@color/light_green"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="16dp"/>
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/presentAddressInput"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Present Address"
+                        android:inputType="textMultiLine"
+                        android:minLines="3"
+                        android:drawableStart="@drawable/ic_location"
+                        android:drawablePadding="12dp"
+                        android:padding="16dp"/>
+                </com.google.android.material.textfield.TextInputLayout>
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/accountNumberInput"
+                <!-- Employee Image -->
+                <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Account Number"
-                    android:inputType="number"
-                    android:maxLength="20"
-                    android:digits="0123456789"/>
-            </com.google.android.material.textfield.TextInputLayout>
+                    android:text="Employee Image"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="#2C3E50"
+                    android:layout_marginBottom="8dp"/>
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/ifscCodeInput"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="IFSC Code"
-                    android:inputType="textCapCharacters"/>
-            </com.google.android.material.textfield.TextInputLayout>
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="20dp"
+                    android:gravity="center_vertical">
 
-            <!-- Bank Name Dropdown -->
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
+                    <Button
+                        android:id="@+id/employeeImageUploadButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Choose File"
+                        style="@style/ProfessionalFileButton"
+                        android:padding="12dp"
+                        android:layout_marginEnd="12dp"/>
 
-                <AutoCompleteTextView
-                    android:id="@+id/bankNameInput"
+                    <TextView
+                        android:id="@+id/employeeImageText"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="No file chosen"
+                        android:textColor="#7F8C8D"
+                        android:textSize="14sp"/>
+                </LinearLayout>
+
+                <!-- Last Name -->
+                <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Select Bank Name"
-                    android:inputType="none"
-                    android:focusable="false"
-                    android:clickable="true"/>
-            </com.google.android.material.textfield.TextInputLayout>
+                    android:text="Last Name *"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="#2C3E50"
+                    android:layout_marginBottom="8dp"/>
 
-            <!-- Account Type Dropdown -->
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
-
-                <AutoCompleteTextView
-                    android:id="@+id/accountTypeInput"
+                <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Select Account Type"
-                    android:inputType="none"
-                    android:focusable="false"
-                    android:clickable="true"/>
-            </com.google.android.material.textfield.TextInputLayout>
+                    android:layout_marginBottom="20dp"
+                    style="@style/ProfessionalInputField">
 
-            <!-- File Upload Buttons -->
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Document Upload"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:textColor="@color/light_green"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="16dp"/>
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/lastNameInput"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Last Name"
+                        android:inputType="textPersonName"
+                        android:drawableStart="@drawable/ic_person"
+                        android:drawablePadding="12dp"
+                        android:padding="16dp"/>
+                </com.google.android.material.textfield.TextInputLayout>
 
-            <Button
-                android:id="@+id/panCardUploadButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:text="Upload Pan Card"/>
-
-            <Button
-                android:id="@+id/aadhaarCardUploadButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:text="Upload Aadhaar Card"/>
-
-            <Button
-                android:id="@+id/bankProofUploadButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:text="Upload Bank Proof"/>
-
-            <Button
-                android:id="@+id/employeeImageUploadButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:text="Upload Employee Image"/>
-
-            <!-- Address Details Section -->
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Address Details"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:textColor="@color/light_green"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="16dp"/>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/presentAddressInput"
+                <!-- Personal Email -->
+                <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Present Address"
-                    android:inputType="textMultiLine"
-                    android:minLines="2"/>
-            </com.google.android.material.textfield.TextInputLayout>
+                    android:text="Personal Email *"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="#2C3E50"
+                    android:layout_marginBottom="8dp"/>
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/permanentAddressInput"
+                <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Permanent Address"
-                    android:inputType="textMultiLine"
-                    android:minLines="2"/>
-            </com.google.android.material.textfield.TextInputLayout>
+                    android:layout_marginBottom="20dp"
+                    style="@style/ProfessionalInputField">
 
-            <!-- Reporting To Dropdown -->
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Reporting To:"
-                android:textSize="16sp"
-                android:textColor="@color/black"
-                android:layout_marginBottom="4dp"/>
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/personalEmailInput"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="User Email"
+                        android:inputType="textEmailAddress"
+                        android:drawableStart="@drawable/ic_email"
+                        android:drawablePadding="12dp"
+                        android:padding="16dp"/>
+                </com.google.android.material.textfield.TextInputLayout>
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
-
-                <AutoCompleteTextView
-                    android:id="@+id/reportingToInput"
+                <!-- Official Email -->
+                <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Select Reporting To"
-                    android:inputType="none"
-                    android:focusable="false"
-                    android:clickable="true"/>
-            </com.google.android.material.textfield.TextInputLayout>
+                    android:text="Official Email *"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="#2C3E50"
+                    android:layout_marginBottom="8dp"/>
 
-            <!-- Submit Button -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="20dp"
+                    style="@style/ProfessionalInputField">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/officialEmailInput"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Office Email"
+                        android:inputType="textEmailAddress"
+                        android:drawableStart="@drawable/ic_email"
+                        android:drawablePadding="12dp"
+                        android:padding="16dp"/>
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Anniversary Date -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Anniversary Date"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="#2C3E50"
+                    android:layout_marginBottom="8dp"/>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="20dp"
+                    style="@style/ProfessionalInputField">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/anniversaryDateInput"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="DD/MM/YYYY"
+                        android:inputType="date"
+                        android:focusable="false"
+                        android:clickable="true"
+                        android:drawableStart="@drawable/ic_calendar"
+                        android:drawablePadding="12dp"
+                        android:padding="16dp"/>
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Branch Location -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Branch Location *"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="#2C3E50"
+                    android:layout_marginBottom="8dp"/>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="20dp"
+                    style="@style/ProfessionalDropdown">
+
+                    <AutoCompleteTextView
+                        android:id="@+id/branchLocationInput"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Select Branch Location"
+                        android:inputType="none"
+                        android:focusable="false"
+                        android:clickable="true"
+                        android:drawableStart="@drawable/ic_business"
+                        android:drawablePadding="12dp"
+                        android:padding="16dp"/>
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Pan Number -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Pan Number *"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="#2C3E50"
+                    android:layout_marginBottom="8dp"/>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="20dp"
+                    style="@style/ProfessionalInputField">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/panNumberInput"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="ABCD1234A"
+                        android:inputType="textCapCharacters"
+                        android:maxLength="10"
+                        android:drawableStart="@drawable/ic_id_card"
+                        android:drawablePadding="12dp"
+                        android:padding="16dp"/>
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Permanent Address -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Permanent Address *"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="#2C3E50"
+                    android:layout_marginBottom="8dp"/>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="20dp"
+                    style="@style/ProfessionalInputField">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/permanentAddressInput"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Permanent Address"
+                        android:inputType="textMultiLine"
+                        android:minLines="3"
+                        android:drawableStart="@drawable/ic_location"
+                        android:drawablePadding="12dp"
+                        android:padding="16dp"/>
+                </com.google.android.material.textfield.TextInputLayout>
+
+            </LinearLayout>
+
+            <!-- Next Button -->
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/submitButton"
+                android:id="@+id/nextButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Submit"
+                android:text="Next"
+                style="@style/ProfessionalButton"
+                android:padding="16dp"
                 android:layout_marginTop="16dp"
-                android:padding="12dp"
-                app:cornerRadius="8dp"/>
+                android:layout_marginBottom="32dp"/>
 
         </LinearLayout>
     </ScrollView>
