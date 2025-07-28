@@ -24,6 +24,7 @@ public class CBOInactiveEmpListActivity extends AppCompatActivity {
     // User data
     private String userName;
     private String userId;
+    private String sourcePanel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +35,7 @@ public class CBOInactiveEmpListActivity extends AppCompatActivity {
         Intent intent = getIntent();
         userName = intent.getStringExtra("USERNAME");
         userId = intent.getStringExtra("USER_ID");
+        sourcePanel = intent.getStringExtra("SOURCE_PANEL");
 
         initializeViews();
         setupClickListeners();
@@ -86,7 +88,20 @@ public class CBOInactiveEmpListActivity extends AppCompatActivity {
     }
 
     private void goBack() {
-        Intent intent = new Intent(this, CBOEmpMasterActivity.class);
+        Intent intent;
+        
+        // Navigate back based on source panel
+        if ("CBO_PANEL".equals(sourcePanel)) {
+            intent = new Intent(this, SuperAdminCBOActivity.class);
+        } else if ("RBH_PANEL".equals(sourcePanel)) {
+            intent = new Intent(this, SuperAdminRBHActivity.class);
+        } else if ("BH_EMP_MASTER_PANEL".equals(sourcePanel)) {
+            intent = new Intent(this, SuperAdminBHEmpMasterActivity.class);
+        } else {
+            // Default fallback
+            intent = new Intent(this, SuperAdminCBOActivity.class);
+        }
+        
         passUserDataToIntent(intent);
         startActivity(intent);
         finish();

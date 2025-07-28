@@ -201,6 +201,18 @@
             android:exported="false"
             android:parentActivityName=".HomeActivity" />
         <activity 
+            android:name=".SuperAdminCBOActivity"
+            android:exported="false"
+            android:parentActivityName=".HomeActivity" />
+        <activity 
+            android:name=".SuperAdminRBHActivity"
+            android:exported="false"
+            android:parentActivityName=".HomeActivity" />
+        <activity 
+            android:name=".SuperAdminBHEmpMasterActivity"
+            android:exported="false"
+            android:parentActivityName=".HomeActivity" />
+        <activity 
             android:name=".DocumentUploadActivity"
             android:exported="false"
             android:label="Document Upload"
@@ -588,13 +600,11 @@
         <activity
             android:name=".CBOActiveEmpListActivity"
             android:exported="false"
-            android:label="CBO Active Employee List"
-            android:parentActivityName=".CBOEmpMasterActivity" />
+            android:label="CBO Active Employee List" />
         <activity
             android:name=".CBOInactiveEmpListActivity"
             android:exported="false"
-            android:label="CBO Inactive Employee List"
-            android:parentActivityName=".CBOEmpMasterActivity" />
+            android:label="CBO Inactive Employee List" />
         <activity
             android:name=".CBOEmployeeActivity"
             android:exported="false"

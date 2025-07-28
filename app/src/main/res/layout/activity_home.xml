@@ -178,7 +178,8 @@
                                     android:layout_width="48dp"
                                     android:layout_height="48dp"
                                     android:src="@drawable/ic_people"
-                                    android:contentDescription="Emp Master" />
+                                    android:contentDescription="Emp Master"
+                                    android:tint="@color/blue_500" />
 
                                 <TextView
                                     android:layout_width="wrap_content"
@@ -210,7 +211,8 @@
                                     android:layout_width="48dp"
                                     android:layout_height="48dp"
                                     android:src="@drawable/ic_location"
-                                    android:contentDescription="Location Master" />
+                                    android:contentDescription="Location Master"
+                                    android:tint="@color/blue_500" />
 
                                 <TextView
                                     android:layout_width="wrap_content"
@@ -242,7 +244,8 @@
                                     android:layout_width="48dp"
                                     android:layout_height="48dp"
                                     android:src="@drawable/ic_business"
-                                    android:contentDescription="SDSA Master" />
+                                    android:contentDescription="SDSA Master"
+                                    android:tint="@color/blue_500" />
 
                                 <TextView
                                     android:layout_width="wrap_content"
@@ -274,7 +277,8 @@
                                     android:layout_width="48dp"
                                     android:layout_height="48dp"
                                     android:src="@drawable/ic_code"
-                                    android:contentDescription="DSA-Code Master" />
+                                    android:contentDescription="DSA-Code Master"
+                                    android:tint="@color/blue_500" />
 
                                 <TextView
                                     android:layout_width="wrap_content"
@@ -306,7 +310,8 @@
                                     android:layout_width="48dp"
                                     android:layout_height="48dp"
                                     android:src="@drawable/ic_bank"
-                                    android:contentDescription="Bank Master" />
+                                    android:contentDescription="Bank Master"
+                                    android:tint="@color/blue_500" />
 
                                 <TextView
                                     android:layout_width="wrap_content"
@@ -338,7 +343,8 @@
                                     android:layout_width="48dp"
                                     android:layout_height="48dp"
                                     android:src="@drawable/ic_link"
-                                    android:contentDescription="Emp Links" />
+                                    android:contentDescription="Emp Links"
+                                    android:tint="@color/blue_500" />
 
                                 <TextView
                                     android:layout_width="wrap_content"
@@ -382,7 +388,8 @@
                                     android:layout_width="48dp"
                                     android:layout_height="48dp"
                                     android:src="@drawable/ic_agent"
-                                    android:contentDescription="Agent Master" />
+                                    android:contentDescription="Agent Master"
+                                    android:tint="@color/blue_500" />
 
                                 <TextView
                                     android:layout_width="wrap_content"
@@ -414,7 +421,8 @@
                                     android:layout_width="48dp"
                                     android:layout_height="48dp"
                                     android:src="@drawable/ic_bank"
-                                    android:contentDescription="Bankers" />
+                                    android:contentDescription="Bankers"
+                                    android:tint="@color/blue_500" />
 
                                 <TextView
                                     android:layout_width="wrap_content"
@@ -443,7 +451,8 @@
                                     android:layout_width="48dp"
                                     android:layout_height="48dp"
                                     android:src="@drawable/ic_dsa"
-                                    android:contentDescription="DSA Name" />
+                                    android:contentDescription="DSA Name"
+                                    android:tint="@color/blue_500" />
 
                                 <TextView
                                     android:layout_width="wrap_content"
@@ -475,7 +484,8 @@
                                     android:layout_width="48dp"
                                     android:layout_height="48dp"
                                     android:src="@drawable/ic_loan"
-                                    android:contentDescription="Type of Loans" />
+                                    android:contentDescription="Type of Loans"
+                                    android:tint="@color/blue_500" />
 
                                 <TextView
                                     android:layout_width="wrap_content"
@@ -507,7 +517,8 @@
                                     android:layout_width="48dp"
                                     android:layout_height="48dp"
                                     android:src="@drawable/ic_people"
-                                    android:contentDescription="Partner Master" />
+                                    android:contentDescription="Partner Master"
+                                    android:tint="@color/blue_500" />
 
                                 <TextView
                                     android:layout_width="wrap_content"
@@ -539,7 +550,8 @@
                                     android:layout_width="48dp"
                                     android:layout_height="48dp"
                                     android:src="@drawable/ic_payment"
-                                    android:contentDescription="Payout" />
+                                    android:contentDescription="Payout"
+                                    android:tint="@color/blue_500" />
 
                                 <TextView
                                     android:layout_width="wrap_content"
@@ -571,7 +583,8 @@
                                     android:layout_width="48dp"
                                     android:layout_height="48dp"
                                     android:src="@drawable/ic_upload"
-                                    android:contentDescription="Upload Document" />
+                                    android:contentDescription="Upload Document"
+                                    android:tint="@color/blue_500" />
 
                                 <TextView
                                     android:layout_width="wrap_content"
@@ -603,7 +616,8 @@
                                     android:layout_width="48dp"
                                     android:layout_height="48dp"
                                     android:src="@drawable/ic_policy"
-                                    android:contentDescription="Policy" />
+                                    android:contentDescription="Policy"
+                                    android:tint="@color/blue_500" />
 
                                 <TextView
                                     android:layout_width="wrap_content"
@@ -651,7 +665,8 @@
                                     android:layout_width="48dp"
                                     android:layout_height="48dp"
                                     android:src="@drawable/ic_settings"
-                                    android:contentDescription="CBO" />
+                                    android:contentDescription="CBO"
+                                    android:tint="@color/blue_500" />
 
                                 <TextView
                                     android:layout_width="wrap_content"
@@ -683,7 +698,8 @@
                                     android:layout_width="48dp"
                                     android:layout_height="48dp"
                                     android:src="@drawable/ic_people"
-                                    android:contentDescription="RBH" />
+                                    android:contentDescription="RBH"
+                                    android:tint="@color/blue_500" />
 
                                 <TextView
                                     android:layout_width="wrap_content"
@@ -715,7 +731,8 @@
                                     android:layout_width="48dp"
                                     android:layout_height="48dp"
                                     android:src="@drawable/ic_business"
-                                    android:contentDescription="BH Emp Master" />
+                                    android:contentDescription="BH Emp Master"
+                                    android:tint="@color/blue_500" />
 
                                 <TextView
                                     android:layout_width="wrap_content"

@@ -335,8 +335,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         cboCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(HomeActivity.this, SuperAdminActivity.class);
-                intent.putExtra("ADMIN_TYPE", "CBO");
+                Intent intent = new Intent(HomeActivity.this, SuperAdminCBOActivity.class);
                 // Pass user data
                 if (firstName != null) intent.putExtra("FIRST_NAME", firstName);
                 if (lastName != null) intent.putExtra("LAST_NAME", lastName);
@@ -349,8 +348,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         rbhCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(HomeActivity.this, SuperAdminActivity.class);
-                intent.putExtra("ADMIN_TYPE", "RBH");
+                Intent intent = new Intent(HomeActivity.this, SuperAdminRBHActivity.class);
                 // Pass user data
                 if (firstName != null) intent.putExtra("FIRST_NAME", firstName);
                 if (lastName != null) intent.putExtra("LAST_NAME", lastName);
@@ -363,8 +361,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         bhEmpMasterCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(HomeActivity.this, SuperAdminActivity.class);
-                intent.putExtra("ADMIN_TYPE", "BH_EMP_MASTER");
+                Intent intent = new Intent(HomeActivity.this, SuperAdminBHEmpMasterActivity.class);
                 // Pass user data
                 if (firstName != null) intent.putExtra("FIRST_NAME", firstName);
                 if (lastName != null) intent.putExtra("LAST_NAME", lastName);
