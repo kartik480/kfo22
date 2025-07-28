@@ -35,6 +35,9 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     private MaterialCardView payoutCard;
     private MaterialCardView uploadDocumentCard;
     private MaterialCardView policyCard;
+    private MaterialCardView cboCard;
+    private MaterialCardView rbhCard;
+    private MaterialCardView bhEmpMasterCard;
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
     private ImageButton menuButton;
@@ -149,6 +152,9 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         payoutCard = findViewById(R.id.payoutCard);
         uploadDocumentCard = findViewById(R.id.uploadDocumentCard);
         policyCard = findViewById(R.id.policyCard);
+        cboCard = findViewById(R.id.cboCard);
+        rbhCard = findViewById(R.id.rbhCard);
+        bhEmpMasterCard = findViewById(R.id.bhEmpMasterCard);
 
         // Set up menu button click listener
         menuButton.setOnClickListener(new View.OnClickListener() {
@@ -322,6 +328,49 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                     Log.e("HomeActivity", "Error starting PolicyActivity: " + e.getMessage(), e);
                     Toast.makeText(HomeActivity.this, "Error opening Policy panel: " + e.getMessage(), Toast.LENGTH_LONG).show();
                 }
+            }
+        });
+
+        // Set click listeners for admin cards
+        cboCard.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(HomeActivity.this, SuperAdminActivity.class);
+                intent.putExtra("ADMIN_TYPE", "CBO");
+                // Pass user data
+                if (firstName != null) intent.putExtra("FIRST_NAME", firstName);
+                if (lastName != null) intent.putExtra("LAST_NAME", lastName);
+                if (fullName != null) intent.putExtra("USERNAME", fullName);
+                if (userId != null) intent.putExtra("USER_ID", userId);
+                startActivity(intent);
+            }
+        });
+
+        rbhCard.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(HomeActivity.this, SuperAdminActivity.class);
+                intent.putExtra("ADMIN_TYPE", "RBH");
+                // Pass user data
+                if (firstName != null) intent.putExtra("FIRST_NAME", firstName);
+                if (lastName != null) intent.putExtra("LAST_NAME", lastName);
+                if (fullName != null) intent.putExtra("USERNAME", fullName);
+                if (userId != null) intent.putExtra("USER_ID", userId);
+                startActivity(intent);
+            }
+        });
+
+        bhEmpMasterCard.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(HomeActivity.this, SuperAdminActivity.class);
+                intent.putExtra("ADMIN_TYPE", "BH_EMP_MASTER");
+                // Pass user data
+                if (firstName != null) intent.putExtra("FIRST_NAME", firstName);
+                if (lastName != null) intent.putExtra("LAST_NAME", lastName);
+                if (fullName != null) intent.putExtra("USERNAME", fullName);
+                if (userId != null) intent.putExtra("USER_ID", userId);
+                startActivity(intent);
             }
         });
     }

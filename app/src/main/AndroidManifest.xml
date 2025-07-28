@@ -197,6 +197,10 @@
             android:label="Add Payout"
             android:parentActivityName=".PayoutActivity" />
         <activity 
+            android:name=".SuperAdminActivity"
+            android:exported="false"
+            android:parentActivityName=".HomeActivity" />
+        <activity 
             android:name=".DocumentUploadActivity"
             android:exported="false"
             android:label="Document Upload"
