@@ -45,7 +45,7 @@ public class DirectorEmployeeActivity extends AppCompatActivity {
 
     private void setupClickListeners() {
         myEmpBox.setOnClickListener(v -> {
-            Intent intent = new Intent(this, DirectorMyEmpLinksActivity.class);
+            Intent intent = new Intent(this, DirectorMyEmpActivity.class);
             passUserDataToIntent(intent);
             startActivity(intent);
         });

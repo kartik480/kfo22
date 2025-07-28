@@ -490,6 +490,35 @@
                         android:padding="16dp"/>
                 </com.google.android.material.textfield.TextInputLayout>
 
+                <!-- Reporting To -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Reporting To *"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="#2C3E50"
+                    android:layout_marginBottom="8dp"/>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="20dp"
+                    style="@style/ProfessionalDropdown">
+
+                    <AutoCompleteTextView
+                        android:id="@+id/reportingToInput"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Select Reporting To"
+                        android:inputType="none"
+                        android:focusable="false"
+                        android:clickable="true"
+                        android:drawableStart="@drawable/ic_people"
+                        android:drawablePadding="12dp"
+                        android:padding="16dp"/>
+                </com.google.android.material.textfield.TextInputLayout>
+
             </LinearLayout>
 
             <!-- Next Button -->

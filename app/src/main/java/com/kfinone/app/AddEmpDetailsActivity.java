@@ -52,6 +52,7 @@ public class AddEmpDetailsActivity extends AppCompatActivity {
     private AutoCompleteTextView branchLocationDropdown;
     private TextInputEditText panNumberInput;
     private TextInputEditText permanentAddressInput;
+    private AutoCompleteTextView reportingToDropdown;
     private MaterialButton nextButton;
 
     private Uri employeeImageUri = null;
@@ -120,6 +121,7 @@ public class AddEmpDetailsActivity extends AppCompatActivity {
         branchLocationDropdown = findViewById(R.id.branchLocationInput);
         panNumberInput = findViewById(R.id.panNumberInput);
         permanentAddressInput = findViewById(R.id.permanentAddressInput);
+        reportingToDropdown = findViewById(R.id.reportingToInput);
         nextButton = findViewById(R.id.nextButton);
     }
 
@@ -161,6 +163,7 @@ public class AddEmpDetailsActivity extends AppCompatActivity {
     private void setupDropdowns() {
         fetchBranchStates();
         fetchBranchLocations();
+        fetchReportingToUsers();
     }
 
     private void fetchBranchStates() {
@@ -261,6 +264,57 @@ public class AddEmpDetailsActivity extends AppCompatActivity {
         });
     }
 
+    private void fetchReportingToUsers() {
+        executor.execute(() -> {
+            try {
+                URL url = new URL("https://emp.kfinone.com/mobile/api/get_reporting_users_dropdown.php");
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                connection.setRequestMethod("GET");
+                connection.setConnectTimeout(15000);
+                connection.setReadTimeout(15000);
+                
+                int responseCode = connection.getResponseCode();
+                if (responseCode == HttpURLConnection.HTTP_OK) {
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                    StringBuilder response = new StringBuilder();
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        response.append(line);
+                    }
+                    reader.close();
+                    
+                    JSONObject jsonResponse = new JSONObject(response.toString());
+                    if (jsonResponse.getString("status").equals("success")) {
+                        JSONArray dataArray = jsonResponse.getJSONArray("data");
+                        List<String> users = new ArrayList<>();
+                        
+                        for (int i = 0; i < dataArray.length(); i++) {
+                            JSONObject userObj = dataArray.getJSONObject(i);
+                            String userName = userObj.getString("name");
+                            String userId = userObj.getString("id");
+                            users.add(userName + " (ID: " + userId + ")");
+                        }
+                        
+                        runOnUiThread(() -> {
+                            ArrayAdapter<String> adapter = new ArrayAdapter<>(
+                                this, android.R.layout.simple_dropdown_item_1line, users
+                            );
+                            reportingToDropdown.setAdapter(adapter);
+                            Log.d("AddEmpDetailsActivity", "Loaded " + users.size() + " reporting users");
+                        });
+                    } else {
+                        Log.e("AddEmpDetailsActivity", "Error: " + jsonResponse.getString("message"));
+                    }
+                } else {
+                    Log.e("AddEmpDetailsActivity", "HTTP Error: " + responseCode);
+                }
+                connection.disconnect();
+            } catch (Exception e) {
+                Log.e("AddEmpDetailsActivity", "Error fetching reporting users", e);
+            }
+        });
+    }
+
     private void setupImageUpload() {
         employeeImageUploadButton.setOnClickListener(v -> {
             employeeImageLauncher.launch("image/*");
@@ -327,6 +381,9 @@ public class AddEmpDetailsActivity extends AppCompatActivity {
         if (permanentAddressInput.getText().toString().trim().isEmpty()) {
             errors.add("Permanent Address is required");
         }
+        if (reportingToDropdown.getText().toString().trim().isEmpty()) {
+            errors.add("Reporting To is required");
+        }
 
         if (!errors.isEmpty()) {
             String errorMessage = String.join("\n", errors);
@@ -359,6 +416,7 @@ public class AddEmpDetailsActivity extends AppCompatActivity {
                 formData.put("branchLocation", branchLocationDropdown.getText().toString().trim());
                 formData.put("panNumber", panNumberInput.getText().toString().trim());
                 formData.put("permanentAddress", permanentAddressInput.getText().toString().trim());
+                formData.put("reportingTo", reportingToDropdown.getText().toString().trim());
                 
                 // Send data to API
                 URL url = new URL("https://emp.kfinone.com/mobile/api/add_employee_details.php");

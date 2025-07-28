@@ -213,6 +213,10 @@
             android:exported="false"
             android:parentActivityName=".HomeActivity" />
         <activity 
+            android:name=".DirectorMyEmpActivity"
+            android:exported="false"
+            android:parentActivityName=".DirectorEmployeeActivity" />
+        <activity 
             android:name=".DocumentUploadActivity"
             android:exported="false"
             android:label="Document Upload"
