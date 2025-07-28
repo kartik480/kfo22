@@ -383,6 +383,12 @@ public class AddEmpDetailsActivity extends AppCompatActivity {
         }
         if (reportingToDropdown.getText().toString().trim().isEmpty()) {
             errors.add("Reporting To is required");
+        } else {
+            // Validate that a valid ID was selected
+            String reportingToText = reportingToDropdown.getText().toString().trim();
+            if (!reportingToText.contains("(ID: ")) {
+                errors.add("Please select a valid Reporting To user");
+            }
         }
 
         if (!errors.isEmpty()) {
@@ -416,7 +422,20 @@ public class AddEmpDetailsActivity extends AppCompatActivity {
                 formData.put("branchLocation", branchLocationDropdown.getText().toString().trim());
                 formData.put("panNumber", panNumberInput.getText().toString().trim());
                 formData.put("permanentAddress", permanentAddressInput.getText().toString().trim());
-                formData.put("reportingTo", reportingToDropdown.getText().toString().trim());
+                // Extract user ID from reporting dropdown text (format: "Name (ID: 123)")
+                String reportingToText = reportingToDropdown.getText().toString().trim();
+                String reportingToId = "";
+                if (!reportingToText.isEmpty()) {
+                    // Extract ID from format "Name (ID: 123)"
+                    if (reportingToText.contains("(ID: ")) {
+                        int startIndex = reportingToText.indexOf("(ID: ") + 4;
+                        int endIndex = reportingToText.indexOf(")", startIndex);
+                        if (startIndex > 3 && endIndex > startIndex) {
+                            reportingToId = reportingToText.substring(startIndex, endIndex).trim();
+                        }
+                    }
+                }
+                formData.put("reportingTo", reportingToId);
                 
                 // Send data to API
                 URL url = new URL("https://emp.kfinone.com/mobile/api/add_employee_details.php");

@@ -40,6 +40,7 @@ try {
     $branchLocationName = $input['branchLocation'] ?? '';
     $panNumber = $input['panNumber'] ?? '';
     $permanentAddress = $input['permanentAddress'] ?? '';
+    $reportingTo = $input['reportingTo'] ?? '';
     
     // Validate required fields
     if (empty($firstName) || empty($lastName) || empty($personalPhone) || empty($personalEmail)) {
@@ -95,9 +96,9 @@ try {
         username, firstName, lastName, mobile, email_id, password, dob, 
         employee_no, branch_state_name_id, branch_location_id, present_address, 
         permanent_address, official_phone, official_email, joining_date, 
-        pan_number, aadhaar_number, status, created_at, updated_at
+        pan_number, aadhaar_number, reportingTo, status, created_at, updated_at
     ) VALUES (
-        ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'active', NOW(), NOW()
+        ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'active', NOW(), NOW()
     )";
     
     $stmt = $pdo->prepare($sql);
@@ -118,7 +119,8 @@ try {
         $officialEmail,
         $joiningDateFormatted,
         $panNumber,
-        $aadhaarNumber
+        $aadhaarNumber,
+        $reportingTo
     ]);
     
     $userId = $pdo->lastInsertId();
