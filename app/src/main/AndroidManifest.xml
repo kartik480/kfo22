@@ -761,6 +761,42 @@
                       android:exported="false"
                       android:label="Business Head My SDSA"
                       android:theme="@style/FullscreenTheme" />
+                      
+                  <activity
+                      android:name=".BusinessHeadPartnerActivity"
+                      android:exported="false"
+                      android:label="Business Head Partner"
+                      android:theme="@style/FullscreenTheme" />
+                      
+                  <activity
+                      android:name=".BusinessHeadAddPartnerActivity"
+                      android:exported="false"
+                      android:label="Business Head Add Partner"
+                      android:theme="@style/FullscreenTheme" />
+                      
+                  <activity
+                      android:name=".BusinessHeadMyPartnerActivity"
+                      android:exported="false"
+                      android:label="Business Head My Partner"
+                      android:theme="@style/FullscreenTheme" />
+                      
+                  <activity
+                      android:name=".BusinessHeadAgentActivity"
+                      android:exported="false"
+                      android:label="Business Head Agent"
+                      android:theme="@style/FullscreenTheme" />
+                      
+                  <activity
+                      android:name=".BusinessHeadAddAgentActivity"
+                      android:exported="false"
+                      android:label="Business Head Add Agent"
+                      android:theme="@style/FullscreenTheme" />
+                      
+                  <activity
+                      android:name=".BusinessHeadMyAgentActivity"
+                      android:exported="false"
+                      android:label="Business Head My Agent"
+                      android:theme="@style/FullscreenTheme" />
             
         <!-- Regional Business Head Activities -->
         <activity

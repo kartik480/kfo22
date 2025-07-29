@@ -188,14 +188,26 @@ public class BusinessHeadPanelActivity extends AppCompatActivity {
             showToast("Strategic Planning - Coming Soon!");
         });
         
-        // Resource Management
+        // Resource Management (Partner)
         cardResourceManagement.setOnClickListener(v -> {
-            showToast("Resource Management - Coming Soon!");
+            Intent intent = new Intent(BusinessHeadPanelActivity.this, BusinessHeadPartnerActivity.class);
+            // Pass user data
+            if (userId != null) intent.putExtra("USER_ID", userId);
+            if (username != null) intent.putExtra("USERNAME", username);
+            if (firstName != null) intent.putExtra("FIRST_NAME", firstName);
+            if (lastName != null) intent.putExtra("LAST_NAME", lastName);
+            startActivity(intent);
         });
         
-        // Business Growth
+        // Business Growth (Agent)
         cardBusinessGrowth.setOnClickListener(v -> {
-            showToast("Business Growth - Coming Soon!");
+            Intent intent = new Intent(BusinessHeadPanelActivity.this, BusinessHeadAgentActivity.class);
+            // Pass user data
+            if (userId != null) intent.putExtra("USER_ID", userId);
+            if (username != null) intent.putExtra("USERNAME", username);
+            if (firstName != null) intent.putExtra("FIRST_NAME", firstName);
+            if (lastName != null) intent.putExtra("LAST_NAME", lastName);
+            startActivity(intent);
         });
         
         // Innovation Hub
@@ -203,9 +215,16 @@ public class BusinessHeadPanelActivity extends AppCompatActivity {
             showToast("Innovation Hub - Coming Soon!");
         });
         
-        // Partnerships
+        // Partnerships (Bankers List)
         cardPartnerships.setOnClickListener(v -> {
-            showToast("Partnerships - Coming Soon!");
+            Intent intent = new Intent(BusinessHeadPanelActivity.this, BankerListActivity.class);
+            // Pass user data
+            if (userId != null) intent.putExtra("USER_ID", userId);
+            if (username != null) intent.putExtra("USERNAME", username);
+            if (firstName != null) intent.putExtra("FIRST_NAME", firstName);
+            if (lastName != null) intent.putExtra("LAST_NAME", lastName);
+            intent.putExtra("SOURCE_PANEL", "BUSINESS_HEAD_PANEL");
+            startActivity(intent);
         });
         
         // Market Analysis
