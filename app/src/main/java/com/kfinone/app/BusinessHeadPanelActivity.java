@@ -145,19 +145,22 @@ public class BusinessHeadPanelActivity extends AppCompatActivity {
     }
     
     private void setupCardClickListeners() {
-        // Team Management
+        // Emp Links
         cardTeamManagement.setOnClickListener(v -> {
-            showToast("Team Management - Coming Soon!");
+            Intent intent = new Intent(BusinessHeadPanelActivity.this, EmpLinksActivity.class);
+            startActivity(intent);
         });
         
-        // Business Analytics
+        // Data Links
         cardBusinessAnalytics.setOnClickListener(v -> {
-            showToast("Business Analytics - Coming Soon!");
+            Intent intent = new Intent(BusinessHeadPanelActivity.this, BusinessHeadDataLinksActivity.class);
+            startActivity(intent);
         });
         
-        // Reports & Insights
+        // Work Links
         cardReportsInsights.setOnClickListener(v -> {
-            showToast("Reports & Insights - Coming Soon!");
+            Intent intent = new Intent(BusinessHeadPanelActivity.this, BusinessHeadWorkLinksActivity.class);
+            startActivity(intent);
         });
         
         // Performance Tracking

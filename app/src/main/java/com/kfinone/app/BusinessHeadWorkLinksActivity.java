@@ -8,7 +8,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
-public class WorkLinksActivity extends AppCompatActivity {
+public class BusinessHeadWorkLinksActivity extends AppCompatActivity {
 
     private CardView myWorkLinksCard;
     private CardView teamWorkLinksCard;
@@ -17,7 +17,7 @@ public class WorkLinksActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_work_links);
+        setContentView(R.layout.activity_business_head_work_links);
 
         // Initialize views
         initializeViews();

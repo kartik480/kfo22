@@ -701,12 +701,24 @@
         <activity android:name=".CBODocumentChecklistActivity" />
         <activity android:name=".CBOPolicyActivity" />
         
-        <!-- Business Head Activities -->
-        <activity
-            android:name=".BusinessHeadPanelActivity"
-            android:exported="false"
-            android:label="Business Head Dashboard"
-            android:theme="@style/FullscreenTheme" />
+                          <!-- Business Head Activities -->
+                  <activity
+                      android:name=".BusinessHeadPanelActivity"
+                      android:exported="false"
+                      android:label="Business Head Dashboard"
+                      android:theme="@style/FullscreenTheme" />
+                      
+                  <activity
+                      android:name=".BusinessHeadDataLinksActivity"
+                      android:exported="false"
+                      android:label="Business Head Data Links"
+                      android:theme="@style/FullscreenTheme" />
+                      
+                  <activity
+                      android:name=".BusinessHeadWorkLinksActivity"
+                      android:exported="false"
+                      android:label="Business Head Work Links"
+                      android:theme="@style/FullscreenTheme" />
             
         <!-- Regional Business Head Activities -->
         <activity

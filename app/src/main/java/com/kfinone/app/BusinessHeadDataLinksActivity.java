@@ -8,16 +8,16 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
-public class WorkLinksActivity extends AppCompatActivity {
+public class BusinessHeadDataLinksActivity extends AppCompatActivity {
 
-    private CardView myWorkLinksCard;
-    private CardView teamWorkLinksCard;
+    private CardView myDataLinksCard;
+    private CardView teamDataLinksCard;
     private ImageView backButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_work_links);
+        setContentView(R.layout.activity_business_head_data_links);
 
         // Initialize views
         initializeViews();
@@ -25,8 +25,8 @@ public class WorkLinksActivity extends AppCompatActivity {
     }
 
     private void initializeViews() {
-        myWorkLinksCard = findViewById(R.id.myWorkLinksCard);
-        teamWorkLinksCard = findViewById(R.id.teamWorkLinksCard);
+        myDataLinksCard = findViewById(R.id.myDataLinksCard);
+        teamDataLinksCard = findViewById(R.id.teamDataLinksCard);
         backButton = findViewById(R.id.backButton);
     }
 
@@ -36,14 +36,14 @@ public class WorkLinksActivity extends AppCompatActivity {
             onBackPressed();
         });
 
-        // My Work Links Card
-        myWorkLinksCard.setOnClickListener(v -> {
-            Toast.makeText(this, "My Work Links - Coming Soon!", Toast.LENGTH_SHORT).show();
+        // My Data Links Card
+        myDataLinksCard.setOnClickListener(v -> {
+            Toast.makeText(this, "My Data Links - Coming Soon!", Toast.LENGTH_SHORT).show();
         });
 
-        // Team Work Links Card
-        teamWorkLinksCard.setOnClickListener(v -> {
-            Toast.makeText(this, "Team Work Links - Coming Soon!", Toast.LENGTH_SHORT).show();
+        // Team Data Links Card
+        teamDataLinksCard.setOnClickListener(v -> {
+            Toast.makeText(this, "Team Data Links - Coming Soon!", Toast.LENGTH_SHORT).show();
         });
     }
 } 
