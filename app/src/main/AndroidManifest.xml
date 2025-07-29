@@ -701,6 +701,13 @@
         <activity android:name=".CBODocumentChecklistActivity" />
         <activity android:name=".CBOPolicyActivity" />
         
+        <!-- Business Head Activities -->
+        <activity
+            android:name=".BusinessHeadPanelActivity"
+            android:exported="false"
+            android:label="Business Head Dashboard"
+            android:theme="@style/FullscreenTheme" />
+            
         <!-- Regional Business Head Activities -->
         <activity
             android:name=".RegionalBusinessHeadPanelActivity"

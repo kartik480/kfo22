@@ -215,19 +215,29 @@ public class EnhancedLoginActivity extends AppCompatActivity {
                         // Check if user is Regional Business Head
                         boolean isRegionalBusinessHead = jsonResponse.optBoolean("is_regional_business_head", false);
                         
+                        // Check if user is Business Head
+                        boolean isBusinessHead = jsonResponse.optBoolean("is_business_head", false);
+                        
                         // Fallback: Check designation directly if API flag is not present
                         if (!isRegionalBusinessHead && user.has("designation_name")) {
                             String designation = user.getString("designation_name");
                             isRegionalBusinessHead = "Regional Business Head".equals(designation);
                         }
                         
+                        if (!isBusinessHead && user.has("designation_name")) {
+                            String designation = user.getString("designation_name");
+                            isBusinessHead = "Business Head".equals(designation);
+                        }
+                        
                         // Make final for lambda
                         final boolean finalIsRegionalBusinessHead = isRegionalBusinessHead;
+                        final boolean finalIsBusinessHead = isBusinessHead;
                         
                         Log.d(TAG, "Username: " + username + ", isUser10002: " + isUser10002);
                         Log.d(TAG, "User ID from server: " + userId);
                         Log.d(TAG, "Is Chief Business Officer: " + isChiefBusinessOfficer);
                         Log.d(TAG, "Is Regional Business Head: " + isRegionalBusinessHead);
+                        Log.d(TAG, "Is Business Head: " + isBusinessHead);
                         Log.d(TAG, "Designation: " + user.optString("designation_name", "N/A"));
                         Log.d(TAG, "Full response: " + responseBody);
 
@@ -239,6 +249,16 @@ public class EnhancedLoginActivity extends AppCompatActivity {
                                     Log.d(TAG, "Navigating to ChiefBusinessOfficerPanelActivity");
                                     // Navigate to Chief Business Officer panel
                                     Intent intent = new Intent(EnhancedLoginActivity.this, ChiefBusinessOfficerPanelActivity.class);
+                                    intent.putExtra("USERNAME", displayName);
+                                    intent.putExtra("FIRST_NAME", firstName);
+                                    intent.putExtra("LAST_NAME", lastName);
+                                    intent.putExtra("USER_ID", userId);
+                                    startActivity(intent);
+                                    finish();
+                                } else if (finalIsBusinessHead) {
+                                    Log.d(TAG, "Navigating to BusinessHeadPanelActivity");
+                                    // Navigate to Business Head panel
+                                    Intent intent = new Intent(EnhancedLoginActivity.this, BusinessHeadPanelActivity.class);
                                     intent.putExtra("USERNAME", displayName);
                                     intent.putExtra("FIRST_NAME", firstName);
                                     intent.putExtra("LAST_NAME", lastName);

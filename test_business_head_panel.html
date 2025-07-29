@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Business Head Panel API Testing</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        h2 {
+            color: #34495e;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+            margin-top: 30px;
+        }
+        .api-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #3498db;
+        }
+        .test-button {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            margin: 10px 5px;
+            transition: background 0.3s;
+        }
+        .test-button:hover {
+            background: #2980b9;
+        }
+        .test-button:disabled {
+            background: #bdc3c7;
+            cursor: not-allowed;
+        }
+        .output {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 15px;
+            font-family: 'Courier New', monospace;
+            white-space: pre-wrap;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .success {
+            color: #27ae60;
+            font-weight: bold;
+        }
+        .error {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+        .info {
+            color: #3498db;
+            font-weight: bold;
+        }
+        .input-group {
+            margin: 15px 0;
+        }
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        .input-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #bdc3c7;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            border-top: 4px solid #3498db;
+        }
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        .stat-label {
+            color: #7f8c8d;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Business Head Panel API Testing</h1>
+        
+        <div class="api-section">
+            <h2>About Business Head Panel</h2>
+            <p><strong>Purpose:</strong> This page tests the APIs for the Business Head panel.</p>
+            <p>The Business Head panel is designed for users with designation "Business Head" in the database.</p>
+            <p><strong>Key Features:</strong></p>
+            <ul>
+                <li>Team Management</li>
+                <li>Business Analytics</li>
+                <li>Reports & Insights</li>
+                <li>Performance Tracking</li>
+            </ul>
+        </div>
+
+        <div class="api-section">
+            <h2>1. Get Business Head Users API</h2>
+            <p>This API fetches all Business Head users and their team members.</p>
+            <button class="test-button" onclick="testGetBusinessHeadUsers()">Test Get Business Head Users</button>
+            <div id="businessHeadUsersOutput" class="output" style="display: none;"></div>
+        </div>
+
+        <div class="api-section">
+            <h2>2. Check Business Head User API</h2>
+            <p>This API checks if a specific user is a Business Head.</p>
+            <div class="input-group">
+                <label for="checkUsername">Username:</label>
+                <input type="text" id="checkUsername" placeholder="Enter username to check">
+            </div>
+            <button class="test-button" onclick="testCheckBusinessHeadUser()">Check Business Head User</button>
+            <div id="checkBusinessHeadOutput" class="output" style="display: none;"></div>
+        </div>
+
+        <div class="api-section">
+            <h2>3. Login with Business Head Detection</h2>
+            <p>This simulates the login process with Business Head detection.</p>
+            <div class="input-group">
+                <label for="loginUsername">Username:</label>
+                <input type="text" id="loginUsername" placeholder="Enter username">
+            </div>
+            <div class="input-group">
+                <label for="loginPassword">Password:</label>
+                <input type="password" id="loginPassword" placeholder="Enter password">
+            </div>
+            <button class="test-button" onclick="testLoginWithBusinessHeadDetection()">Test Login</button>
+            <div id="loginOutput" class="output" style="display: none;"></div>
+        </div>
+
+        <div class="api-section">
+            <h2>4. Business Head Statistics</h2>
+            <div id="statsGrid" class="stats-grid" style="display: none;">
+                <div class="stat-card">
+                    <div class="stat-number" id="totalBusinessHeads">-</div>
+                    <div class="stat-label">Total Business Heads</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="activeBusinessHeads">-</div>
+                    <div class="stat-label">Active Business Heads</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="totalTeamMembers">-</div>
+                    <div class="stat-label">Total Team Members</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="activeTeamMembers">-</div>
+                    <div class="stat-label">Active Team Members</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const BASE_URL = 'https://kfinone.com/api/';
+
+        async function testGetBusinessHeadUsers() {
+            const output = document.getElementById('businessHeadUsersOutput');
+            output.style.display = 'block';
+            output.textContent = 'Loading...';
+
+            try {
+                const response = await fetch(BASE_URL + 'get_business_head_users.php');
+                const data = await response.json();
+                
+                let result = '=== Business Head Users API Response ===\n\n';
+                result += `Status: ${data.status}\n`;
+                result += `Message: ${data.message}\n\n`;
+                
+                if (data.status === 'success') {
+                    result += `Business Head Users Count: ${data.counts.business_head_users_count}\n`;
+                    result += `Team Members Count: ${data.counts.team_members_count}\n\n`;
+                    
+                    result += '=== Statistics ===\n';
+                    result += `Total Business Heads: ${data.data.statistics.total_business_head_users}\n`;
+                    result += `Active Business Heads: ${data.data.statistics.active_business_head_users}\n`;
+                    result += `Total Team Members: ${data.data.statistics.total_team_members}\n`;
+                    result += `Active Team Members: ${data.data.statistics.active_team_members}\n\n`;
+                    
+                    result += '=== Business Head Users ===\n';
+                    if (data.data.business_head_users.length > 0) {
+                        data.data.business_head_users.forEach((user, index) => {
+                            result += `${index + 1}. ${user.fullName} (${user.username})\n`;
+                            result += `   Email: ${user.email_id || 'N/A'}\n`;
+                            result += `   Mobile: ${user.mobile || 'N/A'}\n`;
+                            result += `   Status: ${user.status || 'Active'}\n\n`;
+                        });
+                    } else {
+                        result += 'No Business Head users found.\n\n';
+                    }
+                    
+                    result += '=== Team Members ===\n';
+                    if (data.data.team_members.length > 0) {
+                        data.data.team_members.forEach((member, index) => {
+                            result += `${index + 1}. ${member.fullName} (${member.username})\n`;
+                            result += `   Reports to: ${member.managerName}\n`;
+                            result += `   Designation: ${member.designation_name}\n`;
+                            result += `   Status: ${member.status || 'Active'}\n\n`;
+                        });
+                    } else {
+                        result += 'No team members found.\n\n';
+                    }
+                    
+                    // Update statistics display
+                    updateStatsDisplay(data.data.statistics);
+                } else {
+                    result += `Error: ${data.message}\n`;
+                }
+                
+                output.textContent = result;
+                
+            } catch (error) {
+                output.textContent = `Error: ${error.message}`;
+            }
+        }
+
+        async function testCheckBusinessHeadUser() {
+            const username = document.getElementById('checkUsername').value.trim();
+            if (!username) {
+                alert('Please enter a username');
+                return;
+            }
+
+            const output = document.getElementById('checkBusinessHeadOutput');
+            output.style.display = 'block';
+            output.textContent = 'Loading...';
+
+            try {
+                const response = await fetch(`${BASE_URL}check_business_head_user.php?username=${encodeURIComponent(username)}`);
+                const data = await response.json();
+                
+                let result = '=== Check Business Head User API Response ===\n\n';
+                result += `Status: ${data.status}\n`;
+                result += `Is Business Head: ${data.is_business_head}\n`;
+                result += `Message: ${data.message}\n\n`;
+                
+                if (data.is_business_head && data.user_data) {
+                    result += '=== User Data ===\n';
+                    result += `ID: ${data.user_data.id}\n`;
+                    result += `Name: ${data.user_data.fullName}\n`;
+                    result += `Username: ${data.user_data.username}\n`;
+                    result += `Email: ${data.user_data.email_id || 'N/A'}\n`;
+                    result += `Mobile: ${data.user_data.mobile || 'N/A'}\n`;
+                    result += `Designation: ${data.user_data.designation_name}\n`;
+                    result += `Status: ${data.user_data.status || 'Active'}\n`;
+                }
+                
+                output.textContent = result;
+                
+            } catch (error) {
+                output.textContent = `Error: ${error.message}`;
+            }
+        }
+
+        async function testLoginWithBusinessHeadDetection() {
+            const username = document.getElementById('loginUsername').value.trim();
+            const password = document.getElementById('loginPassword').value.trim();
+            
+            if (!username || !password) {
+                alert('Please enter both username and password');
+                return;
+            }
+
+            const output = document.getElementById('loginOutput');
+            output.style.display = 'block';
+            output.textContent = 'Loading...';
+
+            try {
+                const response = await fetch(BASE_URL + 'login.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        username: username,
+                        password: password
+                    })
+                });
+                
+                const data = await response.json();
+                
+                let result = '=== Login with Business Head Detection ===\n\n';
+                result += `Success: ${data.success}\n`;
+                result += `Message: ${data.message}\n\n`;
+                
+                if (data.success) {
+                    result += '=== User Information ===\n';
+                    result += `ID: ${data.user.id}\n`;
+                    result += `Username: ${data.user.username}\n`;
+                    result += `First Name: ${data.user.firstName || 'N/A'}\n`;
+                    result += `Last Name: ${data.user.lastName || 'N/A'}\n`;
+                    result += `Designation: ${data.user.designation_name || 'N/A'}\n\n`;
+                    
+                    result += '=== Role Detection ===\n';
+                    result += `Is Business Head: ${data.is_business_head || false}\n`;
+                    result += `Is Chief Business Officer: ${data.is_chief_business_officer || false}\n`;
+                    result += `Is Regional Business Head: ${data.is_regional_business_head || false}\n\n`;
+                    
+                    if (data.is_business_head) {
+                        result += '✅ This user will be redirected to the Business Head Panel!\n';
+                    } else if (data.is_chief_business_officer) {
+                        result += 'ℹ️ This user will be redirected to the Chief Business Officer Panel.\n';
+                    } else if (data.is_regional_business_head) {
+                        result += 'ℹ️ This user will be redirected to the Regional Business Head Panel.\n';
+                    } else {
+                        result += 'ℹ️ This user will be redirected to the regular Home Panel.\n';
+                    }
+                } else {
+                    result += `Login failed: ${data.message}\n`;
+                }
+                
+                output.textContent = result;
+                
+            } catch (error) {
+                output.textContent = `Error: ${error.message}`;
+            }
+        }
+
+        function updateStatsDisplay(statistics) {
+            const statsGrid = document.getElementById('statsGrid');
+            statsGrid.style.display = 'grid';
+            
+            document.getElementById('totalBusinessHeads').textContent = statistics.total_business_head_users;
+            document.getElementById('activeBusinessHeads').textContent = statistics.active_business_head_users;
+            document.getElementById('totalTeamMembers').textContent = statistics.total_team_members;
+            document.getElementById('activeTeamMembers').textContent = statistics.active_team_members;
+        }
+
+        // Auto-test on page load
+        window.onload = function() {
+            console.log('Business Head Panel API Testing Page Loaded');
+            console.log('Available APIs:');
+            console.log('1. get_business_head_users.php');
+            console.log('2. check_business_head_user.php');
+            console.log('3. login.php (with Business Head detection)');
+        };
+    </script>
+</body>
+</html> 
