@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test User Manage Icons</title>
+    <meta charset="UTF-8">
+</head>
+<body>
+    <h1>Test User Manage Icons</h1>
+    <button onclick="testUserManageIcons()">Test User ID 41 Manage Icons</button>
+    <div id="result"></div>
+
+    <script>
+        function testUserManageIcons() {
+            const userId = 41;
+            const url = `https://emp.kfinone.com/mobile/api/test_user_manage_icons.php?user_id=${userId}`;
+            
+            document.getElementById('result').innerHTML = 'Testing...';
+            
+            fetch(url)
+                .then(response => {
+                    console.log('Response status:', response.status);
+                    return response.text();
+                })
+                .then(data => {
+                    console.log('Response data:', data);
+                    const jsonData = JSON.parse(data);
+                    
+                    let resultHTML = `
+                        <h3>Test Results for User ID: ${userId}</h3>
+                        <p><strong>Success:</strong> ${jsonData.success}</p>
+                        <p><strong>Message:</strong> ${jsonData.message}</p>
+                    `;
+                    
+                    if (jsonData.user_data) {
+                        resultHTML += `
+                            <h4>User Data:</h4>
+                            <p><strong>ID:</strong> ${jsonData.user_data.id}</p>
+                            <p><strong>Username:</strong> ${jsonData.user_data.username}</p>
+                        `;
+                    }
+                    
+                    resultHTML += `
+                        <h4>Manage Icons Raw Data:</h4>
+                        <p><strong>Raw manage_icons:</strong> "${jsonData.manage_icons_raw}"</p>
+                        <p><strong>Is Empty:</strong> ${jsonData.manage_icons_raw === null || jsonData.manage_icons_raw === ''}</p>
+                    `;
+                    
+                    if (jsonData.icon_ids && jsonData.icon_ids.length > 0) {
+                        resultHTML += `
+                            <h4>Parsed Icon IDs:</h4>
+                            <p><strong>Icon IDs:</strong> ${jsonData.icon_ids.join(', ')}</p>
+                        `;
+                    } else {
+                        resultHTML += `
+                            <h4>Parsed Icon IDs:</h4>
+                            <p><strong>No icon IDs found</strong></p>
+                        `;
+                    }
+                    
+                    if (jsonData.manage_icon_data && jsonData.manage_icon_data.length > 0) {
+                        resultHTML += `
+                            <h4>Manage Icon Data (${jsonData.total_icons_found} found):</h4>
+                            <table border="1" style="border-collapse: collapse; width: 100%;">
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                    <th>URL</th>
+                                    <th>Image</th>
+                                    <th>Description</th>
+                                    <th>Status</th>
+                                </tr>
+                        `;
+                        
+                        jsonData.manage_icon_data.forEach(icon => {
+                            resultHTML += `
+                                <tr>
+                                    <td>${icon.id}</td>
+                                    <td>${icon.icon_name}</td>
+                                    <td>${icon.icon_url}</td>
+                                    <td>${icon.icon_image}</td>
+                                    <td>${icon.icon_description}</td>
+                                    <td>${icon.status}</td>
+                                </tr>
+                            `;
+                        });
+                        
+                        resultHTML += '</table>';
+                    } else {
+                        resultHTML += `
+                            <h4>Manage Icon Data:</h4>
+                            <p><strong>No manage icon data found</strong></p>
+                        `;
+                    }
+                    
+                    document.getElementById('result').innerHTML = resultHTML;
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    document.getElementById('result').innerHTML = `
+                        <h3>Error!</h3>
+                        <p><strong>URL:</strong> ${url}</p>
+                        <p><strong>Error:</strong> ${error.message}</p>
+                    `;
+                });
+        }
+    </script>
+</body>
+</html> 

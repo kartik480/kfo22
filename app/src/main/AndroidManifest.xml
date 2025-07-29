@@ -719,6 +719,12 @@
                       android:exported="false"
                       android:label="Business Head Work Links"
                       android:theme="@style/FullscreenTheme" />
+                      
+                  <activity
+                      android:name=".BusinessHeadMyEmpLinksActivity"
+                      android:exported="false"
+                      android:label="Business Head My Emp Links"
+                      android:theme="@style/FullscreenTheme" />
             
         <!-- Regional Business Head Activities -->
         <activity

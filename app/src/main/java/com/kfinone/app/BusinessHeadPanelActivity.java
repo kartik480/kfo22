@@ -35,7 +35,7 @@ import java.util.concurrent.Executors;
 
 public class BusinessHeadPanelActivity extends AppCompatActivity {
     private static final String TAG = "BusinessHeadPanel";
-    private static final String BASE_URL = "https://kfinone.com/api/";
+    private static final String BASE_URL = "https://emp.kfinone.com/mobile/api/";
     
     private String username;
     private String firstName;
@@ -83,6 +83,10 @@ public class BusinessHeadPanelActivity extends AppCompatActivity {
         firstName = intent.getStringExtra("FIRST_NAME");
         lastName = intent.getStringExtra("LAST_NAME");
         userId = intent.getStringExtra("USER_ID");
+        
+        // Debug logging
+        Log.d(TAG, "BusinessHeadPanelActivity received USER_ID: " + userId);
+        Log.d(TAG, "BusinessHeadPanelActivity received USERNAME: " + username);
         
         // Initialize views
         initializeViews();
@@ -148,6 +152,11 @@ public class BusinessHeadPanelActivity extends AppCompatActivity {
         // Emp Links
         cardTeamManagement.setOnClickListener(v -> {
             Intent intent = new Intent(BusinessHeadPanelActivity.this, EmpLinksActivity.class);
+            // Pass user data
+            if (userId != null) intent.putExtra("USER_ID", userId);
+            if (username != null) intent.putExtra("USERNAME", username);
+            if (firstName != null) intent.putExtra("FIRST_NAME", firstName);
+            if (lastName != null) intent.putExtra("LAST_NAME", lastName);
             startActivity(intent);
         });
         

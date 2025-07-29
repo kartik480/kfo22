@@ -2,6 +2,7 @@ package com.kfinone.app;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -18,6 +19,13 @@ public class EmpLinksActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_emp_links);
+
+        // Debug logging
+        Intent intent = getIntent();
+        if (intent != null) {
+            Log.d("EmpLinksActivity", "Received USER_ID: " + intent.getStringExtra("USER_ID"));
+            Log.d("EmpLinksActivity", "Received USERNAME: " + intent.getStringExtra("USERNAME"));
+        }
 
         // Initialize views
         initializeViews();
@@ -38,7 +46,20 @@ public class EmpLinksActivity extends AppCompatActivity {
 
         // My Emp Links Card
         myEmpLinksCard.setOnClickListener(v -> {
-            Toast.makeText(this, "My Emp Links - Coming Soon!", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(EmpLinksActivity.this, BusinessHeadMyEmpLinksActivity.class);
+            // Pass user data from current intent
+            Intent currentIntent = getIntent();
+            if (currentIntent != null) {
+                String userId = currentIntent.getStringExtra("USER_ID");
+                if (userId != null) intent.putExtra("USER_ID", userId);
+                String firstName = currentIntent.getStringExtra("FIRST_NAME");
+                if (firstName != null) intent.putExtra("FIRST_NAME", firstName);
+                String lastName = currentIntent.getStringExtra("LAST_NAME");
+                if (lastName != null) intent.putExtra("LAST_NAME", lastName);
+                String fullName = currentIntent.getStringExtra("USERNAME");
+                if (fullName != null) intent.putExtra("USERNAME", fullName);
+            }
+            startActivity(intent);
         });
 
         // Team Emp Links Card

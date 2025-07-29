@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Manage Icon and User Data</title>
+    <meta charset="UTF-8">
+</head>
+<body>
+    <h1>Test Manage Icon and User Data</h1>
+    <button onclick="testData()">Test User ID 41 Data</button>
+    <div id="result"></div>
+
+    <script>
+        function testData() {
+            const userId = 41;
+            const url = `https://emp.kfinone.com/mobile/api/test_manage_icon_and_user_data.php?user_id=${userId}`;
+            
+            document.getElementById('result').innerHTML = 'Testing...';
+            
+            fetch(url)
+                .then(response => response.text())
+                .then(data => {
+                    console.log('Response data:', data);
+                    const jsonData = JSON.parse(data);
+                    
+                    let resultHTML = `
+                        <h3>Test Results for User ID: ${userId}</h3>
+                        <p><strong>Success:</strong> ${jsonData.success}</p>
+                        <p><strong>Message:</strong> ${jsonData.message}</p>
+                        <p><strong>Username:</strong> ${jsonData.user_username}</p>
+                    `;
+                    
+                    resultHTML += `
+                        <h4>tbl_manage_icon Data:</h4>
+                        <p><strong>Total Icons:</strong> ${jsonData.tbl_manage_icon_count}</p>
+                        <p><strong>Icon IDs:</strong> ${jsonData.tbl_manage_icon_ids.join(', ') || 'None'}</p>
+                    `;
+                    
+                    resultHTML += `
+                        <h4>tbl_user manage_icons Data:</h4>
+                        <p><strong>Raw manage_icons:</strong> "${jsonData.user_manage_icons_raw}"</p>
+                        <p><strong>Parsed Icon IDs:</strong> ${jsonData.user_manage_icons_parsed.join(', ') || 'None'}</p>
+                        <p><strong>Count:</strong> ${jsonData.user_manage_icons_count}</p>
+                    `;
+                    
+                    resultHTML += `
+                        <h4>Matching Analysis:</h4>
+                        <p><strong>Matching Icons:</strong> ${jsonData.matching_icons.join(', ') || 'None'}</p>
+                        <p><strong>Matching Count:</strong> ${jsonData.matching_count}</p>
+                    `;
+                    
+                    resultHTML += `
+                        <h4>Analysis Summary:</h4>
+                        <ul>
+                            <li><strong>Has manage_icons data:</strong> ${jsonData.analysis.has_manage_icons_data ? 'Yes' : 'No'}</li>
+                            <li><strong>Has icon table data:</strong> ${jsonData.analysis.has_icon_table_data ? 'Yes' : 'No'}</li>
+                            <li><strong>Has matches:</strong> ${jsonData.analysis.has_matches ? 'Yes' : 'No'}</li>
+                        </ul>
+                    `;
+                    
+                    document.getElementById('result').innerHTML = resultHTML;
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    document.getElementById('result').innerHTML = `
+                        <h3>Error!</h3>
+                        <p><strong>URL:</strong> ${url}</p>
+                        <p><strong>Error:</strong> ${error.message}</p>
+                    `;
+                });
+        }
+    </script>
+</body>
+</html> 
