@@ -725,6 +725,30 @@
                       android:exported="false"
                       android:label="Business Head My Emp Links"
                       android:theme="@style/FullscreenTheme" />
+                      
+                  <activity
+                      android:name=".BusinessHeadEmpMasterActivity"
+                      android:exported="false"
+                      android:label="Business Head Employee Master"
+                      android:theme="@style/FullscreenTheme" />
+                      
+                  <activity
+                      android:name=".BusinessHeadAddEmpActivity"
+                      android:exported="false"
+                      android:label="Business Head Add Employee"
+                      android:theme="@style/FullscreenTheme" />
+                      
+                  <activity
+                      android:name=".BusinessHeadActiveEmpListActivity"
+                      android:exported="false"
+                      android:label="Business Head Active Employee List"
+                      android:theme="@style/FullscreenTheme" />
+                      
+                  <activity
+                      android:name=".BusinessHeadInactiveEmpListActivity"
+                      android:exported="false"
+                      android:label="Business Head Inactive Employee List"
+                      android:theme="@style/FullscreenTheme" />
             
         <!-- Regional Business Head Activities -->
         <activity
