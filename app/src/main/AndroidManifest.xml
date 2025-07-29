@@ -749,6 +749,18 @@
                       android:exported="false"
                       android:label="Business Head Inactive Employee List"
                       android:theme="@style/FullscreenTheme" />
+                      
+                  <activity
+                      android:name=".BusinessHeadSdsaActivity"
+                      android:exported="false"
+                      android:label="Business Head SDSA"
+                      android:theme="@style/FullscreenTheme" />
+                      
+                  <activity
+                      android:name=".BusinessHeadMySdsaActivity"
+                      android:exported="false"
+                      android:label="Business Head My SDSA"
+                      android:theme="@style/FullscreenTheme" />
             
         <!-- Regional Business Head Activities -->
         <activity
