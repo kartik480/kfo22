@@ -369,7 +369,7 @@
                         android:layout_width="48dp"
                         android:layout_height="48dp"
                         android:src="@drawable/ic_people"
-                        android:background="@drawable/gradient_icon_background"
+                        android:background="@drawable/blue_gradient_icon_background"
                         android:padding="12dp"
                         android:contentDescription="Team Management" />
 
@@ -402,7 +402,7 @@
                         android:layout_width="48dp"
                         android:layout_height="48dp"
                         android:src="@drawable/ic_analytics"
-                        android:background="@drawable/gradient_icon_background"
+                        android:background="@drawable/blue_gradient_icon_background"
                         android:padding="12dp"
                         android:contentDescription="Business Analytics" />
 
@@ -435,7 +435,7 @@
                         android:layout_width="48dp"
                         android:layout_height="48dp"
                         android:src="@drawable/ic_reports"
-                        android:background="@drawable/gradient_icon_background"
+                        android:background="@drawable/blue_gradient_icon_background"
                         android:padding="12dp"
                         android:contentDescription="Reports &amp; Insights" />
 
@@ -468,7 +468,7 @@
                         android:layout_width="48dp"
                         android:layout_height="48dp"
                         android:src="@drawable/ic_performance"
-                        android:background="@drawable/gradient_icon_background"
+                        android:background="@drawable/blue_gradient_icon_background"
                         android:padding="12dp"
                         android:contentDescription="Performance Tracking" />
 
@@ -501,7 +501,7 @@
                         android:layout_width="48dp"
                         android:layout_height="48dp"
                         android:src="@drawable/ic_strategy"
-                        android:background="@drawable/gradient_icon_background"
+                        android:background="@drawable/blue_gradient_icon_background"
                         android:padding="12dp"
                         android:contentDescription="Strategic Planning" />
 
@@ -534,7 +534,7 @@
                         android:layout_width="48dp"
                         android:layout_height="48dp"
                         android:src="@drawable/ic_team"
-                        android:background="@drawable/gradient_icon_background"
+                        android:background="@drawable/blue_gradient_icon_background"
                         android:padding="12dp"
                         android:contentDescription="Resource Management" />
 
@@ -567,7 +567,7 @@
                         android:layout_width="48dp"
                         android:layout_height="48dp"
                         android:src="@drawable/ic_growth"
-                        android:background="@drawable/gradient_icon_background"
+                        android:background="@drawable/blue_gradient_icon_background"
                         android:padding="12dp"
                         android:contentDescription="Business Growth" />
 
@@ -600,7 +600,7 @@
                         android:layout_width="48dp"
                         android:layout_height="48dp"
                         android:src="@drawable/ic_innovation"
-                        android:background="@drawable/gradient_icon_background"
+                        android:background="@drawable/blue_gradient_icon_background"
                         android:padding="12dp"
                         android:contentDescription="Innovation Hub" />
 
@@ -633,7 +633,7 @@
                         android:layout_width="48dp"
                         android:layout_height="48dp"
                         android:src="@drawable/ic_partnerships"
-                        android:background="@drawable/gradient_icon_background"
+                        android:background="@drawable/blue_gradient_icon_background"
                         android:padding="12dp"
                         android:contentDescription="Partnerships" />
 
@@ -666,7 +666,7 @@
                         android:layout_width="48dp"
                         android:layout_height="48dp"
                         android:src="@drawable/ic_market_analysis"
-                        android:background="@drawable/gradient_icon_background"
+                        android:background="@drawable/blue_gradient_icon_background"
                         android:padding="12dp"
                         android:contentDescription="Market Analysis" />
 
@@ -699,7 +699,7 @@
                         android:layout_width="48dp"
                         android:layout_height="48dp"
                         android:src="@drawable/ic_risk_management"
-                        android:background="@drawable/gradient_icon_background"
+                        android:background="@drawable/blue_gradient_icon_background"
                         android:padding="12dp"
                         android:contentDescription="Risk Management" />
 
@@ -732,7 +732,7 @@
                         android:layout_width="48dp"
                         android:layout_height="48dp"
                         android:src="@drawable/ic_compliance"
-                        android:background="@drawable/gradient_icon_background"
+                        android:background="@drawable/blue_gradient_icon_background"
                         android:padding="12dp"
                         android:contentDescription="Compliance" />
 
@@ -765,7 +765,7 @@
                         android:layout_width="48dp"
                         android:layout_height="48dp"
                         android:src="@drawable/ic_budget"
-                        android:background="@drawable/gradient_icon_background"
+                        android:background="@drawable/blue_gradient_icon_background"
                         android:padding="12dp"
                         android:contentDescription="Budget Management" />
 
@@ -798,7 +798,7 @@
                         android:layout_width="48dp"
                         android:layout_height="48dp"
                         android:src="@drawable/ic_goals"
-                        android:background="@drawable/gradient_icon_background"
+                        android:background="@drawable/blue_gradient_icon_background"
                         android:padding="12dp"
                         android:contentDescription="Goals &amp; KPIs" />
 
@@ -831,7 +831,7 @@
                         android:layout_width="48dp"
                         android:layout_height="48dp"
                         android:src="@drawable/ic_settings"
-                        android:background="@drawable/gradient_icon_background"
+                        android:background="@drawable/blue_gradient_icon_background"
                         android:padding="12dp"
                         android:contentDescription="Settings" />
 
