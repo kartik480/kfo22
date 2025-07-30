@@ -32,7 +32,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Business Head Portfolio Management"
+            android:text=""
             android:textSize="18sp"
             android:textColor="#2C3E50"
             android:textStyle="bold"
