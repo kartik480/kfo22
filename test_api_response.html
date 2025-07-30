@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Response Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px 0;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .response {
+            background-color: #f8f9fa;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 10px 0;
+            white-space: pre-wrap;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .error {
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+        .success {
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>API Response Test</h1>
+        <p>Click the button below to test the Business Head Add Emp Dropdowns API:</p>
+        
+        <button onclick="testAPI()">Test API Response</button>
+        
+        <div id="response" class="response" style="display: none;"></div>
+        
+        <div id="status"></div>
+    </div>
+
+    <script>
+        async function testAPI() {
+            const responseDiv = document.getElementById('response');
+            const statusDiv = document.getElementById('status');
+            
+            responseDiv.style.display = 'block';
+            responseDiv.className = 'response';
+            responseDiv.textContent = 'Loading...';
+            statusDiv.textContent = '';
+            
+            try {
+                const response = await fetch('https://emp.kfinone.com/mobile/api/get_business_head_add_emp_dropdowns.php');
+                const data = await response.json();
+                
+                responseDiv.textContent = JSON.stringify(data, null, 2);
+                
+                if (data.status === 'success') {
+                    responseDiv.className = 'response success';
+                    statusDiv.innerHTML = '<h3>✅ API Response Analysis:</h3>';
+                    
+                    const dataObj = data.data;
+                    let analysis = '<ul>';
+                    
+                    if (dataObj.branch_states && dataObj.branch_states.length > 0) {
+                        analysis += `<li>✅ Branch States: ${dataObj.branch_states.length} options found</li>`;
+                    } else {
+                        analysis += `<li>❌ Branch States: No data found</li>`;
+                    }
+                    
+                    if (dataObj.account_types && dataObj.account_types.length > 0) {
+                        analysis += `<li>✅ Account Types: ${dataObj.account_types.length} options found</li>`;
+                    } else {
+                        analysis += `<li>❌ Account Types: No data found</li>`;
+                    }
+                    
+                    if (dataObj.branch_locations && dataObj.branch_locations.length > 0) {
+                        analysis += `<li>✅ Branch Locations: ${dataObj.branch_locations.length} options found</li>`;
+                    } else {
+                        analysis += `<li>❌ Branch Locations: No data found</li>`;
+                    }
+                    
+                    if (dataObj.bank_names && dataObj.bank_names.length > 0) {
+                        analysis += `<li>✅ Bank Names: ${dataObj.bank_names.length} options found</li>`;
+                    } else {
+                        analysis += `<li>❌ Bank Names: No data found</li>`;
+                    }
+                    
+                    if (dataObj.reporting_users && dataObj.reporting_users.length > 0) {
+                        analysis += `<li>✅ Reporting Users: ${dataObj.reporting_users.length} options found</li>`;
+                    } else {
+                        analysis += `<li>❌ Reporting Users: No data found</li>`;
+                    }
+                    
+                    analysis += '</ul>';
+                    statusDiv.innerHTML += analysis;
+                    
+                } else {
+                    responseDiv.className = 'response error';
+                    statusDiv.innerHTML = '<h3>❌ API Error:</h3><p>' + (data.message || 'Unknown error') + '</p>';
+                }
+                
+            } catch (error) {
+                responseDiv.className = 'response error';
+                responseDiv.textContent = 'Error: ' + error.message;
+                statusDiv.innerHTML = '<h3>❌ Network Error:</h3><p>' + error.message + '</p>';
+            }
+        }
+    </script>
+</body>
+</html> 

@@ -4,16 +4,30 @@ import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Locale;
 
 public class BusinessHeadAddEmpActivity extends AppCompatActivity {
@@ -68,6 +82,20 @@ public class BusinessHeadAddEmpActivity extends AppCompatActivity {
     private String userId;
     private String firstName;
     private String lastName;
+    
+    // Dropdown data
+    private List<String> branchStates = new ArrayList<>();
+    private List<String> accountTypes = new ArrayList<>();
+    private List<String> branchLocations = new ArrayList<>();
+    private List<String> bankNames = new ArrayList<>();
+    private List<String> reportingUsers = new ArrayList<>();
+    
+    // Selected values
+    private String selectedBranchState = "";
+    private String selectedAccountType = "";
+    private String selectedBranchLocation = "";
+    private String selectedBankName = "";
+    private String selectedReportingUser = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,6 +112,7 @@ public class BusinessHeadAddEmpActivity extends AppCompatActivity {
         initializeViews();
         setupClickListeners();
         setupFilePicker();
+        loadDropdownData();
     }
 
     private void initializeViews() {
@@ -135,11 +164,31 @@ public class BusinessHeadAddEmpActivity extends AppCompatActivity {
         backButton.setOnClickListener(v -> goBack());
 
         // Spinner click listeners
-        branchStateSpinner.setOnClickListener(v -> showBranchStateDialog());
-        accountTypeSpinner.setOnClickListener(v -> showAccountTypeDialog());
-        branchLocationSpinner.setOnClickListener(v -> showBranchLocationDialog());
-        bankNameSpinner.setOnClickListener(v -> showBankNameDialog());
-        reportingToSpinner.setOnClickListener(v -> showReportingToDialog());
+        branchStateSpinner.setOnClickListener(v -> {
+            Log.d("BusinessHeadAddEmp", "Branch State spinner clicked");
+            Toast.makeText(this, "Branch State clicked", Toast.LENGTH_SHORT).show();
+            showBranchStateDialog();
+        });
+        accountTypeSpinner.setOnClickListener(v -> {
+            Log.d("BusinessHeadAddEmp", "Account Type spinner clicked");
+            Toast.makeText(this, "Account Type clicked", Toast.LENGTH_SHORT).show();
+            showAccountTypeDialog();
+        });
+        branchLocationSpinner.setOnClickListener(v -> {
+            Log.d("BusinessHeadAddEmp", "Branch Location spinner clicked");
+            Toast.makeText(this, "Branch Location clicked", Toast.LENGTH_SHORT).show();
+            showBranchLocationDialog();
+        });
+        bankNameSpinner.setOnClickListener(v -> {
+            Log.d("BusinessHeadAddEmp", "Bank Name spinner clicked");
+            Toast.makeText(this, "Bank Name clicked", Toast.LENGTH_SHORT).show();
+            showBankNameDialog();
+        });
+        reportingToSpinner.setOnClickListener(v -> {
+            Log.d("BusinessHeadAddEmp", "Reporting To spinner clicked");
+            Toast.makeText(this, "Reporting To clicked", Toast.LENGTH_SHORT).show();
+            showReportingToDialog();
+        });
 
         // File upload click listeners
         panCardChooseFileButton.setOnClickListener(v -> pickFile("panCard"));
@@ -183,29 +232,285 @@ public class BusinessHeadAddEmpActivity extends AppCompatActivity {
         panCardFileName.setText(fileName);
     }
 
+    private void loadDropdownData() {
+        String url = "https://emp.kfinone.com/mobile/api/get_business_head_add_emp_dropdowns.php";
+        RequestQueue queue = Volley.newRequestQueue(this);
+        
+        Log.d("BusinessHeadAddEmp", "Loading dropdown data from: " + url);
+        
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
+            Request.Method.GET, url, null,
+            new Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject response) {
+                    try {
+                        Log.d("BusinessHeadAddEmp", "API Response: " + response.toString());
+                        
+                        if (response.getString("status").equals("success")) {
+                            JSONObject data = response.getJSONObject("data");
+                            
+                            // Load Branch States
+                            if (data.has("branch_states")) {
+                                JSONArray branchStatesArray = data.getJSONArray("branch_states");
+                                branchStates.clear();
+                                for (int i = 0; i < branchStatesArray.length(); i++) {
+                                    JSONObject state = branchStatesArray.getJSONObject(i);
+                                    branchStates.add(state.getString("name"));
+                                }
+                                Log.d("BusinessHeadAddEmp", "Loaded " + branchStates.size() + " branch states");
+                            } else {
+                                Log.w("BusinessHeadAddEmp", "No branch_states found in response");
+                            }
+                            
+                            // Load Account Types
+                            if (data.has("account_types")) {
+                                JSONArray accountTypesArray = data.getJSONArray("account_types");
+                                accountTypes.clear();
+                                for (int i = 0; i < accountTypesArray.length(); i++) {
+                                    JSONObject type = accountTypesArray.getJSONObject(i);
+                                    accountTypes.add(type.getString("name"));
+                                }
+                                Log.d("BusinessHeadAddEmp", "Loaded " + accountTypes.size() + " account types");
+                            } else {
+                                Log.w("BusinessHeadAddEmp", "No account_types found in response");
+                            }
+                            
+                            // Load Branch Locations
+                            if (data.has("branch_locations")) {
+                                JSONArray branchLocationsArray = data.getJSONArray("branch_locations");
+                                branchLocations.clear();
+                                for (int i = 0; i < branchLocationsArray.length(); i++) {
+                                    JSONObject location = branchLocationsArray.getJSONObject(i);
+                                    branchLocations.add(location.getString("name"));
+                                }
+                                Log.d("BusinessHeadAddEmp", "Loaded " + branchLocations.size() + " branch locations");
+                            } else {
+                                Log.w("BusinessHeadAddEmp", "No branch_locations found in response");
+                            }
+                            
+                            // Load Bank Names
+                            if (data.has("bank_names")) {
+                                JSONArray bankNamesArray = data.getJSONArray("bank_names");
+                                bankNames.clear();
+                                for (int i = 0; i < bankNamesArray.length(); i++) {
+                                    JSONObject bank = bankNamesArray.getJSONObject(i);
+                                    bankNames.add(bank.getString("name"));
+                                }
+                                Log.d("BusinessHeadAddEmp", "Loaded " + bankNames.size() + " bank names");
+                            } else {
+                                Log.w("BusinessHeadAddEmp", "No bank_names found in response");
+                            }
+                            
+                            // Load Reporting Users
+                            if (data.has("reporting_users")) {
+                                JSONArray reportingUsersArray = data.getJSONArray("reporting_users");
+                                reportingUsers.clear();
+                                for (int i = 0; i < reportingUsersArray.length(); i++) {
+                                    JSONObject user = reportingUsersArray.getJSONObject(i);
+                                    reportingUsers.add(user.getString("full_name"));
+                                }
+                                Log.d("BusinessHeadAddEmp", "Loaded " + reportingUsers.size() + " reporting users");
+                            } else {
+                                Log.w("BusinessHeadAddEmp", "No reporting_users found in response");
+                            }
+                            
+                            // If no reporting users found, add sample data
+                            if (reportingUsers.isEmpty()) {
+                                Log.d("BusinessHeadAddEmp", "No reporting users found, adding sample data");
+                                reportingUsers.add("John Doe (Business Head)");
+                                reportingUsers.add("Jane Smith (Business Head)");
+                                reportingUsers.add("Mike Johnson (Business Head)");
+                            }
+                            
+                            Log.d("BusinessHeadAddEmp", "Dropdown data loaded successfully");
+                            Log.d("BusinessHeadAddEmp", "Summary - Branch States: " + branchStates.size() + 
+                                ", Account Types: " + accountTypes.size() + 
+                                ", Branch Locations: " + branchLocations.size() + 
+                                ", Bank Names: " + bankNames.size() + 
+                                ", Reporting Users: " + reportingUsers.size());
+                            
+                        } else {
+                            String errorMsg = "Error loading dropdown data: " + response.optString("message", "Unknown error");
+                            Log.e("BusinessHeadAddEmp", errorMsg);
+                            Toast.makeText(BusinessHeadAddEmpActivity.this, errorMsg, Toast.LENGTH_SHORT).show();
+                            loadSampleData(); // Load sample data as fallback
+                        }
+                    } catch (JSONException e) {
+                        Log.e("BusinessHeadAddEmp", "Error parsing dropdown data", e);
+                        Toast.makeText(BusinessHeadAddEmpActivity.this, "Error parsing dropdown data: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                        loadSampleData(); // Load sample data as fallback
+                    }
+                }
+            },
+            new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Log.e("BusinessHeadAddEmp", "Error loading dropdown data", error);
+                    Toast.makeText(BusinessHeadAddEmpActivity.this, "Error loading dropdown data: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                    loadSampleData(); // Load sample data as fallback
+                }
+            }
+        );
+        
+        queue.add(jsonObjectRequest);
+        
+        // Debug: Show loaded data after a delay
+        new android.os.Handler().postDelayed(() -> {
+            Log.d("BusinessHeadAddEmp", "=== DEBUG: Current Data Status ===");
+            Log.d("BusinessHeadAddEmp", "Branch States: " + branchStates.size() + " - " + branchStates.toString());
+            Log.d("BusinessHeadAddEmp", "Account Types: " + accountTypes.size() + " - " + accountTypes.toString());
+            Log.d("BusinessHeadAddEmp", "Branch Locations: " + branchLocations.size() + " - " + branchLocations.toString());
+            Log.d("BusinessHeadAddEmp", "Bank Names: " + bankNames.size() + " - " + bankNames.toString());
+            Log.d("BusinessHeadAddEmp", "Reporting Users: " + reportingUsers.size() + " - " + reportingUsers.toString());
+            Log.d("BusinessHeadAddEmp", "=== END DEBUG ===");
+        }, 2000); // 2 seconds delay
+    }
+    
+    private void loadSampleData() {
+        Log.d("BusinessHeadAddEmp", "Loading sample data as fallback");
+        
+        // Sample Branch States
+        branchStates.clear();
+        branchStates.add("Maharashtra");
+        branchStates.add("Delhi");
+        branchStates.add("Karnataka");
+        branchStates.add("Tamil Nadu");
+        branchStates.add("Gujarat");
+        
+        // Sample Account Types
+        accountTypes.clear();
+        accountTypes.add("Savings");
+        accountTypes.add("Current");
+        accountTypes.add("Fixed Deposit");
+        accountTypes.add("Recurring Deposit");
+        
+        // Sample Branch Locations
+        branchLocations.clear();
+        branchLocations.add("Mumbai");
+        branchLocations.add("Delhi");
+        branchLocations.add("Bangalore");
+        branchLocations.add("Chennai");
+        branchLocations.add("Ahmedabad");
+        
+        // Sample Bank Names
+        bankNames.clear();
+        bankNames.add("HDFC Bank");
+        bankNames.add("ICICI Bank");
+        bankNames.add("State Bank of India");
+        bankNames.add("Axis Bank");
+        bankNames.add("Kotak Mahindra Bank");
+        
+        // Sample Reporting Users
+        reportingUsers.clear();
+        reportingUsers.add("John Doe (Business Head)");
+        reportingUsers.add("Jane Smith (Business Head)");
+        reportingUsers.add("Mike Johnson (Business Head)");
+        
+        Log.d("BusinessHeadAddEmp", "Sample data loaded - Branch States: " + branchStates.size() + 
+            ", Account Types: " + accountTypes.size() + 
+            ", Branch Locations: " + branchLocations.size() + 
+            ", Bank Names: " + bankNames.size() + 
+            ", Reporting Users: " + reportingUsers.size());
+    }
+
     private void showBranchStateDialog() {
-        // TODO: Implement branch state selection dialog
-        Toast.makeText(this, "Branch State selection coming soon", Toast.LENGTH_SHORT).show();
+        Log.d("BusinessHeadAddEmp", "showBranchStateDialog called. Size: " + branchStates.size());
+        if (branchStates.isEmpty()) {
+            Log.w("BusinessHeadAddEmp", "Branch states list is empty");
+            Toast.makeText(this, "Loading branch states...", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        
+        String[] options = branchStates.toArray(new String[0]);
+        Log.d("BusinessHeadAddEmp", "Showing branch state dialog with " + options.length + " options");
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Select Branch State");
+        builder.setItems(options, (dialog, which) -> {
+            selectedBranchState = options[which];
+            branchStateSpinner.setText(selectedBranchState);
+            Log.d("BusinessHeadAddEmp", "Selected branch state: " + selectedBranchState);
+        });
+        builder.show();
     }
 
     private void showAccountTypeDialog() {
-        // TODO: Implement account type selection dialog
-        Toast.makeText(this, "Account Type selection coming soon", Toast.LENGTH_SHORT).show();
+        Log.d("BusinessHeadAddEmp", "showAccountTypeDialog called. Size: " + accountTypes.size());
+        if (accountTypes.isEmpty()) {
+            Log.w("BusinessHeadAddEmp", "Account types list is empty");
+            Toast.makeText(this, "Loading account types...", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        
+        String[] options = accountTypes.toArray(new String[0]);
+        Log.d("BusinessHeadAddEmp", "Showing account type dialog with " + options.length + " options");
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Select Account Type");
+        builder.setItems(options, (dialog, which) -> {
+            selectedAccountType = options[which];
+            accountTypeSpinner.setText(selectedAccountType);
+            Log.d("BusinessHeadAddEmp", "Selected account type: " + selectedAccountType);
+        });
+        builder.show();
     }
 
     private void showBranchLocationDialog() {
-        // TODO: Implement branch location selection dialog
-        Toast.makeText(this, "Branch Location selection coming soon", Toast.LENGTH_SHORT).show();
+        Log.d("BusinessHeadAddEmp", "showBranchLocationDialog called. Size: " + branchLocations.size());
+        if (branchLocations.isEmpty()) {
+            Log.w("BusinessHeadAddEmp", "Branch locations list is empty");
+            Toast.makeText(this, "Loading branch locations...", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        
+        String[] options = branchLocations.toArray(new String[0]);
+        Log.d("BusinessHeadAddEmp", "Showing branch location dialog with " + options.length + " options");
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Select Branch Location");
+        builder.setItems(options, (dialog, which) -> {
+            selectedBranchLocation = options[which];
+            branchLocationSpinner.setText(selectedBranchLocation);
+            Log.d("BusinessHeadAddEmp", "Selected branch location: " + selectedBranchLocation);
+        });
+        builder.show();
     }
 
     private void showBankNameDialog() {
-        // TODO: Implement bank name selection dialog
-        Toast.makeText(this, "Bank Name selection coming soon", Toast.LENGTH_SHORT).show();
+        Log.d("BusinessHeadAddEmp", "showBankNameDialog called. Size: " + bankNames.size());
+        if (bankNames.isEmpty()) {
+            Log.w("BusinessHeadAddEmp", "Bank names list is empty");
+            Toast.makeText(this, "Loading bank names...", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        
+        String[] options = bankNames.toArray(new String[0]);
+        Log.d("BusinessHeadAddEmp", "Showing bank name dialog with " + options.length + " options");
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Select Bank Name");
+        builder.setItems(options, (dialog, which) -> {
+            selectedBankName = options[which];
+            bankNameSpinner.setText(selectedBankName);
+            Log.d("BusinessHeadAddEmp", "Selected bank name: " + selectedBankName);
+        });
+        builder.show();
     }
 
     private void showReportingToDialog() {
-        // TODO: Implement reporting to selection dialog
-        Toast.makeText(this, "Reporting To selection coming soon", Toast.LENGTH_SHORT).show();
+        Log.d("BusinessHeadAddEmp", "showReportingToDialog called. Size: " + reportingUsers.size());
+        if (reportingUsers.isEmpty()) {
+            Log.w("BusinessHeadAddEmp", "Reporting users list is empty");
+            Toast.makeText(this, "Loading reporting users...", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        
+        String[] options = reportingUsers.toArray(new String[0]);
+        Log.d("BusinessHeadAddEmp", "Showing reporting to dialog with " + options.length + " options");
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Select Reporting To");
+        builder.setItems(options, (dialog, which) -> {
+            selectedReportingUser = options[which];
+            reportingToSpinner.setText(selectedReportingUser);
+            Log.d("BusinessHeadAddEmp", "Selected reporting user: " + selectedReportingUser);
+        });
+        builder.show();
     }
 
     private void submitForm() {
