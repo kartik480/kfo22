@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Dropdown API</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            border-bottom: 3px solid #007bff;
+            padding-bottom: 10px;
+        }
+        .test-button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 20px 0;
+            width: 100%;
+        }
+        .test-button:hover {
+            background: #0056b3;
+        }
+        .response {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 20px;
+            margin: 20px 0;
+            font-family: monospace;
+            white-space: pre-wrap;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+        .success { border-left: 4px solid #28a745; }
+        .error { border-left: 4px solid #dc3545; }
+        .summary {
+            background: #e7f3ff;
+            border-left: 4px solid #007bff;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 0 5px 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 Test Dropdown API</h1>
+        
+        <div class="summary">
+            <h3>Testing: Business Head Add Emp Dropdowns API</h3>
+            <p><strong>URL:</strong> https://emp.kfinone.com/mobile/api/get_business_head_add_emp_dropdowns.php</p>
+            <p><strong>Purpose:</strong> Verify that the "Reporting To" dropdown now includes actual Business Head users</p>
+        </div>
+        
+        <button class="test-button" onclick="testDropdownAPI()">🚀 Test Dropdown API</button>
+        
+        <div id="response" class="response"></div>
+    </div>
+
+    <script>
+        async function testDropdownAPI() {
+            const responseDiv = document.getElementById('response');
+            responseDiv.innerHTML = 'Testing...';
+            responseDiv.className = 'response';
+            
+            try {
+                const url = 'https://emp.kfinone.com/mobile/api/get_business_head_add_emp_dropdowns.php';
+                const response = await fetch(url);
+                const data = await response.text();
+                
+                responseDiv.innerHTML = `Status: ${response.status} ${response.statusText}\n\nResponse:\n${data}`;
+                responseDiv.className = response.ok ? 'response success' : 'response error';
+                
+                // Parse and analyze the response
+                try {
+                    const jsonData = JSON.parse(data);
+                    if (jsonData.status === 'success' && jsonData.data) {
+                        const reportingUsers = jsonData.data.reporting_users || [];
+                        const count = jsonData.data.reporting_users_count || 0;
+                        
+                        console.log('✅ API Test Results:');
+                        console.log(`📊 Total Reporting Users: ${count}`);
+                        console.log('👥 Business Head Users:');
+                        reportingUsers.forEach((user, index) => {
+                            console.log(`${index + 1}. ${user.displayName || user.fullName || 'Unknown'}`);
+                        });
+                        
+                        // Add summary to response
+                        const summary = `\n\n📊 SUMMARY:\n` +
+                            `✅ API Status: ${jsonData.status}\n` +
+                            `📈 Branch States: ${(jsonData.data.branch_states || []).length}\n` +
+                            `📈 Account Types: ${(jsonData.data.account_types || []).length}\n` +
+                            `📈 Branch Locations: ${(jsonData.data.branch_locations || []).length}\n` +
+                            `📈 Bank Names: ${(jsonData.data.bank_names || []).length}\n` +
+                            `👥 Reporting Users: ${count}\n\n` +
+                            `🎯 Business Head Users Found:\n`;
+                        
+                        reportingUsers.forEach((user, index) => {
+                            const displayName = user.displayName || user.fullName || 'Unknown';
+                            summary += `${index + 1}. ${displayName}\n`;
+                        });
+                        
+                        responseDiv.innerHTML += summary;
+                    }
+                } catch (parseError) {
+                    console.error('Error parsing JSON:', parseError);
+                }
+                
+            } catch (error) {
+                responseDiv.innerHTML = `Error: ${error.message}`;
+                responseDiv.className = 'response error';
+            }
+        }
+        
+        // Auto-test on page load
+        window.onload = function() {
+            setTimeout(testDropdownAPI, 1000);
+        };
+    </script>
+</body>
+</html> 

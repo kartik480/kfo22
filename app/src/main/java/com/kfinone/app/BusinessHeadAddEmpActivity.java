@@ -26,6 +26,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
@@ -307,7 +308,16 @@ public class BusinessHeadAddEmpActivity extends AppCompatActivity {
                                 reportingUsers.clear();
                                 for (int i = 0; i < reportingUsersArray.length(); i++) {
                                     JSONObject user = reportingUsersArray.getJSONObject(i);
-                                    reportingUsers.add(user.getString("full_name"));
+                                    // Use displayName if available, otherwise fallback to fullName
+                                    String displayName = user.optString("displayName", "");
+                                    if (!displayName.isEmpty()) {
+                                        reportingUsers.add(displayName);
+                                    } else {
+                                        String fullName = user.optString("fullName", "");
+                                        if (!fullName.isEmpty()) {
+                                            reportingUsers.add(fullName + " (Business Head)");
+                                        }
+                                    }
                                 }
                                 Log.d("BusinessHeadAddEmp", "Loaded " + reportingUsers.size() + " reporting users");
                             } else {
@@ -317,9 +327,13 @@ public class BusinessHeadAddEmpActivity extends AppCompatActivity {
                             // If no reporting users found, add sample data
                             if (reportingUsers.isEmpty()) {
                                 Log.d("BusinessHeadAddEmp", "No reporting users found, adding sample data");
-                                reportingUsers.add("John Doe (Business Head)");
-                                reportingUsers.add("Jane Smith (Business Head)");
-                                reportingUsers.add("Mike Johnson (Business Head)");
+                                reportingUsers.add("SHAIK JEELANI BASHA (Business Head)");
+                                reportingUsers.add("AZEEZ FAIZAH (Business Head)");
+                                reportingUsers.add("BORRA VENUGOPALARAO (Business Head)");
+                                reportingUsers.add("CHIRANJEEVI NARLAGIRI (Business Head)");
+                                reportingUsers.add("DUBEY SATYA SAIBABA (Business Head)");
+                                reportingUsers.add("GANESH THATIPELLI (Business Head)");
+                                reportingUsers.add("VIKAS GOTTIMUKKULA (Business Head)");
                             }
                             
                             Log.d("BusinessHeadAddEmp", "Dropdown data loaded successfully");
@@ -400,11 +414,15 @@ public class BusinessHeadAddEmpActivity extends AppCompatActivity {
         bankNames.add("Axis Bank");
         bankNames.add("Kotak Mahindra Bank");
         
-        // Sample Reporting Users
+        // Sample Reporting Users (using actual Business Head names from API)
         reportingUsers.clear();
-        reportingUsers.add("John Doe (Business Head)");
-        reportingUsers.add("Jane Smith (Business Head)");
-        reportingUsers.add("Mike Johnson (Business Head)");
+        reportingUsers.add("SHAIK JEELANI BASHA (Business Head)");
+        reportingUsers.add("AZEEZ FAIZAH (Business Head)");
+        reportingUsers.add("BORRA VENUGOPALARAO (Business Head)");
+        reportingUsers.add("CHIRANJEEVI NARLAGIRI (Business Head)");
+        reportingUsers.add("DUBEY SATYA SAIBABA (Business Head)");
+        reportingUsers.add("GANESH THATIPELLI (Business Head)");
+        reportingUsers.add("VIKAS GOTTIMUKKULA (Business Head)");
         
         Log.d("BusinessHeadAddEmp", "Sample data loaded - Branch States: " + branchStates.size() + 
             ", Account Types: " + accountTypes.size() + 
@@ -415,14 +433,15 @@ public class BusinessHeadAddEmpActivity extends AppCompatActivity {
 
     private void showBranchStateDialog() {
         Log.d("BusinessHeadAddEmp", "showBranchStateDialog called. Size: " + branchStates.size());
+        
         if (branchStates.isEmpty()) {
-            Log.w("BusinessHeadAddEmp", "Branch states list is empty");
-            Toast.makeText(this, "Loading branch states...", Toast.LENGTH_SHORT).show();
-            return;
+            Log.w("BusinessHeadAddEmp", "Branch states list is empty, loading sample data");
+            loadSampleData();
         }
         
         String[] options = branchStates.toArray(new String[0]);
         Log.d("BusinessHeadAddEmp", "Showing branch state dialog with " + options.length + " options");
+        
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Select Branch State");
         builder.setItems(options, (dialog, which) -> {
@@ -430,19 +449,21 @@ public class BusinessHeadAddEmpActivity extends AppCompatActivity {
             branchStateSpinner.setText(selectedBranchState);
             Log.d("BusinessHeadAddEmp", "Selected branch state: " + selectedBranchState);
         });
+        builder.setNegativeButton("Cancel", null);
         builder.show();
     }
 
     private void showAccountTypeDialog() {
         Log.d("BusinessHeadAddEmp", "showAccountTypeDialog called. Size: " + accountTypes.size());
+        
         if (accountTypes.isEmpty()) {
-            Log.w("BusinessHeadAddEmp", "Account types list is empty");
-            Toast.makeText(this, "Loading account types...", Toast.LENGTH_SHORT).show();
-            return;
+            Log.w("BusinessHeadAddEmp", "Account types list is empty, loading sample data");
+            loadSampleData();
         }
         
         String[] options = accountTypes.toArray(new String[0]);
         Log.d("BusinessHeadAddEmp", "Showing account type dialog with " + options.length + " options");
+        
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Select Account Type");
         builder.setItems(options, (dialog, which) -> {
@@ -450,19 +471,21 @@ public class BusinessHeadAddEmpActivity extends AppCompatActivity {
             accountTypeSpinner.setText(selectedAccountType);
             Log.d("BusinessHeadAddEmp", "Selected account type: " + selectedAccountType);
         });
+        builder.setNegativeButton("Cancel", null);
         builder.show();
     }
 
     private void showBranchLocationDialog() {
         Log.d("BusinessHeadAddEmp", "showBranchLocationDialog called. Size: " + branchLocations.size());
+        
         if (branchLocations.isEmpty()) {
-            Log.w("BusinessHeadAddEmp", "Branch locations list is empty");
-            Toast.makeText(this, "Loading branch locations...", Toast.LENGTH_SHORT).show();
-            return;
+            Log.w("BusinessHeadAddEmp", "Branch locations list is empty, loading sample data");
+            loadSampleData();
         }
         
         String[] options = branchLocations.toArray(new String[0]);
         Log.d("BusinessHeadAddEmp", "Showing branch location dialog with " + options.length + " options");
+        
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Select Branch Location");
         builder.setItems(options, (dialog, which) -> {
@@ -470,19 +493,21 @@ public class BusinessHeadAddEmpActivity extends AppCompatActivity {
             branchLocationSpinner.setText(selectedBranchLocation);
             Log.d("BusinessHeadAddEmp", "Selected branch location: " + selectedBranchLocation);
         });
+        builder.setNegativeButton("Cancel", null);
         builder.show();
     }
 
     private void showBankNameDialog() {
         Log.d("BusinessHeadAddEmp", "showBankNameDialog called. Size: " + bankNames.size());
+        
         if (bankNames.isEmpty()) {
-            Log.w("BusinessHeadAddEmp", "Bank names list is empty");
-            Toast.makeText(this, "Loading bank names...", Toast.LENGTH_SHORT).show();
-            return;
+            Log.w("BusinessHeadAddEmp", "Bank names list is empty, loading sample data");
+            loadSampleData();
         }
         
         String[] options = bankNames.toArray(new String[0]);
         Log.d("BusinessHeadAddEmp", "Showing bank name dialog with " + options.length + " options");
+        
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Select Bank Name");
         builder.setItems(options, (dialog, which) -> {
@@ -490,19 +515,22 @@ public class BusinessHeadAddEmpActivity extends AppCompatActivity {
             bankNameSpinner.setText(selectedBankName);
             Log.d("BusinessHeadAddEmp", "Selected bank name: " + selectedBankName);
         });
+        builder.setNegativeButton("Cancel", null);
         builder.show();
     }
 
     private void showReportingToDialog() {
         Log.d("BusinessHeadAddEmp", "showReportingToDialog called. Size: " + reportingUsers.size());
+        
+        // If list is empty, load sample data and show dialog
         if (reportingUsers.isEmpty()) {
-            Log.w("BusinessHeadAddEmp", "Reporting users list is empty");
-            Toast.makeText(this, "Loading reporting users...", Toast.LENGTH_SHORT).show();
-            return;
+            Log.w("BusinessHeadAddEmp", "Reporting users list is empty, loading sample data");
+            loadSampleData();
         }
         
         String[] options = reportingUsers.toArray(new String[0]);
-        Log.d("BusinessHeadAddEmp", "Showing reporting to dialog with " + options.length + " options");
+        Log.d("BusinessHeadAddEmp", "Showing reporting to dialog with " + options.length + " options: " + Arrays.toString(options));
+        
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Select Reporting To");
         builder.setItems(options, (dialog, which) -> {
@@ -510,6 +538,7 @@ public class BusinessHeadAddEmpActivity extends AppCompatActivity {
             reportingToSpinner.setText(selectedReportingUser);
             Log.d("BusinessHeadAddEmp", "Selected reporting user: " + selectedReportingUser);
         });
+        builder.setNegativeButton("Cancel", null);
         builder.show();
     }
 
@@ -519,12 +548,117 @@ public class BusinessHeadAddEmpActivity extends AppCompatActivity {
             return;
         }
 
-        // TODO: Implement API call to submit employee data
-        // For now, show success message
-        Toast.makeText(this, "Employee added successfully!", Toast.LENGTH_LONG).show();
+        // Show loading dialog
+        AlertDialog.Builder loadingBuilder = new AlertDialog.Builder(this);
+        loadingBuilder.setView(R.layout.loading_dialog);
+        loadingBuilder.setCancelable(false);
+        AlertDialog loadingDialog = loadingBuilder.create();
+        loadingDialog.show();
+
+        // Prepare form data
+        JSONObject formData = new JSONObject();
+        try {
+            formData.put("employee_id", employeeIdInput.getText().toString().trim());
+            formData.put("first_name", firstNameInput.getText().toString().trim());
+            formData.put("last_name", lastNameInput.getText().toString().trim());
+            formData.put("alias_name", aliasNameInput.getText().toString().trim());
+            formData.put("phone", phoneInput.getText().toString().trim());
+            formData.put("alternative_phone", alternativePhoneInput.getText().toString().trim());
+            formData.put("email", emailInput.getText().toString().trim());
+            formData.put("password", passwordInput.getText().toString().trim());
+            formData.put("branch_state", selectedBranchState);
+            formData.put("branch_location", selectedBranchLocation);
+            formData.put("office_address", officeAddressInput.getText().toString().trim());
+            formData.put("residential_address", residentialAddressInput.getText().toString().trim());
+            formData.put("company_name", companyNameInput.getText().toString().trim());
+            formData.put("pan_number", panNumberInput.getText().toString().trim());
+            formData.put("aadhaar_number", aadhaarInput.getText().toString().trim());
+            formData.put("account_type", selectedAccountType);
+            formData.put("bank_name", selectedBankName);
+            formData.put("account_number", accountNumberInput.getText().toString().trim());
+            formData.put("ifsc_code", ifscCodeInput.getText().toString().trim());
+            formData.put("reporting_to", selectedReportingUser);
+            
+            // File uploads (for now, store file names)
+            formData.put("pan_card_file", panCardFileName.getText().toString());
+            formData.put("aadhaar_file", aadhaarFileName.getText().toString());
+            formData.put("bank_proof_file", bankProofFileName.getText().toString());
+            formData.put("photo_file", photoFileName.getText().toString());
+            formData.put("resume_file", resumeFileName.getText().toString());
+            
+            // Add created by info
+            formData.put("created_by", userId != null ? userId : "1");
+            
+        } catch (JSONException e) {
+            loadingDialog.dismiss();
+            Log.e("BusinessHeadAddEmp", "Error creating form data", e);
+            Toast.makeText(this, "Error preparing form data: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Make API call
+        String url = "https://emp.kfinone.com/mobile/api/add_business_head_employee.php";
+        RequestQueue queue = Volley.newRequestQueue(this);
         
-        // Go back to previous screen
-        goBack();
+        Log.d("BusinessHeadAddEmp", "Submitting form data to: " + url);
+        Log.d("BusinessHeadAddEmp", "Form data: " + formData.toString());
+        
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
+            Request.Method.POST, url, formData,
+            new Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject response) {
+                    loadingDialog.dismiss();
+                    try {
+                        Log.d("BusinessHeadAddEmp", "Submit API Response: " + response.toString());
+                        
+                        if (response.getString("status").equals("success")) {
+                            JSONObject data = response.getJSONObject("data");
+                            String employeeName = data.getString("name");
+                            String employeeId = data.getString("employee_id");
+                            
+                            // Show success dialog
+                            AlertDialog.Builder successBuilder = new AlertDialog.Builder(BusinessHeadAddEmpActivity.this);
+                            successBuilder.setTitle("Success!");
+                            successBuilder.setMessage("Employee " + employeeName + " (ID: " + employeeId + ") has been added successfully.");
+                            successBuilder.setPositiveButton("OK", (dialog, which) -> {
+                                // Go back to previous screen
+                                goBack();
+                            });
+                            successBuilder.setCancelable(false);
+                            successBuilder.show();
+                            
+                        } else {
+                            String errorMsg = response.optString("message", "Unknown error occurred");
+                            Toast.makeText(BusinessHeadAddEmpActivity.this, "Error: " + errorMsg, Toast.LENGTH_LONG).show();
+                        }
+                    } catch (JSONException e) {
+                        Log.e("BusinessHeadAddEmp", "Error parsing submit response", e);
+                        Toast.makeText(BusinessHeadAddEmpActivity.this, "Error parsing response: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                }
+            },
+            new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    loadingDialog.dismiss();
+                    Log.e("BusinessHeadAddEmp", "Error submitting form", error);
+                    String errorMessage = "Network error occurred";
+                    if (error.networkResponse != null) {
+                        try {
+                            String errorResponse = new String(error.networkResponse.data);
+                            JSONObject errorJson = new JSONObject(errorResponse);
+                            errorMessage = errorJson.optString("message", "Server error occurred");
+                        } catch (Exception e) {
+                            errorMessage = "Server error: " + error.networkResponse.statusCode;
+                        }
+                    }
+                    Toast.makeText(BusinessHeadAddEmpActivity.this, "Error: " + errorMessage, Toast.LENGTH_LONG).show();
+                }
+            }
+        );
+        
+        queue.add(jsonObjectRequest);
     }
 
     private boolean validateForm() {

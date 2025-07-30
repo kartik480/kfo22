@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug DUBEY SATYA SAIBABA User</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .test-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+        }
+        .test-button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+        }
+        .test-button:hover {
+            background-color: #0056b3;
+        }
+        .response-area {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            padding: 15px;
+            margin-top: 15px;
+            white-space: pre-wrap;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            max-height: 600px;
+            overflow-y: auto;
+        }
+        .status-success {
+            color: #28a745;
+            font-weight: bold;
+        }
+        .status-error {
+            color: #dc3545;
+            font-weight: bold;
+        }
+        .summary {
+            background-color: #e7f3ff;
+            border: 1px solid #b3d9ff;
+            border-radius: 6px;
+            padding: 15px;
+            margin-top: 15px;
+        }
+        .user-card {
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .user-name {
+            font-weight: bold;
+            color: #333;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+        .user-detail {
+            margin: 5px 0;
+            color: #666;
+        }
+        .loading {
+            color: #007bff;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Debug DUBEY SATYA SAIBABA User Search</h1>
+        
+        <div class="test-section">
+            <h3>Debug API: debug_dubey_satya_user.php</h3>
+            <p>This API will search for the exact user details in the database to find the correct name format.</p>
+            
+            <button class="test-button" onclick="debugUserSearch()">Debug User Search</button>
+            <button class="test-button" onclick="clearResponse()">Clear Response</button>
+            
+            <div id="response" class="response-area">Click "Debug User Search" to find the exact user details...</div>
+        </div>
+    </div>
+
+    <script>
+        const BASE_URL = 'https://emp.kfinone.com/mobile/api/';
+        
+        async function debugUserSearch() {
+            const responseDiv = document.getElementById('response');
+            responseDiv.innerHTML = '<div class="loading">Searching for user details...</div>';
+            
+            try {
+                const response = await fetch(BASE_URL + 'debug_dubey_satya_user.php');
+                const data = await response.json();
+                
+                let responseText = '';
+                responseText += '=== DEBUG SEARCH RESULTS ===\n';
+                responseText += `Status: ${data.status}\n`;
+                responseText += `Message: ${data.message}\n`;
+                responseText += `Timestamp: ${data.timestamp}\n\n`;
+                
+                if (data.status === 'success') {
+                    responseText += '✅ SEARCH COMPLETED\n\n';
+                    
+                    const searchData = data.data;
+                    
+                    // Test 1: Exact match
+                    responseText += '=== 1. EXACT MATCH ===\n';
+                    if (searchData.exact_match) {
+                        responseText += `✅ FOUND: ID=${searchData.exact_match.id}, Name="${searchData.exact_match.fullName}"\n`;
+                        responseText += `   firstName: "${searchData.exact_match.firstName}"\n`;
+                        responseText += `   lastName: "${searchData.exact_match.lastName}"\n\n`;
+                    } else {
+                        responseText += '❌ No exact match found for "DUBEY SATYA SAIBABA"\n\n';
+                    }
+                    
+                    // Test 2: DUBEY matches
+                    responseText += '=== 2. DUBEY MATCHES ===\n';
+                    if (searchData.dubey_matches && searchData.dubey_matches.length > 0) {
+                        responseText += `✅ Found ${searchData.dubey_matches.length} users with "DUBEY":\n`;
+                        searchData.dubey_matches.forEach((user, index) => {
+                            responseText += `   ${index + 1}. ID=${user.id}, Name="${user.fullName}"\n`;
+                            responseText += `      firstName: "${user.firstName}", lastName: "${user.lastName}"\n`;
+                        });
+                        responseText += '\n';
+                    } else {
+                        responseText += '❌ No users found with "DUBEY"\n\n';
+                    }
+                    
+                    // Test 3: SATYA matches
+                    responseText += '=== 3. SATYA MATCHES ===\n';
+                    if (searchData.satya_matches && searchData.satya_matches.length > 0) {
+                        responseText += `✅ Found ${searchData.satya_matches.length} users with "SATYA":\n`;
+                        searchData.satya_matches.forEach((user, index) => {
+                            responseText += `   ${index + 1}. ID=${user.id}, Name="${user.fullName}"\n`;
+                            responseText += `      firstName: "${user.firstName}", lastName: "${user.lastName}"\n`;
+                        });
+                        responseText += '\n';
+                    } else {
+                        responseText += '❌ No users found with "SATYA"\n\n';
+                    }
+                    
+                    // Test 4: SAIBABA matches
+                    responseText += '=== 4. SAIBABA MATCHES ===\n';
+                    if (searchData.saibaba_matches && searchData.saibaba_matches.length > 0) {
+                        responseText += `✅ Found ${searchData.saibaba_matches.length} users with "SAIBABA":\n`;
+                        searchData.saibaba_matches.forEach((user, index) => {
+                            responseText += `   ${index + 1}. ID=${user.id}, Name="${user.fullName}"\n`;
+                            responseText += `      firstName: "${user.firstName}", lastName: "${user.lastName}"\n`;
+                        });
+                        responseText += '\n';
+                    } else {
+                        responseText += '❌ No users found with "SAIBABA"\n\n';
+                    }
+                    
+                    // Test 5: SAI matches
+                    responseText += '=== 5. SAI MATCHES ===\n';
+                    if (searchData.sai_lastname && searchData.sai_lastname.length > 0) {
+                        responseText += `✅ Found ${searchData.sai_lastname.length} users with "SAI" in lastName:\n`;
+                        searchData.sai_lastname.forEach((user, index) => {
+                            responseText += `   ${index + 1}. ID=${user.id}, Name="${user.fullName}"\n`;
+                            responseText += `      firstName: "${user.firstName}", lastName: "${user.lastName}"\n`;
+                        });
+                        responseText += '\n';
+                    } else {
+                        responseText += '❌ No users found with "SAI" in lastName\n\n';
+                    }
+                    
+                    // Test 6: BABA matches
+                    responseText += '=== 6. BABA MATCHES ===\n';
+                    if (searchData.baba_lastname && searchData.baba_lastname.length > 0) {
+                        responseText += `✅ Found ${searchData.baba_lastname.length} users with "BABA" in lastName:\n`;
+                        searchData.baba_lastname.forEach((user, index) => {
+                            responseText += `   ${index + 1}. ID=${user.id}, Name="${user.fullName}"\n`;
+                            responseText += `      firstName: "${user.firstName}", lastName: "${user.lastName}"\n`;
+                        });
+                        responseText += '\n';
+                    } else {
+                        responseText += '❌ No users found with "BABA" in lastName\n\n';
+                    }
+                    
+                    // Display user cards for potential matches
+                    displayUserCards(searchData);
+                    
+                } else {
+                    responseText += `❌ ERROR: ${data.message}\n`;
+                }
+                
+                responseDiv.innerHTML = responseText;
+                
+            } catch (error) {
+                responseDiv.innerHTML = `❌ ERROR: ${error.message}\n\nThis could be due to:\n- Network connectivity issues\n- Server not responding\n- CORS issues\n- Invalid API endpoint`;
+            }
+        }
+        
+        function displayUserCards(searchData) {
+            const responseDiv = document.getElementById('response');
+            
+            let cardsHTML = '<div class="summary">\n';
+            cardsHTML += '<h4>🔍 Potential Matches Found:</h4>\n';
+            
+            // Combine all potential matches
+            let allMatches = [];
+            
+            if (searchData.exact_match) allMatches.push(searchData.exact_match);
+            if (searchData.dubey_matches) allMatches = allMatches.concat(searchData.dubey_matches);
+            if (searchData.satya_matches) allMatches = allMatches.concat(searchData.satya_matches);
+            if (searchData.saibaba_matches) allMatches = allMatches.concat(searchData.saibaba_matches);
+            if (searchData.sai_lastname) allMatches = allMatches.concat(searchData.sai_lastname);
+            if (searchData.baba_lastname) allMatches = allMatches.concat(searchData.baba_lastname);
+            
+            // Remove duplicates based on ID
+            const uniqueMatches = allMatches.filter((user, index, self) => 
+                index === self.findIndex(u => u.id === user.id)
+            );
+            
+            if (uniqueMatches.length > 0) {
+                uniqueMatches.forEach((user, index) => {
+                    cardsHTML += '<div class="user-card">\n';
+                    cardsHTML += `<div class="user-name">${index + 1}. ${user.fullName} (ID: ${user.id})</div>\n`;
+                    cardsHTML += `<div class="user-detail">📝 firstName: "${user.firstName}"</div>\n`;
+                    cardsHTML += `<div class="user-detail">📝 lastName: "${user.lastName}"</div>\n`;
+                    cardsHTML += `<div class="user-detail">🔗 Full Name: "${user.fullName}"</div>\n`;
+                    cardsHTML += '</div>\n';
+                });
+            } else {
+                cardsHTML += '<div class="user-card">\n';
+                cardsHTML += '<div class="user-name">❌ No potential matches found</div>\n';
+                cardsHTML += '<div class="user-detail">The user "DUBEY SATYA SAIBABA" does not exist in the database</div>\n';
+                cardsHTML += '</div>\n';
+            }
+            
+            cardsHTML += '</div>\n';
+            
+            responseDiv.innerHTML += cardsHTML;
+        }
+        
+        function clearResponse() {
+            document.getElementById('response').innerHTML = 'Response cleared. Click "Debug User Search" to find the exact user details...';
+        }
+        
+        // Auto-test on page load
+        window.onload = function() {
+            console.log('Debug DUBEY SATYA SAIBABA User Search Page Loaded');
+            console.log('Base URL:', BASE_URL);
+        };
+    </script>
+</body>
+</html> 

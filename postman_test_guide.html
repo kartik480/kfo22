@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KfinOne API Testing Guide</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            border-bottom: 3px solid #007bff;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #007bff;
+            border-left: 4px solid #007bff;
+            padding-left: 15px;
+        }
+        h3 {
+            color: #555;
+            margin-top: 25px;
+        }
+        .api-test {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 10px 0;
+        }
+        .method {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 3px;
+            font-weight: bold;
+            font-size: 12px;
+            margin-right: 10px;
+        }
+        .get { background: #28a745; color: white; }
+        .post { background: #007bff; color: white; }
+        .url {
+            font-family: monospace;
+            background: #e9ecef;
+            padding: 5px 10px;
+            border-radius: 3px;
+            display: block;
+            margin: 10px 0;
+            word-break: break-all;
+        }
+        .test-button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px 5px;
+        }
+        .test-button:hover {
+            background: #0056b3;
+        }
+        .response {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 10px 0;
+            font-family: monospace;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .success { border-left: 4px solid #28a745; }
+        .error { border-left: 4px solid #dc3545; }
+        .warning { border-left: 4px solid #ffc107; }
+        .step {
+            background: #e7f3ff;
+            border-left: 4px solid #007bff;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 0 5px 5px 0;
+        }
+        .note {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 10px 0;
+        }
+        .code {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 3px;
+            padding: 10px;
+            font-family: monospace;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 KfinOne API Testing Guide</h1>
+        
+        <div class="step">
+            <h2>📋 Setup Instructions</h2>
+            <ol>
+                <li><strong>Import Postman Collection:</strong> Use the file <code>KfinOne_API_Postman_Tests.json</code> created in your project</li>
+                <li><strong>Update Base URL:</strong> Change the <code>base_url</code> variable in Postman to your actual server URL</li>
+                <li><strong>Test Database Connection:</strong> Start with database connection tests to ensure your server is accessible</li>
+            </ol>
+        </div>
+
+        <h2>🔧 Database Connection Tests</h2>
+        
+        <div class="api-test">
+            <span class="method get">GET</span>
+            <strong>Test Database Connection</strong>
+            <div class="url">{{base_url}}/api/test_db_connection.php</div>
+            <button class="test-button" onclick="testAPI('test_db_connection.php', 'GET')">Test Connection</button>
+            <div id="test_db_connection.php" class="response"></div>
+        </div>
+
+        <div class="api-test">
+            <span class="method get">GET</span>
+            <strong>Test Simple Database Connection</strong>
+            <div class="url">{{base_url}}/api/test_db_connection_simple.php</div>
+            <button class="test-button" onclick="testAPI('test_db_connection_simple.php', 'GET')">Test Simple Connection</button>
+            <div id="test_db_connection_simple.php" class="response"></div>
+        </div>
+
+        <h2>🔐 Authentication Tests</h2>
+        
+        <div class="api-test">
+            <span class="method post">POST</span>
+            <strong>Login Test</strong>
+            <div class="url">{{base_url}}/api/login.php</div>
+            <div class="code">
+Body (JSON):
+{
+    "username": "test_user",
+    "password": "test_password"
+}
+            </div>
+            <button class="test-button" onclick="testLogin()">Test Login</button>
+            <div id="login.php" class="response"></div>
+        </div>
+
+        <h2>👥 Business Head Panel Tests</h2>
+        
+        <div class="api-test">
+            <span class="method get">GET</span>
+            <strong>Get Business Head Add Emp Dropdowns</strong>
+            <div class="url">{{base_url}}/api/get_business_head_add_emp_dropdowns.php</div>
+            <button class="test-button" onclick="testAPI('get_business_head_add_emp_dropdowns.php', 'GET')">Test Dropdowns</button>
+            <div id="get_business_head_add_emp_dropdowns.php" class="response"></div>
+        </div>
+
+        <div class="api-test">
+            <span class="method get">GET</span>
+            <strong>Get Business Head Users</strong>
+            <div class="url">{{base_url}}/api/get_business_head_users.php</div>
+            <button class="test-button" onclick="testAPI('get_business_head_users.php', 'GET')">Test Users</button>
+            <div id="get_business_head_users.php" class="response"></div>
+        </div>
+
+        <div class="api-test">
+            <span class="method post">POST</span>
+            <strong>Check Business Head User</strong>
+            <div class="url">{{base_url}}/api/check_business_head_user.php</div>
+            <div class="code">
+Body (JSON):
+{
+    "username": "business_head_user"
+}
+            </div>
+            <button class="test-button" onclick="testCheckBusinessHead()">Test Check</button>
+            <div id="check_business_head_user.php" class="response"></div>
+        </div>
+
+        <h2>👨‍💼 Employee Management Tests</h2>
+        
+        <div class="api-test">
+            <span class="method post">POST</span>
+            <strong>Add Employee Details</strong>
+            <div class="url">{{base_url}}/api/add_employee_details.php</div>
+            <div class="code">
+Body (JSON):
+{
+    "firstName": "Test",
+    "lastName": "Employee",
+    "email": "test@example.com",
+    "phone": "1234567890",
+    "branch_state": "Andhra Pradesh-AP",
+    "account_type": "Current Account-CA",
+    "branch_location": "Hyderabad",
+    "bank_name": "HDFC bank ltd",
+    "reporting_to": "John Doe (Business Head)"
+}
+            </div>
+            <button class="test-button" onclick="testAddEmployee()">Test Add Employee</button>
+            <div id="add_employee_details.php" class="response"></div>
+        </div>
+
+        <h2>👥 User Management Tests</h2>
+        
+        <div class="api-test">
+            <span class="method get">GET</span>
+            <strong>Get All Users</strong>
+            <div class="url">{{base_url}}/api/test_users_api.php</div>
+            <button class="test-button" onclick="testAPI('test_users_api.php', 'GET')">Test Users</button>
+            <div id="test_users_api.php" class="response"></div>
+        </div>
+
+        <div class="api-test">
+            <span class="method get">GET</span>
+            <strong>Verify All Users</strong>
+            <div class="url">{{base_url}}/api/verify_all_users.php</div>
+            <button class="test-button" onclick="testAPI('verify_all_users.php', 'GET')">Test Verification</button>
+            <div id="verify_all_users.php" class="response"></div>
+        </div>
+
+        <h2>🏷️ Designation Management Tests</h2>
+        
+        <div class="api-test">
+            <span class="method get">GET</span>
+            <strong>Get Designations with Departments</strong>
+            <div class="url">{{base_url}}/api/get_designations_with_departments.php</div>
+            <button class="test-button" onclick="testAPI('get_designations_with_departments.php', 'GET')">Test Designations</button>
+            <div id="get_designations_with_departments.php" class="response"></div>
+        </div>
+
+        <div class="api-test">
+            <span class="method post">POST</span>
+            <strong>Add Designation</strong>
+            <div class="url">{{base_url}}/api/add_designation.php</div>
+            <div class="code">
+Body (JSON):
+{
+    "designation_name": "Test Designation",
+    "department_id": 1
+}
+            </div>
+            <button class="test-button" onclick="testAddDesignation()">Test Add Designation</button>
+            <div id="add_designation.php" class="response"></div>
+        </div>
+
+        <div class="note">
+            <h3>📝 Important Notes:</h3>
+            <ul>
+                <li><strong>Base URL:</strong> <code>https://emp.kfinone.com/mobile</code> (already configured)</li>
+                <li><strong>Database:</strong> Ensure your database server is running and accessible</li>
+                <li><strong>API Files:</strong> Make sure all PHP files are uploaded to your server's <code>api/</code> directory</li>
+                <li><strong>CORS:</strong> The APIs include CORS headers for cross-origin requests</li>
+                <li><strong>Error Handling:</strong> Check the response for detailed error messages if tests fail</li>
+            </ul>
+        </div>
+
+        <div class="step">
+            <h2>🔍 Troubleshooting</h2>
+            <h3>Common Issues:</h3>
+            <ul>
+                <li><strong>500 Internal Server Error:</strong> Check PHP error logs and database connection</li>
+                <li><strong>404 Not Found:</strong> Verify API file paths and server configuration</li>
+                <li><strong>CORS Errors:</strong> Ensure CORS headers are properly set in PHP files</li>
+                <li><strong>Database Connection Failed:</strong> Check database credentials and server connectivity</li>
+                <li><strong>Empty Responses:</strong> Verify database tables have data and queries are correct</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // Replace this with your actual server URL
+        const BASE_URL = 'https://emp.kfinone.com/mobile'; // Updated to actual server URL
+        
+        async function testAPI(endpoint, method = 'GET', body = null) {
+            const responseDiv = document.getElementById(endpoint);
+            responseDiv.innerHTML = 'Testing...';
+            responseDiv.className = 'response';
+            
+            try {
+                const url = `${BASE_URL}/api/${endpoint}`;
+                const options = {
+                    method: method,
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                };
+                
+                if (body && method === 'POST') {
+                    options.body = JSON.stringify(body);
+                }
+                
+                const response = await fetch(url, options);
+                const data = await response.text();
+                
+                responseDiv.innerHTML = `Status: ${response.status} ${response.statusText}\n\nResponse:\n${data}`;
+                responseDiv.className = response.ok ? 'response success' : 'response error';
+                
+            } catch (error) {
+                responseDiv.innerHTML = `Error: ${error.message}`;
+                responseDiv.className = 'response error';
+            }
+        }
+        
+        function testLogin() {
+            const body = {
+                username: "test_user",
+                password: "test_password"
+            };
+            testAPI('login.php', 'POST', body);
+        }
+        
+        function testCheckBusinessHead() {
+            const body = {
+                username: "business_head_user"
+            };
+            testAPI('check_business_head_user.php', 'POST', body);
+        }
+        
+        function testAddEmployee() {
+            const body = {
+                firstName: "Test",
+                lastName: "Employee",
+                email: "test@example.com",
+                phone: "1234567890",
+                branch_state: "Andhra Pradesh-AP",
+                account_type: "Current Account-CA",
+                branch_location: "Hyderabad",
+                bank_name: "HDFC bank ltd",
+                reporting_to: "John Doe (Business Head)"
+            };
+            testAPI('add_employee_details.php', 'POST', body);
+        }
+        
+        function testAddDesignation() {
+            const body = {
+                designation_name: "Test Designation",
+                department_id: 1
+            };
+            testAPI('add_designation.php', 'POST', body);
+        }
+        
+        // Auto-test database connection on page load
+        window.onload = function() {
+            testAPI('test_db_connection_simple.php', 'GET');
+        };
+    </script>
+</body>
+</html> 

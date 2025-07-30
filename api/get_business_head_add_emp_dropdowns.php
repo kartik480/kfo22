@@ -82,45 +82,49 @@ try {
     
     // 5. Fetch Reporting To Users (Business Head users)
     try {
-        // First get Business Head designation ID
-        $stmt = $pdo->query("SELECT id FROM tbl_designation WHERE designation_name = 'Business Head'");
-        $businessHeadDesignation = $stmt->fetch(PDO::FETCH_ASSOC);
+        // Get Business Head users with proper status conditions
+        $stmt = $pdo->prepare("
+            SELECT 
+                u.id,
+                u.firstName,
+                u.lastName,
+                u.username,
+                u.employee_no,
+                d.designation_name,
+                CONCAT(u.firstName, ' ', u.lastName) as fullName,
+                CONCAT(u.firstName, ' ', u.lastName, ' (', d.designation_name, ')') as displayName
+            FROM tbl_user u
+            INNER JOIN tbl_designation d ON u.designation_id = d.id
+            WHERE d.designation_name = 'Business Head'
+            AND (u.status = 'Active' OR u.status = 1 OR u.status IS NULL OR u.status = '')
+            AND u.firstName IS NOT NULL 
+            AND u.firstName != ''
+            ORDER BY u.firstName ASC, u.lastName ASC
+        ");
+        $stmt->execute();
         
-        if ($businessHeadDesignation) {
-            $designationId = $businessHeadDesignation['id'];
-            
-            // Get users with Business Head designation
-            $stmt = $pdo->prepare("
-                SELECT 
-                    u.id,
-                    u.firstName,
-                    u.lastName,
-                    d.designation_name
-                FROM tbl_user u
-                LEFT JOIN tbl_designation d ON u.designation_id = d.id
-                WHERE u.designation_id = ? AND u.status = 'Active'
-                ORDER BY u.firstName ASC, u.lastName ASC
-            ");
-            $stmt->execute(array($designationId));
-            
-            $reportingUsers = array();
-            while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                $reportingUsers[] = array(
-                    'id' => $row['id'],
-                    'firstName' => $row['firstName'],
-                    'lastName' => $row['lastName'],
-                    'designation_name' => $row['designation_name'],
-                    'full_name' => $row['firstName'] . ' ' . $row['lastName'] . ' (' . $row['designation_name'] . ')'
-                );
-            }
-            $response['reporting_users'] = $reportingUsers;
-        } else {
-            $response['reporting_users'] = array();
-            $response['reporting_users_error'] = 'Business Head designation not found';
+        $reportingUsers = array();
+        while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $reportingUsers[] = array(
+                'id' => $row['id'],
+                'firstName' => trim($row['firstName']),
+                'lastName' => trim($row['lastName']),
+                'username' => $row['username'],
+                'employee_no' => $row['employee_no'],
+                'designation_name' => $row['designation_name'],
+                'fullName' => trim($row['fullName']),
+                'displayName' => trim($row['displayName'])
+            );
         }
+        $response['reporting_users'] = $reportingUsers;
+        
+        // Log the count for debugging
+        $response['reporting_users_count'] = count($reportingUsers);
+        
     } catch (Exception $e) {
         $response['reporting_users'] = array();
         $response['reporting_users_error'] = $e->getMessage();
+        $response['reporting_users_count'] = 0;
     }
     
     echo json_encode(array(

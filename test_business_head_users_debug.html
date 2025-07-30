@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Business Head Users Debug</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 5px; }
+        .test-button { background: #007bff; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; margin: 5px; }
+        .test-button:hover { background: #0056b3; }
+        .response { background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0; white-space: pre-wrap; font-family: monospace; }
+        .error { background: #f8d7da; color: #721c24; }
+        .success { background: #d4edda; color: #155724; }
+        h3 { color: #333; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Business Head Users Debug</h1>
+        
+        <div class="test-section">
+            <h3>1. Test Designation Table</h3>
+            <p>Check what designations exist and their IDs:</p>
+            <button class="test-button" onclick="testDesignations()">Test Designations</button>
+            <div id="designations-response" class="response"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>2. Test All Users with Designations</h3>
+            <p>Check all users and their designations:</p>
+            <button class="test-button" onclick="testAllUsers()">Test All Users</button>
+            <div id="all-users-response" class="response"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>3. Test Business Head Users Query</h3>
+            <p>Test the specific Business Head query:</p>
+            <button class="test-button" onclick="testBusinessHeadUsers()">Test Business Head Users</button>
+            <div id="business-head-response" class="response"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>4. Test Complete Dropdown API</h3>
+            <p>Test the complete dropdown API:</p>
+            <button class="test-button" onclick="testDropdownAPI()">Test Dropdown API</button>
+            <div id="dropdown-response" class="response"></div>
+        </div>
+    </div>
+
+    <script>
+        const BASE_URL = 'https://emp.kfinone.com/mobile/api';
+
+        async function testDesignations() {
+            const responseDiv = document.getElementById('designations-response');
+            responseDiv.innerHTML = 'Loading...';
+            
+            try {
+                const response = await fetch(`${BASE_URL}/test_designations.php`);
+                const data = await response.json();
+                
+                responseDiv.className = 'response success';
+                responseDiv.textContent = JSON.stringify(data, null, 2);
+            } catch (error) {
+                responseDiv.className = 'response error';
+                responseDiv.textContent = 'Error: ' + error.message;
+            }
+        }
+
+        async function testAllUsers() {
+            const responseDiv = document.getElementById('all-users-response');
+            responseDiv.innerHTML = 'Loading...';
+            
+            try {
+                const response = await fetch(`${BASE_URL}/test_all_users.php`);
+                const data = await response.json();
+                
+                responseDiv.className = 'response success';
+                responseDiv.textContent = JSON.stringify(data, null, 2);
+            } catch (error) {
+                responseDiv.className = 'response error';
+                responseDiv.textContent = 'Error: ' + error.message;
+            }
+        }
+
+        async function testBusinessHeadUsers() {
+            const responseDiv = document.getElementById('business-head-response');
+            responseDiv.innerHTML = 'Loading...';
+            
+            try {
+                const response = await fetch(`${BASE_URL}/test_business_head_users.php`);
+                const data = await response.json();
+                
+                responseDiv.className = 'response success';
+                responseDiv.textContent = JSON.stringify(data, null, 2);
+            } catch (error) {
+                responseDiv.className = 'response error';
+                responseDiv.textContent = 'Error: ' + error.message;
+            }
+        }
+
+        async function testDropdownAPI() {
+            const responseDiv = document.getElementById('dropdown-response');
+            responseDiv.innerHTML = 'Loading...';
+            
+            try {
+                const response = await fetch(`${BASE_URL}/get_business_head_add_emp_dropdowns.php`);
+                const data = await response.json();
+                
+                responseDiv.className = 'response success';
+                responseDiv.textContent = JSON.stringify(data, null, 2);
+            } catch (error) {
+                responseDiv.className = 'response error';
+                responseDiv.textContent = 'Error: ' + error.message;
+            }
+        }
+    </script>
+</body>
+</html> 

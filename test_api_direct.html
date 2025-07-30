@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>API Test</title>
+</head>
+<body>
+    <h1>Testing Business Head Dropdown API</h1>
+    <button onclick="testAPI()">Test API</button>
+    <div id="result"></div>
+
+    <script>
+        async function testAPI() {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = 'Loading...';
+            
+            try {
+                const response = await fetch('https://emp.kfinone.com/mobile/api/get_business_head_add_emp_dropdowns.php');
+                const data = await response.json();
+                
+                resultDiv.innerHTML = '<pre>' + JSON.stringify(data, null, 2) + '</pre>';
+                
+                // Check reporting users specifically
+                if (data.data && data.data.reporting_users) {
+                    console.log('Reporting users count:', data.data.reporting_users.length);
+                    console.log('Reporting users:', data.data.reporting_users);
+                } else {
+                    console.log('No reporting users found');
+                }
+                
+            } catch (error) {
+                resultDiv.innerHTML = 'Error: ' + error.message;
+            }
+        }
+    </script>
+</body>
+</html> 

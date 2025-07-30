@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find DUBEY SATYA SAIBABA User</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .test-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+        }
+        .test-button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+        }
+        .test-button:hover {
+            background-color: #0056b3;
+        }
+        .response-area {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            padding: 15px;
+            margin-top: 15px;
+            white-space: pre-wrap;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .status-success {
+            color: #28a745;
+            font-weight: bold;
+        }
+        .status-error {
+            color: #dc3545;
+            font-weight: bold;
+        }
+        .summary {
+            background-color: #e7f3ff;
+            border: 1px solid #b3d9ff;
+            border-radius: 6px;
+            padding: 15px;
+            margin-top: 15px;
+        }
+        .user-card {
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .user-name {
+            font-weight: bold;
+            color: #333;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+        .user-detail {
+            margin: 5px 0;
+            color: #666;
+        }
+        .loading {
+            color: #007bff;
+            font-style: italic;
+        }
+        .highlight {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            padding: 10px;
+            border-radius: 6px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 Find DUBEY SATYA SAIBABA User</h1>
+        
+        <div class="highlight">
+            <strong>Problem:</strong> The API is returning "Manager 'DUBEY SATYA SAIBABA' not found in the system". 
+            We need to find the exact name format in the database.
+        </div>
+        
+        <div class="test-section">
+            <h3>1. Debug Search API</h3>
+            <p>Comprehensive search for the user with various name combinations.</p>
+            <button class="test-button" onclick="debugUserSearch()">Run Debug Search</button>
+            <div id="debug-response" class="response-area">Click "Run Debug Search" to find user details...</div>
+        </div>
+        
+        <div class="test-section">
+            <h3>2. Find Similar Users API</h3>
+            <p>Search for users with similar names (DUBEY, SATYA, SAI, BABA).</p>
+            <button class="test-button" onclick="findSimilarUsers()">Find Similar Users</button>
+            <div id="similar-response" class="response-area">Click "Find Similar Users" to search...</div>
+        </div>
+        
+        <div class="test-section">
+            <h3>3. Test Active Employees API</h3>
+            <p>Test the original API to see the current error.</p>
+            <button class="test-button" onclick="testActiveEmployees()">Test Active Employees</button>
+            <div id="active-response" class="response-area">Click "Test Active Employees" to test...</div>
+        </div>
+    </div>
+
+    <script>
+        const BASE_URL = 'https://emp.kfinone.com/mobile/api/';
+        
+        async function debugUserSearch() {
+            const responseDiv = document.getElementById('debug-response');
+            responseDiv.innerHTML = '<div class="loading">Running debug search...</div>';
+            
+            try {
+                const response = await fetch(BASE_URL + 'debug_dubey_satya_user.php');
+                const data = await response.json();
+                
+                let responseText = '';
+                responseText += '=== DEBUG SEARCH RESULTS ===\n';
+                responseText += `Status: ${data.status}\n`;
+                responseText += `Message: ${data.message}\n\n`;
+                
+                if (data.status === 'success') {
+                    const searchData = data.data;
+                    
+                    // Check exact match
+                    if (searchData.exact_match) {
+                        responseText += `✅ EXACT MATCH FOUND!\n`;
+                        responseText += `   ID: ${searchData.exact_match.id}\n`;
+                        responseText += `   Name: "${searchData.exact_match.fullName}"\n`;
+                        responseText += `   firstName: "${searchData.exact_match.firstName}"\n`;
+                        responseText += `   lastName: "${searchData.exact_match.lastName}"\n\n`;
+                    } else {
+                        responseText += '❌ No exact match for "DUBEY SATYA SAIBABA"\n\n';
+                    }
+                    
+                    // Show all potential matches
+                    let allMatches = [];
+                    if (searchData.dubey_matches) allMatches = allMatches.concat(searchData.dubey_matches);
+                    if (searchData.satya_matches) allMatches = allMatches.concat(searchData.satya_matches);
+                    if (searchData.saibaba_matches) allMatches = allMatches.concat(searchData.saibaba_matches);
+                    if (searchData.sai_lastname) allMatches = allMatches.concat(searchData.sai_lastname);
+                    if (searchData.baba_lastname) allMatches = allMatches.concat(searchData.baba_lastname);
+                    
+                    // Remove duplicates
+                    const uniqueMatches = allMatches.filter((user, index, self) => 
+                        index === self.findIndex(u => u.id === user.id)
+                    );
+                    
+                    if (uniqueMatches.length > 0) {
+                        responseText += `📋 Found ${uniqueMatches.length} potential matches:\n\n`;
+                        uniqueMatches.forEach((user, index) => {
+                            responseText += `${index + 1}. ID: ${user.id}\n`;
+                            responseText += `   Name: "${user.fullName}"\n`;
+                            responseText += `   firstName: "${user.firstName}"\n`;
+                            responseText += `   lastName: "${user.lastName}"\n\n`;
+                        });
+                    } else {
+                        responseText += '❌ No potential matches found\n\n';
+                    }
+                    
+                } else {
+                    responseText += `❌ ERROR: ${data.message}\n`;
+                }
+                
+                responseDiv.innerHTML = responseText;
+                
+            } catch (error) {
+                responseDiv.innerHTML = `❌ ERROR: ${error.message}`;
+            }
+        }
+        
+        async function findSimilarUsers() {
+            const responseDiv = document.getElementById('similar-response');
+            responseDiv.innerHTML = '<div class="loading">Finding similar users...</div>';
+            
+            try {
+                const response = await fetch(BASE_URL + 'test_all_users_with_dubey.php');
+                const data = await response.json();
+                
+                let responseText = '';
+                responseText += '=== SIMILAR USERS SEARCH ===\n';
+                responseText += `Status: ${data.status}\n`;
+                responseText += `Message: ${data.message}\n`;
+                responseText += `Total Users in DB: ${data.data.total_users_in_db}\n\n`;
+                
+                if (data.status === 'success') {
+                    const users = data.data.matching_users;
+                    
+                    if (users.length > 0) {
+                        responseText += `✅ Found ${users.length} users with similar names:\n\n`;
+                        users.forEach((user, index) => {
+                            responseText += `${index + 1}. ID: ${user.id}\n`;
+                            responseText += `   Name: "${user.fullName}"\n`;
+                            responseText += `   firstName: "${user.firstName}"\n`;
+                            responseText += `   lastName: "${user.lastName}"\n`;
+                            responseText += `   Status: ${user.status}\n\n`;
+                        });
+                    } else {
+                        responseText += '❌ No users found with similar names\n\n';
+                    }
+                    
+                } else {
+                    responseText += `❌ ERROR: ${data.message}\n`;
+                }
+                
+                responseDiv.innerHTML = responseText;
+                
+            } catch (error) {
+                responseDiv.innerHTML = `❌ ERROR: ${error.message}`;
+            }
+        }
+        
+        async function testActiveEmployees() {
+            const responseDiv = document.getElementById('active-response');
+            responseDiv.innerHTML = '<div class="loading">Testing active employees API...</div>';
+            
+            try {
+                const response = await fetch(BASE_URL + 'get_business_head_active_employees.php');
+                const data = await response.json();
+                
+                let responseText = '';
+                responseText += '=== ACTIVE EMPLOYEES API TEST ===\n';
+                responseText += `Status: ${data.status}\n`;
+                responseText += `Message: ${data.message}\n\n`;
+                
+                if (data.status === 'success') {
+                    responseText += `✅ SUCCESS: Found ${data.total_users || 0} employees\n`;
+                    responseText += `Manager ID: ${data.manager_id || 'N/A'}\n\n`;
+                } else {
+                    responseText += `❌ ERROR: ${data.message}\n\n`;
+                    responseText += 'This confirms the user "DUBEY SATYA SAIBABA" is not found in the database.\n';
+                    responseText += 'We need to find the correct name format from the debug search above.\n';
+                }
+                
+                responseDiv.innerHTML = responseText;
+                
+            } catch (error) {
+                responseDiv.innerHTML = `❌ ERROR: ${error.message}`;
+            }
+        }
+        
+        // Auto-run debug search on page load
+        window.onload = function() {
+            console.log('Find DUBEY SATYA SAIBABA User Page Loaded');
+            console.log('Base URL:', BASE_URL);
+            // Auto-run debug search
+            setTimeout(() => {
+                debugUserSearch();
+            }, 1000);
+        };
+    </script>
+</body>
+</html> 

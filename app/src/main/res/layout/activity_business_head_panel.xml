@@ -92,7 +92,7 @@
                 android:orientation="horizontal"
                 android:paddingHorizontal="12dp">
 
-                <!-- Total Team Members -->
+                <!-- Total Emp -->
                 <androidx.cardview.widget.CardView
                     android:layout_width="140dp"
                     android:layout_height="wrap_content"
@@ -112,7 +112,7 @@
                             android:id="@+id/totalTeamCount"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="45"
+                            android:text="0"
                             android:textSize="28sp"
                             android:textStyle="bold"
                             android:textColor="@color/primary" />
@@ -120,7 +120,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Team Members"
+                            android:text="Total Emp"
                             android:textSize="12sp"
                             android:textColor="@color/gray"
                             android:layout_marginTop="4dp" />
@@ -129,7 +129,7 @@
 
                 </androidx.cardview.widget.CardView>
 
-                <!-- Active Projects -->
+                <!-- Total SDSA -->
                 <androidx.cardview.widget.CardView
                     android:layout_width="140dp"
                     android:layout_height="wrap_content"
@@ -149,7 +149,7 @@
                             android:id="@+id/activeProjectsCount"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="12"
+                            android:text="0"
                             android:textSize="28sp"
                             android:textStyle="bold"
                             android:textColor="#4CAF50" />
@@ -157,7 +157,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Active Projects"
+                            android:text="Total SDSA"
                             android:textSize="12sp"
                             android:textColor="@color/gray"
                             android:layout_marginTop="4dp" />
@@ -166,7 +166,7 @@
 
                 </androidx.cardview.widget.CardView>
 
-                <!-- Revenue Generated -->
+                <!-- Total Partner -->
                 <androidx.cardview.widget.CardView
                     android:layout_width="140dp"
                     android:layout_height="wrap_content"
@@ -186,7 +186,7 @@
                             android:id="@+id/revenueCount"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="₹2.5M"
+                            android:text="0"
                             android:textSize="28sp"
                             android:textStyle="bold"
                             android:textColor="#FF9800" />
@@ -194,7 +194,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Revenue Generated"
+                            android:text="Total Partner"
                             android:textSize="12sp"
                             android:textColor="@color/gray"
                             android:layout_marginTop="4dp" />
@@ -203,7 +203,7 @@
 
                 </androidx.cardview.widget.CardView>
 
-                <!-- Performance Score -->
+                <!-- Total Portfolio -->
                 <androidx.cardview.widget.CardView
                     android:layout_width="140dp"
                     android:layout_height="wrap_content"
@@ -223,7 +223,7 @@
                             android:id="@+id/performanceScore"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="92%"
+                            android:text="0"
                             android:textSize="28sp"
                             android:textStyle="bold"
                             android:textColor="#9C27B0" />
@@ -231,7 +231,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Performance Score"
+                            android:text="Total Portfolio"
                             android:textSize="12sp"
                             android:textColor="@color/gray"
                             android:layout_marginTop="4dp" />
@@ -240,7 +240,7 @@
 
                 </androidx.cardview.widget.CardView>
 
-                <!-- Business Growth -->
+                <!-- Total Agent -->
                 <androidx.cardview.widget.CardView
                     android:layout_width="140dp"
                     android:layout_height="wrap_content"
@@ -259,7 +259,7 @@
                             android:id="@+id/growthRate"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="+18%"
+                            android:text="0"
                             android:textSize="28sp"
                             android:textStyle="bold"
                             android:textColor="#2196F3" />
@@ -267,7 +267,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Growth Rate"
+                            android:text="Total Agent"
                             android:textSize="12sp"
                             android:textColor="@color/gray"
                             android:layout_marginTop="4dp" />

@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Business Head Panel API</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .test-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+        }
+        .test-button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+        }
+        .test-button:hover {
+            background-color: #0056b3;
+        }
+        .response-area {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            padding: 15px;
+            margin-top: 15px;
+            white-space: pre-wrap;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .status-success {
+            color: #28a745;
+            font-weight: bold;
+        }
+        .status-error {
+            color: #dc3545;
+            font-weight: bold;
+        }
+        .summary {
+            background-color: #e7f3ff;
+            border: 1px solid #b3d9ff;
+            border-radius: 6px;
+            padding: 15px;
+            margin-top: 15px;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        .stat-card {
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #007bff;
+            margin-bottom: 5px;
+        }
+        .stat-label {
+            font-size: 14px;
+            color: #666;
+        }
+        .loading {
+            color: #007bff;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Test Business Head Panel API</h1>
+        
+        <div class="test-section">
+            <h3>API Endpoint: get_business_head_users.php</h3>
+            <p>This API fetches Business Head users, team members, and statistics for the Business Head panel.</p>
+            
+            <button class="test-button" onclick="testBusinessHeadPanelAPI()">Test Business Head Panel API</button>
+            <button class="test-button" onclick="clearResponse()">Clear Response</button>
+            
+            <div id="response" class="response-area">Click "Test Business Head Panel API" to start testing...</div>
+        </div>
+    </div>
+
+    <script>
+        const BASE_URL = 'https://emp.kfinone.com/mobile/api/';
+        
+        async function testBusinessHeadPanelAPI() {
+            const responseDiv = document.getElementById('response');
+            responseDiv.innerHTML = '<div class="loading">Testing API...</div>';
+            
+            try {
+                const response = await fetch(BASE_URL + 'get_business_head_users.php');
+                const data = await response.json();
+                
+                let responseText = '';
+                responseText += '=== API RESPONSE ===\n';
+                responseText += `Status: ${data.status}\n`;
+                responseText += `Message: ${data.message}\n`;
+                responseText += `Timestamp: ${data.timestamp || 'N/A'}\n\n`;
+                
+                if (data.status === 'success') {
+                    responseText += `✅ SUCCESS: API responded successfully\n\n`;
+                    
+                    // Check for statistics
+                    if (data.statistics) {
+                        responseText += '=== STATISTICS ===\n';
+                        responseText += `Total Business Head Users: ${data.statistics.total_business_head_users}\n`;
+                        responseText += `Active Business Head Users: ${data.statistics.active_business_head_users}\n`;
+                        responseText += `Total Team Members: ${data.statistics.total_team_members}\n`;
+                        responseText += `Active Team Members: ${data.statistics.active_team_members}\n`;
+                        responseText += `Total SDSA Users: ${data.statistics.total_sdsa_users}\n`;
+                        responseText += `Total Partner Users: ${data.statistics.total_partner_users}\n`;
+                        responseText += `Total Agent Users: ${data.statistics.total_agent_users}\n\n`;
+                        
+                        // Display statistics cards
+                        displayStatisticsCards(data.statistics);
+                        
+                    } else {
+                        responseText += '⚠️ No statistics found in response\n\n';
+                    }
+                    
+                    // Check for business head users
+                    if (data.business_head_users && data.business_head_users.length > 0) {
+                        responseText += `=== BUSINESS HEAD USERS (${data.business_head_users.length}) ===\n`;
+                        data.business_head_users.forEach((user, index) => {
+                            responseText += `${index + 1}. ${user.fullName} (${user.designation_name})\n`;
+                            responseText += `   ID: ${user.id}, Status: ${user.status}\n`;
+                            responseText += `   Email: ${user.email_id || 'N/A'}\n`;
+                            responseText += `   Mobile: ${user.mobile || 'N/A'}\n\n`;
+                        });
+                    } else {
+                        responseText += '⚠️ No business head users found\n\n';
+                    }
+                    
+                    // Check for team members
+                    if (data.team_members && data.team_members.length > 0) {
+                        responseText += `=== TEAM MEMBERS (${data.team_members.length}) ===\n`;
+                        data.team_members.slice(0, 5).forEach((member, index) => {
+                            responseText += `${index + 1}. ${member.fullName} (${member.designation_name})\n`;
+                            responseText += `   Reports to: ${member.managerName}\n`;
+                            responseText += `   Status: ${member.status}\n\n`;
+                        });
+                        if (data.team_members.length > 5) {
+                            responseText += `... and ${data.team_members.length - 5} more team members\n\n`;
+                        }
+                    } else {
+                        responseText += '⚠️ No team members found\n\n';
+                    }
+                    
+                    // Check for summary
+                    if (data.summary) {
+                        responseText += '=== SUMMARY ===\n';
+                        responseText += `Total Business Heads: ${data.summary.total_business_heads}\n`;
+                        responseText += `Total Team Members: ${data.summary.total_team_members}\n`;
+                        responseText += `API Version: ${data.summary.api_version}\n`;
+                        responseText += `Last Updated: ${data.summary.last_updated}\n\n`;
+                    }
+                    
+                } else {
+                    responseText += `❌ ERROR: ${data.message}\n`;
+                }
+                
+                responseDiv.innerHTML = responseText;
+                
+            } catch (error) {
+                responseDiv.innerHTML = `❌ ERROR: ${error.message}\n\nThis could be due to:\n- Network connectivity issues\n- Server not responding\n- CORS issues\n- Invalid API endpoint`;
+            }
+        }
+        
+        function displayStatisticsCards(statistics) {
+            const responseDiv = document.getElementById('response');
+            
+            let cardsHTML = '<div class="summary">\n';
+            cardsHTML += '<h4>📊 Statistics Dashboard:</h4>\n';
+            cardsHTML += '<div class="stats-grid">\n';
+            
+            cardsHTML += '<div class="stat-card">\n';
+            cardsHTML += `<div class="stat-value">${statistics.total_business_head_users}</div>\n`;
+            cardsHTML += '<div class="stat-label">Total Business Heads</div>\n';
+            cardsHTML += '</div>\n';
+            
+            cardsHTML += '<div class="stat-card">\n';
+            cardsHTML += `<div class="stat-value">${statistics.active_business_head_users}</div>\n`;
+            cardsHTML += '<div class="stat-label">Active Business Heads</div>\n';
+            cardsHTML += '</div>\n';
+            
+            cardsHTML += '<div class="stat-card">\n';
+            cardsHTML += `<div class="stat-value">${statistics.total_team_members}</div>\n`;
+            cardsHTML += '<div class="stat-label">Total Team Members</div>\n';
+            cardsHTML += '</div>\n';
+            
+            cardsHTML += '<div class="stat-card">\n';
+            cardsHTML += `<div class="stat-value">${statistics.active_team_members}</div>\n`;
+            cardsHTML += '<div class="stat-label">Active Team Members</div>\n';
+            cardsHTML += '</div>\n';
+            
+            cardsHTML += '<div class="stat-card">\n';
+            cardsHTML += `<div class="stat-value">${statistics.total_sdsa_users}</div>\n`;
+            cardsHTML += '<div class="stat-label">Total SDSA Users</div>\n';
+            cardsHTML += '</div>\n';
+            
+            cardsHTML += '<div class="stat-card">\n';
+            cardsHTML += `<div class="stat-value">${statistics.total_partner_users}</div>\n`;
+            cardsHTML += '<div class="stat-label">Total Partner Users</div>\n';
+            cardsHTML += '</div>\n';
+            
+            cardsHTML += '<div class="stat-card">\n';
+            cardsHTML += `<div class="stat-value">${statistics.total_agent_users}</div>\n`;
+            cardsHTML += '<div class="stat-label">Total Agent Users</div>\n';
+            cardsHTML += '</div>\n';
+            
+            cardsHTML += '</div>\n';
+            cardsHTML += '</div>\n';
+            
+            responseDiv.innerHTML += cardsHTML;
+        }
+        
+        function clearResponse() {
+            document.getElementById('response').innerHTML = 'Response cleared. Click "Test Business Head Panel API" to start testing...';
+        }
+        
+        // Auto-test on page load
+        window.onload = function() {
+            console.log('Business Head Panel API Test Page Loaded');
+            console.log('Base URL:', BASE_URL);
+        };
+    </script>
+</body>
+</html> 

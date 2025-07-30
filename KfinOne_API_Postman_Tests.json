@@ -1,0 +1,538 @@
+{
+	"info": {
+		"_postman_id": "kfinone-api-tests",
+		"name": "KfinOne API Tests",
+		"description": "Comprehensive test collection for KfinOne Android App API endpoints",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Login Test",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"test_user\",\n    \"password\": \"test_password\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/login.php",
+							"host": ["{{base_url}}"],
+							"path": ["api", "login.php"]
+						}
+					},
+					"response": [],
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response has success field\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('success');",
+									"});",
+									"",
+									"pm.test(\"Response has message field\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('message');",
+									"});",
+									"",
+									"if (pm.response.json().success === true) {",
+									"    pm.test(\"User data is present\", function () {",
+									"        var jsonData = pm.response.json();",
+									"        pm.expect(jsonData).to.have.property('user');",
+									"        pm.expect(jsonData.user).to.have.property('id');",
+									"        pm.expect(jsonData.user).to.have.property('username');",
+									"    });",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Business Head Panel",
+			"item": [
+				{
+					"name": "Get Business Head Add Emp Dropdowns",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/get_business_head_add_emp_dropdowns.php",
+							"host": ["{{base_url}}"],
+							"path": ["api", "get_business_head_add_emp_dropdowns.php"]
+						}
+					},
+					"response": [],
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response is JSON\", function () {",
+									"    pm.response.to.be.json;",
+									"});",
+									"",
+									"pm.test(\"Response has data field\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('data');",
+									"});",
+									"",
+									"pm.test(\"Branch states are present\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.data).to.have.property('branch_states');",
+									"    pm.expect(jsonData.data.branch_states).to.be.an('array');",
+									"});",
+									"",
+									"pm.test(\"Account types are present\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.data).to.have.property('account_types');",
+									"    pm.expect(jsonData.data.account_types).to.be.an('array');",
+									"});",
+									"",
+									"pm.test(\"Branch locations are present\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.data).to.have.property('branch_locations');",
+									"    pm.expect(jsonData.data.branch_locations).to.be.an('array');",
+									"});",
+									"",
+									"pm.test(\"Bank names are present\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.data).to.have.property('bank_names');",
+									"    pm.expect(jsonData.data.bank_names).to.be.an('array');",
+									"});",
+									"",
+									"pm.test(\"Reporting users are present\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.data).to.have.property('reporting_users');",
+									"    pm.expect(jsonData.data.reporting_users).to.be.an('array');",
+									"});",
+									"",
+									"// Log the response for debugging",
+									"console.log('API Response:', pm.response.json());",
+									"",
+									"// Check if dropdowns have data",
+									"var jsonData = pm.response.json();",
+									"if (jsonData.data.branch_states.length > 0) {",
+									"    console.log('Branch States found:', jsonData.data.branch_states.length);",
+									"} else {",
+									"    console.log('No branch states found');",
+									"}",
+									"",
+									"if (jsonData.data.account_types.length > 0) {",
+									"    console.log('Account Types found:', jsonData.data.account_types.length);",
+									"} else {",
+									"    console.log('No account types found');",
+									"}",
+									"",
+									"if (jsonData.data.branch_locations.length > 0) {",
+									"    console.log('Branch Locations found:', jsonData.data.branch_locations.length);",
+									"} else {",
+									"    console.log('No branch locations found');",
+									"}",
+									"",
+									"if (jsonData.data.bank_names.length > 0) {",
+									"    console.log('Bank Names found:', jsonData.data.bank_names.length);",
+									"} else {",
+									"    console.log('No bank names found');",
+									"}",
+									"",
+									"if (jsonData.data.reporting_users.length > 0) {",
+									"    console.log('Reporting Users found:', jsonData.data.reporting_users.length);",
+									"} else {",
+									"    console.log('No reporting users found');",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					]
+				},
+				{
+					"name": "Get Business Head Users",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/get_business_head_users.php",
+							"host": ["{{base_url}}"],
+							"path": ["api", "get_business_head_users.php"]
+						}
+					},
+					"response": [],
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response has users array\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('users');",
+									"    pm.expect(jsonData.users).to.be.an('array');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					]
+				},
+				{
+					"name": "Check Business Head User",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"business_head_user\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/check_business_head_user.php",
+							"host": ["{{base_url}}"],
+							"path": ["api", "check_business_head_user.php"]
+						}
+					},
+					"response": [],
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response has is_business_head field\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('is_business_head');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Employee Management",
+			"item": [
+				{
+					"name": "Add Employee Details",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"firstName\": \"Test\",\n    \"lastName\": \"Employee\",\n    \"email\": \"test@example.com\",\n    \"phone\": \"1234567890\",\n    \"branch_state\": \"Andhra Pradesh-AP\",\n    \"account_type\": \"Current Account-CA\",\n    \"branch_location\": \"Hyderabad\",\n    \"bank_name\": \"HDFC bank ltd\",\n    \"reporting_to\": \"John Doe (Business Head)\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/add_employee_details.php",
+							"host": ["{{base_url}}"],
+							"path": ["api", "add_employee_details.php"]
+						}
+					},
+					"response": [],
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response has success field\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('success');",
+									"});",
+									"",
+									"pm.test(\"Response has message field\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('message');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Database Connection Tests",
+			"item": [
+				{
+					"name": "Test Database Connection",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/test_db_connection.php",
+							"host": ["{{base_url}}"],
+							"path": ["api", "test_db_connection.php"]
+						}
+					},
+					"response": [],
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Database connection successful\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('success');",
+									"    pm.expect(jsonData.success).to.be.true;",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					]
+				},
+				{
+					"name": "Test Simple Database Connection",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/test_db_connection_simple.php",
+							"host": ["{{base_url}}"],
+							"path": ["api", "test_db_connection_simple.php"]
+						}
+					},
+					"response": [],
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response contains connection status\", function () {",
+									"    var responseText = pm.response.text();",
+									"    pm.expect(responseText).to.include('Connection successful');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "User Management",
+			"item": [
+				{
+					"name": "Get All Users",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/test_users_api.php",
+							"host": ["{{base_url}}"],
+							"path": ["api", "test_users_api.php"]
+						}
+					},
+					"response": [],
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response has users array\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('users');",
+									"    pm.expect(jsonData.users).to.be.an('array');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					]
+				},
+				{
+					"name": "Verify All Users",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/verify_all_users.php",
+							"host": ["{{base_url}}"],
+							"path": ["api", "verify_all_users.php"]
+						}
+					},
+					"response": [],
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response has verification results\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('total_users');",
+									"    pm.expect(jsonData).to.have.property('valid_users');",
+									"    pm.expect(jsonData).to.have.property('invalid_users');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Designation Management",
+			"item": [
+				{
+					"name": "Get Designations with Departments",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/get_designations_with_departments.php",
+							"host": ["{{base_url}}"],
+							"path": ["api", "get_designations_with_departments.php"]
+						}
+					},
+					"response": [],
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response has designations array\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('designations');",
+									"    pm.expect(jsonData.designations).to.be.an('array');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					]
+				},
+				{
+					"name": "Add Designation",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"designation_name\": \"Test Designation\",\n    \"department_id\": 1\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/add_designation.php",
+							"host": ["{{base_url}}"],
+							"path": ["api", "add_designation.php"]
+						}
+					},
+					"response": [],
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response has success field\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('success');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					]
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "https://emp.kfinone.com/mobile",
+			"type": "string"
+		}
+	]
+} 

@@ -44,11 +44,11 @@ public class BusinessHeadPanelActivity extends AppCompatActivity {
     
     // Header Views
     private TextView welcomeText;
-    private TextView totalTeamCount;
-    private TextView activeProjectsCount;
-    private TextView revenueCount;
-    private TextView performanceScore;
-    private TextView growthRate;
+    private TextView totalEmpCount;
+    private TextView totalSDSACount;
+    private TextView totalPartnerCount;
+    private TextView totalPortfolioCount;
+    private TextView totalAgentCount;
     
     // Header Icons
     private View menuButton;
@@ -98,6 +98,9 @@ public class BusinessHeadPanelActivity extends AppCompatActivity {
         setupHeaderClickListeners();
         setupBottomNavigation();
         setupCardClickListeners();
+        
+        // Set initial values to 0
+        setInitialStats();
         loadBusinessHeadData();
         updateWelcomeText();
     }
@@ -105,11 +108,11 @@ public class BusinessHeadPanelActivity extends AppCompatActivity {
     private void initializeViews() {
         // Header Views
         welcomeText = findViewById(R.id.welcomeText);
-        totalTeamCount = findViewById(R.id.totalTeamCount);
-        activeProjectsCount = findViewById(R.id.activeProjectsCount);
-        revenueCount = findViewById(R.id.revenueCount);
-        performanceScore = findViewById(R.id.performanceScore);
-        growthRate = findViewById(R.id.growthRate);
+        totalEmpCount = findViewById(R.id.totalTeamCount);
+        totalSDSACount = findViewById(R.id.activeProjectsCount);
+        totalPartnerCount = findViewById(R.id.revenueCount);
+        totalPortfolioCount = findViewById(R.id.performanceScore);
+        totalAgentCount = findViewById(R.id.growthRate);
         
         // Header Icons
         menuButton = findViewById(R.id.menuButton);
@@ -368,6 +371,15 @@ public class BusinessHeadPanelActivity extends AppCompatActivity {
         });
     }
     
+    private void setInitialStats() {
+        // Set all stat values to 0
+        totalEmpCount.setText("0");
+        totalSDSACount.setText("0");
+        totalPartnerCount.setText("0");
+        totalPortfolioCount.setText("0");
+        totalAgentCount.setText("0");
+    }
+    
     private void updateWelcomeText() {
         if (firstName != null && !firstName.isEmpty()) {
             welcomeText.setText("Welcome back, " + firstName);
@@ -400,17 +412,25 @@ public class BusinessHeadPanelActivity extends AppCompatActivity {
                     JSONObject jsonResponse = new JSONObject(response.toString());
                     
                     if (jsonResponse.getString("status").equals("success")) {
-                        JSONObject data = jsonResponse.getJSONObject("data");
-                        JSONObject statistics = data.getJSONObject("statistics");
-                        
-                        final int totalBusinessHeads = statistics.getInt("total_business_head_users");
-                        final int activeBusinessHeads = statistics.getInt("active_business_head_users");
-                        final int totalTeamMembers = statistics.getInt("total_team_members");
-                        final int activeTeamMembers = statistics.getInt("active_team_members");
-                        
-                        runOnUiThread(() -> {
-                            updateStats(totalBusinessHeads, activeBusinessHeads, totalTeamMembers, activeTeamMembers);
-                        });
+                        // Check if statistics field exists
+                        if (jsonResponse.has("statistics")) {
+                            JSONObject statistics = jsonResponse.getJSONObject("statistics");
+                            
+                            final int totalBusinessHeads = statistics.optInt("total_business_head_users", 0);
+                            final int activeBusinessHeads = statistics.optInt("active_business_head_users", 0);
+                            final int totalTeamMembers = statistics.optInt("total_team_members", 0);
+                            final int activeTeamMembers = statistics.optInt("active_team_members", 0);
+                            
+                            runOnUiThread(() -> {
+                                updateStats(totalBusinessHeads, activeBusinessHeads, totalTeamMembers, activeTeamMembers);
+                            });
+                        } else {
+                            // If no statistics, use default values
+                            runOnUiThread(() -> {
+                                updateStats(0, 0, 0, 0);
+                                Log.w(TAG, "No statistics field found in API response");
+                            });
+                        }
                     } else {
                         runOnUiThread(() -> {
                             showError("Failed to load data: " + jsonResponse.optString("message", "Unknown error"));
@@ -432,14 +452,12 @@ public class BusinessHeadPanelActivity extends AppCompatActivity {
     }
     
     private void updateStats(int totalBusinessHeads, int activeBusinessHeads, int totalTeamMembers, int activeTeamMembers) {
-        // Update team count
-        totalTeamCount.setText(String.valueOf(activeTeamMembers));
-        
-        // Update other stats with sample data for now
-        activeProjectsCount.setText("12");
-        revenueCount.setText("₹2.5M");
-        performanceScore.setText("92%");
-        growthRate.setText("+18%");
+        // Update stats with actual data from API
+        totalEmpCount.setText(String.valueOf(totalTeamMembers));
+        totalSDSACount.setText(String.valueOf(totalBusinessHeads));
+        totalPartnerCount.setText(String.valueOf(activeBusinessHeads));
+        totalPortfolioCount.setText(String.valueOf(activeTeamMembers));
+        totalAgentCount.setText(String.valueOf(totalBusinessHeads + totalTeamMembers));
     }
     
     private void showError(String message) {

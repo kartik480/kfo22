@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Business Head Active Employees API</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .test-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+        }
+        .test-button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+        }
+        .test-button:hover {
+            background-color: #0056b3;
+        }
+        .response-area {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            padding: 15px;
+            margin-top: 15px;
+            white-space: pre-wrap;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .status-success {
+            color: #28a745;
+            font-weight: bold;
+        }
+        .status-error {
+            color: #dc3545;
+            font-weight: bold;
+        }
+        .summary {
+            background-color: #e7f3ff;
+            border: 1px solid #b3d9ff;
+            border-radius: 6px;
+            padding: 15px;
+            margin-top: 15px;
+        }
+        .employee-card {
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .employee-name {
+            font-weight: bold;
+            color: #333;
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+        .employee-detail {
+            margin: 5px 0;
+            color: #666;
+        }
+        .loading {
+            color: #007bff;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Test Business Head Active Employees API</h1>
+        
+        <div class="test-section">
+            <h3>API Endpoint: get_business_head_active_employees.php</h3>
+            <p>This API fetches all active employees reporting to "DUBEY SATYA SAIBABA" from the tbl_user table.</p>
+            
+            <button class="test-button" onclick="testActiveEmployeesAPI()">Test Active Employees API</button>
+            <button class="test-button" onclick="clearResponse()">Clear Response</button>
+            
+            <div id="response" class="response-area">Click "Test Active Employees API" to start testing...</div>
+        </div>
+    </div>
+
+    <script>
+        const BASE_URL = 'https://emp.kfinone.com/mobile/api/';
+        
+        async function testActiveEmployeesAPI() {
+            const responseDiv = document.getElementById('response');
+            responseDiv.innerHTML = '<div class="loading">Testing API...</div>';
+            
+            try {
+                const response = await fetch(BASE_URL + 'get_business_head_active_employees.php');
+                const data = await response.json();
+                
+                let responseText = '';
+                responseText += '=== API RESPONSE ===\n';
+                responseText += `Status: ${data.status}\n`;
+                responseText += `Message: ${data.message}\n`;
+                responseText += `Total Users: ${data.total_users || 0}\n`;
+                responseText += `Manager ID: ${data.manager_id || 'N/A'}\n\n`;
+                
+                if (data.status === 'success') {
+                    responseText += `✅ SUCCESS: Found ${data.data.length} employees\n\n`;
+                    
+                    if (data.data.length > 0) {
+                        responseText += '=== EMPLOYEE DETAILS ===\n\n';
+                        
+                        data.data.forEach((employee, index) => {
+                            responseText += `Employee ${index + 1}:\n`;
+                            responseText += `  ID: ${employee.id}\n`;
+                            responseText += `  Name: ${employee.fullName}\n`;
+                            responseText += `  Username: ${employee.username || 'N/A'}\n`;
+                            responseText += `  Phone: ${employee.mobile || 'N/A'}\n`;
+                            responseText += `  Email: ${employee.email_id || 'N/A'}\n`;
+                            responseText += `  Employee No: ${employee.employee_no || 'N/A'}\n`;
+                            responseText += `  Status: ${employee.status || 'N/A'}\n`;
+                            responseText += `  Company: ${employee.company_name || 'N/A'}\n`;
+                            responseText += `  Joining Date: ${employee.joining_date || 'N/A'}\n`;
+                            responseText += `  PAN: ${employee.pan_number || 'N/A'}\n`;
+                            responseText += `  Aadhaar: ${employee.aadhaar_number || 'N/A'}\n`;
+                            responseText += `  Reporting To: ${employee.reportingTo || 'N/A'}\n`;
+                            responseText += '\n';
+                        });
+                        
+                        // Display employee cards
+                        displayEmployeeCards(data.data);
+                        
+                                         } else {
+                         responseText += '⚠️ No employees found reporting to DUBEY SATYA SAIBABA\n';
+                     }
+                    
+                } else {
+                    responseText += `❌ ERROR: ${data.message}\n`;
+                }
+                
+                responseDiv.innerHTML = responseText;
+                
+            } catch (error) {
+                responseDiv.innerHTML = `❌ ERROR: ${error.message}\n\nThis could be due to:\n- Network connectivity issues\n- Server not responding\n- CORS issues\n- Invalid API endpoint`;
+            }
+        }
+        
+        function displayEmployeeCards(employees) {
+            const responseDiv = document.getElementById('response');
+            
+            let cardsHTML = '<div class="summary">\n';
+            cardsHTML += '<h4>📋 Employee List Preview:</h4>\n';
+            
+            employees.forEach((employee, index) => {
+                cardsHTML += '<div class="employee-card">\n';
+                cardsHTML += `<div class="employee-name">${index + 1}. ${employee.fullName}</div>\n`;
+                cardsHTML += `<div class="employee-detail">📱 Phone: ${employee.mobile || 'N/A'}</div>\n`;
+                cardsHTML += `<div class="employee-detail">📧 Email: ${employee.email_id || 'N/A'}</div>\n`;
+                cardsHTML += `<div class="employee-detail">🔑 Password: ${employee.password ? '******' : 'N/A'}</div>\n`;
+                cardsHTML += `<div class="employee-detail">🏢 Company: ${employee.company_name || 'N/A'}</div>\n`;
+                cardsHTML += `<div class="employee-detail">📅 Joining Date: ${employee.joining_date || 'N/A'}</div>\n`;
+                cardsHTML += '</div>\n';
+            });
+            
+            cardsHTML += '</div>\n';
+            
+            responseDiv.innerHTML += cardsHTML;
+        }
+        
+        function clearResponse() {
+            document.getElementById('response').innerHTML = 'Response cleared. Click "Test Active Employees API" to start testing...';
+        }
+        
+        // Auto-test on page load
+        window.onload = function() {
+            console.log('Business Head Active Employees API Test Page Loaded');
+            console.log('Base URL:', BASE_URL);
+        };
+    </script>
+</body>
+</html> 
