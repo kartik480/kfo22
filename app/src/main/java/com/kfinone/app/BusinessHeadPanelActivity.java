@@ -50,6 +50,13 @@ public class BusinessHeadPanelActivity extends AppCompatActivity {
     private TextView totalPortfolioCount;
     private TextView totalAgentCount;
     
+    // Stat Card Views
+    private CardView cardTotalEmp;
+    private CardView cardTotalSDSA;
+    private CardView cardTotalPartner;
+    private CardView cardTotalPortfolio;
+    private CardView cardTotalAgent;
+    
     // Header Icons
     private View menuButton;
     private View notificationIcon;
@@ -103,6 +110,9 @@ public class BusinessHeadPanelActivity extends AppCompatActivity {
         setInitialStats();
         loadBusinessHeadData();
         updateWelcomeText();
+        
+        // Setup stat card click listeners
+        setupStatCardClickListeners();
     }
     
     private void initializeViews() {
@@ -113,6 +123,13 @@ public class BusinessHeadPanelActivity extends AppCompatActivity {
         totalPartnerCount = findViewById(R.id.revenueCount);
         totalPortfolioCount = findViewById(R.id.performanceScore);
         totalAgentCount = findViewById(R.id.growthRate);
+        
+        // Stat Card Views
+        cardTotalEmp = findViewById(R.id.cardTotalEmp);
+        cardTotalSDSA = findViewById(R.id.cardTotalSDSA);
+        cardTotalPartner = findViewById(R.id.cardTotalPartner);
+        cardTotalPortfolio = findViewById(R.id.cardTotalPortfolio);
+        cardTotalAgent = findViewById(R.id.cardTotalAgent);
         
         // Header Icons
         menuButton = findViewById(R.id.menuButton);
@@ -452,12 +469,69 @@ public class BusinessHeadPanelActivity extends AppCompatActivity {
     }
     
     private void updateStats(int totalBusinessHeads, int activeBusinessHeads, int totalTeamMembers, int activeTeamMembers) {
-        // Update stats with actual data from API
-        totalEmpCount.setText(String.valueOf(totalTeamMembers));
-        totalSDSACount.setText(String.valueOf(totalBusinessHeads));
-        totalPartnerCount.setText(String.valueOf(activeBusinessHeads));
-        totalPortfolioCount.setText(String.valueOf(activeTeamMembers));
-        totalAgentCount.setText(String.valueOf(totalBusinessHeads + totalTeamMembers));
+        // Set all stats to 0 as requested
+        totalEmpCount.setText("0");
+        totalSDSACount.setText("0");
+        totalPartnerCount.setText("0");
+        totalPortfolioCount.setText("0");
+        totalAgentCount.setText("0");
+    }
+    
+    private void setupStatCardClickListeners() {
+        // Total Emp Card - Navigate to Business Head My Emp Panel
+        cardTotalEmp.setOnClickListener(v -> {
+            Intent intent = new Intent(BusinessHeadPanelActivity.this, BusinessHeadEmpMasterActivity.class);
+            // Pass user data
+            if (userId != null) intent.putExtra("USER_ID", userId);
+            if (username != null) intent.putExtra("USERNAME", username);
+            if (firstName != null) intent.putExtra("FIRST_NAME", firstName);
+            if (lastName != null) intent.putExtra("LAST_NAME", lastName);
+            startActivity(intent);
+        });
+        
+        // Total SDSA Card - Navigate to Business Head SDSA Panel
+        cardTotalSDSA.setOnClickListener(v -> {
+            Intent intent = new Intent(BusinessHeadPanelActivity.this, BusinessHeadSdsaActivity.class);
+            // Pass user data
+            if (userId != null) intent.putExtra("USER_ID", userId);
+            if (username != null) intent.putExtra("USERNAME", username);
+            if (firstName != null) intent.putExtra("FIRST_NAME", firstName);
+            if (lastName != null) intent.putExtra("LAST_NAME", lastName);
+            startActivity(intent);
+        });
+        
+        // Total Partner Card - Navigate to Business Head Partner Panel
+        cardTotalPartner.setOnClickListener(v -> {
+            Intent intent = new Intent(BusinessHeadPanelActivity.this, BusinessHeadPartnerActivity.class);
+            // Pass user data
+            if (userId != null) intent.putExtra("USER_ID", userId);
+            if (username != null) intent.putExtra("USERNAME", username);
+            if (firstName != null) intent.putExtra("FIRST_NAME", firstName);
+            if (lastName != null) intent.putExtra("LAST_NAME", lastName);
+            startActivity(intent);
+        });
+        
+        // Total Portfolio Card - Navigate to Business Head Portfolio Panel
+        cardTotalPortfolio.setOnClickListener(v -> {
+            Intent intent = new Intent(BusinessHeadPanelActivity.this, BusinessHeadPortfolioActivity.class);
+            // Pass user data
+            if (userId != null) intent.putExtra("USER_ID", userId);
+            if (username != null) intent.putExtra("USERNAME", username);
+            if (firstName != null) intent.putExtra("FIRST_NAME", firstName);
+            if (lastName != null) intent.putExtra("LAST_NAME", lastName);
+            startActivity(intent);
+        });
+        
+        // Total Agent Card - Navigate to Business Head Agent Panel
+        cardTotalAgent.setOnClickListener(v -> {
+            Intent intent = new Intent(BusinessHeadPanelActivity.this, BusinessHeadAgentActivity.class);
+            // Pass user data
+            if (userId != null) intent.putExtra("USER_ID", userId);
+            if (username != null) intent.putExtra("USERNAME", username);
+            if (firstName != null) intent.putExtra("FIRST_NAME", firstName);
+            if (lastName != null) intent.putExtra("LAST_NAME", lastName);
+            startActivity(intent);
+        });
     }
     
     private void showError(String message) {
