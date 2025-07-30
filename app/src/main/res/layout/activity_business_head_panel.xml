@@ -437,7 +437,7 @@
                         android:gravity="center" />
                 </LinearLayout>
 
-                <!-- Card 3: Reports & Insights -->
+                <!-- Card 3: Reports &amp; Insights -->
                 <LinearLayout
                     android:id="@+id/cardReportsInsights"
                     android:layout_width="0dp"
@@ -800,7 +800,7 @@
                         android:gravity="center" />
                 </LinearLayout>
 
-                <!-- Card 14: Goals & KPIs -->
+                <!-- Card 14: Goals &amp; KPIs -->
                 <LinearLayout
                     android:id="@+id/cardGoalsKPIs"
                     android:layout_width="0dp"

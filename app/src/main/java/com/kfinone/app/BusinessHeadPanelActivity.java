@@ -191,8 +191,13 @@ public class BusinessHeadPanelActivity extends AppCompatActivity {
         });
 
         profileIcon.setOnClickListener(v -> {
-            showToast("Profile Settings - Coming Soon!");
-            // TODO: Open profile settings
+            Intent intent = new Intent(BusinessHeadPanelActivity.this, MyAccountPanelActivity.class);
+            // Pass user data
+            if (userId != null) intent.putExtra("USER_ID", userId);
+            if (username != null) intent.putExtra("USERNAME", username);
+            if (firstName != null) intent.putExtra("FIRST_NAME", firstName);
+            if (lastName != null) intent.putExtra("LAST_NAME", lastName);
+            startActivity(intent);
         });
     }
     
