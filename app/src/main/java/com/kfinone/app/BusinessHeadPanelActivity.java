@@ -50,6 +50,11 @@ public class BusinessHeadPanelActivity extends AppCompatActivity {
     private TextView performanceScore;
     private TextView growthRate;
     
+    // Header Icons
+    private View menuButton;
+    private View notificationIcon;
+    private View profileIcon;
+    
     // Action Card Views
     private LinearLayout cardTeamManagement;
     private LinearLayout cardBusinessAnalytics;
@@ -90,6 +95,7 @@ public class BusinessHeadPanelActivity extends AppCompatActivity {
         
         // Initialize views
         initializeViews();
+        setupHeaderClickListeners();
         setupBottomNavigation();
         setupCardClickListeners();
         loadBusinessHeadData();
@@ -104,6 +110,11 @@ public class BusinessHeadPanelActivity extends AppCompatActivity {
         revenueCount = findViewById(R.id.revenueCount);
         performanceScore = findViewById(R.id.performanceScore);
         growthRate = findViewById(R.id.growthRate);
+        
+        // Header Icons
+        menuButton = findViewById(R.id.menuButton);
+        notificationIcon = findViewById(R.id.notificationIcon);
+        profileIcon = findViewById(R.id.profileIcon);
         
         // Action Card Views
         cardTeamManagement = findViewById(R.id.cardTeamManagement);
@@ -146,6 +157,76 @@ public class BusinessHeadPanelActivity extends AppCompatActivity {
             
             return false;
         });
+    }
+    
+    private void setupHeaderClickListeners() {
+        // Menu button click listener
+        menuButton.setOnClickListener(v -> {
+            showMenuOptions();
+        });
+
+        notificationIcon.setOnClickListener(v -> {
+            showToast("Notifications - Coming Soon!");
+            // TODO: Open notifications panel
+        });
+
+        profileIcon.setOnClickListener(v -> {
+            showToast("Profile Settings - Coming Soon!");
+            // TODO: Open profile settings
+        });
+    }
+    
+    private void showMenuOptions() {
+        String[] options = {"About", "Help", "Settings", "Logout"};
+        
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Menu Options");
+        builder.setItems(options, (dialog, which) -> {
+            switch (which) {
+                case 0:
+                    showAboutDialog();
+                    break;
+                case 1:
+                    showToast("Help - Coming Soon!");
+                    break;
+                case 2:
+                    showToast("Settings - Coming Soon!");
+                    break;
+                case 3:
+                    showLogoutConfirmation();
+                    break;
+            }
+        });
+        builder.show();
+    }
+    
+    private void showAboutDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("About Business Head Panel");
+        builder.setMessage("Business Head Panel v1.0\n\n" +
+                "This panel provides comprehensive management tools for Business Heads to oversee their business operations, team performance, and strategic planning.\n\n" +
+                "Key Features:\n" +
+                "• Team Management\n" +
+                "• Business Analytics\n" +
+                "• Performance Tracking\n" +
+                "• Strategic Planning\n" +
+                "• Resource Management");
+        builder.setPositiveButton("OK", null);
+        builder.show();
+    }
+    
+    private void showLogoutConfirmation() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Logout");
+        builder.setMessage("Are you sure you want to logout?");
+        builder.setPositiveButton("Yes", (dialog, which) -> {
+            Intent intent = new Intent(this, LoginActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+            finish();
+        });
+        builder.setNegativeButton("No", null);
+        builder.show();
     }
     
     private void setupCardClickListeners() {
@@ -391,5 +472,10 @@ public class BusinessHeadPanelActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         executor.shutdown();
+    }
+    
+    @Override
+    public void onBackPressed() {
+        showLogoutConfirmation();
     }
 } 
