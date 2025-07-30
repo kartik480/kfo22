@@ -797,6 +797,45 @@
                       android:exported="false"
                       android:label="Business Head My Agent"
                       android:theme="@style/FullscreenTheme" />
+                      
+                  <!-- Business Head Portfolio Activities -->
+                  <activity
+                      android:name=".BusinessHeadPortfolioActivity"
+                      android:exported="false"
+                      android:label="Business Head Portfolio"
+                      android:theme="@style/FullscreenTheme" />
+                      
+                  <activity
+                      android:name=".BusinessHeadAddPortfolioActivity"
+                      android:exported="false"
+                      android:label="Business Head Add Portfolio"
+                      android:theme="@style/FullscreenTheme" />
+                      
+                  <activity
+                      android:name=".BusinessHeadMyPortfolioActivity"
+                      android:exported="false"
+                      android:label="Business Head My Portfolio"
+                      android:theme="@style/FullscreenTheme" />
+                      
+                  <activity
+                      android:name=".BusinessHeadPortfolioTeamActivity"
+                      android:exported="false"
+                      android:label="Business Head Portfolio Team"
+                      android:theme="@style/FullscreenTheme" />
+                      
+                  <!-- Business Head Document Check List Activity -->
+                  <activity
+                      android:name=".BusinessHeadDocumentCheckListActivity"
+                      android:exported="false"
+                      android:label="Business Head Document Check List"
+                      android:theme="@style/FullscreenTheme" />
+                      
+                  <!-- Business Head Policy Activity -->
+                  <activity
+                      android:name=".BusinessHeadPolicyActivity"
+                      android:exported="false"
+                      android:label="Business Head Policy"
+                      android:theme="@style/FullscreenTheme" />
             
         <!-- Regional Business Head Activities -->
         <activity

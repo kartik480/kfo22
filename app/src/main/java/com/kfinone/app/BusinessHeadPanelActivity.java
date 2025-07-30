@@ -227,9 +227,15 @@ public class BusinessHeadPanelActivity extends AppCompatActivity {
             startActivity(intent);
         });
         
-        // Market Analysis
+        // Market Analysis (Portfolio)
         cardMarketAnalysis.setOnClickListener(v -> {
-            showToast("Market Analysis - Coming Soon!");
+            Intent intent = new Intent(BusinessHeadPanelActivity.this, BusinessHeadPortfolioActivity.class);
+            // Pass user data
+            if (userId != null) intent.putExtra("USER_ID", userId);
+            if (username != null) intent.putExtra("USERNAME", username);
+            if (firstName != null) intent.putExtra("FIRST_NAME", firstName);
+            if (lastName != null) intent.putExtra("LAST_NAME", lastName);
+            startActivity(intent);
         });
         
         // Risk Management
@@ -237,14 +243,26 @@ public class BusinessHeadPanelActivity extends AppCompatActivity {
             showToast("Risk Management - Coming Soon!");
         });
         
-        // Compliance
+        // Compliance (Document Check List)
         cardCompliance.setOnClickListener(v -> {
-            showToast("Compliance - Coming Soon!");
+            Intent intent = new Intent(BusinessHeadPanelActivity.this, BusinessHeadDocumentCheckListActivity.class);
+            // Pass user data
+            if (userId != null) intent.putExtra("USER_ID", userId);
+            if (username != null) intent.putExtra("USERNAME", username);
+            if (firstName != null) intent.putExtra("FIRST_NAME", firstName);
+            if (lastName != null) intent.putExtra("LAST_NAME", lastName);
+            startActivity(intent);
         });
         
-        // Budget Management
+        // Budget Management (Policy)
         cardBudgetManagement.setOnClickListener(v -> {
-            showToast("Budget Management - Coming Soon!");
+            Intent intent = new Intent(BusinessHeadPanelActivity.this, BusinessHeadPolicyActivity.class);
+            // Pass user data
+            if (userId != null) intent.putExtra("USER_ID", userId);
+            if (username != null) intent.putExtra("USERNAME", username);
+            if (firstName != null) intent.putExtra("FIRST_NAME", firstName);
+            if (lastName != null) intent.putExtra("LAST_NAME", lastName);
+            startActivity(intent);
         });
         
         // Goals & KPIs
