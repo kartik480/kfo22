@@ -342,7 +342,7 @@
 
             </androidx.cardview.widget.CardView>
 
-                               <!-- Help &amp; Support -->
+            <!-- Help &amp; Support -->
             <androidx.cardview.widget.CardView
                 android:id="@+id/cardHelp"
                 android:layout_width="match_parent"

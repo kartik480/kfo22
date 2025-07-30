@@ -74,6 +74,9 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         );
         
         setContentView(R.layout.activity_home);
+        
+        // Check for app updates
+        checkForAppUpdates();
 
         // Get user information from Intent and display it
         welcomeUsername = findViewById(R.id.welcomeUsername);
@@ -496,6 +499,18 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             drawerLayout.closeDrawer(GravityCompat.START);
         } else {
             super.onBackPressed();
+        }
+    }
+    
+    /**
+     * Check for app updates and show dialog if update is available
+     */
+    private void checkForAppUpdates() {
+        try {
+            AppUpdateChecker updateChecker = new AppUpdateChecker(this);
+            updateChecker.checkForUpdates();
+        } catch (Exception e) {
+            Log.e("HomeActivity", "Error checking for updates", e);
         }
     }
 } 

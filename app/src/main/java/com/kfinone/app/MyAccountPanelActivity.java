@@ -277,16 +277,16 @@ public class MyAccountPanelActivity extends AppCompatActivity {
     
     private void showAboutDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("About KfinOne App");
-        builder.setMessage("KfinOne App v1.0\n\n" +
-                "A comprehensive business management application for KfinOne employees.\n\n" +
-                "Features:\n" +
-                "• Business Head Panel\n" +
-                "• Team Management\n" +
-                "• Analytics & Reports\n" +
-                "• Performance Tracking\n" +
-                "• Strategic Planning\n\n" +
-                "© 2024 KfinOne. All rights reserved.");
+                       builder.setTitle("About Kurakulas Partners App");
+               builder.setMessage("Kurakulas Partners App v1.0\n\n" +
+                       "A comprehensive business management application for Kurakulas Partners employees.\n\n" +
+                       "Features:\n" +
+                       "• Business Head Panel\n" +
+                       "• Team Management\n" +
+                       "• Analytics & Reports\n" +
+                       "• Performance Tracking\n" +
+                       "• Strategic Planning\n\n" +
+                       "© 2024 Kurakulas Partners. All rights reserved.");
         builder.setPositiveButton("OK", null);
         builder.show();
     }

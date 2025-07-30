@@ -89,6 +89,9 @@ public class BusinessHeadPanelActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_business_head_panel);
         
+        // Check for app updates
+        checkForAppUpdates();
+        
         // Get user data from intent
         Intent intent = getIntent();
         username = intent.getStringExtra("USERNAME");
@@ -574,5 +577,17 @@ public class BusinessHeadPanelActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         showLogoutConfirmation();
+    }
+    
+    /**
+     * Check for app updates and show dialog if update is available
+     */
+    private void checkForAppUpdates() {
+        try {
+            AppUpdateChecker updateChecker = new AppUpdateChecker(this);
+            updateChecker.checkForUpdates();
+        } catch (Exception e) {
+            Log.e(TAG, "Error checking for updates", e);
+        }
     }
 } 

@@ -47,7 +47,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="KfinOne"
+                                            android:text="Kurakulas Partners"
                     android:textSize="20sp"
                     android:textColor="@color/black"
                     android:textStyle="bold"
@@ -126,7 +126,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Welcome to KfinOne"
+                            android:text="Welcome to Kurakulas Partners"
                             android:textColor="@color/white"
                             android:textSize="28sp"
                             android:textStyle="bold" />

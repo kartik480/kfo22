@@ -33,7 +33,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Welcome to KfinOne"
+                                android:text="Welcome to Kurakulas Partners"
             android:textColor="@color/white"
             android:textSize="24sp"
             android:textStyle="bold" />
@@ -155,7 +155,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="© 2024 KfinOne. All rights reserved."
+                            android:text="© 2024 Kurakulas Partners. All rights reserved."
             android:textColor="@color/text_secondary"
             android:textSize="12sp" />
 
