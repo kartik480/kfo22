@@ -296,7 +296,7 @@ public class MyAccountPanelActivity extends AppCompatActivity {
         builder.setTitle("Logout");
         builder.setMessage("Are you sure you want to logout?");
         builder.setPositiveButton("Yes", (dialog, which) -> {
-            Intent intent = new Intent(this, LoginActivity.class);
+            Intent intent = new Intent(this, EnhancedLoginActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
             finish();

@@ -407,7 +407,7 @@ public class SpecialPanelActivity extends AppCompatActivity implements Navigatio
         } else if (id == R.id.nav_help) {
             Toast.makeText(this, "Help & Support - Coming Soon", Toast.LENGTH_SHORT).show();
         } else if (id == R.id.nav_logout) {
-            Intent intent = new Intent(this, LoginActivity.class);
+            Intent intent = new Intent(this, EnhancedLoginActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
             finish();

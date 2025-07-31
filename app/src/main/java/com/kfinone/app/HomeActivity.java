@@ -469,8 +469,11 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             // TODO: Navigate to about
             Toast.makeText(this, "About clicked", Toast.LENGTH_SHORT).show();
         } else if (id == R.id.nav_logout) {
-            // TODO: Handle logout
-            Toast.makeText(this, "Logout clicked", Toast.LENGTH_SHORT).show();
+            // Handle logout
+            Intent intent = new Intent(this, EnhancedLoginActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+            finish();
         }
         
         drawerLayout.closeDrawer(GravityCompat.START);
