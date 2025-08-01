@@ -72,6 +72,7 @@ public class PartnerUserAdapter extends RecyclerView.Adapter<PartnerUserAdapter.
         private TextView partnerAccountType;
         private TextView partnerStatus;
         private TextView partnerCreatedAt;
+        private TextView partnerCreatorName;
         private Chip statusChip;
         private MaterialButton viewDetailsButton;
         private MaterialButton editButton;
@@ -94,6 +95,7 @@ public class PartnerUserAdapter extends RecyclerView.Adapter<PartnerUserAdapter.
             partnerAccountType = itemView.findViewById(R.id.partnerAccountType);
             partnerStatus = itemView.findViewById(R.id.partnerStatus);
             partnerCreatedAt = itemView.findViewById(R.id.partnerCreatedAt);
+            partnerCreatorName = itemView.findViewById(R.id.partnerCreatorName);
             statusChip = itemView.findViewById(R.id.statusChip);
             viewDetailsButton = itemView.findViewById(R.id.viewDetailsButton);
             editButton = itemView.findViewById(R.id.editButton);
@@ -116,6 +118,7 @@ public class PartnerUserAdapter extends RecyclerView.Adapter<PartnerUserAdapter.
             partnerAccountType.setText("Account Type: " + partnerUser.getAccountType());
             partnerStatus.setText("Status: " + partnerUser.getStatus());
             partnerCreatedAt.setText("Created: " + partnerUser.getCreatedAt());
+            partnerCreatorName.setText("Created By: " + partnerUser.getCreatorName());
 
             // Set status chip
             if ("1".equals(partnerUser.getStatus()) || "Active".equalsIgnoreCase(partnerUser.getStatus())) {

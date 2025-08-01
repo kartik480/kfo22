@@ -58,7 +58,7 @@ public class ManagingDirectorPartnerPanelActivity extends AppCompatActivity {
 
         // My Partner box
         myPartnerBox.setOnClickListener(v -> {
-            Intent intent = new Intent(ManagingDirectorPartnerPanelActivity.this, MyPartnerActivity.class);
+            Intent intent = new Intent(ManagingDirectorPartnerPanelActivity.this, ManagingDirectorMyPartnerUsersActivity.class);
             startActivity(intent);
         });
 

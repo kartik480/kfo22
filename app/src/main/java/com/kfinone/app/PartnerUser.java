@@ -78,6 +78,8 @@ public class PartnerUser {
     private String createdBy;
     
     private String updatedAt;
+    
+    private String creatorName;
 
     // Constructor
     public PartnerUser() {}
@@ -199,6 +201,9 @@ public class PartnerUser {
 
     public String getUpdatedAt() { return updatedAt != null ? updatedAt : ""; }
     public void setUpdatedAt(String updatedAt) { this.updatedAt = updatedAt; }
+
+    public String getCreatorName() { return creatorName != null ? creatorName : ""; }
+    public void setCreatorName(String creatorName) { this.creatorName = creatorName; }
 
     // Helper methods
     public String getFullName() {

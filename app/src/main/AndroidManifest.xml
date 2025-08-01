@@ -327,6 +327,11 @@
             android:label="My Partners"
             android:parentActivityName=".PartnerPanelActivity" />
         <activity
+            android:name=".ManagingDirectorMyPartnerUsersActivity"
+            android:exported="false"
+            android:label="My Partner Users"
+            android:parentActivityName=".ManagingDirectorPartnerPanelActivity" />
+        <activity
             android:name=".PartnerTeamActivity"
             android:exported="false"
             android:label="Partner Teams"
