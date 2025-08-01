@@ -80,6 +80,10 @@ public class PartnerUser {
     private String updatedAt;
     
     private String creatorName;
+    
+    private String creatorDesignationId;
+    
+    private String creatorDesignationName;
 
     // Constructor
     public PartnerUser() {}
@@ -204,6 +208,12 @@ public class PartnerUser {
 
     public String getCreatorName() { return creatorName != null ? creatorName : ""; }
     public void setCreatorName(String creatorName) { this.creatorName = creatorName; }
+
+    public String getCreatorDesignationId() { return creatorDesignationId != null ? creatorDesignationId : ""; }
+    public void setCreatorDesignationId(String creatorDesignationId) { this.creatorDesignationId = creatorDesignationId; }
+
+    public String getCreatorDesignationName() { return creatorDesignationName != null ? creatorDesignationName : ""; }
+    public void setCreatorDesignationName(String creatorDesignationName) { this.creatorDesignationName = creatorDesignationName; }
 
     // Helper methods
     public String getFullName() {

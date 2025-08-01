@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Managing Director Partners Team API</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .header {
+            background: #007bff;
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .test-section {
+            margin-bottom: 30px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .test-section h3 {
+            color: #333;
+            margin-top: 0;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .response {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 15px;
+            margin-top: 10px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .stat-card {
+            background: #e9ecef;
+            padding: 15px;
+            border-radius: 5px;
+            text-align: center;
+        }
+        .stat-number {
+            font-size: 24px;
+            font-weight: bold;
+            color: #007bff;
+        }
+        .stat-label {
+            color: #6c757d;
+            margin-top: 5px;
+        }
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        .data-table th, .data-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        .data-table th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        .data-table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .error {
+            color: #dc3545;
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .success {
+            color: #155724;
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            padding: 10px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Test Managing Director Partners Team API</h1>
+        <p>Testing the API endpoint: managing_director_partners_team.php</p>
+    </div>
+
+    <div class="container">
+        <div class="test-section">
+            <h3>API Information</h3>
+            <p><strong>Endpoint:</strong> https://emp.kfinone.com/mobile/api/managing_director_partners_team.php</p>
+            <p><strong>Method:</strong> GET</p>
+            <p><strong>Description:</strong> Fetches partner users created by users with specific designations (Chief Business Officer, Regional Business Head, Director)</p>
+            <p><strong>Expected Response:</strong> JSON with partner users data including creator information and designation details</p>
+        </div>
+
+        <div class="test-section">
+            <h3>Test API</h3>
+            <button onclick="testAPI()">Test API</button>
+            <button onclick="clearResponse()">Clear Response</button>
+            
+            <div id="response" class="response" style="display: none;"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>Response Statistics</h3>
+            <div id="stats" class="stats" style="display: none;"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>Data Table</h3>
+            <div id="dataTable" style="display: none;"></div>
+        </div>
+    </div>
+
+    <script>
+        async function testAPI() {
+            const responseDiv = document.getElementById('response');
+            const statsDiv = document.getElementById('stats');
+            const dataTableDiv = document.getElementById('dataTable');
+            
+            responseDiv.style.display = 'block';
+            responseDiv.innerHTML = 'Loading...';
+            statsDiv.style.display = 'none';
+            dataTableDiv.style.display = 'none';
+            
+            try {
+                const response = await fetch('https://emp.kfinone.com/mobile/api/managing_director_partners_team.php');
+                const data = await response.json();
+                
+                responseDiv.innerHTML = JSON.stringify(data, null, 2);
+                
+                if (data.status === 'success') {
+                    responseDiv.className = 'response success';
+                    displayStats(data);
+                    displayDataTable(data.data);
+                } else {
+                    responseDiv.className = 'response error';
+                }
+                
+            } catch (error) {
+                responseDiv.className = 'response error';
+                responseDiv.innerHTML = 'Error: ' + error.message;
+            }
+        }
+        
+        function displayStats(data) {
+            const statsDiv = document.getElementById('stats');
+            const users = data.data || [];
+            
+            // Count by creator designation
+            const designationCounts = {};
+            const activeCount = users.filter(user => user.status === '1' || user.status === 'Active').length;
+            const inactiveCount = users.length - activeCount;
+            
+            users.forEach(user => {
+                const designation = user.creator_designation_name || 'Unknown';
+                designationCounts[designation] = (designationCounts[designation] || 0) + 1;
+            });
+            
+            let statsHTML = `
+                <div class="stat-card">
+                    <div class="stat-number">${users.length}</div>
+                    <div class="stat-label">Total Partner Users</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${activeCount}</div>
+                    <div class="stat-label">Active Users</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${inactiveCount}</div>
+                    <div class="stat-label">Inactive Users</div>
+                </div>
+            `;
+            
+            // Add designation-specific stats
+            Object.entries(designationCounts).forEach(([designation, count]) => {
+                statsHTML += `
+                    <div class="stat-card">
+                        <div class="stat-number">${count}</div>
+                        <div class="stat-label">Created by ${designation}</div>
+                    </div>
+                `;
+            });
+            
+            statsDiv.innerHTML = statsHTML;
+            statsDiv.style.display = 'grid';
+        }
+        
+        function displayDataTable(users) {
+            const dataTableDiv = document.getElementById('dataTable');
+            
+            if (!users || users.length === 0) {
+                dataTableDiv.innerHTML = '<p>No data available</p>';
+                dataTableDiv.style.display = 'block';
+                return;
+            }
+            
+            let tableHTML = `
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Username</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>Company</th>
+                            <th>Status</th>
+                            <th>Created By</th>
+                            <th>Creator Designation</th>
+                            <th>Created At</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+            
+            users.forEach(user => {
+                const fullName = `${user.first_name || ''} ${user.last_name || ''}`.trim() || user.alias_name || 'N/A';
+                const status = user.status === '1' || user.status === 'Active' ? 'Active' : 'Inactive';
+                
+                tableHTML += `
+                    <tr>
+                        <td>${user.id || 'N/A'}</td>
+                        <td>${fullName}</td>
+                        <td>${user.username || 'N/A'}</td>
+                        <td>${user.email_id || 'N/A'}</td>
+                        <td>${user.Phone_number || 'N/A'}</td>
+                        <td>${user.company_name || 'N/A'}</td>
+                        <td>${status}</td>
+                        <td>${user.creator_name || 'N/A'}</td>
+                        <td>${user.creator_designation_name || 'N/A'}</td>
+                        <td>${user.created_at || 'N/A'}</td>
+                    </tr>
+                `;
+            });
+            
+            tableHTML += '</tbody></table>';
+            dataTableDiv.innerHTML = tableHTML;
+            dataTableDiv.style.display = 'block';
+        }
+        
+        function clearResponse() {
+            document.getElementById('response').style.display = 'none';
+            document.getElementById('stats').style.display = 'none';
+            document.getElementById('dataTable').style.display = 'none';
+        }
+    </script>
+</body>
+</html> 

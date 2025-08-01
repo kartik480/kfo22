@@ -15,17 +15,19 @@ try {
     $createdBy = isset($_GET['createdBy']) ? $conn->real_escape_string($_GET['createdBy']) : '';
     $where = '';
     if (!empty($createdBy)) {
-        $where = "WHERE pu.createdBy = '$createdBy'";
+        $where = "AND pu.createdBy = '$createdBy'";
     }
     $sql = "SELECT 
                 pu.*, 
                 creator.username AS creator_username, 
                 creator.firstName AS creator_firstName, 
                 creator.lastName AS creator_lastName, 
-                creator.designation_id AS creator_designation_id
+                creator.designation_id AS creator_designation_id,
+                d.designation_name AS creator_designation_name
             FROM tbl_partner_users pu
             LEFT JOIN tbl_user creator ON pu.createdBy = creator.id
-            WHERE creator.designation_id IN (90000, 30000)
+            LEFT JOIN tbl_designation d ON creator.designation_id = d.id
+            WHERE creator.designation_id IN (5, 12, 6) $where
             ORDER BY pu.id DESC";
     $result = $conn->query($sql);
     if (!$result) {

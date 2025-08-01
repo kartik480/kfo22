@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#F5F5F5">
+
+    <!-- Header with Back Button and Title -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="#FFFFFF"
+        android:padding="16dp"
+        android:elevation="4dp"
+        android:gravity="center_vertical">
+
+        <ImageButton
+            android:id="@+id/backButton"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:src="@drawable/ic_back"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Back"
+            android:tint="#333333" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Partners Team"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="#333333"
+            android:gravity="center" />
+
+        <View
+            android:layout_width="48dp"
+            android:layout_height="48dp" />
+
+    </LinearLayout>
+
+    <!-- Stats Card -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="16dp"
+        android:background="@drawable/edit_text_background"
+        android:layout_margin="16dp"
+        android:elevation="2dp">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/totalPartnersText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:textColor="#007BFF" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Total Partner Users"
+                android:textSize="12sp"
+                android:textColor="#666666" />
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="#E0E0E0" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/activePartnersText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:textColor="#28A745" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Active Partner Users"
+                android:textSize="12sp"
+                android:textColor="#666666" />
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="#E0E0E0" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/inactivePartnersText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:textColor="#DC3545" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Inactive Partner Users"
+                android:textSize="12sp"
+                android:textColor="#666666" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <!-- Search Section -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="16dp"
+        android:background="#FFFFFF"
+        android:elevation="2dp">
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            app:startIconDrawable="@drawable/ic_search"
+            app:startIconTint="#666666">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/searchPartnerInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Search partner users by name, email, phone, company, creator..."
+                android:textSize="14sp" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+    </LinearLayout>
+
+    <!-- Partner Users List -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/partnerUsersRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:padding="8dp"
+        android:clipToPadding="false" />
+
+    <!-- No Partner Users Message -->
+    <LinearLayout
+        android:id="@+id/noPartnerUsersLayout"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:visibility="visible"
+        android:padding="32dp">
+
+        <ImageView
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:src="@drawable/ic_people"
+            android:tint="#CCCCCC"
+            android:layout_marginBottom="16dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="No partner users found."
+            android:textSize="18sp"
+            android:textColor="#999999"
+            android:gravity="center" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="No partner users created by Chief Business Officer, Regional Business Head, or Director users found."
+            android:textSize="14sp"
+            android:textColor="#999999"
+            android:gravity="center"
+            android:lineSpacingExtra="4dp" />
+
+    </LinearLayout>
+
+    <!-- Loading Indicator -->
+    <LinearLayout
+        android:id="@+id/loadingLayout"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:visibility="gone">
+
+        <ProgressBar
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginBottom="16dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Loading partner users..."
+            android:textSize="16sp"
+            android:textColor="#666666" />
+
+    </LinearLayout>
+
+</LinearLayout> 

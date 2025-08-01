@@ -11,21 +11,37 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 require_once 'db_config.php';
 
 try {
-    // Create a new connection using the correct variable names
-    $conn = new mysqli($db_host, $db_username, $db_password, $db_name);
+    // Try to use the global connection first, if it exists and works
+    $conn = null;
+    $createdNewConnection = false;
     
-    // Check connection
-    if ($conn->connect_error) {
-        throw new Exception("Connection failed: " . $conn->connect_error);
+    if (isset($GLOBALS['conn']) && $GLOBALS['conn']) {
+        try {
+            $testQuery = $GLOBALS['conn']->query("SELECT 1 as test");
+            if ($testQuery && $testQuery->fetch_assoc()['test'] == 1) {
+                $conn = $GLOBALS['conn'];
+            }
+        } catch (Exception $e) {
+            // Global connection failed, will create new one
+        }
     }
     
-    // Set charset to utf8
-    $conn->set_charset("utf8");
+    // If global connection doesn't work, create a new one
+    if (!$conn) {
+        $conn = new mysqli($db_host, $db_username, $db_password, $db_name);
+        $createdNewConnection = true;
+        
+        // Check connection
+        if ($conn->connect_error) {
+            throw new Exception("Connection failed: " . $conn->connect_error);
+        }
+        
+        // Set charset to utf8
+        $conn->set_charset("utf8");
+    }
     
-    // Get the createdBy parameter (default to 8 as specified)
-    $createdBy = isset($_GET['createdBy']) ? $conn->real_escape_string($_GET['createdBy']) : '8';
-    
-    // Query to fetch partner users created by the specified user
+    // Query to fetch partner users created by users with specific designations
+    // Chief Business Officer: ID 5, Regional Business Head: ID 12, Director: ID 6
     $sql = "SELECT 
                 pu.id,
                 pu.username,
@@ -62,14 +78,16 @@ try {
                 pu.aadhaar_img,
                 pu.photo_img,
                 pu.bankproof_img,
-                pu.user_id,
                 pu.created_at,
                 pu.createdBy,
                 pu.updated_at,
-                CONCAT(u.firstName, ' ', u.lastName) AS creator_name
+                CONCAT(creator.firstName, ' ', creator.lastName) AS creator_name,
+                creator.designation_id AS creator_designation_id,
+                d.designation_name AS creator_designation_name
             FROM tbl_partner_users pu
-            LEFT JOIN tbl_user u ON pu.createdBy = u.id
-            WHERE pu.createdBy = '$createdBy'
+            LEFT JOIN tbl_user creator ON pu.createdBy = creator.id
+            LEFT JOIN tbl_designation d ON creator.designation_id = d.id
+            WHERE creator.designation_id IN (5, 12, 6)
             ORDER BY pu.id DESC";
     
     $result = $conn->query($sql);
@@ -116,11 +134,13 @@ try {
             'aadhaar_img' => $row['aadhaar_img'],
             'photo_img' => $row['photo_img'],
             'bankproof_img' => $row['bankproof_img'],
-            'user_id' => $row['user_id'],
+            
             'created_at' => $row['created_at'],
             'createdBy' => $row['createdBy'],
             'updated_at' => $row['updated_at'],
-            'creator_name' => $row['creator_name']
+            'creator_name' => $row['creator_name'],
+            'creator_designation_id' => $row['creator_designation_id'],
+            'creator_designation_name' => $row['creator_designation_name']
         ];
     }
     
@@ -128,7 +148,7 @@ try {
         'status' => 'success',
         'data' => $users,
         'count' => count($users),
-        'createdBy' => $createdBy
+        'message' => 'Partner users created by Chief Business Officer, Regional Business Head, and Director users fetched successfully'
     ]);
     
 } catch (Exception $e) {
@@ -139,7 +159,8 @@ try {
         'data' => []
     ]);
 } finally {
-    if (isset($conn)) {
+    // Only close the connection if we created a new one
+    if (isset($conn) && $createdNewConnection) {
         $conn->close();
     }
 }

@@ -8,24 +8,60 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit(0);
 }
 
-require_once 'db_config.php';
+// Enable error reporting for debugging
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 
 try {
-    // Create a new connection using the correct variable names
+    // Step 1: Include database configuration
+    require_once 'db_config.php';
+    
+    // Step 2: Create a new connection using the correct variable names
     $conn = new mysqli($db_host, $db_username, $db_password, $db_name);
     
-    // Check connection
+    // Step 3: Check connection
     if ($conn->connect_error) {
         throw new Exception("Connection failed: " . $conn->connect_error);
     }
     
-    // Set charset to utf8
+    // Step 4: Set charset to utf8
     $conn->set_charset("utf8");
     
-    // Get the createdBy parameter (default to 8 as specified)
-    $createdBy = isset($_GET['createdBy']) ? $conn->real_escape_string($_GET['createdBy']) : '8';
+    // Step 5: Test basic connection
+    if (!$conn->ping()) {
+        throw new Exception('Database connection is not responding');
+    }
     
-    // Query to fetch partner users created by the specified user
+    // Step 6: Check if tables exist
+    $tableCheck = $conn->query("SHOW TABLES LIKE 'tbl_partner_users'");
+    if (!$tableCheck || $tableCheck->num_rows == 0) {
+        throw new Exception('Table tbl_partner_users does not exist');
+    }
+    
+    $tableCheck2 = $conn->query("SHOW TABLES LIKE 'tbl_user'");
+    if (!$tableCheck2 || $tableCheck2->num_rows == 0) {
+        throw new Exception('Table tbl_user does not exist');
+    }
+    
+    $tableCheck3 = $conn->query("SHOW TABLES LIKE 'tbl_designation'");
+    if (!$tableCheck3 || $tableCheck3->num_rows == 0) {
+        throw new Exception('Table tbl_designation does not exist');
+    }
+    
+    // Step 7: Check table structures
+    $partnerUsersColumns = $conn->query("DESCRIBE tbl_partner_users");
+    $userColumns = $conn->query("DESCRIBE tbl_user");
+    $designationColumns = $conn->query("DESCRIBE tbl_designation");
+    
+    // Step 8: Test a simple query first
+    $simpleQuery = "SELECT COUNT(*) as count FROM tbl_partner_users";
+    $simpleResult = $conn->query($simpleQuery);
+    if (!$simpleResult) {
+        throw new Exception('Simple query failed: ' . $conn->error);
+    }
+    $totalCount = $simpleResult->fetch_assoc()['count'];
+    
+    // Step 9: Test the main query with error checking
     $sql = "SELECT 
                 pu.id,
                 pu.username,
@@ -62,20 +98,23 @@ try {
                 pu.aadhaar_img,
                 pu.photo_img,
                 pu.bankproof_img,
-                pu.user_id,
+
                 pu.created_at,
                 pu.createdBy,
                 pu.updated_at,
-                CONCAT(u.firstName, ' ', u.lastName) AS creator_name
+                CONCAT(creator.firstName, ' ', creator.lastName) AS creator_name,
+                creator.designation_id AS creator_designation_id,
+                d.designation_name AS creator_designation_name
             FROM tbl_partner_users pu
-            LEFT JOIN tbl_user u ON pu.createdBy = u.id
-            WHERE pu.createdBy = '$createdBy'
+            LEFT JOIN tbl_user creator ON pu.createdBy = creator.id
+            LEFT JOIN tbl_designation d ON creator.designation_id = d.id
+            WHERE creator.designation_id IN (5, 12, 6)
             ORDER BY pu.id DESC";
     
     $result = $conn->query($sql);
     
     if (!$result) {
-        throw new Exception('Query failed: ' . $conn->error);
+        throw new Exception('Main query failed: ' . $conn->error);
     }
     
     $users = [];
@@ -116,11 +155,13 @@ try {
             'aadhaar_img' => $row['aadhaar_img'],
             'photo_img' => $row['photo_img'],
             'bankproof_img' => $row['bankproof_img'],
-            'user_id' => $row['user_id'],
+
             'created_at' => $row['created_at'],
             'createdBy' => $row['createdBy'],
             'updated_at' => $row['updated_at'],
-            'creator_name' => $row['creator_name']
+            'creator_name' => $row['creator_name'],
+            'creator_designation_id' => $row['creator_designation_id'],
+            'creator_designation_name' => $row['creator_designation_name']
         ];
     }
     
@@ -128,7 +169,14 @@ try {
         'status' => 'success',
         'data' => $users,
         'count' => count($users),
-        'createdBy' => $createdBy
+        'total_partner_users' => $totalCount,
+        'message' => 'Partner users created by Chief Business Officer, Regional Business Head, and Director users fetched successfully',
+        'debug_info' => [
+            'database_connected' => true,
+            'tables_exist' => true,
+            'query_executed' => true,
+            'rows_returned' => count($users)
+        ]
     ]);
     
 } catch (Exception $e) {
@@ -136,7 +184,12 @@ try {
     echo json_encode([
         'status' => 'error',
         'message' => 'Database error: ' . $e->getMessage(),
-        'data' => []
+        'data' => [],
+        'debug_info' => [
+            'error_type' => get_class($e),
+            'error_file' => $e->getFile(),
+            'error_line' => $e->getLine()
+        ]
     ]);
 } finally {
     if (isset($conn)) {

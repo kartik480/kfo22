@@ -1,43 +1,48 @@
 <?php
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
+header('Access-Control-Allow-Methods: GET, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type');
 
-// Handle preflight requests
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-    http_response_code(200);
-    exit();
+    exit(0);
 }
 
 try {
-    // Include database configuration
     require_once 'db_config.php';
+    global $conn;
     
-    // Test connection
-    $conn = getConnection();
-    
-    if ($conn) {
-        echo json_encode(array(
-            'success' => true,
-            'message' => 'Database connection successful',
-            'timestamp' => date('Y-m-d H:i:s')
-        ));
-    } else {
-        echo json_encode(array(
-            'success' => false,
-            'error' => 'Failed to get database connection'
-        ));
+    if (!$conn) {
+        throw new Exception("Database connection is null");
     }
     
-    closeConnection($conn);
+    if (!$conn->ping()) {
+        throw new Exception("Database connection ping failed");
+    }
+    
+    // Test a simple query
+    $test_sql = "SELECT COUNT(*) as count FROM tbl_partner_users";
+    $test_result = $conn->query($test_sql);
+    
+    if (!$test_result) {
+        throw new Exception("Test query failed: " . $conn->error);
+    }
+    
+    $row = $test_result->fetch_assoc();
+    
+    echo json_encode([
+        'status' => 'success',
+        'message' => 'Database connection successful',
+        'data' => [
+            'total_partner_users' => $row['count']
+        ]
+    ]);
     
 } catch (Exception $e) {
-    error_log("Database connection test error: " . $e->getMessage());
     http_response_code(500);
-    echo json_encode(array(
-        'success' => false, 
-        'error' => 'Database connection failed: ' . $e->getMessage()
-    ));
+    echo json_encode([
+        'status' => 'error',
+        'message' => 'Database error: ' . $e->getMessage()
+    ]);
 }
 ?> 
