@@ -78,6 +78,7 @@ try {
                 pu.aadhaar_img,
                 pu.photo_img,
                 pu.bankproof_img,
+                pu.user_id,
                 pu.created_at,
                 pu.createdBy,
                 pu.updated_at,
@@ -134,7 +135,7 @@ try {
             'aadhaar_img' => $row['aadhaar_img'],
             'photo_img' => $row['photo_img'],
             'bankproof_img' => $row['bankproof_img'],
-            
+            'user_id' => $row['user_id'],
             'created_at' => $row['created_at'],
             'createdBy' => $row['createdBy'],
             'updated_at' => $row['updated_at'],
