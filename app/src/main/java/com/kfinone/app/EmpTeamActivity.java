@@ -79,7 +79,7 @@ public class EmpTeamActivity extends AppCompatActivity {
             int selectedPosition = userSpinner.getSelectedItemPosition();
             if (selectedPosition > 0 && selectedPosition < userList.size()) {
                 UserItem selectedUser = userList.get(selectedPosition - 1); // -1 because first item is "Select User"
-                fetchAgentData(selectedUser.id, selectedUser.fullName);
+                fetchTeamData(selectedUser.id, selectedUser.fullName);
             } else {
                 // If no user is selected, show all team members
                 loadAllTeamMembers();

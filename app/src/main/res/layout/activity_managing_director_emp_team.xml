@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/white">
+
+    <!-- Toolbar -->
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/primary_color"
+        android:elevation="4dp"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+
+    <!-- Main Content -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="24dp">
+
+            <!-- Employee Team Heading -->
+            <TextView
+                android:id="@+id/employeeTeamHeading"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Employee Team"
+                android:textSize="28sp"
+                android:textStyle="bold"
+                android:textColor="@color/primary_color"
+                android:gravity="center"
+                android:layout_marginBottom="32dp" />
+
+            <!-- Select User Section -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Select User"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                android:layout_marginBottom="12dp" />
+
+            <!-- User Dropdown -->
+            <Spinner
+                android:id="@+id/userSpinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/spinner_background"
+                android:padding="16dp"
+                android:layout_marginBottom="24dp" />
+
+            <!-- Buttons Section -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:layout_marginTop="16dp">
+
+                <!-- Show Data Button -->
+                <Button
+                    android:id="@+id/showDataButton"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Show Data"
+                    android:textSize="16sp"
+                    android:textColor="@color/white"
+                    android:background="@drawable/button_primary"
+                    android:padding="16dp"
+                    android:layout_marginEnd="8dp" />
+
+                <!-- Reset Button -->
+                <Button
+                    android:id="@+id/resetButton"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Reset"
+                    android:textSize="16sp"
+                    android:textColor="@color/white"
+                    android:background="@drawable/button_primary"
+                    android:padding="16dp"
+                    android:layout_marginStart="8dp" />
+
+            </LinearLayout>
+
+            <!-- Team Data Display Section -->
+            <TextView
+                android:id="@+id/teamDataHeading"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Team Members"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                android:layout_marginTop="32dp"
+                android:layout_marginBottom="16dp"
+                android:visibility="gone" />
+
+            <!-- RecyclerView for Team Data -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/teamRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:visibility="gone" />
+
+            <!-- No Data Message -->
+            <TextView
+                android:id="@+id/noDataMessage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="No team members found for the selected user"
+                android:textSize="16sp"
+                android:textColor="@color/light_gray"
+                android:gravity="center"
+                android:layout_marginTop="32dp"
+                android:padding="16dp"
+                android:visibility="gone" />
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</LinearLayout> 

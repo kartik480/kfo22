@@ -104,7 +104,7 @@ public class EmployeePanelActivity extends AppCompatActivity {
         });
 
         empTeamBox.setOnClickListener(v -> {
-            Intent intent = new Intent(this, EmpTeamActivity.class);
+            Intent intent = new Intent(this, ManagingDirectorEmpTeamActivity.class);
             startActivity(intent);
         });
     }
