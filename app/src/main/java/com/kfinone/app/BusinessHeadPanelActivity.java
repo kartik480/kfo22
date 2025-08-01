@@ -266,6 +266,7 @@ public class BusinessHeadPanelActivity extends AppCompatActivity {
             if (username != null) intent.putExtra("USERNAME", username);
             if (firstName != null) intent.putExtra("FIRST_NAME", firstName);
             if (lastName != null) intent.putExtra("LAST_NAME", lastName);
+            intent.putExtra("SOURCE_PANEL", "BUSINESS_HEAD_PANEL");
             startActivity(intent);
         });
         

@@ -46,9 +46,19 @@ public class EmpLinksActivity extends AppCompatActivity {
 
         // My Emp Links Card
         myEmpLinksCard.setOnClickListener(v -> {
-            Intent intent = new Intent(EmpLinksActivity.this, BusinessHeadMyEmpLinksActivity.class);
-            // Pass user data from current intent
             Intent currentIntent = getIntent();
+            String sourcePanel = currentIntent.getStringExtra("SOURCE_PANEL");
+            
+            Intent intent;
+            if ("SPECIAL_PANEL".equals(sourcePanel)) {
+                // Managing Director panel - navigate to Director Emp Links
+                intent = new Intent(EmpLinksActivity.this, DirectorEmpLinksActivity.class);
+            } else {
+                // Business Head panel - navigate to Business Head Emp Links
+                intent = new Intent(EmpLinksActivity.this, BusinessHeadMyEmpLinksActivity.class);
+            }
+            
+            // Pass user data from current intent
             if (currentIntent != null) {
                 String userId = currentIntent.getStringExtra("USER_ID");
                 if (userId != null) intent.putExtra("USER_ID", userId);
@@ -64,7 +74,28 @@ public class EmpLinksActivity extends AppCompatActivity {
 
         // Team Emp Links Card
         teamEmpLinksCard.setOnClickListener(v -> {
-            Toast.makeText(this, "Team Emp Links - Coming Soon!", Toast.LENGTH_SHORT).show();
+            Intent currentIntent = getIntent();
+            String sourcePanel = currentIntent.getStringExtra("SOURCE_PANEL");
+            
+            if ("SPECIAL_PANEL".equals(sourcePanel)) {
+                // Managing Director panel - navigate to Director Team Emp Links
+                Intent intent = new Intent(EmpLinksActivity.this, DirectorTeamEmpLinksActivity.class);
+                // Pass user data from current intent
+                if (currentIntent != null) {
+                    String userId = currentIntent.getStringExtra("USER_ID");
+                    if (userId != null) intent.putExtra("USER_ID", userId);
+                    String firstName = currentIntent.getStringExtra("FIRST_NAME");
+                    if (firstName != null) intent.putExtra("FIRST_NAME", firstName);
+                    String lastName = currentIntent.getStringExtra("LAST_NAME");
+                    if (lastName != null) intent.putExtra("LAST_NAME", lastName);
+                    String fullName = currentIntent.getStringExtra("USERNAME");
+                    if (fullName != null) intent.putExtra("USERNAME", fullName);
+                }
+                startActivity(intent);
+            } else {
+                // Business Head panel - show coming soon
+                Toast.makeText(this, "Team Emp Links - Coming Soon!", Toast.LENGTH_SHORT).show();
+            }
         });
     }
 } 

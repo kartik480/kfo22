@@ -8,11 +8,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.cardview.widget.CardView;
 
-public class DirectorEmpLinksActivity extends AppCompatActivity {
+public class ManagingDirectorEmpLinksActivity extends AppCompatActivity {
 
-    private LinearLayout myEmpLinksButton;
-    private LinearLayout teamEmpLinksButton;
+    private CardView myEmpLinksButton;
+    private CardView teamEmpLinksButton;
     
     private String userId;
     private String userName;
@@ -22,7 +23,7 @@ public class DirectorEmpLinksActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_director_emp_links);
+        setContentView(R.layout.activity_managing_director_emp_links);
 
         // Get user data from intent
         Intent intent = getIntent();
@@ -45,13 +46,13 @@ public class DirectorEmpLinksActivity extends AppCompatActivity {
 
     private void setupClickListeners() {
         myEmpLinksButton.setOnClickListener(v -> {
-            Intent intent = new Intent(this, DirectorMyEmpLinksActivity.class);
+            Intent intent = new Intent(this, ManagingDirectorMyEmpLinksActivity.class);
             passUserDataToIntent(intent);
             startActivity(intent);
         });
 
         teamEmpLinksButton.setOnClickListener(v -> {
-            Intent intent = new Intent(this, DirectorTeamEmpLinksActivity.class);
+            Intent intent = new Intent(this, ManagingDirectorTeamEmpLinksActivity.class);
             passUserDataToIntent(intent);
             startActivity(intent);
         });
@@ -62,7 +63,7 @@ public class DirectorEmpLinksActivity extends AppCompatActivity {
         if (toolbar != null) {
             setSupportActionBar(toolbar);
             if (getSupportActionBar() != null) {
-                getSupportActionBar().setTitle("Director Employee Links");
+                getSupportActionBar().setTitle("Managing Director Employee Links");
                 getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             }
         }

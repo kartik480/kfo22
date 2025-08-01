@@ -924,6 +924,26 @@
             android:exported="false"
             android:label="RBH Settings"
             android:parentActivityName=".RegionalBusinessHeadPanelActivity" />
+            
+        <!-- Managing Director Emp Links Activities -->
+        <activity
+            android:name=".ManagingDirectorEmpLinksActivity"
+            android:exported="false"
+            android:label="Managing Director Employee Links"
+            android:parentActivityName=".SpecialPanelActivity"
+            android:theme="@style/FullscreenTheme" />
+        <activity
+            android:name=".ManagingDirectorMyEmpLinksActivity"
+            android:exported="false"
+            android:label="My Employee Links"
+            android:parentActivityName=".ManagingDirectorEmpLinksActivity"
+            android:theme="@style/FullscreenTheme" />
+        <activity
+            android:name=".ManagingDirectorTeamEmpLinksActivity"
+            android:exported="false"
+            android:label="Team Employee Links"
+            android:parentActivityName=".ManagingDirectorEmpLinksActivity"
+            android:theme="@style/FullscreenTheme" />
     </application>
 
 </manifest>
