@@ -50,7 +50,7 @@ public class ManagingDirectorPartnerMasterActivity extends AppCompatActivity {
         addPartnerCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(ManagingDirectorPartnerMasterActivity.this, AddPartnerActivity.class);
+                Intent intent = new Intent(ManagingDirectorPartnerMasterActivity.this, ManagingDirectorAddPartnerActivity.class);
                 startActivity(intent);
             }
         });

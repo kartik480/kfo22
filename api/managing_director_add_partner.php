@@ -6,7 +6,7 @@ try {
     $input = json_decode(file_get_contents('php://input'), true);
     if (!$input) throw new Exception('Invalid JSON');
 
-    // Collect all required fields from the form matching the exact column names
+    // Collect all required fields from the form matching the exact column names for tbl_partner_users
     $fields = [
         'username', 'alias_name', 'first_name', 'last_name', 'password',
         'Phone_number', 'email_id', 'alternative_mobile_number', 'company_name',
@@ -35,7 +35,7 @@ try {
     $stmt->bind_param($types, ...$values);
 
     if ($stmt->execute()) {
-        echo json_encode(['status' => 'success', 'message' => 'Partner added successfully']);
+        echo json_encode(['status' => 'success', 'message' => 'Partner added successfully by Managing Director']);
     } else {
         throw new Exception('Insert failed: ' . $stmt->error);
     }

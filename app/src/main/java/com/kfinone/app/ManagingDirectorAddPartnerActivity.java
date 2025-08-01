@@ -33,9 +33,9 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class AddPartnerActivity extends AppCompatActivity {
+public class ManagingDirectorAddPartnerActivity extends AppCompatActivity {
 
-    private static final String TAG = "AddPartnerActivity";
+    private static final String TAG = "ManagingDirectorAddPartnerActivity";
     private static final int PERMISSION_REQUEST_CODE = 100;
     private static final int PICK_FILE_REQUEST_CODE = 200;
 
@@ -77,7 +77,7 @@ public class AddPartnerActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setTitle("Add Partner");
+            getSupportActionBar().setTitle("Managing Director - Add Partner");
         }
 
         initializeViews();
@@ -159,7 +159,7 @@ public class AddPartnerActivity extends AppCompatActivity {
             
             runOnUiThread(() -> {
                 ArrayAdapter<SpinnerItem> adapter = new ArrayAdapter<>(
-                    AddPartnerActivity.this,
+                    ManagingDirectorAddPartnerActivity.this,
                     android.R.layout.simple_spinner_item,
                     partnerTypes
                 );
@@ -180,7 +180,7 @@ public class AddPartnerActivity extends AppCompatActivity {
             
             runOnUiThread(() -> {
                 ArrayAdapter<SpinnerItem> adapter = new ArrayAdapter<>(
-                    AddPartnerActivity.this,
+                    ManagingDirectorAddPartnerActivity.this,
                     android.R.layout.simple_spinner_item,
                     branchStates
                 );
@@ -201,7 +201,7 @@ public class AddPartnerActivity extends AppCompatActivity {
             
             runOnUiThread(() -> {
                 ArrayAdapter<SpinnerItem> adapter = new ArrayAdapter<>(
-                    AddPartnerActivity.this,
+                    ManagingDirectorAddPartnerActivity.this,
                     android.R.layout.simple_spinner_item,
                     branchLocations
                 );
@@ -222,7 +222,7 @@ public class AddPartnerActivity extends AppCompatActivity {
             
             runOnUiThread(() -> {
                 ArrayAdapter<SpinnerItem> adapter = new ArrayAdapter<>(
-                    AddPartnerActivity.this,
+                    ManagingDirectorAddPartnerActivity.this,
                     android.R.layout.simple_spinner_item,
                     banks
                 );
@@ -243,7 +243,7 @@ public class AddPartnerActivity extends AppCompatActivity {
             
             runOnUiThread(() -> {
                 ArrayAdapter<SpinnerItem> adapter = new ArrayAdapter<>(
-                    AddPartnerActivity.this,
+                    ManagingDirectorAddPartnerActivity.this,
                     android.R.layout.simple_spinner_item,
                     accountTypes
                 );
@@ -299,7 +299,7 @@ public class AddPartnerActivity extends AppCompatActivity {
 
                             runOnUiThread(() -> {
                                 ArrayAdapter<SpinnerItem> adapter = new ArrayAdapter<>(
-                                    AddPartnerActivity.this,
+                                    ManagingDirectorAddPartnerActivity.this,
                                     android.R.layout.simple_spinner_item,
                                     partnerTypes
                                 );
@@ -360,7 +360,7 @@ public class AddPartnerActivity extends AppCompatActivity {
 
                             runOnUiThread(() -> {
                                 ArrayAdapter<SpinnerItem> adapter = new ArrayAdapter<>(
-                                    AddPartnerActivity.this,
+                                    ManagingDirectorAddPartnerActivity.this,
                                     android.R.layout.simple_spinner_item,
                                     branchStates
                                 );
@@ -415,7 +415,7 @@ public class AddPartnerActivity extends AppCompatActivity {
 
                             runOnUiThread(() -> {
                                 ArrayAdapter<SpinnerItem> adapter = new ArrayAdapter<>(
-                                    AddPartnerActivity.this,
+                                    ManagingDirectorAddPartnerActivity.this,
                                     android.R.layout.simple_spinner_item,
                                     branchLocations
                                 );
@@ -468,7 +468,7 @@ public class AddPartnerActivity extends AppCompatActivity {
                             }
                             runOnUiThread(() -> {
                                 ArrayAdapter<SpinnerItem> adapter = new ArrayAdapter<>(
-                                    AddPartnerActivity.this,
+                                    ManagingDirectorAddPartnerActivity.this,
                                     android.R.layout.simple_spinner_item,
                                     banks
                                 );
@@ -477,16 +477,16 @@ public class AddPartnerActivity extends AppCompatActivity {
                             });
                         } else {
                             Log.e(TAG, "Bank API JSON missing 'data': " + response.toString());
-                            runOnUiThread(() -> Toast.makeText(AddPartnerActivity.this, "Bank API error: No data", Toast.LENGTH_LONG).show());
+                            runOnUiThread(() -> Toast.makeText(ManagingDirectorAddPartnerActivity.this, "Bank API error: No data", Toast.LENGTH_LONG).show());
                         }
                     } catch (org.json.JSONException e) {
                         Log.e(TAG, "Error parsing banks JSON: " + e.getMessage());
-                        runOnUiThread(() -> Toast.makeText(AddPartnerActivity.this, "Bank API error: Parse error", Toast.LENGTH_LONG).show());
+                        runOnUiThread(() -> Toast.makeText(ManagingDirectorAddPartnerActivity.this, "Bank API error: Parse error", Toast.LENGTH_LONG).show());
                     }
                 }
             } catch (Exception e) {
                 Log.e(TAG, "Error loading banks: " + e.getMessage());
-                runOnUiThread(() -> Toast.makeText(AddPartnerActivity.this, "Bank API error: Exception", Toast.LENGTH_LONG).show());
+                runOnUiThread(() -> Toast.makeText(ManagingDirectorAddPartnerActivity.this, "Bank API error: Exception", Toast.LENGTH_LONG).show());
             }
         });
     }
@@ -528,7 +528,7 @@ public class AddPartnerActivity extends AppCompatActivity {
 
                             runOnUiThread(() -> {
                                 ArrayAdapter<SpinnerItem> adapter = new ArrayAdapter<>(
-                                    AddPartnerActivity.this,
+                                    ManagingDirectorAddPartnerActivity.this,
                                     android.R.layout.simple_spinner_item,
                                     accountTypes
                                 );
@@ -690,7 +690,7 @@ public class AddPartnerActivity extends AppCompatActivity {
                 jsonData.put("createdBy", "1"); // Current user ID
                 jsonData.put("updated_at", new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new java.util.Date()));
 
-                String urlString = "https://emp.kfinone.com/mobile/api/add_partner.php";
+                String urlString = "https://emp.kfinone.com/mobile/api/managing_director_add_partner.php";
                 
                 Log.d(TAG, "Submitting partner data to: " + urlString);
                 Log.d(TAG, "JSON data: " + jsonData.toString());
@@ -734,17 +734,17 @@ public class AddPartnerActivity extends AppCompatActivity {
                     
                     try {
                         if (jsonResponse.getString("status").equals("success")) {
-                            Toast.makeText(AddPartnerActivity.this, 
-                                "Partner added successfully!", Toast.LENGTH_LONG).show();
+                            Toast.makeText(ManagingDirectorAddPartnerActivity.this, 
+                                "Partner added successfully by Managing Director!", Toast.LENGTH_LONG).show();
                             finish();
                         } else {
                             String errorMessage = jsonResponse.getString("message");
-                            Toast.makeText(AddPartnerActivity.this, 
+                            Toast.makeText(ManagingDirectorAddPartnerActivity.this, 
                                 "Error: " + errorMessage, Toast.LENGTH_LONG).show();
                         }
                     } catch (org.json.JSONException e) {
                         Log.e(TAG, "JSON parsing error: " + e.getMessage());
-                        Toast.makeText(AddPartnerActivity.this, 
+                        Toast.makeText(ManagingDirectorAddPartnerActivity.this, 
                             "Error parsing server response", Toast.LENGTH_LONG).show();
                     }
                 });
@@ -754,7 +754,7 @@ public class AddPartnerActivity extends AppCompatActivity {
                 runOnUiThread(() -> {
                     submitButton.setEnabled(true);
                     submitButton.setText("Submit");
-                    Toast.makeText(AddPartnerActivity.this, 
+                    Toast.makeText(ManagingDirectorAddPartnerActivity.this, 
                         "Error submitting data: " + e.getMessage(), Toast.LENGTH_LONG).show();
                 });
             }
@@ -848,115 +848,4 @@ public class AddPartnerActivity extends AppCompatActivity {
             return name;
         }
     }
-
-    private void submitPartnerForm() {
-        try {
-            JSONObject partnerData = new JSONObject();
-            partnerData.put("email_id", ((EditText) findViewById(R.id.emailInput)).getText().toString().trim());
-            partnerData.put("password", ((EditText) findViewById(R.id.passwordInput)).getText().toString().trim());
-            partnerData.put("first_name", ((EditText) findViewById(R.id.firstNameInput)).getText().toString().trim());
-            partnerData.put("last_name", ((EditText) findViewById(R.id.lastNameInput)).getText().toString().trim());
-            partnerData.put("alias_name", ((EditText) findViewById(R.id.aliasNameInput)).getText().toString().trim());
-            partnerData.put("Phone_number", ((EditText) findViewById(R.id.phoneNoInput)).getText().toString().trim());
-            partnerData.put("alternative_mobile_number", ((EditText) findViewById(R.id.alternativePhoneInput)).getText().toString().trim());
-            partnerData.put("partner_type_id", getSelectedPartnerTypeId()); // TODO: implement this
-            partnerData.put("branch_state_name_id", getSelectedBranchStateId()); // TODO: implement this
-            partnerData.put("branch_location_id", getSelectedBranchLocationId()); // TODO: implement this
-            partnerData.put("office_address", ((EditText) findViewById(R.id.officeAddressInput)).getText().toString().trim());
-            partnerData.put("residential_address", ((EditText) findViewById(R.id.residentialAddressInput)).getText().toString().trim());
-            partnerData.put("aadhaar_number", ((EditText) findViewById(R.id.aadhaarNumberInput)).getText().toString().trim());
-            partnerData.put("pan_number", ((EditText) findViewById(R.id.panNumberInput)).getText().toString().trim());
-            partnerData.put("account_number", ((EditText) findViewById(R.id.accountNumberInput)).getText().toString().trim());
-            partnerData.put("ifsc_code", ((EditText) findViewById(R.id.ifscCodeInput)).getText().toString().trim());
-            partnerData.put("bank_id", getSelectedBankId()); // TODO: implement this
-            partnerData.put("account_type_id", getSelectedAccountTypeId()); // TODO: implement this
-            partnerData.put("pan_img", panImgPathOrUrl); // TODO: set after upload
-            partnerData.put("aadhaar_img", aadhaarImgPathOrUrl); // TODO: set after upload
-            partnerData.put("photo_img", photoImgPathOrUrl); // TODO: set after upload
-            partnerData.put("bankproof_img", bankproofImgPathOrUrl); // TODO: set after upload
-
-            new Thread(() -> {
-                try {
-                    URL url = new URL("https://emp.kfinone.com/mobile/api/add_partner.php");
-                    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                    conn.setRequestMethod("POST");
-                    conn.setRequestProperty("Content-Type", "application/json");
-                    conn.setDoOutput(true);
-                    conn.setConnectTimeout(5000);
-                    conn.setReadTimeout(5000);
-
-                    try (java.io.OutputStream os = conn.getOutputStream()) {
-                        byte[] input = partnerData.toString().getBytes("utf-8");
-                        os.write(input, 0, input.length);
-                    }
-
-                    int responseCode = conn.getResponseCode();
-                    if (responseCode == HttpURLConnection.HTTP_OK) {
-                        BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-                        StringBuilder response = new StringBuilder();
-                        String line;
-                        while ((line = in.readLine()) != null) {
-                            response.append(line);
-                        }
-                        in.close();
-                        JSONObject json = new JSONObject(response.toString());
-                        runOnUiThread(() -> {
-                            if (json.optString("status").equals("success")) {
-                                Toast.makeText(this, "Partner added successfully!", Toast.LENGTH_LONG).show();
-                                finish();
-                            } else {
-                                Toast.makeText(this, "Error: " + json.optString("message"), Toast.LENGTH_LONG).show();
-                            }
-                        });
-                    } else {
-                        runOnUiThread(() -> Toast.makeText(this, "Server error: " + responseCode, Toast.LENGTH_LONG).show());
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    runOnUiThread(() -> Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_LONG).show());
-                }
-            }).start();
-        } catch (Exception e) {
-            e.printStackTrace();
-            Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
-        }
-    }
-
-    // Add these methods to get selected IDs from spinners
-    private String getSelectedPartnerTypeId() {
-        SpinnerItem selected = (SpinnerItem) partnerTypeSpinner.getSelectedItem();
-        return selected != null ? selected.getId() : "";
-    }
-
-    private String getSelectedBranchStateId() {
-        SpinnerItem selected = (SpinnerItem) branchStateSpinner.getSelectedItem();
-        return selected != null ? selected.getId() : "";
-    }
-
-    private String getSelectedBranchLocationId() {
-        SpinnerItem selected = (SpinnerItem) branchLocationSpinner.getSelectedItem();
-        return selected != null ? selected.getId() : "";
-    }
-
-    private String getSelectedBankId() {
-        SpinnerItem selected = (SpinnerItem) bankNameSpinner.getSelectedItem();
-        return selected != null ? selected.getId() : "";
-    }
-
-    private String getSelectedAccountTypeId() {
-        SpinnerItem selected = (SpinnerItem) accountTypeSpinner.getSelectedItem();
-        return selected != null ? selected.getId() : "";
-    }
-
-    // Add image path variables for upload results
-    private String panImgPathOrUrl = "";
-    private String aadhaarImgPathOrUrl = "";
-    private String photoImgPathOrUrl = "";
-    private String bankproofImgPathOrUrl = "";
-
-    // When you handle file uploads, set these variables accordingly, e.g.:
-    // panImgPathOrUrl = uploadedPanImageUrlOrPath;
-    // aadhaarImgPathOrUrl = uploadedAadhaarImageUrlOrPath;
-    // photoImgPathOrUrl = uploadedPhotoImageUrlOrPath;
-    // bankproofImgPathOrUrl = uploadedBankProofImageUrlOrPath;
 } 

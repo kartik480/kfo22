@@ -317,6 +317,11 @@
             android:label="Add Partner"
             android:parentActivityName=".PartnerPanelActivity" />
         <activity
+            android:name=".ManagingDirectorAddPartnerActivity"
+            android:exported="false"
+            android:label="Managing Director - Add Partner"
+            android:parentActivityName=".ManagingDirectorPartnerMasterActivity" />
+        <activity
             android:name=".MyPartnerActivity"
             android:exported="false"
             android:label="My Partners"
