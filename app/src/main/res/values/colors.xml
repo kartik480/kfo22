@@ -28,7 +28,6 @@
     <color name="dark_green">#006400</color>
     <color name="ripple_color">#1F000000</color>
     <color name="blue">#2196F3</color>
-    <color name="gray_light">#F5F5F5</color>
     
     <!-- Additional colors for Policy panel -->
     <color name="primary">#FF6200EE</color>
@@ -48,4 +47,8 @@
     
     <!-- Managing Director Panel Colors -->
     <color name="primary_color">#2E7D32</color>
+    
+    <!-- Additional colors for RBH Active Emp List -->
+    <color name="background">#F5F5F5</color>
+    <color name="gray_light">#E0E0E0</color>
 </resources>

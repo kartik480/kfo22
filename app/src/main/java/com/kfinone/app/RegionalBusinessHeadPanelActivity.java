@@ -16,7 +16,7 @@ public class RegionalBusinessHeadPanelActivity extends AppCompatActivity {
     private BottomNavigationView rbhBottomNav;
     
     // Action card views
-    private View cardPortfolio, cardTeam, cardReports, cardAnalytics, cardStrategy, 
+    private View cardTotalEmp, cardPortfolio, cardTeam, cardReports, cardAnalytics, cardStrategy, 
                  cardPerformance, cardGrowth, cardInnovation, cardPartnerships, 
                  cardMarketAnalysis, cardRiskManagement, cardCompliance, cardBudget;
 
@@ -54,6 +54,7 @@ public class RegionalBusinessHeadPanelActivity extends AppCompatActivity {
         welcomeText = findViewById(R.id.welcomeText);
         
         // Initialize action cards
+        cardTotalEmp = findViewById(R.id.cardTotalEmp);
         cardPortfolio = findViewById(R.id.cardPortfolio);
         cardTeam = findViewById(R.id.cardTeam);
         cardReports = findViewById(R.id.cardReports);
@@ -91,6 +92,13 @@ public class RegionalBusinessHeadPanelActivity extends AppCompatActivity {
         });
 
         // Action Card Click Listeners
+        cardTotalEmp.setOnClickListener(v -> {
+            Intent intent = new Intent(this, RBHActiveEmpListActivity.class);
+            intent.putExtra("USERNAME", userName);
+            intent.putExtra("USER_ID", getUserIdFromUsername(userName));
+            startActivity(intent);
+        });
+        
         cardPortfolio.setOnClickListener(v -> {
             Intent intent = new Intent(this, RBHEmpLinksActivity.class);
             intent.putExtra("USERNAME", userName);
@@ -120,9 +128,9 @@ public class RegionalBusinessHeadPanelActivity extends AppCompatActivity {
         });
         
         cardStrategy.setOnClickListener(v -> {
-            Intent intent = new Intent(this, RBHEmployeeActivity.class);
+            Intent intent = new Intent(this, RBHActiveEmpListActivity.class);
             intent.putExtra("USERNAME", userName);
-            intent.putExtra("SOURCE_PANEL", "RBH_PANEL");
+            intent.putExtra("USER_ID", getUserIdFromUsername(userName));
             startActivity(intent);
         });
         
@@ -257,5 +265,12 @@ public class RegionalBusinessHeadPanelActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         showLogoutConfirmation();
+    }
+    
+    private String getUserIdFromUsername(String username) {
+        // This is a simplified implementation
+        // In a real app, you would fetch this from SharedPreferences or a local database
+        // For now, we'll return a placeholder that the API can handle
+        return "1"; // Default user ID for testing
     }
 } 

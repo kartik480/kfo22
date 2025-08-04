@@ -94,12 +94,16 @@
 
                 <!-- Total Employees -->
                 <androidx.cardview.widget.CardView
+                    android:id="@+id/cardTotalEmp"
                     android:layout_width="140dp"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="12dp"
                     app:cardCornerRadius="12dp"
                     app:cardElevation="4dp"
-                    app:cardBackgroundColor="@color/white">
+                    app:cardBackgroundColor="@color/white"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?attr/selectableItemBackground">
 
                     <LinearLayout
                         android:layout_width="match_parent"
