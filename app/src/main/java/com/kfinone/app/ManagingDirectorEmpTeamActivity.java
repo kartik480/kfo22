@@ -111,15 +111,15 @@ public class ManagingDirectorEmpTeamActivity extends AppCompatActivity {
     private void loadUsersForDropdown() {
         new Thread(() -> {
             try {
-                Log.d(TAG, "Loading designated users for dropdown...");
-                URL url = new URL("https://emp.kfinone.com/mobile/api/fetch_emp_panel_users.php");
+                Log.d(TAG, "Loading Managing Director designated users for dropdown...");
+                URL url = new URL("https://emp.kfinone.com/mobile/api/ManagingDirectorUsers.php");
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestMethod("GET");
                 conn.setConnectTimeout(5000);
                 conn.setReadTimeout(5000);
 
                 int responseCode = conn.getResponseCode();
-                Log.d(TAG, "Designated users dropdown response code: " + responseCode);
+                Log.d(TAG, "Managing Director designated users dropdown response code: " + responseCode);
                 
                 if (responseCode == HttpURLConnection.HTTP_OK) {
                     BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
@@ -131,7 +131,7 @@ public class ManagingDirectorEmpTeamActivity extends AppCompatActivity {
                     in.close();
 
                     String responseString = response.toString();
-                    Log.d(TAG, "Designated users dropdown response: " + responseString);
+                    Log.d(TAG, "Managing Director designated users dropdown response: " + responseString);
 
                     JSONObject json = new JSONObject(responseString);
                     if (json.getString("status").equals("success")) {
@@ -151,7 +151,7 @@ public class ManagingDirectorEmpTeamActivity extends AppCompatActivity {
                             userNames.add(displayName);
                             userList.add(new UserItem(userId, fullName, designation));
                             
-                            Log.d(TAG, "Added to dropdown: " + displayName);
+                            Log.d(TAG, "Added to Managing Director dropdown: " + displayName);
                         }
                         
                         runOnUiThread(() -> {
@@ -162,7 +162,7 @@ public class ManagingDirectorEmpTeamActivity extends AppCompatActivity {
                             );
                             spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                             userSpinner.setAdapter(spinnerAdapter);
-                            Log.d(TAG, "Loaded " + userNames.size() + " designated users in dropdown");
+                            Log.d(TAG, "Loaded " + userNames.size() + " Managing Director designated users in dropdown");
                             Toast.makeText(ManagingDirectorEmpTeamActivity.this, 
                                 "Loaded " + (userNames.size() - 1) + " designated users", Toast.LENGTH_SHORT).show();
                         });
@@ -180,7 +180,7 @@ public class ManagingDirectorEmpTeamActivity extends AppCompatActivity {
                     });
                 }
             } catch (Exception e) {
-                Log.e(TAG, "Exception loading designated users for dropdown: " + e.getMessage(), e);
+                Log.e(TAG, "Exception loading Managing Director designated users for dropdown: " + e.getMessage(), e);
                 runOnUiThread(() -> {
                     Toast.makeText(ManagingDirectorEmpTeamActivity.this, "Error loading users: " + e.getMessage(), Toast.LENGTH_LONG).show();
                 });
@@ -192,14 +192,14 @@ public class ManagingDirectorEmpTeamActivity extends AppCompatActivity {
         new Thread(() -> {
             try {
                 Log.d(TAG, "Fetching employee team data for manager ID: " + managerId + " (" + managerName + ")");
-                URL url = new URL("https://emp.kfinone.com/mobile/api/fetch_team_members.php?manager_id=" + managerId);
+                URL url = new URL("https://emp.kfinone.com/mobile/api/ManagingDirector.php?manager_id=" + managerId);
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestMethod("GET");
                 conn.setConnectTimeout(5000);
                 conn.setReadTimeout(5000);
 
                 int responseCode = conn.getResponseCode();
-                Log.d(TAG, "Employee team data response code: " + responseCode);
+                Log.d(TAG, "Managing Director team data response code: " + responseCode);
                 
                 if (responseCode == HttpURLConnection.HTTP_OK) {
                     BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
@@ -211,7 +211,7 @@ public class ManagingDirectorEmpTeamActivity extends AppCompatActivity {
                     in.close();
 
                     String responseString = response.toString();
-                    Log.d(TAG, "Employee team data response: " + responseString);
+                    Log.d(TAG, "Managing Director team data response: " + responseString);
 
                     JSONObject json = new JSONObject(responseString);
                     if (json.getString("status").equals("success")) {
@@ -234,7 +234,7 @@ public class ManagingDirectorEmpTeamActivity extends AppCompatActivity {
                     });
                 }
             } catch (Exception e) {
-                Log.e(TAG, "Exception fetching employee team data: " + e.getMessage(), e);
+                Log.e(TAG, "Exception fetching Managing Director team data: " + e.getMessage(), e);
                 runOnUiThread(() -> {
                     Toast.makeText(ManagingDirectorEmpTeamActivity.this, "Error fetching team data: " + e.getMessage(), Toast.LENGTH_LONG).show();
                 });
