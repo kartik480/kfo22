@@ -259,7 +259,7 @@ public class EnhancedLoginActivity extends AppCompatActivity {
                                     Log.d(TAG, "Navigating to BusinessHeadPanelActivity");
                                     // Navigate to Business Head panel
                                     Intent intent = new Intent(EnhancedLoginActivity.this, BusinessHeadPanelActivity.class);
-                                    intent.putExtra("USERNAME", displayName);
+                                    intent.putExtra("USERNAME", username);
                                     intent.putExtra("FIRST_NAME", firstName);
                                     intent.putExtra("LAST_NAME", lastName);
                                     intent.putExtra("USER_ID", userId);

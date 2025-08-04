@@ -106,7 +106,11 @@ public class BusinessHeadActiveEmpListActivity extends AppCompatActivity impleme
     private void loadActiveEmployeeList() {
         showLoading(true);
         
+        // Build URL with username parameter
         String url = BASE_URL + "get_business_head_active_employees.php";
+        if (userName != null && !userName.isEmpty()) {
+            url += "?username=" + userName;
+        }
         
         Log.d(TAG, "Fetching active employees from: " + url);
         

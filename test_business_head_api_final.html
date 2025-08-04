@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Final Test - Business Head Active Employees API</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        button {
+            background-color: #28a745;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-right: 10px;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 4px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .success {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        .loading {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+        }
+        .summary {
+            background: #e7f3ff;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 20px 0;
+            border-left: 4px solid #007bff;
+        }
+        .user-count {
+            font-size: 18px;
+            font-weight: bold;
+            color: #007bff;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>✅ Final Test - Business Head Active Employees API</h1>
+        
+        <div class="summary">
+            <h3>🔧 Issue Fixed:</h3>
+            <p><strong>Problem:</strong> Android app was calling API without username parameter</p>
+            <p><strong>Solution:</strong> Modified Android code to pass username parameter</p>
+            <p><strong>API:</strong> <code>get_business_head_active_employees.php?username=actual_username</code></p>
+        </div>
+        
+        <div class="form-group">
+            <label for="username">Business Head Username:</label>
+            <input type="text" id="username" placeholder="Enter Business Head username" value="">
+        </div>
+        
+        <button onclick="testAPI()">Test API</button>
+        <button onclick="clearResult()">Clear</button>
+        
+        <div id="result" class="result" style="display: none;"></div>
+    </div>
+
+    <script>
+        async function testAPI() {
+            const username = document.getElementById('username').value.trim();
+            const resultDiv = document.getElementById('result');
+            
+            if (!username) {
+                alert('Please enter a Business Head username');
+                return;
+            }
+            
+            // Show loading
+            resultDiv.style.display = 'block';
+            resultDiv.className = 'result loading';
+            resultDiv.textContent = 'Testing API...';
+            
+            try {
+                const response = await fetch(`api/get_business_head_active_employees.php?username=${encodeURIComponent(username)}`);
+                const data = await response.json();
+                
+                // Display result
+                resultDiv.className = data.status === 'success' ? 'result success' : 'result error';
+                
+                let resultText = `API Response:\n`;
+                resultText += `Status: ${data.status}\n`;
+                resultText += `Message: ${data.message}\n`;
+                
+                if (data.status === 'success') {
+                    resultText += `\n📊 Statistics:\n`;
+                    resultText += `Total Users: ${data.statistics?.total_users || 0}\n`;
+                    resultText += `Active Users: ${data.statistics?.active_users || 0}\n`;
+                    resultText += `SDSA Count: ${data.statistics?.sdsa_count || 0}\n`;
+                    resultText += `Partner Count: ${data.statistics?.partner_count || 0}\n`;
+                    resultText += `Agent Count: ${data.statistics?.agent_count || 0}\n`;
+                    
+                    resultText += `\n👤 Business Head Info:\n`;
+                    resultText += `Name: ${data.business_head_info?.full_name || 'N/A'}\n`;
+                    resultText += `Username: ${data.business_head_info?.username || 'N/A'}\n`;
+                    resultText += `Designation: ${data.business_head_info?.designation || 'N/A'}\n`;
+                    
+                    resultText += `\n📋 Users Found: ${data.data?.length || 0}\n`;
+                    resultText += `Manager ID: ${data.manager_id || 'N/A'}\n`;
+                } else {
+                    resultText += `\n❌ Error Details:\n`;
+                    resultText += `Data: ${JSON.stringify(data.data, null, 2)}\n`;
+                }
+                
+                resultDiv.textContent = resultText;
+                
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.textContent = `Network Error: ${error.message}`;
+            }
+        }
+        
+        function clearResult() {
+            document.getElementById('result').style.display = 'none';
+        }
+        
+        // Auto-fill with a sample username for testing
+        document.addEventListener('DOMContentLoaded', function() {
+            // You can set a default username here for testing
+            // document.getElementById('username').value = 'sample_bh_username';
+        });
+    </script>
+</body>
+</html> 

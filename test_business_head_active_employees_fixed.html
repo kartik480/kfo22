@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Business Head Active Employees API (Fixed)</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-right: 10px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 4px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+        .success {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        .loading {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+        }
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .stat-card {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 6px;
+            text-align: center;
+            border-left: 4px solid #007bff;
+        }
+        .stat-number {
+            font-size: 24px;
+            font-weight: bold;
+            color: #007bff;
+        }
+        .stat-label {
+            font-size: 12px;
+            color: #6c757d;
+            margin-top: 5px;
+        }
+        .user-list {
+            margin-top: 20px;
+        }
+        .user-item {
+            background: #f8f9fa;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+            border-left: 3px solid #28a745;
+        }
+        .user-name {
+            font-weight: bold;
+            color: #333;
+        }
+        .user-details {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+        }
+        .api-info {
+            background: #e7f3ff;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            border-left: 4px solid #007bff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Test Business Head Active Employees API (Fixed)</h1>
+        
+        <div class="api-info">
+            <h3>API Information:</h3>
+            <p><strong>Endpoint:</strong> <code>api/get_business_head_active_employees.php</code></p>
+            <p><strong>Method:</strong> GET</p>
+            <p><strong>Parameter:</strong> <code>username</code> (Business Head username)</p>
+            <p><strong>Description:</strong> This API was previously hardcoded to look for "DUBEY SATYA SAIBABA". Now it accepts any Business Head username as a parameter.</p>
+        </div>
+        
+        <div class="form-group">
+            <label for="username">Business Head Username:</label>
+            <input type="text" id="username" placeholder="Enter Business Head username" value="">
+        </div>
+        
+        <button onclick="testAPI()">Test API</button>
+        <button onclick="clearResults()">Clear Results</button>
+        
+        <div id="result" class="result" style="display: none;"></div>
+        
+        <div id="stats" class="stats" style="display: none;"></div>
+        
+        <div id="userList" class="user-list" style="display: none;"></div>
+    </div>
+
+    <script>
+        async function testAPI() {
+            const username = document.getElementById('username').value.trim();
+            const resultDiv = document.getElementById('result');
+            const statsDiv = document.getElementById('stats');
+            const userListDiv = document.getElementById('userList');
+            
+            if (!username) {
+                alert('Please enter a Business Head username');
+                return;
+            }
+            
+            // Show loading
+            resultDiv.style.display = 'block';
+            resultDiv.className = 'result loading';
+            resultDiv.textContent = 'Loading...';
+            statsDiv.style.display = 'none';
+            userListDiv.style.display = 'none';
+            
+            try {
+                const response = await fetch(`api/get_business_head_active_employees.php?username=${encodeURIComponent(username)}`);
+                const data = await response.json();
+                
+                // Display raw JSON result
+                resultDiv.className = data.status === 'success' ? 'result success' : 'result error';
+                resultDiv.textContent = JSON.stringify(data, null, 2);
+                
+                if (data.status === 'success') {
+                    // Display statistics
+                    displayStats(data.statistics, data.business_head_info);
+                    
+                    // Display user list
+                    displayUserList(data.data);
+                }
+                
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.textContent = `Error: ${error.message}`;
+            }
+        }
+        
+        function displayStats(statistics, businessHeadInfo) {
+            const statsDiv = document.getElementById('stats');
+            statsDiv.style.display = 'block';
+            
+            statsDiv.innerHTML = `
+                <div class="stat-card">
+                    <div class="stat-number">${businessHeadInfo.full_name}</div>
+                    <div class="stat-label">Business Head</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${statistics.total_users}</div>
+                    <div class="stat-label">Total Users</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${statistics.active_users}</div>
+                    <div class="stat-label">Active Users</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${statistics.sdsa_count}</div>
+                    <div class="stat-label">SDSA Users</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${statistics.partner_count}</div>
+                    <div class="stat-label">Partner Users</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${statistics.agent_count}</div>
+                    <div class="stat-label">Agent Users</div>
+                </div>
+            `;
+        }
+        
+        function displayUserList(users) {
+            const userListDiv = document.getElementById('userList');
+            userListDiv.style.display = 'block';
+            
+            if (users.length === 0) {
+                userListDiv.innerHTML = '<p>No users found reporting to this Business Head.</p>';
+                return;
+            }
+            
+            let html = '<h3>Users Reporting to Business Head:</h3>';
+            users.forEach(user => {
+                html += `
+                    <div class="user-item">
+                        <div class="user-name">${user.fullName}</div>
+                        <div class="user-details">
+                            <strong>Username:</strong> ${user.username} | 
+                            <strong>Email:</strong> ${user.email_id || 'N/A'} | 
+                            <strong>Mobile:</strong> ${user.mobile || 'N/A'} | 
+                            <strong>Employee No:</strong> ${user.employee_no || 'N/A'} | 
+                            <strong>Status:</strong> ${user.status || 'N/A'}
+                        </div>
+                    </div>
+                `;
+            });
+            
+            userListDiv.innerHTML = html;
+        }
+        
+        function clearResults() {
+            document.getElementById('result').style.display = 'none';
+            document.getElementById('stats').style.display = 'none';
+            document.getElementById('userList').style.display = 'none';
+        }
+        
+        // Auto-fill with a sample username for testing
+        document.addEventListener('DOMContentLoaded', function() {
+            // You can set a default username here for testing
+            // document.getElementById('username').value = 'sample_bh_username';
+        });
+    </script>
+</body>
+</html> 
