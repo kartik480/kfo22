@@ -245,6 +245,9 @@ public class EnhancedLoginActivity extends AppCompatActivity {
                             try {
                                 showSuccessMessage("Login successful!");
                                 
+                                // Save user data to SharedPreferences
+                                saveUserDataToSharedPreferences(username, firstName, lastName, userId);
+                                
                                 if (isChiefBusinessOfficer) {
                                     Log.d(TAG, "Navigating to ChiefBusinessOfficerPanelActivity");
                                     // Navigate to Chief Business Officer panel
@@ -362,6 +365,23 @@ public class EnhancedLoginActivity extends AppCompatActivity {
 
     private void showErrorMessage(String message) {
         Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+    }
+    
+    private void saveUserDataToSharedPreferences(String username, String firstName, String lastName, String userId) {
+        try {
+            android.content.SharedPreferences prefs = getSharedPreferences("LoginPrefs", MODE_PRIVATE);
+            android.content.SharedPreferences.Editor editor = prefs.edit();
+            
+            if (username != null) editor.putString("USERNAME", username);
+            if (firstName != null) editor.putString("FIRST_NAME", firstName);
+            if (lastName != null) editor.putString("LAST_NAME", lastName);
+            if (userId != null) editor.putString("USER_ID", userId);
+            
+            editor.apply();
+            Log.d(TAG, "User data saved to SharedPreferences");
+        } catch (Exception e) {
+            Log.e(TAG, "Error saving user data to SharedPreferences: " + e.getMessage());
+        }
     }
 
     @Override

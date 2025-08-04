@@ -323,27 +323,55 @@ public class SpecialPanelActivity extends AppCompatActivity implements Navigatio
     private void updateWelcomeMessage() {
         // Get user info from intent
         Intent intent = getIntent();
+        String firstName = null;
+        String lastName = null;
+        String username = null;
+        
         if (intent != null) {
-            String firstName = intent.getStringExtra("FIRST_NAME");
-            String lastName = intent.getStringExtra("LAST_NAME");
-            String fullName = intent.getStringExtra("USERNAME");
-            
-            String welcomeMessage;
-            if (firstName != null && !firstName.isEmpty() && firstName.length() > 1) {
-                welcomeMessage = "Welcome, " + firstName + "!";
-            } else if (fullName != null && !fullName.isEmpty()) {
-                String[] nameParts = fullName.split("\\s+");
-                if (nameParts.length > 0 && nameParts[0].length() > 1) {
-                    welcomeMessage = "Welcome, " + nameParts[0] + "!";
-                } else {
-                    welcomeMessage = "Welcome, " + fullName + "!";
-                }
-            } else {
-                welcomeMessage = "Welcome, Admin!";
-            }
-            
-            welcomeText.setText(welcomeMessage);
+            firstName = intent.getStringExtra("FIRST_NAME");
+            lastName = intent.getStringExtra("LAST_NAME");
+            username = intent.getStringExtra("USERNAME");
         }
+        
+        // If not in intent, try to get from SharedPreferences
+        if (firstName == null || firstName.isEmpty()) {
+            try {
+                android.content.SharedPreferences prefs = getSharedPreferences("LoginPrefs", MODE_PRIVATE);
+                firstName = prefs.getString("FIRST_NAME", "");
+                lastName = prefs.getString("LAST_NAME", "");
+                username = prefs.getString("USERNAME", "");
+            } catch (Exception e) {
+                Log.e("SpecialPanel", "Error getting user data from SharedPreferences: " + e.getMessage());
+            }
+        }
+        
+        // Debug logging
+        Log.d("SpecialPanel", "FIRST_NAME: " + firstName);
+        Log.d("SpecialPanel", "LAST_NAME: " + lastName);
+        Log.d("SpecialPanel", "USERNAME: " + username);
+        
+        String welcomeMessage;
+        if (firstName != null && !firstName.isEmpty() && firstName.length() > 1) {
+            welcomeMessage = "Welcome, " + firstName + "!";
+            Log.d("SpecialPanel", "Using firstName: " + welcomeMessage);
+        } else if (firstName != null && lastName != null && !firstName.isEmpty() && !lastName.isEmpty()) {
+            welcomeMessage = "Welcome, " + firstName + " " + lastName + "!";
+            Log.d("SpecialPanel", "Using firstName + lastName: " + welcomeMessage);
+        } else if (username != null && !username.isEmpty()) {
+            String[] nameParts = username.split("\\s+");
+            if (nameParts.length > 0 && nameParts[0].length() > 1) {
+                welcomeMessage = "Welcome, " + nameParts[0] + "!";
+                Log.d("SpecialPanel", "Using first part of username: " + welcomeMessage);
+            } else {
+                welcomeMessage = "Welcome, " + username + "!";
+                Log.d("SpecialPanel", "Using full username: " + welcomeMessage);
+            }
+        } else {
+            welcomeMessage = "Welcome, Admin!";
+            Log.d("SpecialPanel", "Using default Admin message: " + welcomeMessage);
+        }
+        
+        welcomeText.setText(welcomeMessage);
     }
 
     @Override
