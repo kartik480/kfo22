@@ -141,16 +141,14 @@ public class RegionalBusinessHeadPanelActivity extends AppCompatActivity {
         });
         
         cardGrowth.setOnClickListener(v -> {
-            Intent intent = new Intent(this, RBHPartnerActivity.class);
+            Intent intent = new Intent(this, RegionalBusinessHeadMyPartnerPanelActivity.class);
             intent.putExtra("USERNAME", userName);
-            intent.putExtra("SOURCE_PANEL", "RBH_PANEL");
             startActivity(intent);
         });
         
         cardInnovation.setOnClickListener(v -> {
-            Intent intent = new Intent(this, RBHAgentActivity.class);
+            Intent intent = new Intent(this, RBHMyAgentPanelActivity.class);
             intent.putExtra("USERNAME", userName);
-            intent.putExtra("SOURCE_PANEL", "RBH_PANEL");
             startActivity(intent);
         });
         

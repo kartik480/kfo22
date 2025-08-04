@@ -969,6 +969,30 @@
               android:label="RBH My SDSA List"
               android:parentActivityName=".RBHMySdsaPanelActivity"
               android:theme="@style/FullscreenTheme" />
+          <activity
+              android:name=".RegionalBusinessHeadMyPartnerPanelActivity"
+              android:exported="false"
+              android:label="RBH My Partner Panel"
+              android:parentActivityName=".RegionalBusinessHeadPanelActivity"
+              android:theme="@style/FullscreenTheme" />
+          <activity
+              android:name=".RegionalBusinessHeadMyPartnerListActivity"
+              android:exported="false"
+              android:label="RBH My Partner List"
+              android:parentActivityName=".RegionalBusinessHeadMyPartnerPanelActivity"
+              android:theme="@style/FullscreenTheme" />
+          <activity
+              android:name=".RBHMyAgentPanelActivity"
+              android:exported="false"
+              android:label="RBH My Agent Panel"
+              android:parentActivityName=".RegionalBusinessHeadPanelActivity"
+              android:theme="@style/FullscreenTheme" />
+          <activity
+              android:name=".RBHMyAgentListActivity"
+              android:exported="false"
+              android:label="RBH My Agent List"
+              android:parentActivityName=".RBHMyAgentPanelActivity"
+              android:theme="@style/FullscreenTheme" />
               
           <!-- Managing Director Emp Links Activities -->
         <activity
