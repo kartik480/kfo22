@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Regional Business Head Active Users API</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #fafafa;
+        }
+        .section h2 {
+            color: #2c3e50;
+            margin-top: 0;
+        }
+        .code-block {
+            background-color: #2d3748;
+            color: #e2e8f0;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            margin: 10px 0;
+        }
+        .info-box {
+            background-color: #e3f2fd;
+            border-left: 4px solid #2196f3;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .warning-box {
+            background-color: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .success-box {
+            background-color: #e8f5e8;
+            border-left: 4px solid #4caf50;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .step {
+            background-color: #f8f9fa;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border-left: 3px solid #007bff;
+        }
+        .step-number {
+            font-weight: bold;
+            color: #007bff;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        .copy-button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px 0;
+        }
+        .copy-button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 Test Regional Business Head Active Users API</h1>
+        
+        <div class="section">
+            <h2>📋 API Information</h2>
+            <div class="info-box">
+                <strong>Endpoint:</strong> <code>https://emp.kfinone.com/mobile/api/get_rbh_active_users.php</code><br>
+                <strong>Method:</strong> GET<br>
+                <strong>Parameters:</strong> URL Query Parameters<br>
+                <strong>Purpose:</strong> Fetch active users reporting to a specific RBH user
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>🔧 Postman Setup</h2>
+            
+            <div class="step">
+                <span class="step-number">Step 1:</span> Open Postman and create a new request
+            </div>
+            
+            <div class="step">
+                <span class="step-number">Step 2:</span> Set the request method to <strong>GET</strong>
+            </div>
+            
+            <div class="step">
+                <span class="step-number">Step 3:</span> Enter the URL with parameters:
+                <div class="code-block">https://emp.kfinone.com/mobile/api/get_rbh_active_users.php?reportingTo=rbh_username&status=active</div>
+                <button class="copy-button" onclick="copyToClipboard('https://emp.kfinone.com/mobile/api/get_rbh_active_users.php?reportingTo=rbh_username&status=active')">Copy URL</button>
+            </div>
+            
+            <div class="step">
+                <span class="step-number">Step 4:</span> No additional headers or body required for GET request
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>📝 Request Parameters</h2>
+            <table>
+                <tr>
+                    <th>Parameter</th>
+                    <th>Type</th>
+                    <th>Required</th>
+                    <th>Description</th>
+                    <th>Example</th>
+                </tr>
+                <tr>
+                    <td>reportingTo</td>
+                    <td>string</td>
+                    <td>Yes</td>
+                    <td>Username of the RBH user whose subordinates to fetch</td>
+                    <td>"john_doe"</td>
+                </tr>
+                <tr>
+                    <td>status</td>
+                    <td>string</td>
+                    <td>No</td>
+                    <td>User status filter (default: "active")</td>
+                    <td>"active"</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="section">
+            <h2>📊 Expected Response</h2>
+            
+            <h3>Success Response (200 OK):</h3>
+            <div class="code-block">{
+  "success": true,
+  "message": "Users fetched successfully",
+  "users": [
+    {
+      "first_name": "John",
+      "last_name": "Doe",
+      "username": "john_doe",
+      "Phone_number": "1234567890",
+      "email_id": "john@example.com",
+      "status": "active"
+    },
+    {
+      "first_name": "Jane",
+      "last_name": "Smith",
+      "username": "jane_smith",
+      "Phone_number": "9876543210",
+      "email_id": "jane@example.com",
+      "status": "active"
+    }
+  ],
+  "count": 2
+}</div>
+            <button class="copy-button" onclick="copyToClipboard('{\n  \"success\": true,\n  \"message\": \"Users fetched successfully\",\n  \"users\": [\n    {\n      \"first_name\": \"John\",\n      \"last_name\": \"Doe\",\n      \"username\": \"john_doe\",\n      \"Phone_number\": \"1234567890\",\n      \"email_id\": \"john@example.com\",\n      \"status\": \"active\"\n    }\n  ],\n  \"count\": 1\n}')">Copy Response</button>
+
+            <h3>Error Response (400/500):</h3>
+            <div class="code-block">{
+  "success": false,
+  "message": "Error: ReportingTo parameter is required"
+}</div>
+        </div>
+
+        <div class="section">
+            <h2>🧪 Test Cases</h2>
+            
+            <div class="step">
+                <span class="step-number">Test 1:</span> Valid RBH username
+                <div class="code-block">https://emp.kfinone.com/mobile/api/get_rbh_active_users.php?reportingTo=rbh_manager&status=active</div>
+            </div>
+            
+            <div class="step">
+                <span class="step-number">Test 2:</span> Empty reportingTo (should fail)
+                <div class="code-block">https://emp.kfinone.com/mobile/api/get_rbh_active_users.php?reportingTo=&status=active</div>
+            </div>
+            
+            <div class="step">
+                <span class="step-number">Test 3:</span> Non-existent RBH username
+                <div class="code-block">https://emp.kfinone.com/mobile/api/get_rbh_active_users.php?reportingTo=non_existent_user&status=active</div>
+            </div>
+            
+            <div class="step">
+                <span class="step-number">Test 4:</span> Different status
+                <div class="code-block">https://emp.kfinone.com/mobile/api/get_rbh_active_users.php?reportingTo=rbh_manager&status=inactive</div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>🔍 Database Query</h2>
+            <div class="info-box">
+                The API executes this SQL query against the <code>tbl_rbh_users</code> table:
+            </div>
+            <div class="code-block">SELECT 
+  first_name,
+  last_name,
+  username,
+  Phone_number,
+  email_id,
+  status
+FROM tbl_rbh_users 
+WHERE reportingTo = :reportingTo 
+AND status = :status
+ORDER BY first_name, last_name</div>
+        </div>
+
+        <div class="section">
+            <h2>⚠️ Troubleshooting</h2>
+            
+            <div class="warning-box">
+                <strong>Common Issues:</strong>
+                <ul>
+                    <li><strong>404 Error:</strong> Check if the API file exists at the correct path</li>
+                    <li><strong>500 Error:</strong> Database connection issue - verify server credentials</li>
+                    <li><strong>Empty Response:</strong> No users found for the given reportingTo value</li>
+                    <li><strong>JSON Parse Error:</strong> Check Content-Type header is set to application/json</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>✅ Success Criteria</h2>
+            <div class="success-box">
+                <ul>
+                    <li>✅ API returns 200 OK status</li>
+                    <li>✅ Response contains "success": true</li>
+                    <li>✅ "users" array contains user objects</li>
+                    <li>✅ Each user has first_name, last_name, username, Phone_number, email_id, status</li>
+                    <li>✅ "count" field shows the number of users returned</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(function() {
+                alert('Copied to clipboard!');
+            }, function(err) {
+                console.error('Could not copy text: ', err);
+            });
+        }
+    </script>
+</body>
+</html> 

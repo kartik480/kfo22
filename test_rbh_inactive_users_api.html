@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RBH Inactive Users API Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .info-box {
+            background: #e3f2fd;
+            border: 1px solid #2196f3;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        .step {
+            background: #f9f9f9;
+            border-left: 4px solid #4caf50;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 0 8px 8px 0;
+        }
+        .step-number {
+            font-weight: bold;
+            color: #4caf50;
+        }
+        .code-block {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            margin: 10px 0;
+            overflow-x: auto;
+        }
+        .copy-button {
+            background: #4caf50;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px 0;
+        }
+        .copy-button:hover {
+            background: #45a049;
+        }
+        .test-case {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+        .test-case h3 {
+            color: #856404;
+            margin-top: 0;
+        }
+        .response-example {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px 0;
+            font-family: 'Courier New', monospace;
+            white-space: pre-wrap;
+        }
+        .error-example {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px 0;
+            font-family: 'Courier New', monospace;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 RBH Inactive Users API Test Guide</h1>
+        
+        <!-- API Information -->
+        <div class="info-box">
+            <strong>Endpoint:</strong> <code>https://emp.kfinone.com/mobile/api/get_rbh_inactive_users.php</code><br>
+            <strong>Method:</strong> GET<br>
+            <strong>Parameters:</strong> URL Query Parameters<br>
+            <strong>Purpose:</strong> Fetch inactive users from tbl_rbh_users where reportingTo matches logged-in user and status = 0
+        </div>
+
+        <!-- Postman Setup -->
+        <h2>📋 Postman Setup Instructions</h2>
+        
+        <div class="step">
+            <span class="step-number">Step 1:</span> Open Postman and create a new request
+        </div>
+        
+        <div class="step">
+            <span class="step-number">Step 2:</span> Set the request method to GET
+        </div>
+        
+        <div class="step">
+            <span class="step-number">Step 3:</span> Enter the URL with parameters:
+            <div class="code-block">https://emp.kfinone.com/mobile/api/get_rbh_inactive_users.php?reportingTo=rbh_username&status=0</div>
+            <button class="copy-button" onclick="copyToClipboard('https://emp.kfinone.com/mobile/api/get_rbh_inactive_users.php?reportingTo=rbh_username&status=0')">Copy URL</button>
+        </div>
+        
+        <div class="step">
+            <span class="step-number">Step 4:</span> No additional headers or body required for GET request
+        </div>
+        
+        <div class="step">
+            <span class="step-number">Step 5:</span> Click Send to test the API
+        </div>
+
+        <!-- Test Cases -->
+        <h2>🧪 Test Cases</h2>
+        
+        <div class="test-case">
+            <h3>Test Case 1: Valid RBH User with Inactive Employees</h3>
+            <strong>URL:</strong>
+            <div class="code-block">https://emp.kfinone.com/mobile/api/get_rbh_inactive_users.php?reportingTo=rbh001&status=0</div>
+            <button class="copy-button" onclick="copyToClipboard('https://emp.kfinone.com/mobile/api/get_rbh_inactive_users.php?reportingTo=rbh001&status=0')">Copy URL</button>
+            <strong>Expected Response:</strong>
+            <div class="response-example">{
+  "success": true,
+  "message": "Inactive users fetched successfully",
+  "users": [
+    {
+      "first_name": "John",
+      "last_name": "Doe",
+      "username": "emp001",
+      "Phone_number": "1234567890",
+      "email_id": "john.doe@example.com",
+      "status": "0",
+      "reportingTo": "rbh001"
+    }
+  ],
+  "count": 1
+}</div>
+        </div>
+        
+        <div class="test-case">
+            <h3>Test Case 2: RBH User with No Inactive Employees</h3>
+            <strong>URL:</strong>
+            <div class="code-block">https://emp.kfinone.com/mobile/api/get_rbh_inactive_users.php?reportingTo=rbh002&status=0</div>
+            <button class="copy-button" onclick="copyToClipboard('https://emp.kfinone.com/mobile/api/get_rbh_inactive_users.php?reportingTo=rbh002&status=0')">Copy URL</button>
+            <strong>Expected Response:</strong>
+            <div class="response-example">{
+  "success": true,
+  "message": "Inactive users fetched successfully",
+  "users": [],
+  "count": 0
+}</div>
+        </div>
+        
+        <div class="test-case">
+            <h3>Test Case 3: Missing reportingTo Parameter</h3>
+            <strong>URL:</strong>
+            <div class="code-block">https://emp.kfinone.com/mobile/api/get_rbh_inactive_users.php?status=0</div>
+            <button class="copy-button" onclick="copyToClipboard('https://emp.kfinone.com/mobile/api/get_rbh_inactive_users.php?status=0')">Copy URL</button>
+            <strong>Expected Response:</strong>
+            <div class="error-example">{
+  "success": false,
+  "message": "ReportingTo parameter is required"
+}</div>
+        </div>
+        
+        <div class="test-case">
+            <h3>Test Case 4: Different Status Value (should still return inactive)</h3>
+            <strong>URL:</strong>
+            <div class="code-block">https://emp.kfinone.com/mobile/api/get_rbh_inactive_users.php?reportingTo=rbh001&status=1</div>
+            <button class="copy-button" onclick="copyToClipboard('https://emp.kfinone.com/mobile/api/get_rbh_inactive_users.php?reportingTo=rbh001&status=1')">Copy URL</button>
+            <strong>Expected Response:</strong>
+            <div class="response-example">{
+  "success": true,
+  "message": "Inactive users fetched successfully",
+  "users": [],
+  "count": 0
+}</div>
+        </div>
+
+        <!-- Database Query -->
+        <h2>🗄️ Database Query</h2>
+        <div class="info-box">
+            <strong>Table:</strong> tbl_rbh_users<br>
+            <strong>Query:</strong>
+            <div class="code-block">SELECT first_name, last_name, username, Phone_number, email_id, status, reportingTo 
+FROM tbl_rbh_users 
+WHERE reportingTo = :reportingTo AND status = :status 
+ORDER BY first_name, last_name</div>
+            <strong>Parameters:</strong>
+            <ul>
+                <li><code>:reportingTo</code> - Username of the logged-in RBH user</li>
+                <li><code>:status</code> - Status value (0 for inactive users)</li>
+            </ul>
+        </div>
+
+        <!-- Android Integration -->
+        <h2>📱 Android Integration</h2>
+        <div class="info-box">
+            <strong>API URL in Android:</strong>
+            <div class="code-block">String apiUrl = "https://emp.kfinone.com/mobile/api/get_rbh_inactive_users.php?reportingTo=" + userName + "&status=0";</div>
+            <strong>Activity:</strong> RBHInactiveEmpListActivity<br>
+            <strong>Adapter:</strong> RegionalBusinessHeadUserAdapter (same as active users)<br>
+            <strong>Layout:</strong> activity_rbh_inactive_emp_list.xml
+        </div>
+
+        <!-- Troubleshooting -->
+        <h2>🔧 Troubleshooting</h2>
+        <div class="step">
+            <span class="step-number">Issue 1:</span> No users returned
+            <ul>
+                <li>Check if the reportingTo value matches a username in tbl_rbh_users</li>
+                <li>Verify that users have status = 0 (inactive)</li>
+                <li>Check database connection and permissions</li>
+            </ul>
+        </div>
+        
+        <div class="step">
+            <span class="step-number">Issue 2:</span> Database connection error
+            <ul>
+                <li>Verify database credentials in the PHP file</li>
+                <li>Check if the database server is accessible</li>
+                <li>Ensure the tbl_rbh_users table exists</li>
+            </ul>
+        </div>
+        
+        <div class="step">
+            <span class="step-number">Issue 3:</span> Android app not showing data
+            <ul>
+                <li>Check network connectivity</li>
+                <li>Verify the API URL is correct</li>
+                <li>Check Android logs for error messages</li>
+                <li>Ensure the RecyclerView is properly set up</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(function() {
+                alert('URL copied to clipboard!');
+            }, function(err) {
+                console.error('Could not copy text: ', err);
+            });
+        }
+    </script>
+</body>
+</html> 

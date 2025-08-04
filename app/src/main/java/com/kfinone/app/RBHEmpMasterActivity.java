@@ -76,8 +76,9 @@ public class RBHEmpMasterActivity extends AppCompatActivity {
 
         // Active Emp List Box
         activeEmpListBox.setOnClickListener(v -> {
-            Intent intent = new Intent(this, RBHActiveEmpListActivity.class);
+            Intent intent = new Intent(this, RegionalBusinessHeadActiveEmpListActivity.class);
             intent.putExtra("USERNAME", userName);
+            intent.putExtra("USER_ID", userName); // Using username as user ID for now
             intent.putExtra("SOURCE_PANEL", "RBH_EMP_MASTER");
             startActivity(intent);
         });
@@ -86,6 +87,7 @@ public class RBHEmpMasterActivity extends AppCompatActivity {
         inactiveEmpListBox.setOnClickListener(v -> {
             Intent intent = new Intent(this, RBHInactiveEmpListActivity.class);
             intent.putExtra("USERNAME", userName);
+            intent.putExtra("USER_ID", userName); // Using username as user ID for now
             intent.putExtra("SOURCE_PANEL", "RBH_EMP_MASTER");
             startActivity(intent);
         });

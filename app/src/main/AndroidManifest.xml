@@ -939,6 +939,18 @@
             android:exported="false"
             android:label="RBH Settings"
             android:parentActivityName=".RegionalBusinessHeadPanelActivity" />
+        <activity
+            android:name=".RegionalBusinessHeadActiveEmpListActivity"
+            android:exported="false"
+            android:label="RBH Active Employee List"
+            android:parentActivityName=".RBHEmpMasterActivity"
+            android:theme="@style/FullscreenTheme" />
+        <activity
+            android:name=".RBHInactiveEmpListActivity"
+            android:exported="false"
+            android:label="RBH Inactive Employee List"
+            android:parentActivityName=".RBHEmpMasterActivity"
+            android:theme="@style/FullscreenTheme" />
             
         <!-- Managing Director Emp Links Activities -->
         <activity

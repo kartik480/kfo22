@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class RBHInactiveEmpListActivity extends AppCompatActivity {
+public class RegionalBusinessHeadActiveEmpListActivity extends AppCompatActivity {
     private TextView titleText, welcomeText;
     private View backButton, refreshButton, addButton;
     private String userName, userId;
@@ -39,7 +39,7 @@ public class RBHInactiveEmpListActivity extends AppCompatActivity {
             WindowManager.LayoutParams.FLAG_FULLSCREEN
         );
         
-        setContentView(R.layout.activity_rbh_inactive_emp_list);
+        setContentView(R.layout.activity_regional_business_head_active_emp_list);
         
         // Get user data from intent
         Intent intent = getIntent();
@@ -53,7 +53,7 @@ public class RBHInactiveEmpListActivity extends AppCompatActivity {
         setupClickListeners();
         updateWelcomeMessage();
         setupRecyclerView();
-        fetchInactiveUsers();
+        fetchActiveUsers();
     }
 
     private void initializeViews() {
@@ -76,14 +76,14 @@ public class RBHInactiveEmpListActivity extends AppCompatActivity {
 
         // Refresh button
         refreshButton.setOnClickListener(v -> {
-            Toast.makeText(this, "Refreshing inactive employee list...", Toast.LENGTH_SHORT).show();
-            fetchInactiveUsers();
+            Toast.makeText(this, "Refreshing active employee list...", Toast.LENGTH_SHORT).show();
+            fetchActiveUsers();
         });
 
         // Add button
         addButton.setOnClickListener(v -> {
-            Toast.makeText(this, "Add New Inactive Employee - Coming Soon", Toast.LENGTH_SHORT).show();
-            // TODO: Navigate to add inactive employee activity
+            Toast.makeText(this, "Add New Active Employee - Coming Soon", Toast.LENGTH_SHORT).show();
+            // TODO: Navigate to add active employee activity
         });
 
         // Bottom Navigation
@@ -123,7 +123,7 @@ public class RBHInactiveEmpListActivity extends AppCompatActivity {
     }
 
     private void updateWelcomeMessage() {
-        welcomeText.setText("Inactive Employee Management");
+        welcomeText.setText("Active User Management");
     }
 
     private void setupRecyclerView() {
@@ -133,11 +133,11 @@ public class RBHInactiveEmpListActivity extends AppCompatActivity {
         userRecyclerView.setAdapter(userAdapter);
     }
 
-    private void fetchInactiveUsers() {
+    private void fetchActiveUsers() {
         executorService.execute(() -> {
             try {
-                // Create API request to fetch inactive users reporting to the logged-in user
-                String apiUrl = "https://emp.kfinone.com/mobile/api/get_rbh_inactive_users.php?reportingTo=" + userName + "&status=0";
+                // Create API request to fetch users reporting to the logged-in user
+                String apiUrl = "https://emp.kfinone.com/mobile/api/get_rbh_active_users.php?reportingTo=" + userName + "&status=active";
                 
                 String response = makeGetRequest(apiUrl);
                 
@@ -165,7 +165,7 @@ public class RBHInactiveEmpListActivity extends AppCompatActivity {
                                 userAdapter.notifyDataSetChanged();
                                 
                                 if (userList.isEmpty()) {
-                                    Toast.makeText(this, "No inactive users found", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(this, "No active users found", Toast.LENGTH_SHORT).show();
                                 }
                             } else {
                                 String errorMessage = jsonResponse.getString("message");
@@ -185,6 +185,11 @@ public class RBHInactiveEmpListActivity extends AppCompatActivity {
                 });
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        finish();
     }
 
     private String makeGetRequest(String url) {
@@ -214,11 +219,6 @@ public class RBHInactiveEmpListActivity extends AppCompatActivity {
             e.printStackTrace();
             return null;
         }
-    }
-
-    @Override
-    public void onBackPressed() {
-        finish();
     }
 
     @Override
