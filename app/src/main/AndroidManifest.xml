@@ -955,10 +955,22 @@
             android:name=".RBHActiveEmpListActivity"
             android:exported="false"
             android:label="RBH Active Employee List"
-            android:parentActivityName=".RegionalBusinessHeadPanelActivity"
-            android:theme="@style/FullscreenTheme" />
-            
-        <!-- Managing Director Emp Links Activities -->
+                          android:parentActivityName=".RegionalBusinessHeadPanelActivity"
+              android:theme="@style/FullscreenTheme" />
+          <activity
+              android:name=".RBHMySdsaPanelActivity"
+              android:exported="false"
+              android:label="RBH My SDSA Panel"
+              android:parentActivityName=".RegionalBusinessHeadPanelActivity"
+              android:theme="@style/FullscreenTheme" />
+          <activity
+              android:name=".RBHMySdsaListActivity"
+              android:exported="false"
+              android:label="RBH My SDSA List"
+              android:parentActivityName=".RBHMySdsaPanelActivity"
+              android:theme="@style/FullscreenTheme" />
+              
+          <!-- Managing Director Emp Links Activities -->
         <activity
             android:name=".ManagingDirectorEmpLinksActivity"
             android:exported="false"

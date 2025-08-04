@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RBH API Local Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .test { margin: 20px 0; padding: 15px; border: 1px solid #ddd; }
+        .success { background: #d4edda; }
+        .error { background: #f8d7da; }
+        pre { background: #f8f9fa; padding: 10px; overflow-x: auto; }
+    </style>
+</head>
+<body>
+    <h1>🧪 RBH API Local Test</h1>
+    
+    <div class="test">
+        <h3>Test Instructions:</h3>
+        <ol>
+            <li>Upload <code>api/get_rbh_active_emp_list.php</code> to your server</li>
+            <li>Make sure it's accessible at: <code>https://kfinone.com/api/get_rbh_active_emp_list.php</code></li>
+            <li>Click the test button below</li>
+        </ol>
+        
+        <button onclick="testAPI()">Test API</button>
+        <div id="result"></div>
+    </div>
+
+    <script>
+        async function testAPI() {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = 'Testing...';
+            
+            try {
+                const response = await fetch('https://kfinone.com/api/get_rbh_active_emp_list.php?user_id=1');
+                
+                if (response.ok) {
+                    const data = await response.text();
+                    resultDiv.innerHTML = `
+                        <div class="success">
+                            <h4>✅ SUCCESS!</h4>
+                            <p>API is working correctly.</p>
+                            <pre>${data}</pre>
+                        </div>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `
+                        <div class="error">
+                            <h4>❌ ERROR ${response.status}</h4>
+                            <p>${response.statusText}</p>
+                            <p>This means the API file is not accessible on the server.</p>
+                            <p><strong>Solution:</strong> Upload the API file to your server.</p>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="error">
+                        <h4>❌ NETWORK ERROR</h4>
+                        <p>${error.message}</p>
+                        <p>This could be a CORS issue or server problem.</p>
+                    </div>
+                `;
+            }
+        }
+    </script>
+</body>
+</html> 

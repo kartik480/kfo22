@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RBH API 404 Debug Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .test-section {
+            margin-bottom: 30px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .test-button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .test-button:hover {
+            background: #0056b3;
+        }
+        .result {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 12px;
+        }
+        .success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        .info {
+            background: #d1ecf1;
+            border: 1px solid #bee5eb;
+            color: #0c5460;
+        }
+        input[type="text"] {
+            width: 300px;
+            padding: 8px;
+            margin: 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .url-display {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: monospace;
+            margin: 10px 0;
+            word-break: break-all;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔍 RBH API 404 Debug Test</h1>
+    
+    <div class="container">
+        <h2>API Endpoint Information</h2>
+        <div class="url-display">
+            <strong>Base URL:</strong> https://kfinone.com/api/<br>
+            <strong>Target API:</strong> get_rbh_active_emp_list.php<br>
+            <strong>Full URL:</strong> https://kfinone.com/api/get_rbh_active_emp_list.php
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>Test 1: Basic API Accessibility</h2>
+        <div class="test-section">
+            <p>Test if the API file exists and is accessible:</p>
+            <button class="test-button" onclick="testBasicAccess()">Test Basic Access</button>
+            <div id="basicResult" class="result"></div>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>Test 2: API with Parameters</h2>
+        <div class="test-section">
+            <p>Test the API with user_id parameter:</p>
+            <input type="text" id="userId" placeholder="Enter User ID (e.g., 1)" value="1">
+            <button class="test-button" onclick="testWithParams()">Test with Parameters</button>
+            <div id="paramResult" class="result"></div>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>Test 3: Compare with Working API</h2>
+        <div class="test-section">
+            <p>Test a known working API to compare:</p>
+            <button class="test-button" onclick="testWorkingAPI()">Test Working API</button>
+            <div id="workingResult" class="result"></div>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>Test 4: Server Response Analysis</h2>
+        <div class="test-section">
+            <p>Detailed analysis of server responses:</p>
+            <button class="test-button" onclick="analyzeResponses()">Analyze All Responses</button>
+            <div id="analysisResult" class="result"></div>
+        </div>
+    </div>
+
+    <script>
+        const BASE_URL = 'https://kfinone.com/api/';
+        
+        function showResult(elementId, content, type = 'info') {
+            const element = document.getElementById(elementId);
+            element.textContent = content;
+            element.className = `result ${type}`;
+        }
+
+        async function testBasicAccess() {
+            showResult('basicResult', 'Testing...', 'info');
+            
+            try {
+                const response = await fetch(BASE_URL + 'get_rbh_active_emp_list.php', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const status = response.status;
+                const statusText = response.statusText;
+                
+                if (response.ok) {
+                    const data = await response.text();
+                    showResult('basicResult', 
+                        `✅ SUCCESS\nStatus: ${status} ${statusText}\n\nResponse:\n${data}`, 
+                        'success'
+                    );
+                } else {
+                    showResult('basicResult', 
+                        `❌ ERROR\nStatus: ${status} ${statusText}\n\nThis indicates the file is not found or accessible.`, 
+                        'error'
+                    );
+                }
+            } catch (error) {
+                showResult('basicResult', 
+                    `❌ NETWORK ERROR\n${error.message}\n\nThis could indicate:\n- Server is down\n- CORS issues\n- Network connectivity problems`, 
+                    'error'
+                );
+            }
+        }
+
+        async function testWithParams() {
+            const userId = document.getElementById('userId').value || '1';
+            showResult('paramResult', 'Testing with parameters...', 'info');
+            
+            try {
+                const url = `${BASE_URL}get_rbh_active_emp_list.php?user_id=${userId}`;
+                const response = await fetch(url, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const status = response.status;
+                const statusText = response.statusText;
+                
+                if (response.ok) {
+                    const data = await response.text();
+                    showResult('paramResult', 
+                        `✅ SUCCESS\nStatus: ${status} ${statusText}\nURL: ${url}\n\nResponse:\n${data}`, 
+                        'success'
+                    );
+                } else {
+                    showResult('paramResult', 
+                        `❌ ERROR\nStatus: ${status} ${statusText}\nURL: ${url}\n\nThis indicates the file is not found or accessible.`, 
+                        'error'
+                    );
+                }
+            } catch (error) {
+                showResult('paramResult', 
+                    `❌ NETWORK ERROR\n${error.message}\n\nThis could indicate:\n- Server is down\n- CORS issues\n- Network connectivity problems`, 
+                    'error'
+                );
+            }
+        }
+
+        async function testWorkingAPI() {
+            showResult('workingResult', 'Testing working API...', 'info');
+            
+            try {
+                const response = await fetch(BASE_URL + 'get_user_createdby_list.php', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const status = response.status;
+                const statusText = response.statusText;
+                
+                if (response.ok) {
+                    const data = await response.text();
+                    showResult('workingResult', 
+                        `✅ WORKING API SUCCESS\nStatus: ${status} ${statusText}\n\nResponse:\n${data}`, 
+                        'success'
+                    );
+                } else {
+                    showResult('workingResult', 
+                        `❌ WORKING API FAILED\nStatus: ${status} ${statusText}\n\nThis suggests a server-wide issue.`, 
+                        'error'
+                    );
+                }
+            } catch (error) {
+                showResult('workingResult', 
+                    `❌ WORKING API NETWORK ERROR\n${error.message}\n\nThis suggests a server-wide issue.`, 
+                    'error'
+                );
+            }
+        }
+
+        async function analyzeResponses() {
+            showResult('analysisResult', 'Analyzing all responses...', 'info');
+            
+            let analysis = '=== API RESPONSE ANALYSIS ===\n\n';
+            
+            // Test 1: Basic access
+            try {
+                const response1 = await fetch(BASE_URL + 'get_rbh_active_emp_list.php');
+                analysis += `1. RBH API (Basic): ${response1.status} ${response1.statusText}\n`;
+            } catch (error) {
+                analysis += `1. RBH API (Basic): ERROR - ${error.message}\n`;
+            }
+            
+            // Test 2: Working API
+            try {
+                const response2 = await fetch(BASE_URL + 'get_user_createdby_list.php');
+                analysis += `2. Working API: ${response2.status} ${response2.statusText}\n`;
+            } catch (error) {
+                analysis += `2. Working API: ERROR - ${error.message}\n`;
+            }
+            
+            // Test 3: Non-existent file
+            try {
+                const response3 = await fetch(BASE_URL + 'non_existent_file.php');
+                analysis += `3. Non-existent file: ${response3.status} ${response3.statusText}\n`;
+            } catch (error) {
+                analysis += `3. Non-existent file: ERROR - ${error.message}\n`;
+            }
+            
+            analysis += '\n=== ANALYSIS ===\n';
+            
+            if (analysis.includes('404')) {
+                analysis += '🔍 404 Error detected - File not found on server\n';
+                analysis += '💡 Possible solutions:\n';
+                analysis += '   - Upload the API file to the server\n';
+                analysis += '   - Check file permissions\n';
+                analysis += '   - Verify the file path is correct\n';
+            }
+            
+            if (analysis.includes('CORS')) {
+                analysis += '🔍 CORS Error detected - Cross-origin issue\n';
+                analysis += '💡 Possible solutions:\n';
+                analysis += '   - Check server CORS configuration\n';
+                analysis += '   - Add proper headers to API file\n';
+            }
+            
+            if (analysis.includes('Network')) {
+                analysis += '🔍 Network Error detected - Connection issue\n';
+                analysis += '💡 Possible solutions:\n';
+                analysis += '   - Check server status\n';
+                analysis += '   - Verify network connectivity\n';
+                analysis += '   - Check firewall settings\n';
+            }
+            
+            showResult('analysisResult', analysis, 'info');
+        }
+    </script>
+</body>
+</html> 
