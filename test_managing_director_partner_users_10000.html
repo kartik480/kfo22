@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Managing Director Partner Users API</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-right: 10px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .result {
+            margin-top: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+            white-space: pre-wrap;
+            font-family: monospace;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+        .error {
+            color: #dc3545;
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+        }
+        .success {
+            color: #155724;
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+        }
+        .info {
+            background-color: #d1ecf1;
+            border-color: #bee5eb;
+            color: #0c5460;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Test Managing Director Partner Users API</h1>
+        
+        <div class="info">
+            <strong>API Information:</strong><br>
+            • Endpoint: <code>get_managing_director_partner_users_10000.php</code><br>
+            • Method: GET<br>
+            • Purpose: Fetch partner users created by username "10000" for Managing Director<br>
+            • Authentication: Requires Managing Director username parameter
+        </div>
+
+        <div class="form-group">
+            <label for="username">Managing Director Username:</label>
+            <input type="text" id="username" placeholder="Enter Managing Director username" value="10002">
+        </div>
+
+        <div class="form-group">
+            <button onclick="testAPI()">Test API</button>
+            <button onclick="clearResult()">Clear Result</button>
+        </div>
+
+        <div id="result" class="result" style="display: none;"></div>
+    </div>
+
+    <script>
+        async function testAPI() {
+            const username = document.getElementById('username').value.trim();
+            const resultDiv = document.getElementById('result');
+            
+            if (!username) {
+                showResult('Please enter a username', 'error');
+                return;
+            }
+
+            const url = `https://emp.kfinone.com/mobile/api/get_managing_director_partner_users_10000.php?username=${encodeURIComponent(username)}`;
+            
+            showResult('Testing API...\nURL: ' + url, 'info');
+            
+            try {
+                const response = await fetch(url, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    }
+                });
+
+                const responseText = await response.text();
+                let responseData;
+                
+                try {
+                    responseData = JSON.parse(responseText);
+                } catch (e) {
+                    showResult('Error parsing JSON response:\n' + responseText, 'error');
+                    return;
+                }
+
+                if (response.ok) {
+                    const formattedResponse = JSON.stringify(responseData, null, 2);
+                    showResult('✅ API Response (Success):\n\n' + formattedResponse, 'success');
+                } else {
+                    showResult('❌ API Error (HTTP ' + response.status + '):\n\n' + JSON.stringify(responseData, null, 2), 'error');
+                }
+            } catch (error) {
+                showResult('❌ Network Error:\n' + error.message, 'error');
+            }
+        }
+
+        function showResult(message, type) {
+            const resultDiv = document.getElementById('result');
+            resultDiv.style.display = 'block';
+            resultDiv.className = 'result ' + type;
+            resultDiv.textContent = message;
+        }
+
+        function clearResult() {
+            const resultDiv = document.getElementById('result');
+            resultDiv.style.display = 'none';
+        }
+
+        // Auto-test on page load
+        window.onload = function() {
+            // Uncomment the line below to auto-test when page loads
+            // testAPI();
+        };
+    </script>
+</body>
+</html> 

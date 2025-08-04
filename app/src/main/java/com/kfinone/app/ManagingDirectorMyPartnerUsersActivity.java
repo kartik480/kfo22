@@ -1,5 +1,6 @@
 package com.kfinone.app;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -73,7 +74,7 @@ public class ManagingDirectorMyPartnerUsersActivity extends AppCompatActivity im
 
         // Update title
         if (titleText != null) {
-            titleText.setText("My Partner Users");
+            titleText.setText("My Partner Users (Created by 10000)");
         }
 
         backButton.setOnClickListener(v -> onBackPressed());
@@ -108,10 +109,52 @@ public class ManagingDirectorMyPartnerUsersActivity extends AppCompatActivity im
     private void setupVolley() {
         requestQueue = Volley.newRequestQueue(this);
     }
+    
+    private String getCurrentUsername() {
+        // First try to get from intent extras
+        Intent intent = getIntent();
+        String username = intent.getStringExtra("USERNAME");
+        
+        if (username != null && !username.isEmpty()) {
+            return username;
+        }
+        
+        // If not in intent, try to get from SharedPreferences
+        try {
+            android.content.SharedPreferences prefs = getSharedPreferences("LoginPrefs", MODE_PRIVATE);
+            username = prefs.getString("USERNAME", "");
+            if (!username.isEmpty()) {
+                return username;
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error getting username from SharedPreferences: " + e.getMessage());
+        }
+        
+        // If still not found, try to get from global application state
+        // This assumes you have a global application class or singleton
+        try {
+            // You might need to implement this based on your app's architecture
+            // For now, return null if not found
+            return null;
+        } catch (Exception e) {
+            Log.e(TAG, "Error getting username from global state: " + e.getMessage());
+            return null;
+        }
+    }
 
     private void loadPartnerData() {
         showLoading(true);
-        String url = BASE_URL + "managing_director_my_partner_users.php?createdBy=8";
+        
+        // Get the current user's username from intent or SharedPreferences
+        String currentUsername = getCurrentUsername();
+        if (currentUsername == null || currentUsername.isEmpty()) {
+            showLoading(false);
+            Toast.makeText(this, "Unable to identify current user", Toast.LENGTH_SHORT).show();
+            showNoPartnersMessage();
+            return;
+        }
+        
+        String url = BASE_URL + "get_managing_director_partner_users_10000.php?username=" + currentUsername;
         
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
             response -> {
@@ -169,6 +212,13 @@ public class ManagingDirectorMyPartnerUsersActivity extends AppCompatActivity im
                             partnerUser.setCreatorName(partnerUserObj.optString("creator_name", ""));
                             
                             allPartnerUsersList.add(partnerUser);
+                        }
+                        
+                        // Log the filter information for debugging
+                        if (response.has("filter_info")) {
+                            JSONObject filterInfo = response.getJSONObject("filter_info");
+                            String filterDescription = filterInfo.optString("filter_description", "");
+                            Log.d(TAG, "Filter applied: " + filterDescription);
                         }
                         
                         partnerUserList.clear();

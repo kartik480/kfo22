@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Managing Director Partner Team Dropdown APIs</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+        input[type="text"], select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .result {
+            margin-top: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+            white-space: pre-wrap;
+            font-family: monospace;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+        .error {
+            color: #dc3545;
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+        }
+        .success {
+            color: #155724;
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+        }
+        .info {
+            background-color: #d1ecf1;
+            border-color: #bee5eb;
+            color: #0c5460;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .api-section {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 20px;
+            margin-bottom: 20px;
+            background-color: #fafafa;
+        }
+        .api-section h3 {
+            margin-top: 0;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Test Managing Director Partner Team Dropdown APIs</h1>
+        
+        <div class="info">
+            <strong>API Information:</strong><br>
+            • <strong>Users Dropdown API:</strong> <code>get_managing_director_users_dropdown.php</code><br>
+            • <strong>Partner Users by Creator API:</strong> <code>get_partner_users_by_creator.php</code><br>
+            • <strong>Purpose:</strong> Test dropdown functionality for Managing Director Partner Team panel
+        </div>
+
+        <div class="api-section">
+            <h3>1. Test Users Dropdown API</h3>
+            <div class="form-group">
+                <label for="username1">Managing Director Username:</label>
+                <input type="text" id="username1" placeholder="Enter Managing Director username" value="10002">
+            </div>
+            <button onclick="testUsersDropdownAPI()">Test Users Dropdown API</button>
+        </div>
+
+        <div class="api-section">
+            <h3>2. Test Partner Users by Creator API</h3>
+            <div class="form-group">
+                <label for="username2">Managing Director Username:</label>
+                <input type="text" id="username2" placeholder="Enter Managing Director username" value="10002">
+            </div>
+            <div class="form-group">
+                <label for="creatorId">Creator ID:</label>
+                <input type="text" id="creatorId" placeholder="Enter creator ID (e.g., 8, 10000)" value="8">
+            </div>
+            <button onclick="testPartnerUsersByCreatorAPI()">Test Partner Users by Creator API</button>
+        </div>
+
+        <div class="form-group">
+            <button onclick="clearResult()">Clear Result</button>
+        </div>
+
+        <div id="result" class="result" style="display: none;"></div>
+    </div>
+
+    <script>
+        async function testUsersDropdownAPI() {
+            const username = document.getElementById('username1').value.trim();
+            const resultDiv = document.getElementById('result');
+            
+            if (!username) {
+                showResult('Please enter a username', 'error');
+                return;
+            }
+
+            const url = `https://emp.kfinone.com/mobile/api/get_managing_director_users_dropdown.php?username=${encodeURIComponent(username)}`;
+            
+            showResult('Testing Users Dropdown API...\nURL: ' + url, 'info');
+            
+            try {
+                const response = await fetch(url, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    }
+                });
+
+                const responseText = await response.text();
+                let responseData;
+                
+                try {
+                    responseData = JSON.parse(responseText);
+                } catch (e) {
+                    showResult('Error parsing JSON response:\n' + responseText, 'error');
+                    return;
+                }
+
+                if (response.ok) {
+                    const formattedResponse = JSON.stringify(responseData, null, 2);
+                    showResult('✅ Users Dropdown API Response (Success):\n\n' + formattedResponse, 'success');
+                } else {
+                    showResult('❌ Users Dropdown API Error (HTTP ' + response.status + '):\n\n' + JSON.stringify(responseData, null, 2), 'error');
+                }
+            } catch (error) {
+                showResult('❌ Network Error:\n' + error.message, 'error');
+            }
+        }
+
+        async function testPartnerUsersByCreatorAPI() {
+            const username = document.getElementById('username2').value.trim();
+            const creatorId = document.getElementById('creatorId').value.trim();
+            const resultDiv = document.getElementById('result');
+            
+            if (!username) {
+                showResult('Please enter a username', 'error');
+                return;
+            }
+
+            if (!creatorId) {
+                showResult('Please enter a creator ID', 'error');
+                return;
+            }
+
+            const url = `https://emp.kfinone.com/mobile/api/get_partner_users_by_creator.php?username=${encodeURIComponent(username)}&creator_id=${encodeURIComponent(creatorId)}`;
+            
+            showResult('Testing Partner Users by Creator API...\nURL: ' + url, 'info');
+            
+            try {
+                const response = await fetch(url, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    }
+                });
+
+                const responseText = await response.text();
+                let responseData;
+                
+                try {
+                    responseData = JSON.parse(responseText);
+                } catch (e) {
+                    showResult('Error parsing JSON response:\n' + responseText, 'error');
+                    return;
+                }
+
+                if (response.ok) {
+                    const formattedResponse = JSON.stringify(responseData, null, 2);
+                    showResult('✅ Partner Users by Creator API Response (Success):\n\n' + formattedResponse, 'success');
+                } else {
+                    showResult('❌ Partner Users by Creator API Error (HTTP ' + response.status + '):\n\n' + JSON.stringify(responseData, null, 2), 'error');
+                }
+            } catch (error) {
+                showResult('❌ Network Error:\n' + error.message, 'error');
+            }
+        }
+
+        function showResult(message, type) {
+            const resultDiv = document.getElementById('result');
+            resultDiv.style.display = 'block';
+            resultDiv.className = 'result ' + type;
+            resultDiv.textContent = message;
+        }
+
+        function clearResult() {
+            const resultDiv = document.getElementById('result');
+            resultDiv.style.display = 'none';
+        }
+
+        // Auto-test on page load
+        window.onload = function() {
+            // Uncomment the line below to auto-test when page loads
+            // testUsersDropdownAPI();
+        };
+    </script>
+</body>
+</html> 
