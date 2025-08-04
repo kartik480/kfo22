@@ -233,11 +233,11 @@ public class RegionalBusinessHeadPanelActivity extends AppCompatActivity {
 
     private void updateStats() {
         // TODO: Fetch real statistics from API
-        totalEmpCount.setText("89");
-        totalSdsaCount.setText("45");
-        totalPartnerCount.setText("23");
-        totalPortfolioCount.setText("156");
-        totalAgentCount.setText("67");
+        totalEmpCount.setText("0");
+        totalSdsaCount.setText("0");
+        totalPartnerCount.setText("0");
+        totalPortfolioCount.setText("0");
+        totalAgentCount.setText("0");
     }
 
     private void showLogoutConfirmation() {

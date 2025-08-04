@@ -10,10 +10,9 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-public class RBHEmpMasterActivity extends AppCompatActivity {
-    private TextView titleText, welcomeText, activeEmpCount, inactiveEmpCount;
+public class RBHActiveEmpListActivity extends AppCompatActivity {
+    private TextView titleText, welcomeText;
     private View backButton, refreshButton, addButton;
-    private View activeEmpListBox, inactiveEmpListBox;
     private String userName;
     private BottomNavigationView rbhBottomNav;
 
@@ -27,7 +26,7 @@ public class RBHEmpMasterActivity extends AppCompatActivity {
             WindowManager.LayoutParams.FLAG_FULLSCREEN
         );
         
-        setContentView(R.layout.activity_rbh_emp_master);
+        setContentView(R.layout.activity_rbh_active_emp_list);
         
         // Get user data from intent
         Intent intent = getIntent();
@@ -39,21 +38,15 @@ public class RBHEmpMasterActivity extends AppCompatActivity {
         initializeViews();
         setupClickListeners();
         updateWelcomeMessage();
-        updateStats();
     }
 
     private void initializeViews() {
         titleText = findViewById(R.id.titleText);
         welcomeText = findViewById(R.id.welcomeText);
-        activeEmpCount = findViewById(R.id.activeEmpCount);
-        inactiveEmpCount = findViewById(R.id.inactiveEmpCount);
         
         backButton = findViewById(R.id.backButton);
         refreshButton = findViewById(R.id.refreshButton);
         addButton = findViewById(R.id.addButton);
-        
-        activeEmpListBox = findViewById(R.id.activeEmpListBox);
-        inactiveEmpListBox = findViewById(R.id.inactiveEmpListBox);
         
         rbhBottomNav = findViewById(R.id.rbhBottomNav);
     }
@@ -64,30 +57,14 @@ public class RBHEmpMasterActivity extends AppCompatActivity {
 
         // Refresh button
         refreshButton.setOnClickListener(v -> {
-            Toast.makeText(this, "Refreshing data...", Toast.LENGTH_SHORT).show();
-            updateStats();
+            Toast.makeText(this, "Refreshing active employee list...", Toast.LENGTH_SHORT).show();
+            // TODO: Refresh active employee data
         });
 
         // Add button
         addButton.setOnClickListener(v -> {
-            Toast.makeText(this, "Add New Employee - Coming Soon", Toast.LENGTH_SHORT).show();
-            // TODO: Navigate to add employee activity
-        });
-
-        // Active Emp List Box
-        activeEmpListBox.setOnClickListener(v -> {
-            Intent intent = new Intent(this, RBHActiveEmpListActivity.class);
-            intent.putExtra("USERNAME", userName);
-            intent.putExtra("SOURCE_PANEL", "RBH_EMP_MASTER");
-            startActivity(intent);
-        });
-
-        // Inactive Emp List Box
-        inactiveEmpListBox.setOnClickListener(v -> {
-            Intent intent = new Intent(this, RBHInactiveEmpListActivity.class);
-            intent.putExtra("USERNAME", userName);
-            intent.putExtra("SOURCE_PANEL", "RBH_EMP_MASTER");
-            startActivity(intent);
+            Toast.makeText(this, "Add New Active Employee - Coming Soon", Toast.LENGTH_SHORT).show();
+            // TODO: Navigate to add active employee activity
         });
 
         // Bottom Navigation
@@ -123,13 +100,7 @@ public class RBHEmpMasterActivity extends AppCompatActivity {
     }
 
     private void updateWelcomeMessage() {
-        welcomeText.setText("Manage Employee Master Data");
-    }
-
-    private void updateStats() {
-        // TODO: Fetch real statistics from API
-        activeEmpCount.setText("0 Active");
-        inactiveEmpCount.setText("0 Inactive");
+        welcomeText.setText("Active Employee Management");
     }
 
     @Override
