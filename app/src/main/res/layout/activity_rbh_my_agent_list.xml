@@ -105,43 +105,116 @@
 
             </LinearLayout>
 
-            <!-- Coming Soon Section -->
+            <!-- Agent List Section -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:background="@drawable/action_card_background"
-                android:padding="32dp"
-                android:gravity="center"
-                android:layout_marginTop="32dp">
+                android:padding="24dp"
+                android:layout_marginTop="24dp">
 
-                <ImageView
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
-                    android:src="@drawable/ic_people"
-                    android:background="@drawable/icon_gradient_blue"
-                    android:padding="20dp"
-                    android:contentDescription="Coming Soon" />
-
+                <!-- Agent List Heading -->
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Coming Soon!"
-                    android:textSize="24sp"
+                    android:text="Agent List"
+                    android:textSize="20sp"
                     android:textStyle="bold"
                     android:textColor="@color/black"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginBottom="20dp"
                     android:gravity="center" />
 
-                <TextView
-                    android:layout_width="wrap_content"
+                <!-- Filter Dropdowns -->
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="My Agent List functionality is under development. Stay tuned for updates!"
-                    android:textSize="16sp"
-                    android:textColor="@color/gray"
-                    android:layout_marginTop="8dp"
-                    android:gravity="center"
-                    android:textAlignment="center" />
+                    android:orientation="vertical"
+                    android:layout_marginBottom="20dp">
+
+                    <!-- Agent Type Dropdown -->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Agent Type"
+                        android:textSize="14sp"
+                        android:textColor="@color/black"
+                        android:layout_marginBottom="8dp" />
+
+                    <Spinner
+                        android:id="@+id/spinnerAgentType"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:background="@drawable/dropdown_background"
+                        android:padding="12dp"
+                        android:layout_marginBottom="16dp" />
+
+                    <!-- Branch State Dropdown -->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Branch State"
+                        android:textSize="14sp"
+                        android:textColor="@color/black"
+                        android:layout_marginBottom="8dp" />
+
+                    <Spinner
+                        android:id="@+id/spinnerBranchState"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:background="@drawable/dropdown_background"
+                        android:padding="12dp"
+                        android:layout_marginBottom="16dp" />
+
+                    <!-- Branch Location Dropdown -->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Branch Location"
+                        android:textSize="14sp"
+                        android:textColor="@color/black"
+                        android:layout_marginBottom="8dp" />
+
+                    <Spinner
+                        android:id="@+id/spinnerBranchLocation"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:background="@drawable/dropdown_background"
+                        android:padding="12dp"
+                        android:layout_marginBottom="20dp" />
+
+                </LinearLayout>
+
+                <!-- Filter and Reset Buttons -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center">
+
+                    <Button
+                        android:id="@+id/btnFilter"
+                        android:layout_width="0dp"
+                        android:layout_height="48dp"
+                        android:layout_weight="1"
+                        android:text="Filter"
+                        android:textColor="@color/white"
+                        android:background="@drawable/button_background_primary"
+                        android:layout_marginEnd="8dp"
+                        android:textSize="16sp" />
+
+                    <Button
+                        android:id="@+id/btnReset"
+                        android:layout_width="0dp"
+                        android:layout_height="48dp"
+                        android:layout_weight="1"
+                        android:text="Reset"
+                        android:textColor="@color/white"
+                        android:background="@drawable/button_background_secondary"
+                        android:layout_marginStart="8dp"
+                        android:textSize="16sp" />
+
+                </LinearLayout>
 
             </LinearLayout>
 
