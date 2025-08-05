@@ -60,6 +60,21 @@
         android:layout_height="wrap_content"
         android:text="Designation: Developer"
         android:textSize="14sp"
-        android:textColor="#34495E"/>
+        android:textColor="#34495E"
+        android:layout_marginBottom="8dp"/>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/viewButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="View Details"
+        android:textSize="12sp"
+        android:layout_gravity="end"
+        android:backgroundTint="#3498DB"
+        android:textColor="#FFFFFF"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"/>
 
 </LinearLayout> 

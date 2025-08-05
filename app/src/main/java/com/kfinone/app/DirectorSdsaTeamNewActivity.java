@@ -54,6 +54,8 @@ public class DirectorSdsaTeamNewActivity extends AppCompatActivity {
         initializeViews();
         setupClickListeners();
         fetchUsersForDropdown();
+        // Load SDSA users reporting to CBO/RBH by default
+        loadTeamData("");
     }
 
     private void initializeViews() {
@@ -155,7 +157,7 @@ public class DirectorSdsaTeamNewActivity extends AppCompatActivity {
     private void loadTeamData(String userId) {
         executor.execute(() -> {
             try {
-                URL url = new URL("https://emp.kfinone.com/mobile/api/get_sdsa_users_reporting_to_11.php?userId=" + userId);
+                URL url = new URL("https://emp.kfinone.com/mobile/api/get_sdsa_users_reporting_to_cbo_rbh.php");
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                 connection.setRequestMethod("GET");
                 connection.setConnectTimeout(15000);
@@ -179,12 +181,34 @@ public class DirectorSdsaTeamNewActivity extends AppCompatActivity {
                         for (int i = 0; i < dataArray.length(); i++) {
                             JSONObject item = dataArray.getJSONObject(i);
                             teamDataList.add(new TeamDataItem(
+                                item.optString("id", ""),
                                 item.optString("full_name", ""),
                                 item.optString("phone_number", ""),
                                 item.optString("email_id", ""),
                                 item.optString("employee_no", ""),
                                 item.optString("department", ""),
-                                item.optString("designation", "")
+                                item.optString("designation", ""),
+                                item.optString("username", ""),
+                                item.optString("alias_name", ""),
+                                item.optString("alternative_mobile_number", ""),
+                                item.optString("company_name", ""),
+                                item.optString("office_address", ""),
+                                item.optString("residential_address", ""),
+                                item.optString("aadhaar_number", ""),
+                                item.optString("pan_number", ""),
+                                item.optString("account_number", ""),
+                                item.optString("ifsc_code", ""),
+                                item.optString("rank", ""),
+                                item.optString("status", ""),
+                                item.optString("reportingTo", ""),
+                                item.optString("branchstate", ""),
+                                item.optString("branchloaction", ""),
+                                item.optString("bank_name", ""),
+                                item.optString("account_type", ""),
+                                item.optString("user_id", ""),
+                                item.optString("createdBy", ""),
+                                item.optString("created_at", ""),
+                                item.optString("updated_at", "")
                             ));
                         }
                         
@@ -210,15 +234,47 @@ public class DirectorSdsaTeamNewActivity extends AppCompatActivity {
     }
 
     private static class TeamDataItem {
-        String name, phone, email, employeeNo, department, designation;
+        String id, name, phone, email, employeeNo, department, designation, username, aliasName, 
+               alternativeMobile, companyName, officeAddress, residentialAddress, aadhaarNumber, 
+               panNumber, accountNumber, ifscCode, rank, status, reportingTo, branchState, 
+               branchLocation, bankName, accountType, userId, createdBy, createdAt, updatedAt;
         
-        TeamDataItem(String name, String phone, String email, String employeeNo, String department, String designation) {
+        TeamDataItem(String id, String name, String phone, String email, String employeeNo, 
+                    String department, String designation, String username, String aliasName,
+                    String alternativeMobile, String companyName, String officeAddress, 
+                    String residentialAddress, String aadhaarNumber, String panNumber,
+                    String accountNumber, String ifscCode, String rank, String status, 
+                    String reportingTo, String branchState, String branchLocation, 
+                    String bankName, String accountType, String userId, String createdBy,
+                    String createdAt, String updatedAt) {
+            this.id = id;
             this.name = name;
             this.phone = phone;
             this.email = email;
             this.employeeNo = employeeNo;
             this.department = department;
             this.designation = designation;
+            this.username = username;
+            this.aliasName = aliasName;
+            this.alternativeMobile = alternativeMobile;
+            this.companyName = companyName;
+            this.officeAddress = officeAddress;
+            this.residentialAddress = residentialAddress;
+            this.aadhaarNumber = aadhaarNumber;
+            this.panNumber = panNumber;
+            this.accountNumber = accountNumber;
+            this.ifscCode = ifscCode;
+            this.rank = rank;
+            this.status = status;
+            this.reportingTo = reportingTo;
+            this.branchState = branchState;
+            this.branchLocation = branchLocation;
+            this.bankName = bankName;
+            this.accountType = accountType;
+            this.userId = userId;
+            this.createdBy = createdBy;
+            this.createdAt = createdAt;
+            this.updatedAt = updatedAt;
         }
     }
 
@@ -244,6 +300,50 @@ public class DirectorSdsaTeamNewActivity extends AppCompatActivity {
             holder.employeeText.setText("Employee No: " + item.employeeNo);
             holder.departmentText.setText("Department: " + item.department);
             holder.designationText.setText("Designation: " + item.designation);
+            
+            // Set click listener for View button
+            holder.viewButton.setOnClickListener(v -> {
+                showUserDetailsDialog(item);
+            });
+        }
+        
+        private void showUserDetailsDialog(TeamDataItem item) {
+            StringBuilder details = new StringBuilder();
+            details.append("=== SDSA USER DETAILS ===\n\n");
+            details.append("ID: ").append(item.id).append("\n");
+            details.append("Name: ").append(item.name).append("\n");
+            details.append("Username: ").append(item.username).append("\n");
+            details.append("Alias Name: ").append(item.aliasName).append("\n");
+            details.append("Phone: ").append(item.phone).append("\n");
+            details.append("Alternative Mobile: ").append(item.alternativeMobile).append("\n");
+            details.append("Email: ").append(item.email).append("\n");
+            details.append("Employee No: ").append(item.employeeNo).append("\n");
+            details.append("Department: ").append(item.department).append("\n");
+            details.append("Designation: ").append(item.designation).append("\n");
+            details.append("Company: ").append(item.companyName).append("\n");
+            details.append("Rank: ").append(item.rank).append("\n");
+            details.append("Status: ").append(item.status).append("\n");
+            details.append("Reporting To: ").append(item.reportingTo).append("\n");
+            details.append("Branch State: ").append(item.branchState).append("\n");
+            details.append("Branch Location: ").append(item.branchLocation).append("\n");
+            details.append("Bank Name: ").append(item.bankName).append("\n");
+            details.append("Account Type: ").append(item.accountType).append("\n");
+            details.append("Account Number: ").append(item.accountNumber).append("\n");
+            details.append("IFSC Code: ").append(item.ifscCode).append("\n");
+            details.append("Aadhaar Number: ").append(item.aadhaarNumber).append("\n");
+            details.append("PAN Number: ").append(item.panNumber).append("\n");
+            details.append("Office Address: ").append(item.officeAddress).append("\n");
+            details.append("Residential Address: ").append(item.residentialAddress).append("\n");
+            details.append("User ID: ").append(item.userId).append("\n");
+            details.append("Created By: ").append(item.createdBy).append("\n");
+            details.append("Created At: ").append(item.createdAt).append("\n");
+            details.append("Updated At: ").append(item.updatedAt).append("\n");
+            
+            android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(DirectorSdsaTeamNewActivity.this);
+            builder.setTitle("SDSA User Details")
+                   .setMessage(details.toString())
+                   .setPositiveButton("Close", null)
+                   .show();
         }
         
         @Override
@@ -253,6 +353,7 @@ public class DirectorSdsaTeamNewActivity extends AppCompatActivity {
         
         class ViewHolder extends RecyclerView.ViewHolder {
             TextView nameText, phoneText, emailText, employeeText, departmentText, designationText;
+            MaterialButton viewButton;
             
             ViewHolder(View view) {
                 super(view);
@@ -262,6 +363,7 @@ public class DirectorSdsaTeamNewActivity extends AppCompatActivity {
                 employeeText = view.findViewById(R.id.employeeText);
                 departmentText = view.findViewById(R.id.departmentText);
                 designationText = view.findViewById(R.id.designationText);
+                viewButton = view.findViewById(R.id.viewButton);
             }
         }
     }
