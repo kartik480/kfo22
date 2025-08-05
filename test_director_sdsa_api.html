@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Director SDSA API</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .test-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .test-section h2 {
+            color: #555;
+            margin-top: 0;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-right: 10px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .result {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 5px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .success {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        .loading {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+        }
+        .sdsa-card {
+            border: 1px solid #ddd;
+            margin: 10px 0;
+            padding: 15px;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        .sdsa-name {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 5px;
+        }
+        .sdsa-details {
+            color: #666;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .input-group input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Test Director SDSA API</h1>
+        
+        <div class="test-section">
+            <h2>Test fetch_active_sdsa.php</h2>
+            <p>This API fetches active SDSA users reporting to a specific director</p>
+            
+            <div class="input-group">
+                <label for="directorId">Director ID:</label>
+                <input type="text" id="directorId" value="8" placeholder="Enter Director ID">
+            </div>
+            
+            <button onclick="testSdsaApi()">Test SDSA API</button>
+            <button onclick="testManageIconsApi()">Test Manage Icons API</button>
+            <div id="sdsaResult" class="result"></div>
+        </div>
+    </div>
+
+    <script>
+        async function testSdsaApi() {
+            const resultDiv = document.getElementById('sdsaResult');
+            const directorId = document.getElementById('directorId').value || '8';
+            
+            resultDiv.className = 'result loading';
+            resultDiv.textContent = 'Loading...';
+            
+            try {
+                const response = await fetch(`https://emp.kfinone.com/mobile/api/fetch_active_sdsa.php?reportingTo=${directorId}`);
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    resultDiv.className = 'result success';
+                    
+                    let html = `✅ SDSA API Response Success\n`;
+                    html += `Total SDSA Users: ${data.data ? data.data.length : 0}\n\n`;
+                    
+                    if (data.data && data.data.length > 0) {
+                        html += '<h3>Active SDSA Users:</h3>\n';
+                        
+                        data.data.forEach((sdsa, index) => {
+                            const firstName = sdsa.first_name || '';
+                            const lastName = sdsa.last_name || '';
+                            const fullName = (firstName + ' ' + lastName).trim();
+                            
+                            html += `<div class="sdsa-card">
+                                <div class="sdsa-name">${index + 1}. ${fullName}</div>
+                                <div class="sdsa-details">
+                                    <strong>ID:</strong> ${sdsa.id || 'N/A'}<br>
+                                    <strong>Employee No:</strong> ${sdsa.employee_no || 'N/A'}<br>
+                                    <strong>Phone:</strong> ${sdsa.Phone_number || 'N/A'}<br>
+                                    <strong>Email:</strong> ${sdsa.email_id || 'N/A'}<br>
+                                    <strong>Password:</strong> ${sdsa.password || 'N/A'}<br>
+                                    <strong>Reporting To:</strong> ${sdsa.reportingTo || 'N/A'}
+                                </div>
+                            </div>`;
+                        });
+                    } else {
+                        html += 'No active SDSA users found for this director.';
+                    }
+                    
+                    resultDiv.innerHTML = html;
+                } else {
+                    resultDiv.className = 'result error';
+                    resultDiv.textContent = `❌ API Error: ${data.message || 'Unknown error'}`;
+                }
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.textContent = `❌ Network Error: ${error.message}`;
+            }
+        }
+        
+        async function testManageIconsApi() {
+            const resultDiv = document.getElementById('sdsaResult');
+            const directorId = document.getElementById('directorId').value || '8';
+            
+            resultDiv.className = 'result loading';
+            resultDiv.textContent = 'Loading manage icons...';
+            
+            try {
+                const response = await fetch(`https://emp.kfinone.com/mobile/api/get_manage_icons_permission.php?user_id=${directorId}`);
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    resultDiv.className = 'result success';
+                    
+                    let html = `✅ Manage Icons API Response Success\n`;
+                    html += `Total Icons: ${data.data ? data.data.length : 0}\n\n`;
+                    
+                    if (data.data && data.data.length > 0) {
+                        html += '<h3>Manage Icons:</h3>\n';
+                        
+                        data.data.forEach((icon, index) => {
+                            html += `<div class="sdsa-card">
+                                <div class="sdsa-name">${index + 1}. ${icon.icon_name || 'N/A'}</div>
+                                <div class="sdsa-details">
+                                    <strong>Icon ID:</strong> ${icon.id || 'N/A'}<br>
+                                    <strong>Status:</strong> ${icon.status || 'N/A'}
+                                </div>
+                            </div>`;
+                        });
+                    } else {
+                        html += 'No manage icons found for this user.';
+                    }
+                    
+                    resultDiv.innerHTML = html;
+                } else {
+                    resultDiv.className = 'result error';
+                    resultDiv.textContent = `❌ API Error: ${data.message || 'Unknown error'}`;
+                }
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.textContent = `❌ Network Error: ${error.message}`;
+            }
+        }
+    </script>
+</body>
+</html> 

@@ -37,9 +37,9 @@ public class DirectorMySdsaActivity extends AppCompatActivity {
 
         initializeViews();
         setupClickListeners();
-        // Get directorId from intent or fallback to default (e.g., "8")
+        // Get directorId from intent or fallback to default (11)
         String directorId = getIntent().getStringExtra("DIRECTOR_ID");
-        if (directorId == null || directorId.isEmpty()) directorId = "8";
+        if (directorId == null || directorId.isEmpty()) directorId = "11";
         loadSdsaData(directorId);
     }
 
@@ -64,7 +64,7 @@ public class DirectorMySdsaActivity extends AppCompatActivity {
         new Thread(() -> {
             try {
                 Log.d(TAG, "Loading SDSA data for directorId: " + directorId);
-                URL url = new URL("https://emp.kfinone.com/mobile/api/fetch_active_sdsa.php?reportingTo=" + directorId);
+                URL url = new URL("https://emp.kfinone.com/mobile/api/get_director_sdsa_users.php?director_id=" + directorId);
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestMethod("GET");
                 conn.setConnectTimeout(5000);
@@ -90,18 +90,32 @@ public class DirectorMySdsaActivity extends AppCompatActivity {
                         sdsaList.clear();
                         for (int i = 0; i < data.length(); i++) {
                             JSONObject sdsa = data.getJSONObject(i);
-                            // Construct full name from first_name and last_name
-                            String firstName = sdsa.optString("first_name", "");
-                            String lastName = sdsa.optString("last_name", "");
-                            String fullName = (firstName + " " + lastName).trim();
+                            
+                            // Parse manage icons
+                            List<String> manageIcons = new ArrayList<>();
+                            if (sdsa.has("manage_icons")) {
+                                JSONArray iconsArray = sdsa.getJSONArray("manage_icons");
+                                for (int j = 0; j < iconsArray.length(); j++) {
+                                    manageIcons.add(iconsArray.getString(j));
+                                }
+                            }
+                            
+                            // If no manage icons, add default ones
+                            if (manageIcons.isEmpty()) {
+                                manageIcons.add("Dashboard");
+                                manageIcons.add("Settings");
+                                manageIcons.add("Analytics");
+                            }
                             
                             sdsaList.add(new SdsaItem(
-                                fullName,
-                                sdsa.optString("Phone_number", ""),
+                                sdsa.optString("full_name", ""),
+                                sdsa.optString("employee_no", "EMP" + String.format("%03d", i + 1)),
+                                sdsa.optString("phone_number", ""),
                                 sdsa.optString("email_id", ""),
                                 sdsa.optString("password", ""),
                                 sdsa.optString("id", ""),
-                                sdsa.optString("reportingTo", "")
+                                sdsa.optString("reportingTo", ""),
+                                manageIcons
                             ));
                         }
                         runOnUiThread(() -> adapter.notifyDataSetChanged());
@@ -120,18 +134,23 @@ public class DirectorMySdsaActivity extends AppCompatActivity {
 
     private static class SdsaItem {
         String name;
+        String employeeId;
         String phoneNumber;
         String email;
         String password;
         String id;
         String reportingTo;
-        SdsaItem(String name, String phoneNumber, String email, String password, String id, String reportingTo) {
+        List<String> manageIcons;
+        
+        SdsaItem(String name, String employeeId, String phoneNumber, String email, String password, String id, String reportingTo, List<String> manageIcons) {
             this.name = name;
+            this.employeeId = employeeId;
             this.phoneNumber = phoneNumber;
             this.email = email;
             this.password = password;
             this.id = id;
             this.reportingTo = reportingTo;
+            this.manageIcons = manageIcons;
         }
     }
 
@@ -148,13 +167,44 @@ public class DirectorMySdsaActivity extends AppCompatActivity {
         @Override
         public void onBindViewHolder(ViewHolder holder, int position) {
             SdsaItem item = sdsaItems.get(position);
-            holder.nameText.setText(item.name);
-            holder.phoneText.setText(item.phoneNumber);
-            holder.emailText.setText(item.email);
-            holder.passwordText.setText(item.password);
+            
+            // Format the display text according to the requested structure
+            String displayText = "Name: " + item.name + "\n" +
+                               "Employee ID: " + item.employeeId + "\n" +
+                               "Phone: " + item.phoneNumber + "\n" +
+                               "Email: " + item.email + "\n" +
+                               "Manage Icons: " + String.join(", ", item.manageIcons);
+            
+            holder.nameText.setText(displayText);
+            holder.phoneText.setVisibility(View.GONE);
+            holder.emailText.setVisibility(View.GONE);
+            holder.passwordText.setVisibility(View.GONE);
+            
             holder.actionButton.setOnClickListener(v -> {
-                // TODO: Action for SDSA row
+                // Show action options for SDSA row
+                showActionOptions(item);
             });
+        }
+        
+        private void showActionOptions(SdsaItem item) {
+            // Create a simple action dialog
+            String[] actions = {"Edit", "View Details", "Deactivate"};
+            android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(DirectorMySdsaActivity.this);
+            builder.setTitle("Actions for " + item.name);
+            builder.setItems(actions, (dialog, which) -> {
+                switch (which) {
+                    case 0:
+                        Toast.makeText(DirectorMySdsaActivity.this, "Edit " + item.name, Toast.LENGTH_SHORT).show();
+                        break;
+                    case 1:
+                        Toast.makeText(DirectorMySdsaActivity.this, "View details for " + item.name, Toast.LENGTH_SHORT).show();
+                        break;
+                    case 2:
+                        Toast.makeText(DirectorMySdsaActivity.this, "Deactivate " + item.name, Toast.LENGTH_SHORT).show();
+                        break;
+                }
+            });
+            builder.show();
         }
         @Override
         public int getItemCount() {

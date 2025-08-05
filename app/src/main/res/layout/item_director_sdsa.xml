@@ -17,73 +17,22 @@
         android:padding="16dp">
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Name:"
-            android:textStyle="bold"
-            android:textColor="#1976D2"
-            android:textSize="14sp" />
-        <TextView
             android:id="@+id/nameText"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="#2C3E50"
             android:textSize="14sp"
-            android:layout_marginBottom="8dp" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Phone:"
-            android:textStyle="bold"
-            android:textColor="#1976D2"
-            android:textSize="14sp" />
-        <TextView
-            android:id="@+id/phoneText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="#2C3E50"
-            android:textSize="14sp"
-            android:layout_marginBottom="8dp" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Email:"
-            android:textStyle="bold"
-            android:textColor="#1976D2"
-            android:textSize="14sp" />
-        <TextView
-            android:id="@+id/emailText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="#2C3E50"
-            android:textSize="14sp"
-            android:layout_marginBottom="8dp" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Password:"
-            android:textStyle="bold"
-            android:textColor="#1976D2"
-            android:textSize="14sp" />
-        <TextView
-            android:id="@+id/passwordText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="#2C3E50"
-            android:textSize="14sp"
+            android:lineSpacingExtra="2dp"
             android:layout_marginBottom="12dp" />
 
         <Button
             android:id="@+id/actionButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Action"
-            android:textSize="14sp"
-            android:textColor="#1976D2"
-            android:background="@drawable/edit_text_background"
+            android:text="ACTIONS"
+            android:textSize="12sp"
+            android:textColor="#FFFFFF"
+            android:background="@drawable/button_background_primary"
             android:padding="8dp"
             android:layout_gravity="end" />
 
