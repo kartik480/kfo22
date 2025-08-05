@@ -65,7 +65,7 @@ public class DirectorMyEmpLinksActivity extends AppCompatActivity {
         if (toolbar != null) {
             setSupportActionBar(toolbar);
             if (getSupportActionBar() != null) {
-                getSupportActionBar().setTitle("Director My Employee Links");
+                getSupportActionBar().setTitle("Director - Employees Reporting to ID 11");
                 getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             }
         }
@@ -79,7 +79,7 @@ public class DirectorMyEmpLinksActivity extends AppCompatActivity {
     }
 
     private void fetchEmployeeData() {
-        String url = "https://emp.kfinone.com/mobile/api/director_my_emp_list.php";
+        String url = "https://emp.kfinone.com/mobile/api/Director.php";
         RequestQueue queue = Volley.newRequestQueue(this);
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
             Request.Method.GET, url, null,
@@ -87,24 +87,39 @@ public class DirectorMyEmpLinksActivity extends AppCompatActivity {
                 @Override
                 public void onResponse(JSONObject response) {
                     try {
-                        if (response.getBoolean("success")) {
-                            JSONArray data = response.getJSONArray("data");
+                        if (response.getString("status").equals("success")) {
+                            JSONObject data = response.getJSONObject("data");
+                            JSONArray usersArray = data.getJSONArray("users_reporting_to_11");
                             employeeList.clear();
-                            for (int i = 0; i < data.length(); i++) {
-                                JSONObject obj = data.getJSONObject(i);
+                            
+                            for (int i = 0; i < usersArray.length(); i++) {
+                                JSONObject obj = usersArray.getJSONObject(i);
                                 String fullName = obj.optString("firstName", "") + " " + obj.optString("lastName", "");
                                 String employeeId = obj.optString("employee_no", "");
                                 String mobile = obj.optString("mobile", "");
                                 String email = obj.optString("email_id", "");
-                                employeeList.add(new Employee(fullName, employeeId, mobile, email));
+                                String status = obj.optString("status", "");
+                                String username = obj.optString("username", "");
+                                
+                                employeeList.add(new Employee(fullName, employeeId, mobile, email, status, username));
                             }
                             adapter.notifyDataSetChanged();
+                            
+                            // Show manager details if available
+                            if (data.has("manager_details")) {
+                                JSONObject manager = data.getJSONObject("manager_details");
+                                String managerName = manager.optString("firstName", "") + " " + manager.optString("lastName", "");
+                                Toast.makeText(DirectorMyEmpLinksActivity.this, 
+                                    "Showing employees reporting to: " + managerName, 
+                                    Toast.LENGTH_LONG).show();
+                            }
                         } else {
-                            Toast.makeText(DirectorMyEmpLinksActivity.this, "No employees found", Toast.LENGTH_SHORT).show();
+                            String errorMessage = response.optString("message", "No employees found");
+                            Toast.makeText(DirectorMyEmpLinksActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
-                        Toast.makeText(DirectorMyEmpLinksActivity.this, "Error parsing data", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(DirectorMyEmpLinksActivity.this, "Error parsing data: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 }
             },
@@ -112,7 +127,7 @@ public class DirectorMyEmpLinksActivity extends AppCompatActivity {
                 @Override
                 public void onErrorResponse(VolleyError error) {
                     error.printStackTrace();
-                    Toast.makeText(DirectorMyEmpLinksActivity.this, "Failed to fetch employees", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(DirectorMyEmpLinksActivity.this, "Failed to fetch employees: " + error.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             }
         );
@@ -136,11 +151,16 @@ public class DirectorMyEmpLinksActivity extends AppCompatActivity {
         String employeeId;
         String mobile;
         String email;
-        Employee(String fullName, String employeeId, String mobile, String email) {
+        String status;
+        String username;
+        
+        Employee(String fullName, String employeeId, String mobile, String email, String status, String username) {
             this.fullName = fullName;
             this.employeeId = employeeId;
             this.mobile = mobile;
             this.email = email;
+            this.status = status;
+            this.username = username;
         }
     }
 
@@ -163,10 +183,12 @@ public class DirectorMyEmpLinksActivity extends AppCompatActivity {
             holder.employeeIdText.setText("Employee ID: " + emp.employeeId);
             holder.mobileText.setText("Phone: " + emp.mobile);
             holder.emailText.setText("Email: " + emp.email);
-            holder.passwordText.setText("Password: ******");
-            holder.actionButton.setText("View");
+            holder.passwordText.setText("Status: " + emp.status + " | Username: " + emp.username);
+            holder.actionButton.setText("View Details");
             holder.actionButton.setOnClickListener(v -> {
-                Toast.makeText(holder.itemView.getContext(), "Action for " + emp.fullName, Toast.LENGTH_SHORT).show();
+                Toast.makeText(holder.itemView.getContext(), 
+                    "Employee: " + emp.fullName + "\nStatus: " + emp.status + "\nUsername: " + emp.username, 
+                    Toast.LENGTH_LONG).show();
             });
         }
         @Override
