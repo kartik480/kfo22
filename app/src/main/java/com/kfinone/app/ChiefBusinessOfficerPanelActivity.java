@@ -279,11 +279,11 @@ public class ChiefBusinessOfficerPanelActivity extends AppCompatActivity {
 
     private void updateStats() {
         // Update statistics with sample data
-        totalEmpCount.setText("156");
-        totalSdsaCount.setText("89");
-        totalPartnerCount.setText("45");
-        totalPortfolioCount.setText("234");
-        totalAgentCount.setText("67");
+        totalEmpCount.setText("0");
+        totalSdsaCount.setText("0");
+        totalPartnerCount.setText("0");
+        totalPortfolioCount.setText("0");
+        totalAgentCount.setText("0");
     }
 
     private void showLogoutConfirmation() {

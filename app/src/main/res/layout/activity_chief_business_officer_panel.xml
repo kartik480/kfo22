@@ -112,7 +112,7 @@
                             android:id="@+id/totalEmpCount"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="156"
+                            android:text="0"
                             android:textSize="28sp"
                             android:textStyle="bold"
                             android:textColor="@color/primary" />
@@ -149,7 +149,7 @@
                             android:id="@+id/totalSdsaCount"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="89"
+                            android:text="0"
                             android:textSize="28sp"
                             android:textStyle="bold"
                             android:textColor="#4CAF50" />
@@ -186,7 +186,7 @@
                             android:id="@+id/totalPartnerCount"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="45"
+                            android:text="0"
                             android:textSize="28sp"
                             android:textStyle="bold"
                             android:textColor="#FF9800" />
@@ -223,7 +223,7 @@
                             android:id="@+id/totalPortfolioCount"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="234"
+                            android:text="0"
                             android:textSize="28sp"
                             android:textStyle="bold"
                             android:textColor="#9C27B0" />
@@ -259,7 +259,7 @@
                             android:id="@+id/totalAgentCount"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="67"
+                            android:text="0"
                             android:textSize="28sp"
                             android:textStyle="bold"
                             android:textColor="#2196F3" />
