@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug Designation Table</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .test-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .test-section h2 {
+            color: #555;
+            margin-top: 0;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-right: 10px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .result {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 5px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .success {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        .loading {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+        }
+        .designation-item {
+            padding: 8px;
+            margin: 2px 0;
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 3px;
+        }
+        .target-designation {
+            background-color: #e3f2fd;
+            border-color: #2196f3;
+        }
+        .user-item {
+            padding: 10px;
+            margin: 5px 0;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Debug Designation Table</h1>
+        
+        <div class="test-section">
+            <h2>Test Designation Table</h2>
+            <p>This will show all designations in the database and check for the specific ones we need</p>
+            
+            <button onclick="testDesignationTable()">Test Designation Table</button>
+            <div id="testResult" class="result"></div>
+        </div>
+    </div>
+
+    <script>
+        async function testDesignationTable() {
+            const resultDiv = document.getElementById('testResult');
+            
+            resultDiv.className = 'result loading';
+            resultDiv.textContent = 'Loading...';
+            
+            try {
+                const response = await fetch('https://emp.kfinone.com/mobile/api/test_designation_table.php');
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    resultDiv.className = 'result success';
+                    
+                    let html = `✅ Designation Table Test Results\n`;
+                    html += `Status: ${data.status}\n`;
+                    html += `Message: ${data.message}\n\n`;
+                    
+                    // Show all designations
+                    html += `<h3>All Designations (${data.all_designations_count}):</h3>`;
+                    data.all_designations.forEach((designation, index) => {
+                        const isTarget = data.target_designations.some(d => d.id === designation.id);
+                        const className = isTarget ? 'designation-item target-designation' : 'designation-item';
+                        html += `<div class="${className}">
+                            ${index + 1}. ID: ${designation.id} - Name: ${designation.designation_name}
+                            ${isTarget ? ' (TARGET)' : ''}
+                        </div>`;
+                    });
+                    
+                    // Show target designations
+                    html += `<h3>Target Designations (${data.target_designations_count}):</h3>`;
+                    if (data.target_designations.length > 0) {
+                        data.target_designations.forEach((designation, index) => {
+                            html += `<div class="designation-item target-designation">
+                                ${index + 1}. ID: ${designation.id} - Name: ${designation.designation_name}
+                            </div>`;
+                        });
+                    } else {
+                        html += '<p>No target designations found! This might be the issue.</p>';
+                    }
+                    
+                    // Show users with these designations
+                    html += `<h3>Users with Target Designations (${data.users_count}):</h3>`;
+                    if (data.users_with_designations.length > 0) {
+                        data.users_with_designations.forEach((user, index) => {
+                            html += `<div class="user-item">
+                                <strong>${index + 1}. ${user.full_name}</strong><br>
+                                ID: ${user.id}<br>
+                                Designation ID: ${user.designation_id}<br>
+                                Designation Name: ${user.designation_name}<br>
+                                Dropdown Text: "${user.full_name} (${user.designation_name})"
+                            </div>`;
+                        });
+                    } else {
+                        html += '<p>No users found with target designations.</p>';
+                    }
+                    
+                    resultDiv.innerHTML = html;
+                } else {
+                    resultDiv.className = 'result error';
+                    resultDiv.textContent = `❌ API Error: ${data.message || 'Unknown error'}`;
+                }
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.textContent = `❌ Network Error: ${error.message}`;
+            }
+        }
+    </script>
+</body>
+</html> 

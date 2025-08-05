@@ -99,7 +99,7 @@ public class DirectorSdsaTeamNewActivity extends AppCompatActivity {
     private void fetchUsersForDropdown() {
         executor.execute(() -> {
             try {
-                URL url = new URL("https://emp.kfinone.com/mobile/api/get_reporting_users_dropdown.php");
+                URL url = new URL("https://emp.kfinone.com/mobile/api/get_director_designated_users_fixed.php");
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                 connection.setRequestMethod("GET");
                 connection.setConnectTimeout(15000);
@@ -123,9 +123,10 @@ public class DirectorSdsaTeamNewActivity extends AppCompatActivity {
                         
                         for (int i = 0; i < dataArray.length(); i++) {
                             JSONObject userObj = dataArray.getJSONObject(i);
-                            String userName = userObj.getString("name");
+                            String fullName = userObj.getString("full_name");
+                            String designation = userObj.getString("designation_name");
                             String userId = userObj.getString("id");
-                            userDisplayList.add(userName + " (ID: " + userId + ")");
+                            userDisplayList.add(fullName + " (" + designation + ")");
                             userIdList.add(userId);
                         }
                         

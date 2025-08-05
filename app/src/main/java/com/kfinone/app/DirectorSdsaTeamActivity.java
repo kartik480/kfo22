@@ -44,7 +44,8 @@ public class DirectorSdsaTeamActivity extends AppCompatActivity {
 
         initializeViews();
         setupClickListeners();
-        // Remove initial loadSdsaTeamData();
+        // Load SDSA users by default
+        loadSdsaTeamData("");
     }
 
     private void initializeViews() {
@@ -80,12 +81,12 @@ public class DirectorSdsaTeamActivity extends AppCompatActivity {
         });
     }
 
-    // Update loadSdsaTeamData to accept reportingToId
+    // Load SDSA users reporting to Chief Business Officer and Regional Business Head
     private void loadSdsaTeamData(String reportingToId) {
         new Thread(() -> {
             try {
                 Log.d(TAG, "Loading SDSA Team data for reportingTo: " + reportingToId);
-                URL url = new URL("https://emp.kfinone.com/mobile/api/fetch_active_sdsa.php?reportingTo=" + reportingToId);
+                URL url = new URL("https://emp.kfinone.com/mobile/api/get_sdsa_users_reporting_to_designated.php");
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestMethod("GET");
                 conn.setConnectTimeout(5000);
@@ -111,7 +112,7 @@ public class DirectorSdsaTeamActivity extends AppCompatActivity {
                             sdsaList.add(new SdsaItem(
                                 sdsa.optString("first_name", ""),
                                 sdsa.optString("last_name", ""),
-                                sdsa.optString("Phone_number", ""),
+                                sdsa.optString("phone_number", ""),
                                 sdsa.optString("email_id", ""),
                                 sdsa.optString("password", ""),
                                 sdsa.optString("id", ""),
@@ -137,7 +138,7 @@ public class DirectorSdsaTeamActivity extends AppCompatActivity {
     private void fetchCboRbhUsers() {
         new Thread(() -> {
             try {
-                URL url = new URL("https://emp.kfinone.com/mobile/api/director.php?action=fetch_cbo_rbh_users");
+                URL url = new URL("https://emp.kfinone.com/mobile/api/get_director_designated_users_fixed.php");
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestMethod("GET");
                 conn.setConnectTimeout(5000);
@@ -160,11 +161,18 @@ public class DirectorSdsaTeamActivity extends AppCompatActivity {
                         for (int i = 0; i < data.length(); i++) {
                             JSONObject user = data.getJSONObject(i);
                             String userId = user.getString("id");
-                            String fullName = user.getString("firstName") + " " + user.getString("lastName");
+                            String fullName = user.getString("full_name");
                             String designation = user.getString("designation_name");
-                            userDisplayList.add(fullName + " (" + designation + ")");
+                            
+                            // Add debugging logs
+                            Log.d(TAG, "User " + i + ": ID=" + userId + ", Name=" + fullName + ", Designation=" + designation);
+                            
+                            String displayText = fullName + " (" + designation + ")";
+                            userDisplayList.add(displayText);
                             userIdList.add(userId);
                             userIdToDesignation.put(userId, designation);
+                            
+                            Log.d(TAG, "Dropdown text: " + displayText);
                         }
                         runOnUiThread(() -> {
                             ArrayAdapter<String> adapter = new ArrayAdapter<>(

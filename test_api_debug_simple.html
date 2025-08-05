@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Quick API Test</title>
+</head>
+<body>
+    <h1>Quick API Test</h1>
+    <button onclick="testAPI()">Test API</button>
+    <div id="result"></div>
+
+    <script>
+        async function testAPI() {
+            try {
+                const response = await fetch('https://emp.kfinone.com/mobile/api/get_director_designated_users.php');
+                const data = await response.json();
+                
+                let html = '<h2>API Response:</h2>';
+                html += '<pre>' + JSON.stringify(data, null, 2) + '</pre>';
+                
+                if (data.data && data.data.length > 0) {
+                    html += '<h3>Users Found:</h3>';
+                    data.data.forEach((user, index) => {
+                        html += `<p>${index + 1}. ${user.full_name} - Designation: ${user.designation_name}</p>`;
+                    });
+                }
+                
+                document.getElementById('result').innerHTML = html;
+            } catch (error) {
+                document.getElementById('result').innerHTML = '<p>Error: ' + error.message + '</p>';
+            }
+        }
+    </script>
+</body>
+</html> 
