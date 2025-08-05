@@ -92,69 +92,54 @@
 
             </LinearLayout>
 
-            <!-- Content Placeholder -->
+            <!-- Employee List Section -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:background="#FFFFFF"
                 android:padding="20dp"
-                android:elevation="2dp"
-                android:gravity="center">
+                android:elevation="2dp">
 
-                <ImageView
-                    android:layout_width="64dp"
-                    android:layout_height="64dp"
-                    android:src="@drawable/ic_active_emp"
-                    android:background="@drawable/gradient_icon_background"
-                    android:padding="16dp"
-                    android:layout_marginBottom="16dp"
-                    android:contentDescription="Active Employees" />
-
-                <TextView
+                <!-- Loading Progress -->
+                <ProgressBar
+                    android:id="@+id/loadingProgress"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Active Employee List"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:textColor="#2C3E50"
-                    android:layout_marginBottom="8dp" />
+                    android:layout_gravity="center"
+                    android:visibility="gone" />
 
+                <!-- Error Message -->
                 <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="This section will display a list of all active employees with their details."
-                    android:textSize="14sp"
-                    android:textColor="#7F8C8D"
-                    android:gravity="center"
-                    android:layout_marginBottom="16dp" />
-
-                <!-- Sample Employee List -->
-                <LinearLayout
+                    android:id="@+id/errorMessage"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:background="#F8F9FA"
-                    android:padding="16dp">
+                    android:text="Error loading employee list"
+                    android:textSize="16sp"
+                    android:textColor="#E74C3C"
+                    android:gravity="center"
+                    android:padding="20dp"
+                    android:visibility="gone" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Sample Active Employees:"
-                        android:textSize="16sp"
-                        android:textStyle="bold"
-                        android:textColor="#2C3E50"
-                        android:layout_marginBottom="8dp" />
+                <!-- Employee Count -->
+                <TextView
+                    android:id="@+id/employeeCount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Total Employees: 0"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="#2C3E50"
+                    android:layout_marginBottom="16dp" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="• John Doe - Senior Manager\n• Jane Smith - Team Lead\n• Mike Johnson - Developer\n• Sarah Wilson - Analyst\n• David Brown - Coordinator"
-                        android:textSize="14sp"
-                        android:textColor="#7F8C8D"
-                        android:lineSpacingExtra="4dp" />
-
-                </LinearLayout>
+                <!-- Employee ListView -->
+                <ListView
+                    android:id="@+id/employeeListView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:divider="#E0E0E0"
+                    android:dividerHeight="1dp"
+                    android:scrollbars="vertical" />
 
             </LinearLayout>
 

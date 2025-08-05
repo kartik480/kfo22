@@ -4,104 +4,68 @@ header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type');
 
-// Handle preflight requests
-if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
-    http_response_code(200);
-    exit();
-}
-
-require_once 'db_config.php';
+// Enable error reporting for debugging
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 
 try {
+    require_once 'db_config.php';
     $conn = getConnection();
     
-    // Get parameters from request
-    $username = isset($_GET['username']) ? $_GET['username'] : null;
-    $userId = isset($_GET['user_id']) ? $_GET['user_id'] : null;
+    // Get the username from GET parameter
+    $username = isset($_GET['username']) ? trim($_GET['username']) : '';
     
-    if (!$username && !$userId) {
-        throw new Exception("Username or user_id parameter is required");
+    if (empty($username)) {
+        throw new Exception('Username parameter is required');
     }
     
-    // Build query based on provided parameter
-    if ($username) {
-        $sql = "
-            SELECT 
-                u.id,
-                u.firstName,
-                u.lastName,
-                u.username,
-                u.email_id,
-                u.mobile,
-                u.employee_no,
-                u.designation_id,
-                u.department_id,
-                u.reportingTo,
-                u.status,
-                d.designation_name,
-                CONCAT(u.firstName, ' ', u.lastName) as fullName
-            FROM tbl_user u
-            INNER JOIN tbl_designation d ON u.designation_id = d.id
-            WHERE u.username = ?
-            AND d.designation_name = 'Chief Business Officer'
-            AND (u.status = 'Active' OR u.status = 1 OR u.status IS NULL OR u.status = '')
-        ";
-        $stmt = $conn->prepare($sql);
-        $stmt->execute([$username]);
-    } else {
-        $sql = "
-            SELECT 
-                u.id,
-                u.firstName,
-                u.lastName,
-                u.username,
-                u.email_id,
-                u.mobile,
-                u.employee_no,
-                u.designation_id,
-                u.department_id,
-                u.reportingTo,
-                u.status,
-                d.designation_name,
-                CONCAT(u.firstName, ' ', u.lastName) as fullName
-            FROM tbl_user u
-            INNER JOIN tbl_designation d ON u.designation_id = d.id
-            WHERE u.id = ?
-            AND d.designation_name = 'Chief Business Officer'
-            AND (u.status = 'Active' OR u.status = 1 OR u.status IS NULL OR u.status = '')
-        ";
-        $stmt = $conn->prepare($sql);
-        $stmt->execute([$userId]);
-    }
+    // Check if the user exists in tbl_cbo_users
+    $userSql = "SELECT * FROM tbl_cbo_users WHERE username = ?";
+    $userStmt = $conn->prepare($userSql);
+    $userStmt->execute([$username]);
+    $user = $userStmt->fetch(PDO::FETCH_ASSOC);
     
-    $user = $stmt->fetch(PDO::FETCH_ASSOC);
+    // Get all users who have this user as their reportingTo
+    $reportingToSql = "SELECT id, username, first_name, last_name, reportingTo, status FROM tbl_cbo_users WHERE reportingTo = ?";
+    $reportingToStmt = $conn->prepare($reportingToSql);
+    $reportingToStmt->execute([$username]);
+    $reportingToUsers = $reportingToStmt->fetchAll(PDO::FETCH_ASSOC);
     
-    if ($user) {
-        // User is a Chief Business Officer
-        $response = [
-            'status' => 'success',
-            'is_cbo' => true,
-            'message' => 'User is a Chief Business Officer',
-            'user_data' => $user
-        ];
-    } else {
-        // User is not a Chief Business Officer
-        $response = [
-            'status' => 'success',
-            'is_cbo' => false,
-            'message' => 'User is not a Chief Business Officer',
-            'user_data' => null
-        ];
-    }
+    // Get all unique reportingTo values in the table
+    $allReportingToSql = "SELECT DISTINCT reportingTo FROM tbl_cbo_users WHERE reportingTo IS NOT NULL AND reportingTo != '' ORDER BY reportingTo";
+    $allReportingToStmt = $conn->prepare($allReportingToSql);
+    $allReportingToStmt->execute();
+    $allReportingTo = $allReportingToStmt->fetchAll(PDO::FETCH_ASSOC);
+    
+    // Get all users in the table (limited to first 10 for readability)
+    $allUsersSql = "SELECT id, username, first_name, last_name, reportingTo, status FROM tbl_cbo_users ORDER BY id LIMIT 10";
+    $allUsersStmt = $conn->prepare($allUsersSql);
+    $allUsersStmt->execute();
+    $allUsers = $allUsersStmt->fetchAll(PDO::FETCH_ASSOC);
+    
+    $response = [
+        'status' => 'success',
+        'message' => 'CBO User Check Results',
+        'data' => [
+            'searching_for_username' => $username,
+            'user_exists_in_table' => $user ? true : false,
+            'user_details' => $user,
+            'users_reporting_to_this_user' => $reportingToUsers,
+            'count_users_reporting_to_this_user' => count($reportingToUsers),
+            'all_reportingTo_values_in_table' => $allReportingTo,
+            'sample_users_in_table' => $allUsers
+        ]
+    ];
     
     echo json_encode($response, JSON_PRETTY_PRINT);
     
 } catch (Exception $e) {
+    error_log("Check CBO User Error: " . $e->getMessage());
+    
     $response = [
         'status' => 'error',
-        'is_cbo' => false,
-        'message' => 'Server error: ' . $e->getMessage(),
-        'user_data' => null
+        'message' => 'Error: ' . $e->getMessage(),
+        'data' => []
     ];
     
     http_response_code(500);

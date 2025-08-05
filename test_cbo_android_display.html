@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CBO Active Employee List - Android Display Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .employee-card {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 16px;
+            background: white;
+        }
+        .employee-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        .employee-name {
+            font-size: 16px;
+            font-weight: bold;
+            color: #2C3E50;
+        }
+        .employee-status {
+            background: #E8F5E8;
+            color: #27AE60;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .employee-username {
+            font-size: 14px;
+            color: #7F8C8D;
+            margin-bottom: 8px;
+        }
+        .employee-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+        .detail-item {
+            font-size: 14px;
+            color: #34495E;
+        }
+        .employee-footer {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: #95A5A6;
+        }
+        .summary {
+            background: #e3f2fd;
+            padding: 16px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: bold;
+            color: #1976d2;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>CBO Active Employee List</h1>
+        <p>This shows how the Android app should display the employee data from the API response.</p>
+        
+        <div class="summary">
+            Total Employees: 2
+        </div>
+        
+        <!-- Employee 1 -->
+        <div class="employee-card">
+            <div class="employee-header">
+                <div class="employee-name">BALUSU TULASI</div>
+                <div class="employee-status">Active</div>
+            </div>
+            <div class="employee-username">Username: 90002</div>
+            <div class="employee-details">
+                <div class="detail-item">Phone: 9133369850</div>
+                <div class="detail-item">Company: KURAKULAS BUSSINESS SOLUTIONS</div>
+                <div class="detail-item">Email: balusutulasi2005@gmail.com</div>
+                <div class="detail-item">Rank: CBOUser</div>
+            </div>
+            <div class="employee-footer">
+                <div>Address: Dental Specialists, Classic Avenue, Plot No. 302, above Ameerpet Road, near R.S. Brothers, Punjagutta Officers Colony, Ameerpet, Hyderabad, Telangana 500016</div>
+                <div>Created: 2025-07-08</div>
+            </div>
+        </div>
+        
+        <!-- Employee 2 -->
+        <div class="employee-card">
+            <div class="employee-header">
+                <div class="employee-name">MADIREDDY YAMINI</div>
+                <div class="employee-status">Active</div>
+            </div>
+            <div class="employee-username">Username: 90001</div>
+            <div class="employee-details">
+                <div class="detail-item">Phone: 9133321862</div>
+                <div class="detail-item">Company: KURAKULAS BUSINESS SOLUTIONS</div>
+                <div class="detail-item">Email: madireddyyamini086@gmail.com</div>
+                <div class="detail-item">Rank: CBOUser</div>
+            </div>
+            <div class="employee-footer">
+                <div>Address: Flat No-302, 3rd Floor Classic Avenue, Near Ameerpet Dental Hospital, Hyderabad, Telangana 500016</div>
+                <div>Created: 2025-06-30</div>
+            </div>
+        </div>
+        
+        <h3>API Response Summary:</h3>
+        <ul>
+            <li><strong>Status:</strong> success</li>
+            <li><strong>Total Team Members:</strong> 2</li>
+            <li><strong>Active Members:</strong> 2</li>
+            <li><strong>Manager Found:</strong> false (expected since user_id "90000" doesn't exist as a manager)</li>
+        </ul>
+        
+        <h3>Android App Features:</h3>
+        <ul>
+            <li>✅ Displays employee list in a scrollable ListView</li>
+            <li>✅ Shows employee name, username, and status</li>
+            <li>✅ Displays contact information (phone, email)</li>
+            <li>✅ Shows company and rank information</li>
+            <li>✅ Displays address and creation date</li>
+            <li>✅ Shows total employee count</li>
+            <li>✅ Handles empty states and errors</li>
+            <li>✅ Supports pull-to-refresh functionality</li>
+        </ul>
+    </div>
+</body>
+</html> 
