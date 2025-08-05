@@ -63,12 +63,16 @@ public class DirectorTeamEmpLinksActivity extends AppCompatActivity {
         public final String mobile;
         public final String email;
         public final String reportingTo;
-        public ReportingUser(String username, String fullname, String mobile, String email, String reportingTo) {
+        public final String employeeNo;
+        public final List<String> manageIcons;
+        public ReportingUser(String username, String fullname, String mobile, String email, String reportingTo, String employeeNo, List<String> manageIcons) {
             this.username = username;
             this.fullname = fullname;
             this.mobile = mobile;
             this.email = email;
             this.reportingTo = reportingTo;
+            this.employeeNo = employeeNo;
+            this.manageIcons = manageIcons;
         }
     }
 
@@ -85,28 +89,29 @@ public class DirectorTeamEmpLinksActivity extends AppCompatActivity {
         @Override
         public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
             ReportingUser user = users.get(position);
-            holder.usernameText.setText(user.username);
-            holder.fullnameText.setText(user.fullname);
-            holder.mobileText.setText(user.mobile);
-            holder.emailText.setText(user.email);
-            holder.reportingToText.setText(user.reportingTo);
-            holder.actionButton.setOnClickListener(v -> {
-                // Placeholder for action
-            });
+            holder.employeeName.setText("Name: " + user.fullname);
+            holder.employeeId.setText("Employee ID: " + (user.employeeNo != null ? user.employeeNo : "N/A"));
+            holder.mobile.setText("Phone: " + (user.mobile != null ? user.mobile : "N/A"));
+            holder.email.setText("Email: " + (user.email != null ? user.email : "N/A"));
+            
+            // Format manage icons
+            if (user.manageIcons != null && !user.manageIcons.isEmpty()) {
+                holder.manageIcons.setText("Manage Icons: " + String.join(", ", user.manageIcons));
+            } else {
+                holder.manageIcons.setText("Manage Icons: None");
+            }
         }
         @Override
         public int getItemCount() { return users.size(); }
         class ViewHolder extends RecyclerView.ViewHolder {
-            TextView usernameText, fullnameText, mobileText, emailText, reportingToText;
-            Button actionButton;
+            TextView employeeName, employeeId, mobile, email, manageIcons;
             ViewHolder(View itemView) {
                 super(itemView);
-                usernameText = itemView.findViewById(R.id.usernameText);
-                fullnameText = itemView.findViewById(R.id.fullnameText);
-                mobileText = itemView.findViewById(R.id.mobileText);
-                emailText = itemView.findViewById(R.id.emailText);
-                reportingToText = itemView.findViewById(R.id.reportingToText);
-                actionButton = itemView.findViewById(R.id.actionButton);
+                employeeName = itemView.findViewById(R.id.employeeName);
+                employeeId = itemView.findViewById(R.id.employeeId);
+                mobile = itemView.findViewById(R.id.mobile);
+                email = itemView.findViewById(R.id.email);
+                manageIcons = itemView.findViewById(R.id.manageIcons);
             }
         }
     }
@@ -229,9 +234,7 @@ public class DirectorTeamEmpLinksActivity extends AppCompatActivity {
 
     private void fetchReportingUsersForCbo(UserItem cboUser) {
         if (cboUser == null) return;
-        // You need the CBO's user id. For this, you must include 'id' in your UserItem and in the PHP response for CBOs.
-        // For now, let's assume you have it as cboUser.id. If not, update the PHP and Android code accordingly.
-        String cboId = cboUser.id; // <-- Make sure UserItem has an 'id' field and you set it when parsing CBOs
+        String cboId = cboUser.id;
         String url = "https://emp.kfinone.com/mobile/api/get_users_reporting_to.php?cbo_id=" + cboId;
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
             new Response.Listener<JSONObject>() {
@@ -243,12 +246,24 @@ public class DirectorTeamEmpLinksActivity extends AppCompatActivity {
                             reportingUserList.clear();
                             for (int i = 0; i < data.length(); i++) {
                                 JSONObject user = data.getJSONObject(i);
+                                
+                                // Parse manage icons
+                                List<String> manageIcons = new ArrayList<>();
+                                if (user.has("manage_icons")) {
+                                    JSONArray iconsArray = user.getJSONArray("manage_icons");
+                                    for (int j = 0; j < iconsArray.length(); j++) {
+                                        manageIcons.add(iconsArray.getString(j));
+                                    }
+                                }
+                                
                                 reportingUserList.add(new ReportingUser(
                                     user.optString("username", ""),
-                                    user.optString("fullname", ""),
+                                    user.optString("fullName", ""),
                                     user.optString("mobile", ""),
-                                    user.optString("email", ""),
-                                    user.optString("reportingTo", "")
+                                    user.optString("email_id", ""),
+                                    user.optString("reportingTo", ""),
+                                    user.optString("employee_no", ""),
+                                    manageIcons
                                 ));
                             }
                             reportingUserAdapter.notifyDataSetChanged();
