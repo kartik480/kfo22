@@ -64,14 +64,20 @@ public class DirectorTeamEmpLinksActivity extends AppCompatActivity {
         public final String email;
         public final String reportingTo;
         public final String employeeNo;
+        public final String designationName;
+        public final String managerName;
+        public final String managerDesignation;
         public final List<String> manageIcons;
-        public ReportingUser(String username, String fullname, String mobile, String email, String reportingTo, String employeeNo, List<String> manageIcons) {
+        public ReportingUser(String username, String fullname, String mobile, String email, String reportingTo, String employeeNo, String designationName, String managerName, String managerDesignation, List<String> manageIcons) {
             this.username = username;
             this.fullname = fullname;
             this.mobile = mobile;
             this.email = email;
             this.reportingTo = reportingTo;
             this.employeeNo = employeeNo;
+            this.designationName = designationName;
+            this.managerName = managerName;
+            this.managerDesignation = managerDesignation;
             this.manageIcons = manageIcons;
         }
     }
@@ -94,12 +100,25 @@ public class DirectorTeamEmpLinksActivity extends AppCompatActivity {
             holder.mobile.setText("Phone: " + (user.mobile != null ? user.mobile : "N/A"));
             holder.email.setText("Email: " + (user.email != null ? user.email : "N/A"));
             
+            // Add designation and manager information
+            String designationText = "Designation: " + (user.designationName != null ? user.designationName : "N/A");
+            String managerText = "Reports to: " + (user.managerName != null ? user.managerName : "N/A") + 
+                               " (" + (user.managerDesignation != null ? user.managerDesignation : "N/A") + ")";
+            
             // Format manage icons
             if (user.manageIcons != null && !user.manageIcons.isEmpty()) {
                 holder.manageIcons.setText("Manage Icons: " + String.join(", ", user.manageIcons));
             } else {
                 holder.manageIcons.setText("Manage Icons: None");
             }
+            
+            // Update the layout to show designation and manager info
+            holder.employeeName.setText("Name: " + user.fullname + " (" + (user.designationName != null ? user.designationName : "N/A") + ")");
+            holder.employeeId.setText("Employee ID: " + (user.employeeNo != null ? user.employeeNo : "N/A"));
+            holder.mobile.setText("Phone: " + (user.mobile != null ? user.mobile : "N/A"));
+            holder.email.setText("Email: " + (user.email != null ? user.email : "N/A"));
+            holder.manageIcons.setText("Reports to: " + (user.managerName != null ? user.managerName : "N/A") + 
+                                     " (" + (user.managerDesignation != null ? user.managerDesignation : "N/A") + ")");
         }
         @Override
         public int getItemCount() { return users.size(); }
@@ -155,7 +174,7 @@ public class DirectorTeamEmpLinksActivity extends AppCompatActivity {
             }
         };
         userSpinner.setAdapter(userAdapter);
-        fetchChiefBusinessOfficers();
+        fetchDesignatedUsers();
         reportingUsersRecyclerView = findViewById(R.id.reportingUsersRecyclerView);
         reportingUserAdapter = new ReportingUserAdapter(reportingUserList);
         reportingUsersRecyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -164,7 +183,13 @@ public class DirectorTeamEmpLinksActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(android.widget.AdapterView<?> parent, View view, int position, long id) {
                 selectedCboUser = userAdapter.getItem(position);
-                fetchReportingUsersForCbo(selectedCboUser);
+                if (position == 0) {
+                    // First item is "All Users" - show all reporting users
+                    fetchAllReportingUsers();
+                } else {
+                    // Specific user selected - show users reporting to that specific user
+                    fetchReportingUsersForCbo(selectedCboUser);
+                }
             }
             @Override
             public void onNothingSelected(android.widget.AdapterView<?> parent) {
@@ -172,6 +197,9 @@ public class DirectorTeamEmpLinksActivity extends AppCompatActivity {
                 reportingUserAdapter.notifyDataSetChanged();
             }
         });
+        
+        // Load all reporting users by default
+        fetchAllReportingUsers();
     }
 
     private void setupToolbar() {
@@ -192,8 +220,8 @@ public class DirectorTeamEmpLinksActivity extends AppCompatActivity {
         if (lastName != null) intent.putExtra("LAST_NAME", lastName);
     }
 
-    private void fetchChiefBusinessOfficers() {
-        String url = "https://emp.kfinone.com/mobile/api/get_chief_business_officers.php";
+    private void fetchDesignatedUsers() {
+        String url = "https://emp.kfinone.com/mobile/api/ManagingDirectorUsers.php";
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
             new Response.Listener<JSONObject>() {
                 @Override
@@ -202,6 +230,10 @@ public class DirectorTeamEmpLinksActivity extends AppCompatActivity {
                         if ("success".equals(response.getString("status"))) {
                             JSONArray data = response.getJSONArray("data");
                             userList.clear();
+                            
+                            // Add "All Users" option at the beginning
+                            userList.add(new UserItem("all", "All Users", "", "All Designated Users"));
+                            
                             if (data.length() == 0) {
                                 Toast.makeText(DirectorTeamEmpLinksActivity.this, "No Chief Business Officer found.", Toast.LENGTH_LONG).show();
                             }
@@ -226,6 +258,66 @@ public class DirectorTeamEmpLinksActivity extends AppCompatActivity {
                 @Override
                 public void onErrorResponse(VolleyError error) {
                     Toast.makeText(DirectorTeamEmpLinksActivity.this, "Network error: " + error.getMessage(), Toast.LENGTH_LONG).show();
+                }
+            });
+        RequestQueue queue = Volley.newRequestQueue(this);
+        queue.add(request);
+    }
+
+    private void fetchAllReportingUsers() {
+        String url = "https://emp.kfinone.com/mobile/api/get_all_reporting_users.php";
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
+            new Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject response) {
+                    try {
+                        if ("success".equals(response.getString("status"))) {
+                            JSONArray data = response.getJSONArray("data");
+                            reportingUserList.clear();
+                            for (int i = 0; i < data.length(); i++) {
+                                JSONObject user = data.getJSONObject(i);
+                                
+                                // Parse manage icons
+                                List<String> manageIcons = new ArrayList<>();
+                                if (user.has("manage_icons")) {
+                                    JSONArray iconsArray = user.getJSONArray("manage_icons");
+                                    for (int j = 0; j < iconsArray.length(); j++) {
+                                        manageIcons.add(iconsArray.getString(j));
+                                    }
+                                }
+                                
+                                reportingUserList.add(new ReportingUser(
+                                    user.optString("username", ""),
+                                    user.optString("fullName", ""),
+                                    user.optString("mobile", ""),
+                                    user.optString("email_id", ""),
+                                    user.optString("reportingTo", ""),
+                                    user.optString("employee_no", ""),
+                                    user.optString("designation_name", ""),
+                                    user.optString("manager_name", ""),
+                                    user.optString("manager_designation", ""),
+                                    manageIcons
+                                ));
+                            }
+                            reportingUserAdapter.notifyDataSetChanged();
+                        } else {
+                            Toast.makeText(DirectorTeamEmpLinksActivity.this, "API error: " + response.optString("message", "Unknown error"), Toast.LENGTH_LONG).show();
+                            reportingUserList.clear();
+                            reportingUserAdapter.notifyDataSetChanged();
+                        }
+                    } catch (Exception e) {
+                        Toast.makeText(DirectorTeamEmpLinksActivity.this, "Parsing error: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                        reportingUserList.clear();
+                        reportingUserAdapter.notifyDataSetChanged();
+                    }
+                }
+            },
+            new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Toast.makeText(DirectorTeamEmpLinksActivity.this, "Network error: " + error.getMessage(), Toast.LENGTH_LONG).show();
+                    reportingUserList.clear();
+                    reportingUserAdapter.notifyDataSetChanged();
                 }
             });
         RequestQueue queue = Volley.newRequestQueue(this);
@@ -263,6 +355,9 @@ public class DirectorTeamEmpLinksActivity extends AppCompatActivity {
                                     user.optString("email_id", ""),
                                     user.optString("reportingTo", ""),
                                     user.optString("employee_no", ""),
+                                    user.optString("designation_name", ""),
+                                    "", // manager name not available in this API
+                                    "", // manager designation not available in this API
                                     manageIcons
                                 ));
                             }
