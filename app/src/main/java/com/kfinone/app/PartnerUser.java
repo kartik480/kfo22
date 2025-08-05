@@ -216,6 +216,18 @@ public class PartnerUser {
     public void setCreatorDesignationName(String creatorDesignationName) { this.creatorDesignationName = creatorDesignationName; }
 
     // Helper methods
+    public void setFullName(String fullName) {
+        // This method is for compatibility, but we'll use firstName and lastName instead
+        if (fullName != null && !fullName.isEmpty()) {
+            String[] parts = fullName.split(" ", 2);
+            if (parts.length > 0) {
+                this.firstName = parts[0];
+            }
+            if (parts.length > 1) {
+                this.lastName = parts[1];
+            }
+        }
+    }
     public String getFullName() {
         String firstName = getFirstName();
         String lastName = getLastName();

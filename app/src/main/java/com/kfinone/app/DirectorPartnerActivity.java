@@ -61,7 +61,7 @@ public class DirectorPartnerActivity extends AppCompatActivity {
         });
 
         teamPartnerBox.setOnClickListener(v -> {
-            Intent intent = new Intent(this, ManagingDirectorPartnersTeamActivity.class);
+            Intent intent = new Intent(this, DirectorPartnerTeamActivity.class);
             passUserDataToIntent(intent);
             intent.putExtra("SOURCE_PANEL", "DIRECTOR_PANEL");
             startActivity(intent);
