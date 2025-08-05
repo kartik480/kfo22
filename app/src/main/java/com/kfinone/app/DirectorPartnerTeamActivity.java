@@ -28,6 +28,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class DirectorPartnerTeamActivity extends AppCompatActivity implements PartnerUserAdapter.OnPartnerUserActionListener {
@@ -212,7 +213,7 @@ public class DirectorPartnerTeamActivity extends AppCompatActivity implements Pa
 
     private void loadPartnerData() {
         showLoading(true);
-        String url = BASE_URL + "managing_director_partners_team_new.php";
+        String url = BASE_URL + "get_partner_users_by_cbo_rbh_creators_simple.php";
         
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
             response -> {
@@ -223,28 +224,42 @@ public class DirectorPartnerTeamActivity extends AppCompatActivity implements Pa
                         JSONArray data = response.getJSONArray("data");
                         allPartnerUsersList.clear();
                         
+                        // Parse the safe data structure with only existing fields
                         for (int i = 0; i < data.length(); i++) {
                             JSONObject partnerObj = data.getJSONObject(i);
                             PartnerUser partnerUser = new PartnerUser();
                             
+                            // Basic Information
                             partnerUser.setId(partnerObj.optString("id", ""));
                             partnerUser.setUsername(partnerObj.optString("username", ""));
                             partnerUser.setFirstName(partnerObj.optString("first_name", ""));
                             partnerUser.setLastName(partnerObj.optString("last_name", ""));
-                            partnerUser.setPhoneNumber(partnerObj.optString("phone_number", ""));
+                            
+                            // Contact Information
+                            partnerUser.setPhoneNumber(partnerObj.optString("Phone_number", ""));
                             partnerUser.setEmailId(partnerObj.optString("email_id", ""));
+                            
+                            // Company Information
                             partnerUser.setCompanyName(partnerObj.optString("company_name", ""));
                             partnerUser.setDepartment(partnerObj.optString("department", ""));
                             partnerUser.setDesignation(partnerObj.optString("designation", ""));
-                            partnerUser.setBranchState(partnerObj.optString("branchstate", ""));
-                            partnerUser.setBranchLocation(partnerObj.optString("branchloaction", ""));
-                            partnerUser.setBankName(partnerObj.optString("bank_name", ""));
-                            partnerUser.setAccountType(partnerObj.optString("account_type", ""));
+                            partnerUser.setEmployeeNo(partnerObj.optString("employee_no", ""));
+                            
+                            // Status and Reporting
                             partnerUser.setStatus(partnerObj.optString("status", ""));
                             partnerUser.setReportingTo(partnerObj.optString("reportingTo", ""));
-                            partnerUser.setEmployeeNo(partnerObj.optString("employee_no", ""));
-                            partnerUser.setCreatedBy(partnerObj.optString("createdBy", ""));
+                            partnerUser.setRank(partnerObj.optString("rank", ""));
+                            
+                            // Partner Type
+                            partnerUser.setPartnerTypeId(partnerObj.optString("partner_type_id", ""));
+                            
+                            // Timestamps
                             partnerUser.setCreatedAt(partnerObj.optString("created_at", ""));
+                            partnerUser.setCreatedBy(partnerObj.optString("createdBy", ""));
+                            
+                            // Creator Information (from JOIN)
+                            partnerUser.setCreatorName(partnerObj.optString("creator_username", ""));
+                            partnerUser.setCreatorDesignationName(partnerObj.optString("creator_first_name", "") + " " + partnerObj.optString("creator_last_name", ""));
                             
                             allPartnerUsersList.add(partnerUser);
                         }

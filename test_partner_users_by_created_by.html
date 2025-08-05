@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Partner Users by CreatedBy API</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        .test-section {
+            margin-bottom: 30px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .test-section h3 {
+            margin-top: 0;
+            color: #555;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        input[type="text"] {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin: 5px;
+            width: 200px;
+        }
+        .result {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 15px;
+            margin-top: 10px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .error {
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+        .success {
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+        }
+        .url-display {
+            background-color: #e9ecef;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: monospace;
+            margin: 10px 0;
+            word-break: break-all;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test Partner Users by CreatedBy API</h1>
+    
+    <div class="container">
+        <div class="test-section">
+            <h3>1. Get All Partner Users Grouped by CreatedBy</h3>
+            <p>This will fetch all partner users grouped by their createdBy value, showing count and list of users for each creator.</p>
+            <button onclick="testGetAllGrouped()">Test Get All Grouped by CreatedBy</button>
+            <div id="result1" class="result" style="display: none;"></div>
+        </div>
+        
+        <div class="test-section">
+            <h3>2. Get Partner Users by Specific CreatedBy</h3>
+            <p>Enter a createdBy value to fetch partner users created by that specific user.</p>
+            <input type="text" id="createdByInput" placeholder="Enter createdBy value (e.g., 11, 5, etc.)">
+            <button onclick="testGetByCreatedBy()">Test Get by CreatedBy</button>
+            <div id="result2" class="result" style="display: none;"></div>
+        </div>
+        
+        <div class="test-section">
+            <h3>3. Postman URLs</h3>
+            <p><strong>Get All Grouped by CreatedBy:</strong></p>
+            <div class="url-display">GET https://emp.kfinone.com/mobile/api/get_partner_users_by_created_by.php</div>
+            
+            <p><strong>Get by Specific CreatedBy:</strong></p>
+            <div class="url-display">GET https://emp.kfinone.com/mobile/api/get_partner_users_by_created_by.php?createdBy=11</div>
+            <p><em>Replace "11" with any createdBy value you want to test</em></p>
+        </div>
+    </div>
+
+    <script>
+        const BASE_URL = 'https://emp.kfinone.com/mobile/api/get_partner_users_by_created_by.php';
+        
+        async function testGetAllGrouped() {
+            const resultDiv = document.getElementById('result1');
+            resultDiv.style.display = 'block';
+            resultDiv.className = 'result';
+            resultDiv.textContent = 'Loading...';
+            
+            try {
+                const response = await fetch(BASE_URL);
+                const data = await response.json();
+                
+                resultDiv.className = data.status === 'success' ? 'result success' : 'result error';
+                resultDiv.textContent = JSON.stringify(data, null, 2);
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.textContent = 'Error: ' + error.message;
+            }
+        }
+        
+        async function testGetByCreatedBy() {
+            const createdBy = document.getElementById('createdByInput').value.trim();
+            if (!createdBy) {
+                alert('Please enter a createdBy value');
+                return;
+            }
+            
+            const resultDiv = document.getElementById('result2');
+            resultDiv.style.display = 'block';
+            resultDiv.className = 'result';
+            resultDiv.textContent = 'Loading...';
+            
+            try {
+                const url = `${BASE_URL}?createdBy=${encodeURIComponent(createdBy)}`;
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                resultDiv.className = data.status === 'success' ? 'result success' : 'result error';
+                resultDiv.textContent = JSON.stringify(data, null, 2);
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.textContent = 'Error: ' + error.message;
+            }
+        }
+        
+        // Auto-test on page load
+        window.onload = function() {
+            console.log('Test page loaded. You can now test the API.');
+        };
+    </script>
+</body>
+</html> 

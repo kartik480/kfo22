@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Safe API Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        .result {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 15px;
+            margin-top: 10px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 600px;
+            overflow-y: auto;
+        }
+        .error {
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+        .success {
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+        }
+    </style>
+</head>
+<body>
+    <h1>Safe API Test</h1>
+    
+    <div class="container">
+        <h3>Test Safe Partner Users API</h3>
+        <p>Testing the safe version with only existing fields</p>
+        <div id="result" class="result" style="display: none;"></div>
+    </div>
+
+    <script>
+        const API_URL = 'https://emp.kfinone.com/mobile/api/get_partner_users_by_cbo_rbh_creators_simple.php';
+        
+        async function testAPI() {
+            const resultDiv = document.getElementById('result');
+            resultDiv.style.display = 'block';
+            resultDiv.className = 'result';
+            resultDiv.textContent = 'Loading...';
+            
+            try {
+                console.log('Testing safe API:', API_URL);
+                const response = await fetch(API_URL);
+                const responseText = await response.text();
+                
+                console.log('Response status:', response.status);
+                console.log('Response text:', responseText);
+                
+                if (response.ok) {
+                    resultDiv.className = 'result success';
+                    resultDiv.textContent = `Status: ${response.status}\n\nResponse:\n${responseText}`;
+                } else {
+                    resultDiv.className = 'result error';
+                    resultDiv.textContent = `Error Status: ${response.status}\n\nResponse:\n${responseText}`;
+                }
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.textContent = 'Error: ' + error.message + '\n\nStack trace:\n' + error.stack;
+            }
+        }
+        
+        // Auto-test on page load
+        window.onload = function() {
+            console.log('Safe test page loaded. Testing API...');
+            testAPI();
+        };
+    </script>
+</body>
+</html> 

@@ -74,6 +74,7 @@ public class PartnerUserAdapter extends RecyclerView.Adapter<PartnerUserAdapter.
         private TextView partnerCreatedAt;
         private TextView partnerCreatorName;
         private TextView partnerCreatorDesignation;
+        private TextView partnerIdentityInfo;
         private Chip statusChip;
         private MaterialButton viewDetailsButton;
         private MaterialButton editButton;
@@ -98,6 +99,7 @@ public class PartnerUserAdapter extends RecyclerView.Adapter<PartnerUserAdapter.
             partnerCreatedAt = itemView.findViewById(R.id.partnerCreatedAt);
             partnerCreatorName = itemView.findViewById(R.id.partnerCreatorName);
             partnerCreatorDesignation = itemView.findViewById(R.id.partnerCreatorDesignation);
+            partnerIdentityInfo = itemView.findViewById(R.id.partnerIdentityInfo);
             statusChip = itemView.findViewById(R.id.statusChip);
             viewDetailsButton = itemView.findViewById(R.id.viewDetailsButton);
             editButton = itemView.findViewById(R.id.editButton);
@@ -105,23 +107,70 @@ public class PartnerUserAdapter extends RecyclerView.Adapter<PartnerUserAdapter.
         }
 
         public void bind(PartnerUser partnerUser) {
-            // Set basic information
+            // Set comprehensive information
             partnerName.setText(partnerUser.getFullName());
+            
+            // Basic Information
             partnerUsername.setText("Username: " + partnerUser.getUsername());
+            
+            // Contact Information
             partnerPhone.setText("Phone: " + partnerUser.getPhoneNumber());
+            
             partnerEmail.setText("Email: " + partnerUser.getEmailId());
-            partnerCompany.setText("Company: " + partnerUser.getCompanyName());
+            
+            // Company Information
+            String companyInfo = "Company: " + partnerUser.getCompanyName();
+            if (!partnerUser.getEmployeeNo().isEmpty()) {
+                companyInfo += " | Employee No: " + partnerUser.getEmployeeNo();
+            }
+            partnerCompany.setText(companyInfo);
+            
             partnerDepartment.setText("Department: " + partnerUser.getDepartment());
             partnerDesignation.setText("Designation: " + partnerUser.getDesignation());
-            partnerEmployeeNo.setText("Employee No: " + partnerUser.getEmployeeNo());
-            partnerBranchState.setText("Branch State: " + partnerUser.getBranchState());
-            partnerBranchLocation.setText("Branch Location: " + partnerUser.getBranchLocation());
-            partnerBankName.setText("Bank: " + partnerUser.getBankName());
-            partnerAccountType.setText("Account Type: " + partnerUser.getAccountType());
-            partnerStatus.setText("Status: " + partnerUser.getStatus());
-            partnerCreatedAt.setText("Created: " + partnerUser.getCreatedAt());
-            partnerCreatorName.setText("Created By: " + partnerUser.getCreatorName());
-            partnerCreatorDesignation.setText("Creator Designation: " + partnerUser.getCreatorDesignationName());
+            
+            // Location Information (simplified)
+            partnerBranchState.setText("Branch State: N/A");
+            
+            // Banking Information (simplified)
+            partnerBankName.setText("Bank: N/A");
+            
+            // Status and Timestamps
+            String statusInfo = "Status: " + partnerUser.getStatus();
+            if (!partnerUser.getRank().isEmpty()) {
+                statusInfo += " | Rank: " + partnerUser.getRank();
+            }
+            partnerStatus.setText(statusInfo);
+            
+            String createdInfo = "Created: " + partnerUser.getCreatedAt();
+            if (!partnerUser.getCreatedBy().isEmpty()) {
+                createdInfo += " | By: " + partnerUser.getCreatedBy();
+            }
+            partnerCreatedAt.setText(createdInfo);
+            
+            // Creator Information
+            String creatorInfo = "Created By: " + partnerUser.getCreatorName();
+            if (!partnerUser.getCreatorDesignationName().isEmpty()) {
+                creatorInfo += " (" + partnerUser.getCreatorDesignationName() + ")";
+            }
+            partnerCreatorName.setText(creatorInfo);
+            
+            // Identity Information (simplified)
+            partnerIdentityInfo.setText("Identity: N/A");
+            
+            // Additional Information (using existing fields)
+            String additionalInfo = "";
+            if (!partnerUser.getReportingTo().isEmpty()) {
+                additionalInfo += "Reports To: " + partnerUser.getReportingTo() + " | ";
+            }
+            if (!partnerUser.getPartnerTypeId().isEmpty()) {
+                additionalInfo += "Partner Type ID: " + partnerUser.getPartnerTypeId();
+            }
+            
+            if (!additionalInfo.isEmpty()) {
+                partnerCreatorDesignation.setText(additionalInfo);
+            } else {
+                partnerCreatorDesignation.setText("Creator Designation: " + partnerUser.getCreatorDesignationName());
+            }
 
             // Set status chip
             if ("1".equals(partnerUser.getStatus()) || "Active".equalsIgnoreCase(partnerUser.getStatus())) {

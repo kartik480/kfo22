@@ -179,6 +179,24 @@
 
         </LinearLayout>
 
+        <!-- Identity Information Section -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginBottom="12dp">
+
+            <TextView
+                android:id="@+id/partnerIdentityInfo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Identity: N/A"
+                android:textSize="14sp"
+                android:textColor="#555555"
+                android:layout_marginBottom="4dp" />
+
+        </LinearLayout>
+
         <!-- Status and Created Date -->
         <LinearLayout
             android:layout_width="match_parent"
