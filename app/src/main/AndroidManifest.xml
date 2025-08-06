@@ -986,6 +986,18 @@
               android:parentActivityName=".RBHMySdsaPanelActivity"
               android:theme="@style/FullscreenTheme" />
           <activity
+              android:name=".RBHMySdsaActivity"
+              android:exported="false"
+              android:label="RBH My SDSA Users"
+              android:parentActivityName=".RBHSdsaActivity"
+              android:theme="@style/FullscreenTheme" />
+          <activity
+              android:name=".BHMySdsaActivity"
+              android:exported="false"
+              android:label="BH My SDSA Users"
+              android:parentActivityName=".BHSdsaActivity"
+              android:theme="@style/FullscreenTheme" />
+          <activity
               android:name=".RegionalBusinessHeadMyPartnerPanelActivity"
               android:exported="false"
               android:label="RBH My Partner Panel"

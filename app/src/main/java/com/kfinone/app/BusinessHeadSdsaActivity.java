@@ -54,7 +54,7 @@ public class BusinessHeadSdsaActivity extends AppCompatActivity {
 
         // SDSA boxes click listeners
         mySdsaBox.setOnClickListener(v -> {
-            Intent intent = new Intent(this, BusinessHeadMySdsaActivity.class);
+            Intent intent = new Intent(this, BHMySdsaActivity.class);
             passUserDataToIntent(intent);
             startActivity(intent);
         });

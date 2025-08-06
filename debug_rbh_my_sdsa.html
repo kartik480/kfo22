@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RBH My SDSA Debug</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .debug-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+        }
+        .debug-section h3 {
+            color: #34495e;
+            margin-top: 0;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        .success {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .error {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .info {
+            background-color: #d1ecf1;
+            border: 1px solid #bee5eb;
+            color: #0c5460;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .warning {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        pre {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+            font-size: 12px;
+            border: 1px solid #e9ecef;
+        }
+        .log-entry {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 10px;
+            margin: 5px 0;
+            font-family: monospace;
+            font-size: 12px;
+        }
+        .log-entry.error {
+            background: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+        .log-entry.success {
+            background: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+        }
+        .log-entry.info {
+            background: #d1ecf1;
+            border-color: #bee5eb;
+            color: #0c5460;
+        }
+        .test-input {
+            width: 100%;
+            padding: 8px;
+            margin: 5px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .debug-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        .debug-details {
+            background: #e8f4fd;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+        }
+        .debug-details h4 {
+            margin: 0 0 10px 0;
+            color: #2c3e50;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 RBH My SDSA Debug Panel</h1>
+        
+        <div class="debug-section">
+            <h3>📋 Test Configuration</h3>
+            <div class="debug-details">
+                <h4>Current Settings:</h4>
+                <p><strong>API URL:</strong> <span id="apiUrl">https://emp.kfinone.com/mobile/api/get_rbh_my_sdsa_users.php</span></p>
+                <p><strong>Test User ID:</strong> <input type="text" id="testUserId" class="test-input" value="21" placeholder="Enter user ID to test"></p>
+                <p><strong>Status Filter:</strong> <input type="text" id="statusFilter" class="test-input" value="active" placeholder="Enter status filter"></p>
+            </div>
+            <button onclick="updateTestConfig()">Update Configuration</button>
+        </div>
+
+        <div class="debug-section">
+            <h3>🔧 Step-by-Step Debug Tests</h3>
+            <div class="debug-grid">
+                <div>
+                    <h4>1. Basic API Test</h4>
+                    <button onclick="testBasicAPI()">Test Basic API Call</button>
+                    <div id="basicTestResult"></div>
+                </div>
+                <div>
+                    <h4>2. User Verification Test</h4>
+                    <button onclick="testUserVerification()">Test User Verification</button>
+                    <div id="userVerificationResult"></div>
+                </div>
+            </div>
+            <div class="debug-grid">
+                <div>
+                    <h4>3. Database Connection Test</h4>
+                    <button onclick="testDatabaseConnection()">Test Database</button>
+                    <div id="databaseTestResult"></div>
+                </div>
+                <div>
+                    <h4>4. SDSA Data Test</h4>
+                    <button onclick="testSdsaData()">Test SDSA Data</button>
+                    <div id="sdsaDataResult"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="debug-section">
+            <h3>📊 Full API Response Debug</h3>
+            <button onclick="runFullDebug()">Run Complete Debug</button>
+            <div id="fullDebugResult"></div>
+        </div>
+
+        <div class="debug-section">
+            <h3>📝 Debug Log</h3>
+            <div id="debugLog"></div>
+            <button onclick="clearLog()">Clear Log</button>
+        </div>
+
+        <div class="debug-section">
+            <h3>🔍 Common Issues & Solutions</h3>
+            <div class="info">
+                <h4>Potential Issues:</h4>
+                <ul>
+                    <li><strong>404 Error:</strong> API file not found on server</li>
+                    <li><strong>500 Error:</strong> Server-side PHP error</li>
+                    <li><strong>Access Denied:</strong> User verification failed</li>
+                    <li><strong>No Data:</strong> No SDSA users found for the user ID</li>
+                    <li><strong>Database Error:</strong> Connection or query issues</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let debugLog = [];
+
+        function log(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            const logEntry = `[${timestamp}] ${message}`;
+            debugLog.push({ message: logEntry, type });
+            
+            const logDiv = document.getElementById('debugLog');
+            const logElement = document.createElement('div');
+            logElement.className = `log-entry ${type}`;
+            logElement.textContent = logEntry;
+            logDiv.appendChild(logElement);
+            
+            console.log(logEntry);
+        }
+
+        function clearLog() {
+            document.getElementById('debugLog').innerHTML = '';
+            debugLog = [];
+        }
+
+        function updateTestConfig() {
+            const userId = document.getElementById('testUserId').value;
+            const status = document.getElementById('statusFilter').value;
+            const apiUrl = document.getElementById('apiUrl').textContent;
+            
+            log(`Configuration updated - User ID: ${userId}, Status: ${status}`, 'info');
+            log(`Full API URL: ${apiUrl}?reportingTo=${userId}&status=${status}`, 'info');
+        }
+
+        async function testBasicAPI() {
+            const resultDiv = document.getElementById('basicTestResult');
+            resultDiv.innerHTML = '<div class="info">Testing basic API call...</div>';
+            
+            try {
+                const userId = document.getElementById('testUserId').value;
+                const status = document.getElementById('statusFilter').value;
+                const url = `https://emp.kfinone.com/mobile/api/get_rbh_my_sdsa_users.php?reportingTo=${userId}&status=${status}`;
+                
+                log(`Testing URL: ${url}`, 'info');
+                
+                const response = await fetch(url);
+                const responseText = await response.text();
+                
+                log(`Response Status: ${response.status}`, response.status === 200 ? 'success' : 'error');
+                log(`Response Headers: ${JSON.stringify(Object.fromEntries(response.headers.entries()))}`, 'info');
+                
+                let data;
+                try {
+                    data = JSON.parse(responseText);
+                    log('JSON parsing successful', 'success');
+                } catch (e) {
+                    log(`JSON parsing failed: ${e.message}`, 'error');
+                    resultDiv.innerHTML = `<div class="error">JSON Parse Error: ${e.message}</div><pre>${responseText}</pre>`;
+                    return;
+                }
+                
+                if (data.success) {
+                    log(`API call successful - Found ${data.count || 0} users`, 'success');
+                    resultDiv.innerHTML = `<div class="success">✅ API call successful<br>Users found: ${data.count || 0}<br>Message: ${data.message}</div>`;
+                } else {
+                    log(`API call failed: ${data.message}`, 'error');
+                    resultDiv.innerHTML = `<div class="error">❌ API call failed<br>Error: ${data.message}</div>`;
+                }
+                
+            } catch (error) {
+                log(`Network error: ${error.message}`, 'error');
+                resultDiv.innerHTML = `<div class="error">Network error: ${error.message}</div>`;
+            }
+        }
+
+        async function testUserVerification() {
+            const resultDiv = document.getElementById('userVerificationResult');
+            resultDiv.innerHTML = '<div class="info">Testing user verification...</div>';
+            
+            try {
+                const userId = document.getElementById('testUserId').value;
+                const url = `https://emp.kfinone.com/mobile/api/check_user_designation.php?user_id=${userId}`;
+                
+                log(`Testing user verification for ID: ${userId}`, 'info');
+                
+                const response = await fetch(url);
+                const responseText = await response.text();
+                
+                let data;
+                try {
+                    data = JSON.parse(responseText);
+                } catch (e) {
+                    log(`User verification JSON parse failed: ${e.message}`, 'error');
+                    resultDiv.innerHTML = `<div class="error">JSON Parse Error: ${e.message}</div><pre>${responseText}</pre>`;
+                    return;
+                }
+                
+                if (data.success) {
+                    log(`User verification successful - User: ${data.user.full_name}, Designation: ${data.user.designation}`, 'success');
+                    resultDiv.innerHTML = `<div class="success">✅ User found<br>Name: ${data.user.full_name}<br>Designation: ${data.user.designation}<br>Is RBH: ${data.is_rbh ? 'Yes' : 'No'}</div>`;
+                } else {
+                    log(`User verification failed: ${data.message}`, 'error');
+                    resultDiv.innerHTML = `<div class="error">❌ User verification failed<br>Error: ${data.message}</div>`;
+                }
+                
+            } catch (error) {
+                log(`User verification network error: ${error.message}`, 'error');
+                resultDiv.innerHTML = `<div class="error">Network error: ${error.message}</div>`;
+            }
+        }
+
+        async function testDatabaseConnection() {
+            const resultDiv = document.getElementById('databaseTestResult');
+            resultDiv.innerHTML = '<div class="info">Testing database connection...</div>';
+            
+            try {
+                const url = 'https://emp.kfinone.com/mobile/api/get_all_designations.php';
+                
+                log('Testing database connection via designations API', 'info');
+                
+                const response = await fetch(url);
+                const responseText = await response.text();
+                
+                let data;
+                try {
+                    data = JSON.parse(responseText);
+                } catch (e) {
+                    log(`Database test JSON parse failed: ${e.message}`, 'error');
+                    resultDiv.innerHTML = `<div class="error">JSON Parse Error: ${e.message}</div><pre>${responseText}</pre>`;
+                    return;
+                }
+                
+                if (data.success) {
+                    log(`Database connection successful - Found ${data.designations.length} designations`, 'success');
+                    resultDiv.innerHTML = `<div class="success">✅ Database connection successful<br>Designations found: ${data.designations.length}</div>`;
+                } else {
+                    log(`Database connection failed: ${data.message}`, 'error');
+                    resultDiv.innerHTML = `<div class="error">❌ Database connection failed<br>Error: ${data.message}</div>`;
+                }
+                
+            } catch (error) {
+                log(`Database test network error: ${error.message}`, 'error');
+                resultDiv.innerHTML = `<div class="error">Network error: ${error.message}</div>`;
+            }
+        }
+
+        async function testSdsaData() {
+            const resultDiv = document.getElementById('sdsaDataResult');
+            resultDiv.innerHTML = '<div class="info">Testing SDSA data...</div>';
+            
+            try {
+                const userId = document.getElementById('testUserId').value;
+                const url = `https://emp.kfinone.com/mobile/api/get_rbh_my_sdsa_users.php?reportingTo=${userId}&status=active`;
+                
+                log(`Testing SDSA data for user ID: ${userId}`, 'info');
+                
+                const response = await fetch(url);
+                const responseText = await response.text();
+                
+                let data;
+                try {
+                    data = JSON.parse(responseText);
+                } catch (e) {
+                    log(`SDSA data JSON parse failed: ${e.message}`, 'error');
+                    resultDiv.innerHTML = `<div class="error">JSON Parse Error: ${e.message}</div><pre>${responseText}</pre>`;
+                    return;
+                }
+                
+                if (data.success) {
+                    const userCount = data.users ? data.users.length : 0;
+                    log(`SDSA data test successful - Found ${userCount} SDSA users`, 'success');
+                    
+                    let resultHtml = `<div class="success">✅ SDSA data test successful<br>Users found: ${userCount}</div>`;
+                    
+                    if (data.statistics) {
+                        resultHtml += `<div class="info">Statistics: Total=${data.statistics.total_users}, Designations=${data.statistics.unique_designations}, Departments=${data.statistics.unique_departments}</div>`;
+                    }
+                    
+                    if (userCount > 0 && data.users) {
+                        resultHtml += '<div class="info">Sample users:</div>';
+                        data.users.slice(0, 3).forEach((user, index) => {
+                            resultHtml += `<div class="log-entry info">${index + 1}. ${user.first_name} ${user.last_name} (${user.designation || 'No designation'})</div>`;
+                        });
+                    }
+                    
+                    resultDiv.innerHTML = resultHtml;
+                } else {
+                    log(`SDSA data test failed: ${data.message}`, 'error');
+                    resultDiv.innerHTML = `<div class="error">❌ SDSA data test failed<br>Error: ${data.message}</div>`;
+                }
+                
+            } catch (error) {
+                log(`SDSA data test network error: ${error.message}`, 'error');
+                resultDiv.innerHTML = `<div class="error">Network error: ${error.message}</div>`;
+            }
+        }
+
+        async function runFullDebug() {
+            const resultDiv = document.getElementById('fullDebugResult');
+            resultDiv.innerHTML = '<div class="info">Running complete debug...</div>';
+            
+            log('=== Starting Complete RBH My SDSA Debug ===', 'info');
+            
+            // Clear previous results
+            document.getElementById('basicTestResult').innerHTML = '';
+            document.getElementById('userVerificationResult').innerHTML = '';
+            document.getElementById('databaseTestResult').innerHTML = '';
+            document.getElementById('sdsaDataResult').innerHTML = '';
+            
+            // Run all tests sequentially
+            await testDatabaseConnection();
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            await testUserVerification();
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            await testBasicAPI();
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            await testSdsaData();
+            
+            log('=== Complete Debug Finished ===', 'info');
+            
+            resultDiv.innerHTML = '<div class="success">✅ Complete debug finished. Check individual test results above.</div>';
+        }
+
+        // Auto-run basic test on page load
+        window.onload = function() {
+            log('RBH My SDSA Debug Panel loaded', 'info');
+            setTimeout(() => {
+                testBasicAPI();
+            }, 1000);
+        };
+    </script>
+</body>
+</html> 
