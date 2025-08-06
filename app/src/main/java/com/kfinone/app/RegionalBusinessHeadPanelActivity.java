@@ -3,17 +3,15 @@ package com.kfinone.app;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class RegionalBusinessHeadPanelActivity extends AppCompatActivity {
     private TextView totalEmpCount, totalSdsaCount, totalPartnerCount, totalPortfolioCount, totalAgentCount, welcomeText;
     private View notificationIcon, profileIcon, menuButton;
     private String userName;
-    private BottomNavigationView rbhBottomNav;
+    private String userId;
     
     // Action card views
     private View cardTotalEmp, cardPortfolio, cardTeam, cardReports, cardAnalytics, cardStrategy, 
@@ -23,12 +21,6 @@ public class RegionalBusinessHeadPanelActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        
-        // Hide status bar and make fullscreen
-        getWindow().setFlags(
-            WindowManager.LayoutParams.FLAG_FULLSCREEN,
-            WindowManager.LayoutParams.FLAG_FULLSCREEN
-        );
         
         setContentView(R.layout.activity_regional_business_head_panel);
         
@@ -72,7 +64,6 @@ public class RegionalBusinessHeadPanelActivity extends AppCompatActivity {
         notificationIcon = findViewById(R.id.notificationIcon);
         profileIcon = findViewById(R.id.profileIcon);
         menuButton = findViewById(R.id.menuButton);
-        rbhBottomNav = findViewById(R.id.rbhBottomNav);
     }
 
     private void setupClickListeners() {
@@ -181,24 +172,6 @@ public class RegionalBusinessHeadPanelActivity extends AppCompatActivity {
             Intent intent = new Intent(this, RBHInsurancePanelActivity.class);
             intent.putExtra("USERNAME", userName);
             startActivity(intent);
-        });
-
-        rbhBottomNav.setOnItemSelectedListener(item -> {
-            int itemId = item.getItemId();
-            if (itemId == R.id.nav_dashboard) {
-                // Already on dashboard
-                return true;
-            } else if (itemId == R.id.nav_team) {
-                startActivity(new Intent(this, RBHTeamActivity.class).putExtra("USERNAME", userName));
-                return true;
-            } else if (itemId == R.id.nav_portfolio) {
-                startActivity(new Intent(this, RBHPortfolioActivity.class).putExtra("USERNAME", userName));
-                return true;
-            } else if (itemId == R.id.nav_reports) {
-                startActivity(new Intent(this, RBHReportsActivity.class).putExtra("USERNAME", userName));
-                return true;
-            }
-            return false;
         });
     }
 

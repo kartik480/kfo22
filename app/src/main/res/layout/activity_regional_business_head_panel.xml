@@ -755,16 +755,13 @@
 
     </ScrollView>
 
-    <!-- Bottom Navigation Bar -->
-    <com.google.android.material.bottomnavigation.BottomNavigationView
+    <!-- Bottom Navigation - REMOVED -->
+    <!-- <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/rbhBottomNav"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:background="@color/white"
-        app:menu="@menu/rbh_bottom_nav_menu"
-        app:itemIconTint="@color/rbh_bottom_nav_colors"
-        app:itemTextColor="@color/rbh_bottom_nav_colors"
-        app:labelVisibilityMode="labeled" />
+        app:menu="@menu/bottom_nav_menu" /> -->
 
 </LinearLayout>

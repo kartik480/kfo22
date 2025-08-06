@@ -8,14 +8,13 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class RBHEmpMasterActivity extends AppCompatActivity {
     private TextView titleText, welcomeText, activeEmpCount, inactiveEmpCount;
     private View backButton, refreshButton, addButton;
     private View activeEmpListBox, inactiveEmpListBox;
     private String userName;
-    private BottomNavigationView rbhBottomNav;
+    private String userId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,7 +54,7 @@ public class RBHEmpMasterActivity extends AppCompatActivity {
         activeEmpListBox = findViewById(R.id.activeEmpListBox);
         inactiveEmpListBox = findViewById(R.id.inactiveEmpListBox);
         
-        rbhBottomNav = findViewById(R.id.rbhBottomNav);
+        // rbhBottomNav = findViewById(R.id.rbhBottomNav); // Removed as per edit hint
     }
 
     private void setupClickListeners() {
@@ -92,36 +91,36 @@ public class RBHEmpMasterActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
-        // Bottom Navigation
-        rbhBottomNav.setOnItemSelectedListener(item -> {
-            int itemId = item.getItemId();
-            if (itemId == R.id.nav_dashboard) {
-                Intent intent = new Intent(this, RegionalBusinessHeadPanelActivity.class);
-                intent.putExtra("USERNAME", userName);
-                startActivity(intent);
-                finish();
-                return true;
-            } else if (itemId == R.id.nav_team) {
-                Intent intent = new Intent(this, RBHTeamActivity.class);
-                intent.putExtra("USERNAME", userName);
-                startActivity(intent);
-                finish();
-                return true;
-            } else if (itemId == R.id.nav_portfolio) {
-                Intent intent = new Intent(this, RBHPortfolioActivity.class);
-                intent.putExtra("USERNAME", userName);
-                startActivity(intent);
-                finish();
-                return true;
-            } else if (itemId == R.id.nav_reports) {
-                Intent intent = new Intent(this, RBHReportsActivity.class);
-                intent.putExtra("USERNAME", userName);
-                startActivity(intent);
-                finish();
-                return true;
-            }
-            return false;
-        });
+        // Bottom Navigation // Removed as per edit hint
+        // rbhBottomNav.setOnItemSelectedListener(item -> {
+        //     int itemId = item.getItemId();
+        //     if (itemId == R.id.nav_dashboard) {
+        //         Intent intent = new Intent(this, RegionalBusinessHeadPanelActivity.class);
+        //         intent.putExtra("USERNAME", userName);
+        //         startActivity(intent);
+        //         finish();
+        //         return true;
+        //     } else if (itemId == R.id.nav_team) {
+        //         Intent intent = new Intent(this, RBHTeamActivity.class);
+        //         intent.putExtra("USERNAME", userName);
+        //         startActivity(intent);
+        //         finish();
+        //         return true;
+        //     } else if (itemId == R.id.nav_portfolio) {
+        //         Intent intent = new Intent(this, RBHPortfolioActivity.class);
+        //         intent.putExtra("USERNAME", userName);
+        //         startActivity(intent);
+        //         finish();
+        //         return true;
+        //     } else if (itemId == R.id.nav_reports) {
+        //         Intent intent = new Intent(this, RBHReportsActivity.class);
+        //         intent.putExtra("USERNAME", userName);
+        //         startActivity(intent);
+        //         finish();
+        //         return true;
+        //     }
+        //     return false;
+        // });
     }
 
     private void updateWelcomeMessage() {

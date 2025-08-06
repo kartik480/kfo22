@@ -20,8 +20,6 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
 
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -42,7 +40,6 @@ public class BusinessHeadPanelActivity extends AppCompatActivity {
     private String lastName;
     private String userId;
     
-    // Header Views
     private TextView welcomeText;
     private TextView totalEmpCount;
     private TextView totalSDSACount;
@@ -79,9 +76,6 @@ public class BusinessHeadPanelActivity extends AppCompatActivity {
     private LinearLayout cardGoalsKPIs;
     private LinearLayout cardSettings;
     
-    // Bottom Navigation
-    private BottomNavigationView businessHeadBottomNav;
-    
     private ExecutorService executor = Executors.newSingleThreadExecutor();
     
     @Override
@@ -106,7 +100,6 @@ public class BusinessHeadPanelActivity extends AppCompatActivity {
         // Initialize views
         initializeViews();
         setupHeaderClickListeners();
-        setupBottomNavigation();
         setupCardClickListeners();
         
         // Set initial values to 0
@@ -155,31 +148,6 @@ public class BusinessHeadPanelActivity extends AppCompatActivity {
         cardBudgetManagement = findViewById(R.id.cardBudgetManagement);
         cardGoalsKPIs = findViewById(R.id.cardGoalsKPIs);
         cardSettings = findViewById(R.id.cardSettings);
-        
-        // Bottom Navigation
-        businessHeadBottomNav = findViewById(R.id.businessHeadBottomNav);
-    }
-    
-    private void setupBottomNavigation() {
-        businessHeadBottomNav.setOnItemSelectedListener(item -> {
-            int itemId = item.getItemId();
-            
-            if (itemId == R.id.nav_dashboard) {
-                // Already on dashboard
-                return true;
-            } else if (itemId == R.id.nav_team) {
-                showToast("Team Management - Coming Soon!");
-                return true;
-            } else if (itemId == R.id.nav_reports) {
-                showToast("Reports & Analytics - Coming Soon!");
-                return true;
-            } else if (itemId == R.id.nav_settings) {
-                showToast("Settings - Coming Soon!");
-                return true;
-            }
-            
-            return false;
-        });
     }
     
     private void setupHeaderClickListeners() {

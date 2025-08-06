@@ -26,12 +26,6 @@ public class SpecialPanelActivity extends AppCompatActivity implements Navigatio
     // Top navigation elements
     private View menuButton;
 
-    // Bottom navigation elements
-    private LinearLayout dashboardButton;
-    private LinearLayout reportsButton;
-    private LinearLayout settingsButton;
-    private LinearLayout profileButton;
-
     // Card elements
     private TextView totalEmpCount;
     private TextView totalSdsaCount;
@@ -94,12 +88,6 @@ public class SpecialPanelActivity extends AppCompatActivity implements Navigatio
         // Top navigation
         menuButton = findViewById(R.id.menuButton);
 
-        // Bottom navigation
-        dashboardButton = findViewById(R.id.dashboardButton);
-        reportsButton = findViewById(R.id.reportsButton);
-        settingsButton = findViewById(R.id.settingsButton);
-        profileButton = findViewById(R.id.profileButton);
-
         // Card counts
         totalEmpCount = findViewById(R.id.totalEmpCount);
         totalSdsaCount = findViewById(R.id.totalSdsaCount);
@@ -134,27 +122,6 @@ public class SpecialPanelActivity extends AppCompatActivity implements Navigatio
         // Top navigation
         menuButton.setOnClickListener(v -> {
             drawerLayout.openDrawer(GravityCompat.START);
-        });
-
-        // Bottom navigation
-        dashboardButton.setOnClickListener(v -> {
-            // Already on dashboard, just show feedback
-            Toast.makeText(this, "Dashboard", Toast.LENGTH_SHORT).show();
-        });
-
-        reportsButton.setOnClickListener(v -> {
-            Toast.makeText(this, "Reports - Coming Soon", Toast.LENGTH_SHORT).show();
-            // TODO: Navigate to Reports activity
-        });
-
-        settingsButton.setOnClickListener(v -> {
-            Toast.makeText(this, "Settings - Coming Soon", Toast.LENGTH_SHORT).show();
-            // TODO: Navigate to Settings activity
-        });
-
-        profileButton.setOnClickListener(v -> {
-            Toast.makeText(this, "Profile - Coming Soon", Toast.LENGTH_SHORT).show();
-            // TODO: Navigate to Profile activity
         });
 
         // Card click listeners

@@ -872,16 +872,13 @@
 
     </ScrollView>
 
-    <!-- Bottom Navigation Bar -->
-    <com.google.android.material.bottomnavigation.BottomNavigationView
+    <!-- Bottom Navigation - REMOVED -->
+    <!-- <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/businessHeadBottomNav"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:background="@color/white"
-        app:menu="@menu/business_head_menu"
-        app:itemIconTint="@color/black"
-        app:itemTextColor="@color/black"
-        app:labelVisibilityMode="labeled" />
+        app:menu="@menu/bottom_nav_menu" /> -->
 
 </LinearLayout> 

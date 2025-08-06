@@ -7,14 +7,12 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class ChiefBusinessOfficerPanelActivity extends AppCompatActivity {
     private TextView totalEmpCount, totalSdsaCount, totalPartnerCount, totalPortfolioCount, totalAgentCount, welcomeText;
     private View notificationIcon, profileIcon, menuButton;
     private String userName;
     private String userId;
-    private BottomNavigationView cboBottomNav;
     
     // Action card views
     private View cardPortfolio, cardTeam, cardReports, cardAnalytics, cardStrategy, 
@@ -74,7 +72,6 @@ public class ChiefBusinessOfficerPanelActivity extends AppCompatActivity {
         notificationIcon = findViewById(R.id.notificationIcon);
         profileIcon = findViewById(R.id.profileIcon);
         menuButton = findViewById(R.id.menuButton);
-        cboBottomNav = findViewById(R.id.cboBottomNav);
     }
 
     private void setupClickListeners() {
@@ -191,24 +188,6 @@ public class ChiefBusinessOfficerPanelActivity extends AppCompatActivity {
             intent.putExtra("USERNAME", userName);
             intent.putExtra("SOURCE_PANEL", "CBO_PANEL");
             startActivity(intent);
-        });
-
-        cboBottomNav.setOnItemSelectedListener(item -> {
-            int itemId = item.getItemId();
-            if (itemId == R.id.nav_dashboard) {
-                // Already on dashboard
-                return true;
-            } else if (itemId == R.id.nav_team) {
-                startActivity(new Intent(this, CBOTeamActivity.class).putExtra("USERNAME", userName));
-                return true;
-            } else if (itemId == R.id.nav_portfolio) {
-                startActivity(new Intent(this, CBOPortfolioActivity.class).putExtra("USERNAME", userName));
-                return true;
-            } else if (itemId == R.id.nav_reports) {
-                startActivity(new Intent(this, CBOReportsActivity.class).putExtra("USERNAME", userName));
-                return true;
-            }
-            return false;
         });
     }
 

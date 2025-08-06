@@ -7,13 +7,12 @@ import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class RBHMySdsaPanelActivity extends AppCompatActivity {
     private TextView welcomeText;
     private View notificationIcon, profileIcon, menuButton, backButton;
     private String userName;
-    private BottomNavigationView rbhBottomNav;
+    private String userId;
     
     // Action card views
     private View cardMySdsa, cardSdsaManagement, cardSdsaReports, cardSdsaAnalytics;
@@ -21,12 +20,6 @@ public class RBHMySdsaPanelActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        
-        // Hide status bar and make fullscreen
-        getWindow().setFlags(
-            WindowManager.LayoutParams.FLAG_FULLSCREEN,
-            WindowManager.LayoutParams.FLAG_FULLSCREEN
-        );
         
         setContentView(R.layout.activity_rbh_my_sdsa_panel);
         
@@ -54,8 +47,7 @@ public class RBHMySdsaPanelActivity extends AppCompatActivity {
         notificationIcon = findViewById(R.id.notificationIcon);
         profileIcon = findViewById(R.id.profileIcon);
         menuButton = findViewById(R.id.menuButton);
-        backButton = findViewById(R.id.backButton);
-        rbhBottomNav = findViewById(R.id.rbhBottomNav);
+        backButton = findViewById(R.id.backButton); // Assuming backButton is in the layout
     }
 
     private void setupClickListeners() {
@@ -100,24 +92,6 @@ public class RBHMySdsaPanelActivity extends AppCompatActivity {
         cardSdsaAnalytics.setOnClickListener(v -> {
             Toast.makeText(this, "SDSA Analytics - Coming Soon", Toast.LENGTH_SHORT).show();
             // TODO: Implement SDSA Analytics functionality
-        });
-
-        rbhBottomNav.setOnItemSelectedListener(item -> {
-            int itemId = item.getItemId();
-            if (itemId == R.id.nav_dashboard) {
-                startActivity(new Intent(this, RegionalBusinessHeadPanelActivity.class).putExtra("USERNAME", userName));
-                return true;
-            } else if (itemId == R.id.nav_team) {
-                startActivity(new Intent(this, RBHTeamActivity.class).putExtra("USERNAME", userName));
-                return true;
-            } else if (itemId == R.id.nav_portfolio) {
-                startActivity(new Intent(this, RBHPortfolioActivity.class).putExtra("USERNAME", userName));
-                return true;
-            } else if (itemId == R.id.nav_reports) {
-                startActivity(new Intent(this, RBHReportsActivity.class).putExtra("USERNAME", userName));
-                return true;
-            }
-            return false;
         });
     }
 
