@@ -1,0 +1,361 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#F5F5F5">
+
+    <!-- Top Navigation Bar -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="#FFFFFF"
+        android:padding="16dp"
+        android:elevation="4dp">
+
+        <ImageView
+            android:id="@+id/backButton"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_back"
+            android:contentDescription="Back"
+            android:layout_gravity="center_vertical" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="CBO ACTIVE EMP LIST"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="#2C3E50"
+            android:layout_marginStart="16dp"
+            android:layout_gravity="center_vertical" />
+
+        <ImageView
+            android:id="@+id/refreshButton"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_refresh"
+            android:contentDescription="Refresh"
+            android:layout_gravity="center_vertical"
+            android:layout_marginEnd="16dp" />
+
+        <ImageView
+            android:id="@+id/addButton"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_add"
+            android:contentDescription="Add"
+            android:layout_gravity="center_vertical" />
+
+    </LinearLayout>
+
+    <!-- Main Content -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:padding="16dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- Header Section -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="#FFFFFF"
+                android:padding="20dp"
+                android:layout_marginBottom="16dp"
+                android:elevation="2dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="CBO ACTIVE EMP LIST"
+                    android:textSize="24sp"
+                    android:textStyle="bold"
+                    android:textColor="#2C3E50"
+                    android:layout_marginBottom="8dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="View and manage all employees reporting to you"
+                    android:textSize="14sp"
+                    android:textColor="#7F8C8D" />
+
+                <!-- Employee Count -->
+                <TextView
+                    android:id="@+id/employeeCount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Total Employees: 0"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="#3498DB"
+                    android:layout_marginTop="12dp" />
+
+            </LinearLayout>
+
+            <!-- Employee List Section -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="#FFFFFF"
+                android:padding="20dp"
+                android:elevation="2dp">
+
+                <!-- Loading Progress -->
+                <ProgressBar
+                    android:id="@+id/loadingProgress"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:visibility="gone" />
+
+                <!-- Error Message -->
+                <TextView
+                    android:id="@+id/errorMessage"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Error loading employee list"
+                    android:textSize="16sp"
+                    android:textColor="#E74C3C"
+                    android:gravity="center"
+                    android:padding="20dp"
+                    android:visibility="gone" />
+
+                <!-- Column Headers -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:background="#ECF0F1"
+                    android:padding="12dp"
+                    android:layout_marginBottom="8dp">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_weight="2"
+                        android:layout_height="wrap_content"
+                        android:text="Full Name"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:textColor="#2C3E50" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_weight="1.5"
+                        android:layout_height="wrap_content"
+                        android:text="Employee Id"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:textColor="#2C3E50" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_weight="1.5"
+                        android:layout_height="wrap_content"
+                        android:text="Mobile"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:textColor="#2C3E50" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_weight="2"
+                        android:layout_height="wrap_content"
+                        android:text="Email"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:textColor="#2C3E50" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:text="Action"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:textColor="#2C3E50" />
+
+                </LinearLayout>
+
+                <!-- Employee ListView with Custom Structure -->
+                <ListView
+                    android:id="@+id/employeeListView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:divider="#E0E0E0"
+                    android:dividerHeight="1dp"
+                    android:scrollbars="vertical" />
+
+                <!-- Empty State -->
+                <LinearLayout
+                    android:id="@+id/emptyStateLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:padding="40dp"
+                    android:visibility="gone">
+
+                    <ImageView
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:src="@drawable/ic_emp_links"
+                        android:alpha="0.3"
+                        android:layout_marginBottom="16dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="No employees found"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:textColor="#7F8C8D"
+                        android:layout_marginBottom="8dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="No employees are currently reporting to you"
+                        android:textSize="14sp"
+                        android:textColor="#95A5A6"
+                        android:gravity="center" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+    <!-- Bottom Navigation -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="#FFFFFF"
+        android:padding="12dp"
+        android:elevation="8dp">
+
+        <LinearLayout
+            android:id="@+id/dashboardButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:padding="8dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?attr/selectableItemBackground">
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_dashboard"
+                android:contentDescription="Dashboard" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Dashboard"
+                android:textSize="12sp"
+                android:layout_marginTop="4dp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/empLinksButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:padding="8dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?attr/selectableItemBackground">
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_link"
+                android:contentDescription="Emp Links" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Emp Links"
+                android:textSize="12sp"
+                android:layout_marginTop="4dp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/reportsButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:padding="8dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?attr/selectableItemBackground">
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_reports"
+                android:contentDescription="Reports" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Reports"
+                android:textSize="12sp"
+                android:layout_marginTop="4dp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/settingsButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:padding="8dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?attr/selectableItemBackground">
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_settings"
+                android:contentDescription="Settings" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Settings"
+                android:textSize="12sp"
+                android:layout_marginTop="4dp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

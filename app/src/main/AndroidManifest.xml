@@ -641,6 +641,11 @@
             android:label="CBO My Employee"
             android:parentActivityName=".CBOEmployeeActivity" />
         <activity
+            android:name=".CBOMyActiveEmpListActivity"
+            android:exported="false"
+            android:label="CBO Active Employee List"
+            android:parentActivityName=".CBOEmployeeActivity" />
+        <activity
             android:name=".CBOSdsaActivity"
             android:exported="false"
             android:label="CBO SDSA"

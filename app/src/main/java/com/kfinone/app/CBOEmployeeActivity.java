@@ -2,6 +2,7 @@ package com.kfinone.app;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -40,6 +41,28 @@ public class CBOEmployeeActivity extends AppCompatActivity {
         Intent intent = getIntent();
         userName = intent.getStringExtra("USERNAME");
         userId = intent.getStringExtra("USER_ID");
+        
+        // Debug: Log what we received from the previous activity
+        Log.d("CBOEmployeeActivity", "Received userName: " + userName);
+        Log.d("CBOEmployeeActivity", "Received userId: " + userId);
+        
+        // Critical check: Ensure we have a numeric user ID
+        if (userId == null || !userId.matches("\\d+")) {
+            Log.e("CBOEmployeeActivity", "ERROR: No numeric user ID received!");
+            Log.e("CBOEmployeeActivity", "This will cause issues in downstream activities");
+            Log.e("CBOEmployeeActivity", "Expected: numeric ID like '21', Got: '" + userId + "'");
+        }
+        
+        // Debug: Log ALL intent extras
+        Bundle extras = intent.getExtras();
+        if (extras != null) {
+            Log.d("CBOEmployeeActivity", "=== All Intent Extras ===");
+            for (String key : extras.keySet()) {
+                Object value = extras.get(key);
+                Log.d("CBOEmployeeActivity", key + " = " + value);
+            }
+            Log.d("CBOEmployeeActivity", "========================");
+        }
 
         initializeViews();
         setupClickListeners();
@@ -96,9 +119,9 @@ public class CBOEmployeeActivity extends AppCompatActivity {
             // TODO: Navigate to Settings activity
         });
 
-        // CBO Employee box click listener
+        // CBO Employee box click listener - Navigate to new CBO Active Employee List
         myEmpBox.setOnClickListener(v -> {
-            Intent intent = new Intent(this, CBOMyEmpActivity.class);
+            Intent intent = new Intent(this, CBOMyActiveEmpListActivity.class);
             passUserDataToIntent(intent);
             startActivity(intent);
         });
@@ -128,9 +151,15 @@ public class CBOEmployeeActivity extends AppCompatActivity {
     }
 
     private void passUserDataToIntent(Intent intent) {
-        if (userId != null) intent.putExtra("USER_ID", userId);
+        Log.d("CBOEmployeeActivity", "=== Passing User Data to Intent ===");
+        Log.d("CBOEmployeeActivity", "Passing USERNAME: " + userName);
+        Log.d("CBOEmployeeActivity", "Passing USER_ID: " + userId);
+        
         if (userName != null) intent.putExtra("USERNAME", userName);
+        if (userId != null) intent.putExtra("USER_ID", userId);
         intent.putExtra("SOURCE_PANEL", "CBO_PANEL");
+        
+        Log.d("CBOEmployeeActivity", "=================================");
     }
 
     @Override

@@ -2,6 +2,7 @@ package com.kfinone.app;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -12,6 +13,7 @@ public class ChiefBusinessOfficerPanelActivity extends AppCompatActivity {
     private TextView totalEmpCount, totalSdsaCount, totalPartnerCount, totalPortfolioCount, totalAgentCount, welcomeText;
     private View notificationIcon, profileIcon, menuButton;
     private String userName;
+    private String userId;
     private BottomNavigationView cboBottomNav;
     
     // Action card views
@@ -28,9 +30,15 @@ public class ChiefBusinessOfficerPanelActivity extends AppCompatActivity {
         // Get user data from intent
         Intent intent = getIntent();
         userName = intent.getStringExtra("USERNAME");
+        userId = intent.getStringExtra("USER_ID");
+        
         if (userName == null || userName.isEmpty()) {
             userName = "CBO"; // Default fallback
         }
+        
+        // Debug: Log received user data
+        Log.d("CBOPanel", "Received userName: " + userName);
+        Log.d("CBOPanel", "Received userId: " + userId);
         
         initializeViews();
         setupClickListeners();
@@ -116,8 +124,7 @@ public class ChiefBusinessOfficerPanelActivity extends AppCompatActivity {
         
         cardStrategy.setOnClickListener(v -> {
             Intent intent = new Intent(this, CBOEmployeeActivity.class);
-            intent.putExtra("USERNAME", userName);
-            intent.putExtra("SOURCE_PANEL", "CBO_PANEL");
+            passUserDataToIntent(intent);
             startActivity(intent);
         });
         
@@ -299,6 +306,18 @@ public class ChiefBusinessOfficerPanelActivity extends AppCompatActivity {
             })
             .setNegativeButton("No", null)
             .show();
+    }
+
+    private void passUserDataToIntent(Intent intent) {
+        Log.d("CBOPanel", "=== Passing User Data to Intent ===");
+        Log.d("CBOPanel", "Passing USERNAME: " + userName);
+        Log.d("CBOPanel", "Passing USER_ID: " + userId);
+        
+        if (userName != null) intent.putExtra("USERNAME", userName);
+        if (userId != null) intent.putExtra("USER_ID", userId);
+        intent.putExtra("SOURCE_PANEL", "CBO_PANEL");
+        
+        Log.d("CBOPanel", "=================================");
     }
 
     @Override
