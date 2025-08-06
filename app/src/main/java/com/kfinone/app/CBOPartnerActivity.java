@@ -112,7 +112,7 @@ public class CBOPartnerActivity extends AppCompatActivity {
         });
 
         myPartnerBox.setOnClickListener(v -> {
-            Intent intent = new Intent(this, CBOMyPartnerActivity.class);
+            Intent intent = new Intent(this, CboMyPartnerUsersActivity.class);
             passUserDataToIntent(intent);
             startActivity(intent);
         });

@@ -5,149 +5,79 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>API Debug Test</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        .section {
-            margin-bottom: 30px;
-            padding: 20px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-        }
-        button {
-            background-color: #007bff;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            margin-right: 10px;
-        }
-        button:hover {
-            background-color: #0056b3;
-        }
-        .response {
-            margin-top: 15px;
-            padding: 10px;
-            background-color: #f8f9fa;
-            border: 1px solid #dee2e6;
-            border-radius: 4px;
-            white-space: pre-wrap;
-            font-family: monospace;
-            max-height: 400px;
-            overflow-y: auto;
-        }
-        .success {
-            background-color: #d4edda;
-            border-color: #c3e6cb;
-            color: #155724;
-        }
-        .error {
-            background-color: #f8d7da;
-            border-color: #f5c6cb;
-            color: #721c24;
-        }
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .container { max-width: 800px; margin: 0 auto; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; }
+        input { width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; }
+        button { background: #007bff; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; }
+        .response { margin-top: 20px; padding: 15px; border-radius: 4px; background: #f8f9fa; white-space: pre-wrap; font-family: monospace; }
+        .error { background: #f8d7da; color: #721c24; }
+        .success { background: #d4edda; color: #155724; }
     </style>
 </head>
 <body>
-    <h1>API Debug Test</h1>
-    
-    <div class="section">
-        <h2>1. Test Old API (get_partner_users_list_compatible.php)</h2>
-        <button onclick="testOldAPI()">Test Old API</button>
-        <div id="oldApiResponse" class="response"></div>
-    </div>
-
-    <div class="section">
-        <h2>2. Test New API (get_partner_users_complete.php)</h2>
-        <button onclick="testNewAPI()">Test New API</button>
-        <div id="newApiResponse" class="response"></div>
-    </div>
-
-    <div class="section">
-        <h2>3. Check Table Structure</h2>
-        <button onclick="checkTableStructure()">Check Table</button>
-        <div id="tableResponse" class="response"></div>
+    <div class="container">
+        <h1>🔍 API Debug Test</h1>
+        
+        <div class="form-group">
+            <label>Test Method:</label>
+            <select id="testMethod">
+                <option value="user_id">user_id parameter</option>
+                <option value="username">username parameter</option>
+                <option value="createdBy">createdBy parameter</option>
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label>Value:</label>
+            <input type="text" id="paramValue" placeholder="Enter value (e.g., 1, admin, etc.)" value="1">
+        </div>
+        
+        <button onclick="testAPI()">Test API</button>
+        
+        <div id="response" class="response" style="display: none;"></div>
     </div>
 
     <script>
-        const API_BASE_URL = 'https://emp.kfinone.com/mobile/api/';
-        
-        async function testOldAPI() {
-            const responseDiv = document.getElementById('oldApiResponse');
-            responseDiv.textContent = 'Testing old API...';
-            responseDiv.className = 'response';
+        async function testAPI() {
+            const method = document.getElementById('testMethod').value;
+            const value = document.getElementById('paramValue').value;
+            const responseDiv = document.getElementById('response');
             
-            try {
-                const response = await fetch(`${API_BASE_URL}get_partner_users_list_compatible.php`, {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                });
-                
-                const responseText = await response.text();
-                responseDiv.textContent = `Status: ${response.status}\nResponse: ${responseText}`;
-                responseDiv.className = `response ${response.ok ? 'success' : 'error'}`;
-            } catch (error) {
-                responseDiv.textContent = `Error: ${error.message}`;
-                responseDiv.className = 'response error';
+            if (!value) {
+                showResponse('Please enter a value', 'error');
+                return;
             }
-        }
-
-        async function testNewAPI() {
-            const responseDiv = document.getElementById('newApiResponse');
-            responseDiv.textContent = 'Testing new API...';
+            
+            responseDiv.style.display = 'block';
             responseDiv.className = 'response';
+            responseDiv.textContent = 'Testing...';
             
             try {
-                const response = await fetch(`${API_BASE_URL}get_partner_users_complete.php`, {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                });
+                const url = `https://emp.kfinone.com/mobile/api/cbo_my_partner_users.php?${method}=${encodeURIComponent(value)}`;
                 
-                const responseText = await response.text();
-                responseDiv.textContent = `Status: ${response.status}\nResponse: ${responseText}`;
-                responseDiv.className = `response ${response.ok ? 'success' : 'error'}`;
-            } catch (error) {
-                responseDiv.textContent = `Error: ${error.message}`;
-                responseDiv.className = 'response error';
-            }
-        }
-
-        async function checkTableStructure() {
-            const responseDiv = document.getElementById('tableResponse');
-            responseDiv.textContent = 'Checking table structure...';
-            responseDiv.className = 'response';
-            
-            try {
-                const response = await fetch(`${API_BASE_URL}check_partner_users_table.php`, {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                });
+                responseDiv.textContent = `Testing URL: ${url}\n\nLoading...`;
                 
+                const response = await fetch(url);
                 const data = await response.json();
-                responseDiv.textContent = JSON.stringify(data, null, 2);
-                responseDiv.className = `response ${data.success ? 'success' : 'error'}`;
+                
+                if (data.status === 'success') {
+                    showResponse(JSON.stringify(data, null, 2), 'success');
+                } else {
+                    showResponse(JSON.stringify(data, null, 2), 'error');
+                }
             } catch (error) {
-                responseDiv.textContent = `Error: ${error.message}`;
-                responseDiv.className = 'response error';
+                showResponse(`Error: ${error.message}`, 'error');
             }
         }
-
-        // Auto-run tests on page load
-        window.onload = function() {
-            setTimeout(() => testOldAPI(), 1000);
-            setTimeout(() => testNewAPI(), 2000);
-            setTimeout(() => checkTableStructure(), 3000);
-        };
+        
+        function showResponse(message, type) {
+            const responseDiv = document.getElementById('response');
+            responseDiv.style.display = 'block';
+            responseDiv.className = `response ${type}`;
+            responseDiv.textContent = message;
+        }
     </script>
 </body>
 </html> 

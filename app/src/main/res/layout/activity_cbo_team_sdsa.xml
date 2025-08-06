@@ -210,6 +210,86 @@
                     android:textColor="#2C3E50"
                     android:layout_marginBottom="16dp" />
 
+                <!-- Select RBH User Dropdown Section -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginBottom="16dp"
+                    android:padding="16dp"
+                    android:background="#F8F9FA"
+                    android:layout_marginTop="8dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Select Regional Business Head"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:textColor="#2C3E50"
+                        android:layout_marginBottom="8dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Choose a Regional Business Head to view their SDSA team"
+                        android:textSize="12sp"
+                        android:textColor="#7F8C8D"
+                        android:layout_marginBottom="12dp" />
+
+                    <!-- RBH User Dropdown -->
+                    <Spinner
+                        android:id="@+id/rbhUserSpinner"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/spinner_background"
+                        android:padding="12dp"
+                        android:layout_marginBottom="8dp" />
+
+                    <!-- Selected User Info -->
+                    <LinearLayout
+                        android:id="@+id/selectedUserInfo"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:background="#E8F4FD"
+                        android:padding="12dp"
+                        android:visibility="gone">
+
+                        <TextView
+                            android:id="@+id/selectedUserName"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Selected User: John Doe"
+                            android:textSize="14sp"
+                            android:textStyle="bold"
+                            android:textColor="#2C3E50"
+                            android:layout_marginBottom="4dp" />
+
+                        <TextView
+                            android:id="@+id/selectedUserDetails"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Designation: Regional Business Head"
+                            android:textSize="12sp"
+                            android:textColor="#7F8C8D" />
+
+                    </LinearLayout>
+
+                    <!-- View SDSA Team Button -->
+                    <Button
+                        android:id="@+id/viewSdsaTeamButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="View SDSA Team"
+                        android:textColor="#FFFFFF"
+                        android:background="@drawable/button_background_primary"
+                        android:padding="12dp"
+                        android:layout_marginTop="8dp"
+                        android:enabled="false" />
+
+                </LinearLayout>
+
                 <!-- View All Team Members Button -->
                 <LinearLayout
                     android:layout_width="match_parent"

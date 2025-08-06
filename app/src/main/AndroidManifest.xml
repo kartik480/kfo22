@@ -636,6 +636,11 @@
             android:label="CBO Employee"
             android:parentActivityName=".ChiefBusinessOfficerPanelActivity" />
         <activity
+            android:name=".CboMyPartnerUsersActivity"
+            android:exported="false"
+            android:label="CBO My Partner Users"
+            android:parentActivityName=".ChiefBusinessOfficerPanelActivity" />
+        <activity
             android:name=".CBOMyEmpActivity"
             android:exported="false"
             android:label="CBO My Employee"

@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RBH Dropdown API Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .test-section {
+            margin-bottom: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        .success {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .error {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .info {
+            background-color: #d1ecf1;
+            border: 1px solid #bee5eb;
+            color: #0c5460;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .user-card {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .user-card h4 {
+            margin: 0 0 10px 0;
+            color: #2c3e50;
+        }
+        .user-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            font-size: 12px;
+        }
+        .user-info div {
+            display: flex;
+            justify-content: space-between;
+        }
+        .user-info span {
+            font-weight: bold;
+            color: #7f8c8d;
+        }
+        pre {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+            font-size: 12px;
+            border: 1px solid #e9ecef;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 RBH Dropdown API Test</h1>
+        
+        <div class="info">
+            <h3>📋 Instructions</h3>
+            <p>This test will verify that the RBH dropdown API is working correctly. If this test passes, the dropdown in your Android app should work.</p>
+        </div>
+
+        <div class="test-section">
+            <h3>🚀 Test RBH Dropdown API</h3>
+            <p>Click the button below to test the API that fetches Regional Business Head users for the dropdown.</p>
+            <button onclick="testRBHDropdownAPI()">Test RBH Dropdown API</button>
+        </div>
+
+        <div class="test-section">
+            <h3>📊 Test Results</h3>
+            <div id="testResults"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>📱 Android App Instructions</h3>
+            <div class="info">
+                <h4>How to access the RBH dropdown in your app:</h4>
+                <ol>
+                    <li><strong>Login as CBO</strong> (User ID: 21, Username: 90000)</li>
+                    <li><strong>Go to CBO Panel</strong></li>
+                    <li><strong>Click on "SDSA"</strong> in the CBO panel</li>
+                    <li><strong>Click on "Team SDSA"</strong> in the SDSA panel</li>
+                    <li><strong>Look for the "Select Regional Business Head" dropdown</strong></li>
+                </ol>
+                
+                <h4>If the dropdown is not visible:</h4>
+                <ul>
+                    <li>Check Android logs for "CBOTeamSdsa" messages</li>
+                    <li>Make sure you're logged in as a CBO user</li>
+                    <li>Try refreshing the page</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        async function testRBHDropdownAPI() {
+            const resultsDiv = document.getElementById('testResults');
+            resultsDiv.innerHTML = '<div class="info">Testing RBH Dropdown API...</div>';
+            
+            try {
+                const url = 'https://emp.kfinone.com/mobile/api/get_rbh_users_for_dropdown.php';
+                console.log('Testing URL:', url);
+                
+                const response = await fetch(url);
+                const responseText = await response.text();
+                
+                let resultHtml = '<div class="' + (response.ok ? 'success' : 'error') + '">';
+                resultHtml += '<h4>API Test Results</h4>';
+                resultHtml += '<p><strong>Status Code:</strong> ' + response.status + '</p>';
+                resultHtml += '<p><strong>Status Text:</strong> ' + response.statusText + '</p>';
+                
+                if (response.ok) {
+                    try {
+                        const data = JSON.parse(responseText);
+                        resultHtml += '<p><strong>API Response:</strong> ' + (data.success ? '✅ Success' : '❌ Failed') + '</p>';
+                        resultHtml += '<p><strong>Message:</strong> ' + (data.message || 'No message') + '</p>';
+                        resultHtml += '<p><strong>Users Count:</strong> ' + (data.count || 0) + '</p>';
+                        
+                        if (data.success) {
+                            resultHtml += '<div class="success">';
+                            resultHtml += '<h4>✅ API is Working!</h4>';
+                            resultHtml += '<p>The RBH dropdown API is deployed and working correctly.</p>';
+                            resultHtml += '</div>';
+                            
+                            if (data.statistics) {
+                                resultHtml += '<div class="info">';
+                                resultHtml += '<h4>Statistics:</h4>';
+                                resultHtml += '<p>Total RBH: ' + data.statistics.total_rbh + '</p>';
+                                resultHtml += '<p>Active RBH: ' + data.statistics.active_rbh + '</p>';
+                                resultHtml += '<p>Inactive RBH: ' + data.statistics.inactive_rbh + '</p>';
+                                resultHtml += '</div>';
+                            }
+                            
+                            if (data.users && data.users.length > 0) {
+                                resultHtml += '<h4>RBH Users Found:</h4>';
+                                data.users.forEach((user, index) => {
+                                    resultHtml += '<div class="user-card">';
+                                    resultHtml += '<h4>' + (user.firstName || '') + ' ' + (user.lastName || '') + '</h4>';
+                                    resultHtml += '<div class="user-info">';
+                                    resultHtml += '<div><span>ID:</span> ' + (user.id || 'N/A') + '</div>';
+                                    resultHtml += '<div><span>Username:</span> ' + (user.username || 'N/A') + '</div>';
+                                    resultHtml += '<div><span>Email:</span> ' + (user.email || 'N/A') + '</div>';
+                                    resultHtml += '<div><span>Phone:</span> ' + (user.phone || 'N/A') + '</div>';
+                                    resultHtml += '<div><span>Status:</span> ' + (user.status || 'N/A') + '</div>';
+                                    resultHtml += '<div><span>Department:</span> ' + (user.department_name || 'N/A') + '</div>';
+                                    resultHtml += '<div><span>Display Name:</span> ' + (user.displayName || 'N/A') + '</div>';
+                                    resultHtml += '</div>';
+                                    resultHtml += '</div>';
+                                });
+                            } else if (data.users && data.users.length === 0) {
+                                resultHtml += '<div class="info">No Regional Business Head users found in the system.</div>';
+                            }
+                        } else {
+                            resultHtml += '<div class="error">';
+                            resultHtml += '<h4>❌ API Error</h4>';
+                            resultHtml += '<p>The API returned an error: ' + data.message + '</p>';
+                            resultHtml += '</div>';
+                        }
+                    } catch (e) {
+                        resultHtml += '<div class="error">';
+                        resultHtml += '<h4>❌ JSON Parse Error</h4>';
+                        resultHtml += '<p>Response is not valid JSON:</p>';
+                        resultHtml += '<pre>' + responseText + '</pre>';
+                        resultHtml += '</div>';
+                    }
+                } else {
+                    resultHtml += '<div class="error">';
+                    resultHtml += '<h4>❌ HTTP Error</h4>';
+                    resultHtml += '<p>The API file might not be deployed or there is a server error.</p>';
+                    resultHtml += '<p>Response:</p>';
+                    resultHtml += '<pre>' + responseText + '</pre>';
+                    resultHtml += '</div>';
+                }
+                
+                resultHtml += '</div>';
+                resultsDiv.innerHTML = resultHtml;
+                
+            } catch (error) {
+                resultsDiv.innerHTML = '<div class="error">Network error: ' + error.message + '</div>';
+            }
+        }
+
+        // Auto-test on page load
+        window.onload = function() {
+            setTimeout(() => {
+                testRBHDropdownAPI();
+            }, 1000);
+        };
+    </script>
+</body>
+</html> 
