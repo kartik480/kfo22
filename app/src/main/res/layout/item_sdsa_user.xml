@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="#FFFFFF"
+    android:layout_margin="8dp"
+    android:padding="16dp"
+    android:elevation="2dp">
+
+    <!-- User Name and Designation -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="8dp">
+
+        <TextView
+            android:id="@+id/nameText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="John Doe"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="#2C3E50" />
+
+        <TextView
+            android:id="@+id/statusText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Active"
+            android:textSize="12sp"
+            android:textColor="#27AE60"
+            android:background="#E8F5E8"
+            android:padding="4dp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+    <!-- Employee ID and Username -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="8dp">
+
+        <TextView
+            android:id="@+id/employeeNoText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Employee ID: EMP001"
+            android:textSize="14sp"
+            android:textColor="#7F8C8D" />
+
+        <TextView
+            android:id="@+id/usernameText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@username"
+            android:textSize="14sp"
+            android:textColor="#7F8C8D" />
+
+    </LinearLayout>
+
+    <!-- Designation and Department -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="8dp">
+
+        <TextView
+            android:id="@+id/designationText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Senior SDSA"
+            android:textSize="14sp"
+            android:textColor="#34495E" />
+
+        <TextView
+            android:id="@+id/departmentText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Department: Sales"
+            android:textSize="14sp"
+            android:textColor="#7F8C8D" />
+
+    </LinearLayout>
+
+    <!-- Contact Information -->
+    <TextView
+        android:id="@+id/contactText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="📱 1234567890 | ✉ john.doe@example.com"
+        android:textSize="14sp"
+        android:textColor="#7F8C8D"
+        android:layout_marginBottom="8dp" />
+
+    <!-- Bank Information -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="8dp">
+
+        <TextView
+            android:id="@+id/bankText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="🏦 Bank: HDFC Bank"
+            android:textSize="14sp"
+            android:textColor="#34495E" />
+
+        <TextView
+            android:id="@+id/accountTypeText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Account: Savings"
+            android:textSize="14sp"
+            android:textColor="#7F8C8D" />
+
+    </LinearLayout>
+
+    <!-- Location Information -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/locationText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="📍 Location: Mumbai, Maharashtra"
+            android:textSize="14sp"
+            android:textColor="#34495E" />
+
+        <TextView
+            android:id="@+id/rankText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Rank: A"
+            android:textSize="14sp"
+            android:textColor="#7F8C8D" />
+
+    </LinearLayout>
+
+</LinearLayout> 

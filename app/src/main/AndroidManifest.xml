@@ -950,6 +950,12 @@
             android:label="RBH Settings"
             android:parentActivityName=".RegionalBusinessHeadPanelActivity" />
         <activity
+            android:name=".RBHReportingUsersActivity"
+            android:exported="false"
+            android:label="RBH Reporting Users"
+            android:parentActivityName=".RegionalBusinessHeadPanelActivity"
+            android:theme="@style/FullscreenTheme" />
+        <activity
             android:name=".RegionalBusinessHeadActiveEmpListActivity"
             android:exported="false"
             android:label="RBH Active Employee List"
@@ -965,8 +971,8 @@
             android:name=".RBHActiveEmpListActivity"
             android:exported="false"
             android:label="RBH Active Employee List"
-                          android:parentActivityName=".RegionalBusinessHeadPanelActivity"
-              android:theme="@style/FullscreenTheme" />
+            android:parentActivityName=".RegionalBusinessHeadPanelActivity"
+            android:theme="@style/FullscreenTheme" />
           <activity
               android:name=".RBHMySdsaPanelActivity"
               android:exported="false"

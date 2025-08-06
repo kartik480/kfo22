@@ -137,7 +137,9 @@ public class RegionalBusinessHeadActiveEmpListActivity extends AppCompatActivity
         executorService.execute(() -> {
             try {
                 // Create API request to fetch users reporting to the logged-in user
-                String apiUrl = "https://emp.kfinone.com/mobile/api/get_rbh_active_users.php?reportingTo=" + userName + "&status=active";
+                String apiUrl = "https://emp.kfinone.com/mobile/api/get_rbh_active_users.php?reportingTo=" + userId + "&status=active";
+                
+                android.util.Log.d("RBHActiveEmpList", "Fetching users from: " + apiUrl);
                 
                 String response = makeGetRequest(apiUrl);
                 
@@ -165,23 +167,29 @@ public class RegionalBusinessHeadActiveEmpListActivity extends AppCompatActivity
                                 userAdapter.notifyDataSetChanged();
                                 
                                 if (userList.isEmpty()) {
-                                    Toast.makeText(this, "No active users found", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(this, "No active users found reporting to you", Toast.LENGTH_SHORT).show();
+                                } else {
+                                    Toast.makeText(this, "Found " + userList.size() + " active users", Toast.LENGTH_SHORT).show();
                                 }
                             } else {
                                 String errorMessage = jsonResponse.getString("message");
-                                Toast.makeText(this, "Error: " + errorMessage, Toast.LENGTH_SHORT).show();
+                                Toast.makeText(this, "API Error: " + errorMessage, Toast.LENGTH_LONG).show();
+                                android.util.Log.e("RBHActiveEmpList", "API Error: " + errorMessage);
                             }
                         } catch (JSONException e) {
-                            Toast.makeText(this, "Error parsing response: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(this, "Error parsing response: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                            android.util.Log.e("RBHActiveEmpList", "JSON Parse Error: " + e.getMessage(), e);
                         }
                     } else {
-                        Toast.makeText(this, "No response from server", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, "No response from server. Please check your connection.", Toast.LENGTH_LONG).show();
+                        android.util.Log.e("RBHActiveEmpList", "No response from server");
                     }
                 });
                 
             } catch (Exception e) {
                 runOnUiThread(() -> {
-                    Toast.makeText(this, "Error fetching users: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Error fetching users: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                    android.util.Log.e("RBHActiveEmpList", "Fetch Error: " + e.getMessage(), e);
                 });
             }
         });
@@ -213,10 +221,23 @@ public class RegionalBusinessHeadActiveEmpListActivity extends AppCompatActivity
                 reader.close();
                 return response.toString();
             } else {
+                // Handle different HTTP response codes
+                java.io.BufferedReader errorReader = new java.io.BufferedReader(
+                    new java.io.InputStreamReader(connection.getErrorStream())
+                );
+                StringBuilder errorResponse = new StringBuilder();
+                String line;
+                while ((line = errorReader.readLine()) != null) {
+                    errorResponse.append(line);
+                }
+                errorReader.close();
+                
+                String errorMessage = "HTTP Error " + responseCode + ": " + errorResponse.toString();
+                android.util.Log.e("RBHActiveEmpList", errorMessage);
                 return null;
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            android.util.Log.e("RBHActiveEmpList", "Network error: " + e.getMessage(), e);
             return null;
         }
     }

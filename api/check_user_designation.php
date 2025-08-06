@@ -22,43 +22,47 @@ try {
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     
     // Get GET parameters
-    $reportingTo = $_GET['reportingTo'] ?? '';
-    $status = $_GET['status'] ?? 'active';
+    $userId = $_GET['user_id'] ?? '';
     
-    if (empty($reportingTo)) {
-        throw new Exception('ReportingTo parameter is required');
+    if (empty($userId)) {
+        throw new Exception('User ID parameter is required');
     }
     
-    // Query to fetch users reporting to the specified RBH user
-    $query = "SELECT 
-                u.firstName as first_name,
-                u.lastName as last_name,
-                u.username,
-                u.mobile as Phone_number,
-                u.email_id,
-                u.status,
-                d.designation_name,
-                dept.department_name
-              FROM tbl_user u
-              INNER JOIN tbl_designation d ON u.designation_id = d.id
-              LEFT JOIN tbl_department dept ON u.department_id = dept.id
-              WHERE u.reportingTo = :reportingTo 
-              AND (u.status = 'Active' OR u.status = 1 OR u.status IS NULL OR u.status = '')
-              AND u.firstName IS NOT NULL AND u.firstName != ''
-              ORDER BY u.firstName ASC, u.lastName ASC";
+    // Query to get user information with designation
+    $query = "
+        SELECT 
+            u.id, 
+            u.username, 
+            u.firstName, 
+            u.lastName, 
+            u.status,
+            d.designation_name,
+            CONCAT(u.firstName, ' ', u.lastName) as fullName
+        FROM tbl_user u
+        LEFT JOIN tbl_designation d ON u.designation_id = d.id
+        WHERE u.id = ?
+    ";
     
     $stmt = $pdo->prepare($query);
-    $stmt->bindParam(':reportingTo', $reportingTo, PDO::PARAM_STR);
+    $stmt->bindParam(1, $userId, PDO::PARAM_STR);
     $stmt->execute();
     
-    $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $user = $stmt->fetch(PDO::FETCH_ASSOC);
+    
+    if (!$user) {
+        throw new Exception('User not found with ID: ' . $userId);
+    }
+    
+    // Check if user is a CBO
+    $isCBO = ($user['designation_name'] === 'Chief Business Officer');
     
     // Return success response
     echo json_encode([
         'success' => true,
-        'message' => 'RBH Active users fetched successfully',
-        'users' => $users,
-        'count' => count($users)
+        'message' => 'User information retrieved successfully',
+        'user' => $user,
+        'is_cbo' => $isCBO,
+        'can_access_sdsa' => $isCBO
     ]);
     
 } catch (PDOException $e) {
