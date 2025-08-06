@@ -35,7 +35,6 @@ try {
         SELECT 
             id,
             username,
-            alias_name,
             firstName,
             lastName,
             mobile,

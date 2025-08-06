@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CBO Reporting Users API Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        button {
+            background: #667eea;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-right: 10px;
+        }
+        button:hover {
+            background: #5a6fd8;
+        }
+        .response {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 15px;
+            margin-top: 20px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .stat-card {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        .stat-number {
+            font-size: 24px;
+            font-weight: bold;
+            color: #667eea;
+        }
+        .stat-label {
+            color: #666;
+            margin-top: 5px;
+        }
+        .user-list {
+            margin-top: 20px;
+        }
+        .user-card {
+            background: white;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 10px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .user-name {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 5px;
+        }
+        .user-details {
+            color: #666;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+        .status-active {
+            color: #28a745;
+            font-weight: bold;
+        }
+        .status-inactive {
+            color: #dc3545;
+            font-weight: bold;
+        }
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+        }
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Chief Business Officer Reporting Users API Test</h1>
+        <p>Test the API to fetch all users who are reporting to a particular designated user (CBO)</p>
+    </div>
+
+    <div class="container">
+        <h2>API Configuration</h2>
+        <div class="form-group">
+            <label for="userId">User ID (CBO User ID):</label>
+            <input type="number" id="userId" placeholder="Enter the CBO user ID" value="21">
+        </div>
+        
+        <div class="form-group">
+            <label for="designation">Designation Filter (Optional):</label>
+            <select id="designation">
+                <option value="">All Designations</option>
+                <option value="Chief Business Officer">Chief Business Officer</option>
+                <option value="Regional Business Head">Regional Business Head</option>
+                <option value="Director">Director</option>
+                <option value="Managing Director">Managing Director</option>
+                <option value="Business Head">Business Head</option>
+            </select>
+        </div>
+
+        <button onclick="testAPI()">Test CBO Reporting Users API</button>
+        <button onclick="clearResponse()">Clear Response</button>
+        <button onclick="loadSampleData()">Load Sample Data</button>
+    </div>
+
+    <div class="container" id="resultsContainer" style="display: none;">
+        <h2>API Response</h2>
+        <div id="statsContainer" class="stats"></div>
+        <div id="userListContainer" class="user-list"></div>
+        <div id="responseContainer" class="response"></div>
+    </div>
+
+    <script>
+        async function testAPI() {
+            const userId = document.getElementById('userId').value;
+            const designation = document.getElementById('designation').value;
+            
+            if (!userId) {
+                alert('Please enter a User ID');
+                return;
+            }
+
+            const resultsContainer = document.getElementById('resultsContainer');
+            const statsContainer = document.getElementById('statsContainer');
+            const userListContainer = document.getElementById('userListContainer');
+            const responseContainer = document.getElementById('responseContainer');
+
+            // Show loading
+            resultsContainer.style.display = 'block';
+            statsContainer.innerHTML = '<div class="loading">Loading...</div>';
+            userListContainer.innerHTML = '';
+            responseContainer.textContent = 'Loading...';
+
+            try {
+                let url = `https://emp.kfinone.com/mobile/api/get_designated_user_reporting_team.php?user_id=${userId}`;
+                if (designation) {
+                    url += `&designation=${encodeURIComponent(designation)}`;
+                }
+
+                const response = await fetch(url);
+                const data = await response.json();
+
+                // Display raw response
+                responseContainer.textContent = JSON.stringify(data, null, 2);
+
+                if (data.status === 'success') {
+                    displayStats(data.statistics, data.logged_in_user);
+                    displayUsers(data.data);
+                } else {
+                    statsContainer.innerHTML = `<div class="error">${data.message}</div>`;
+                    userListContainer.innerHTML = '';
+                }
+
+            } catch (error) {
+                console.error('Error:', error);
+                statsContainer.innerHTML = `<div class="error">Error: ${error.message}</div>`;
+                userListContainer.innerHTML = '';
+                responseContainer.textContent = `Error: ${error.message}`;
+            }
+        }
+
+        function displayStats(stats, loggedInUser) {
+            const statsContainer = document.getElementById('statsContainer');
+            
+            statsContainer.innerHTML = `
+                <div class="stat-card">
+                    <div class="stat-number">${stats.total_reporting_users}</div>
+                    <div class="stat-label">Total Team Members</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${stats.unique_designations}</div>
+                    <div class="stat-label">Unique Designations</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${stats.unique_departments}</div>
+                    <div class="stat-label">Unique Departments</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${loggedInUser.fullName}</div>
+                    <div class="stat-label">Manager (${loggedInUser.designation_name})</div>
+                </div>
+            `;
+        }
+
+        function displayUsers(users) {
+            const userListContainer = document.getElementById('userListContainer');
+            
+            if (users.length === 0) {
+                userListContainer.innerHTML = '<div class="loading">No team members found</div>';
+                return;
+            }
+
+            let html = '<h3>Team Members (' + users.length + ')</h3>';
+            
+            users.forEach(user => {
+                const statusClass = (user.status === 'Active' || user.status === '1') ? 'status-active' : 'status-inactive';
+                const statusText = (user.status === 'Active' || user.status === '1') ? 'Active' : 'Inactive';
+                
+                html += `
+                    <div class="user-card">
+                        <div class="user-name">${user.displayName}</div>
+                        <div class="user-details">
+                            <strong>Employee ID:</strong> ${user.employee_no || 'N/A'}<br>
+                            <strong>Department:</strong> ${user.department_name || 'Not Assigned'}<br>
+                            <strong>Contact:</strong> ${user.mobile || 'N/A'} | ${user.email || 'N/A'}<br>
+                            <strong>Status:</strong> <span class="${statusClass}">${statusText}</span>
+                        </div>
+                    </div>
+                `;
+            });
+
+            userListContainer.innerHTML = html;
+        }
+
+        function clearResponse() {
+            document.getElementById('resultsContainer').style.display = 'none';
+        }
+
+        function loadSampleData() {
+            // Sample data for testing
+            const sampleData = {
+                status: 'success',
+                message: 'Users reporting to designated user fetched successfully',
+                logged_in_user: {
+                    id: '21',
+                    username: 'cbo_user',
+                    fullName: 'John Doe',
+                    designation_name: 'Chief Business Officer',
+                    department_name: 'Executive',
+                    is_designated_user: true
+                },
+                data: [
+                    {
+                        id: '101',
+                        username: 'user1',
+                        firstName: 'Alice',
+                        lastName: 'Johnson',
+                        fullName: 'Alice Johnson',
+                        displayName: 'Alice Johnson (Regional Business Head)',
+                        employee_no: 'EMP001',
+                        mobile: '9876543210',
+                        email: 'alice@kfinone.com',
+                        designation_name: 'Regional Business Head',
+                        department_name: 'Sales',
+                        status: 'Active'
+                    },
+                    {
+                        id: '102',
+                        username: 'user2',
+                        firstName: 'Bob',
+                        lastName: 'Smith',
+                        fullName: 'Bob Smith',
+                        displayName: 'Bob Smith (Business Head)',
+                        employee_no: 'EMP002',
+                        mobile: '9876543211',
+                        email: 'bob@kfinone.com',
+                        designation_name: 'Business Head',
+                        department_name: 'Marketing',
+                        status: 'Active'
+                    }
+                ],
+                statistics: {
+                    total_reporting_users: 2,
+                    unique_designations: 2,
+                    unique_departments: 2
+                }
+            };
+
+            const resultsContainer = document.getElementById('resultsContainer');
+            const statsContainer = document.getElementById('statsContainer');
+            const userListContainer = document.getElementById('userListContainer');
+            const responseContainer = document.getElementById('responseContainer');
+
+            resultsContainer.style.display = 'block';
+            responseContainer.textContent = JSON.stringify(sampleData, null, 2);
+            displayStats(sampleData.statistics, sampleData.logged_in_user);
+            displayUsers(sampleData.data);
+        }
+
+        // Auto-test on page load
+        window.onload = function() {
+            // Uncomment the line below to auto-test when page loads
+            // testAPI();
+        };
+    </script>
+</body>
+</html> 

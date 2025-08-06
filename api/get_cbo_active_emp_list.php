@@ -41,7 +41,6 @@ try {
         SELECT 
             id,
             username,
-            alias_name,
             first_name,
             last_name,
             Phone_number,
@@ -81,7 +80,6 @@ try {
         SELECT 
             id,
             username,
-            alias_name,
             first_name,
             last_name,
             Phone_number,

@@ -14,72 +14,90 @@
         android:orientation="vertical"
         android:padding="16dp">
 
-        <!-- Employee Name -->
-        <TextView
-            android:id="@+id/employeeName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Name: John Doe"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:textColor="@color/black"
-            android:layout_marginBottom="8dp" />
-
-        <!-- Employee ID -->
-        <TextView
-            android:id="@+id/employeeId"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Employee ID: EMP001"
-            android:textSize="14sp"
-            android:textColor="@color/black"
-            android:layout_marginBottom="6dp" />
-
-        <!-- Phone -->
-        <TextView
-            android:id="@+id/mobile"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Phone: 1234567890"
-            android:textSize="14sp"
-            android:textColor="@color/black"
-            android:layout_marginBottom="6dp" />
-
-        <!-- Email -->
-        <TextView
-            android:id="@+id/email"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Email: john@example.com"
-            android:textSize="14sp"
-            android:textColor="@color/black"
-            android:layout_marginBottom="8dp" />
-
-        <!-- Manage Icons Section -->
+        <!-- Header Row with Name and Status -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
 
             <TextView
+                android:id="@+id/nameText"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="User Name"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="@color/black" />
+
+            <TextView
+                android:id="@+id/statusText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Manage Icons:"
-                android:textSize="14sp"
+                android:text="Active"
+                android:textSize="12sp"
                 android:textStyle="bold"
-                android:textColor="@color/black"
-                android:layout_marginBottom="4dp" />
-
-            <TextView
-                android:id="@+id/manageIcons"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Dashboard, Settings, Analytics"
-                android:textSize="14sp"
-                android:textColor="@color/black"
-                android:lineSpacingExtra="2dp" />
+                android:paddingHorizontal="8dp"
+                android:paddingVertical="4dp"
+                android:background="@drawable/status_background"
+                android:textColor="@color/white" />
 
         </LinearLayout>
+
+        <!-- Employee ID -->
+        <TextView
+            android:id="@+id/employeeNoText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Employee ID: N/A"
+            android:textSize="14sp"
+            android:textColor="@color/gray" />
+
+        <!-- Designation -->
+        <TextView
+            android:id="@+id/designationText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="Designation"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="@color/primary_color" />
+
+        <!-- Department -->
+        <TextView
+            android:id="@+id/departmentText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="Department: Not Assigned"
+            android:textSize="14sp"
+            android:textColor="@color/gray" />
+
+        <!-- Contact Information -->
+        <TextView
+            android:id="@+id/contactText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Contact info not available"
+            android:textSize="14sp"
+            android:textColor="@color/gray"
+            android:drawableStart="@drawable/ic_contact"
+            android:drawablePadding="8dp"
+            android:gravity="center_vertical" />
+
+        <!-- Manage Icons -->
+        <TextView
+            android:id="@+id/manageIcons"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Manage Icons: None"
+            android:textSize="14sp"
+            android:textColor="@color/gray" />
 
     </LinearLayout>
 
