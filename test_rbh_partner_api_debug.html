@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RBH Partner API Debug</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .container { max-width: 800px; margin: 0 auto; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; }
+        input[type="text"] { width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; }
+        button { padding: 10px 20px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        button:hover { background: #0056b3; }
+        .result { margin-top: 20px; padding: 15px; border: 1px solid #ddd; border-radius: 4px; background: #f9f9f9; }
+        .error { color: red; }
+        .success { color: green; }
+        pre { white-space: pre-wrap; word-wrap: break-word; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>RBH Partner API Debug Test</h1>
+        
+        <div class="form-group">
+            <label for="username">Username:</label>
+            <input type="text" id="username" value="30000" placeholder="Enter username">
+        </div>
+        
+        <button onclick="testAPI()">Test API</button>
+        
+        <div class="result" id="result" style="display: none;">
+            <h3>API Response:</h3>
+            <div id="response"></div>
+        </div>
+        
+        <div class="result" id="parsedResult" style="display: none;">
+            <h3>Parsed Data:</h3>
+            <div id="parsedData"></div>
+        </div>
+    </div>
+
+    <script>
+        async function testAPI() {
+            const username = document.getElementById('username').value;
+            const resultDiv = document.getElementById('result');
+            const responseDiv = document.getElementById('response');
+            const parsedDiv = document.getElementById('parsedResult');
+            const parsedDataDiv = document.getElementById('parsedData');
+            
+            if (!username) {
+                alert('Please enter a username');
+                return;
+            }
+            
+            try {
+                const url = `https://emp.kfinone.com/mobile/api/rbh_my_partner_users.php?username=${username}`;
+                console.log('Calling API:', url);
+                
+                const response = await fetch(url);
+                const responseText = await response.text();
+                
+                console.log('Raw response:', responseText);
+                
+                // Show raw response
+                resultDiv.style.display = 'block';
+                responseDiv.innerHTML = `<pre>${responseText}</pre>`;
+                
+                // Try to parse JSON
+                try {
+                    const jsonData = JSON.parse(responseText);
+                    console.log('Parsed JSON:', jsonData);
+                    
+                    // Show parsed data
+                    parsedDiv.style.display = 'block';
+                    
+                    let parsedHtml = '<div class="success">✅ JSON parsed successfully!</div>';
+                    parsedHtml += `<p><strong>Status:</strong> ${jsonData.status}</p>`;
+                    parsedHtml += `<p><strong>Message:</strong> ${jsonData.message}</p>`;
+                    
+                    if (jsonData.statistics) {
+                        parsedHtml += `<h4>Statistics:</h4>`;
+                        parsedHtml += `<p>Total Partners: ${jsonData.statistics.total_partners}</p>`;
+                        parsedHtml += `<p>Active Partners: ${jsonData.statistics.active_partners}</p>`;
+                        parsedHtml += `<p>Inactive Partners: ${jsonData.statistics.inactive_partners}</p>`;
+                    }
+                    
+                    if (jsonData.data && Array.isArray(jsonData.data)) {
+                        parsedHtml += `<h4>Partner Data (${jsonData.data.length} partners):</h4>`;
+                        jsonData.data.forEach((partner, index) => {
+                            parsedHtml += `<div style="border: 1px solid #ddd; margin: 10px 0; padding: 10px; background: white;">`;
+                            parsedHtml += `<h5>Partner ${index + 1}:</h5>`;
+                            parsedHtml += `<p><strong>ID:</strong> ${partner.id}</p>`;
+                            parsedHtml += `<p><strong>Name:</strong> ${partner.first_name} ${partner.last_name}</p>`;
+                            parsedHtml += `<p><strong>Username:</strong> ${partner.username}</p>`;
+                            parsedHtml += `<p><strong>Email:</strong> ${partner.email_id}</p>`;
+                            parsedHtml += `<p><strong>Phone:</strong> ${partner.Phone_number}</p>`;
+                            parsedHtml += `<p><strong>Status:</strong> ${partner.status}</p>`;
+                            parsedHtml += `<p><strong>Created By:</strong> ${partner.createdBy}</p>`;
+                            parsedHtml += `<p><strong>Full Name:</strong> ${partner.full_name}</p>`;
+                            parsedHtml += `</div>`;
+                        });
+                    }
+                    
+                    parsedDataDiv.innerHTML = parsedHtml;
+                    
+                } catch (parseError) {
+                    console.error('JSON parse error:', parseError);
+                    parsedDiv.style.display = 'block';
+                    parsedDataDiv.innerHTML = `<div class="error">❌ JSON Parse Error: ${parseError.message}</div>`;
+                }
+                
+            } catch (error) {
+                console.error('Fetch error:', error);
+                resultDiv.style.display = 'block';
+                responseDiv.innerHTML = `<div class="error">❌ Network Error: ${error.message}</div>`;
+            }
+        }
+    </script>
+</body>
+</html> 

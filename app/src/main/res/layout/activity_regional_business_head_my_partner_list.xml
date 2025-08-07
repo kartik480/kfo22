@@ -35,7 +35,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="My Partner List"
+            android:text="Partner List Active"
             android:textSize="16sp"
             android:textColor="@color/white"
             android:layout_marginTop="4dp" />
@@ -109,14 +109,71 @@
         </LinearLayout>
     </LinearLayout>
 
-    <!-- Coming Soon Section -->
+    <!-- Search Bar -->
     <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="16dp"
+        android:background="@color/white"
+        android:elevation="1dp">
+
+        <EditText
+            android:id="@+id/searchEditText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="Search partners..."
+            android:padding="12dp"
+            android:background="@drawable/search_background"
+            android:drawableStart="@drawable/ic_search"
+            android:drawablePadding="8dp"
+            android:textSize="14sp"
+            android:imeOptions="actionSearch"
+            android:inputType="text" />
+
+        <Button
+            android:id="@+id/refreshButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="Refresh"
+            android:textSize="12sp"
+            android:padding="12dp"
+            android:background="@drawable/button_background_primary"
+            android:textColor="@color/white" />
+    </LinearLayout>
+
+    <!-- Loading Progress -->
+    <ProgressBar
+        android:id="@+id/loadingProgress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="32dp"
+        android:visibility="gone" />
+
+    <!-- Partner List -->
+    <ListView
+        android:id="@+id/partnerListView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:divider="@color/light_gray"
+        android:dividerHeight="1dp"
+        android:padding="8dp"
+        android:background="@color/white" />
+
+    <!-- Empty State -->
+    <LinearLayout
+        android:id="@+id/emptyStateLayout"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
         android:orientation="vertical"
         android:gravity="center"
-        android:padding="32dp">
+        android:padding="32dp"
+        android:visibility="gone">
 
         <ImageView
             android:layout_width="120dp"
@@ -124,13 +181,13 @@
             android:src="@drawable/ic_people"
             android:background="@drawable/icon_gradient_blue"
             android:padding="30dp"
-            android:contentDescription="Coming Soon" />
+            android:contentDescription="No Partners" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Coming Soon!"
-            android:textSize="28sp"
+            android:text="No Partners Found"
+            android:textSize="24sp"
             android:textStyle="bold"
             android:textColor="@color/primary_blue"
             android:layout_marginTop="24dp"
@@ -139,23 +196,12 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="My Partner List functionality is under development"
+            android:text="You haven't created any partners yet"
             android:textSize="16sp"
             android:textColor="@color/gray"
             android:layout_marginTop="8dp"
             android:gravity="center"
             android:layout_marginHorizontal="32dp" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="This feature will allow you to view and manage all your partners"
-            android:textSize="14sp"
-            android:textColor="@color/gray"
-            android:layout_marginTop="16dp"
-            android:gravity="center"
-            android:layout_marginHorizontal="48dp" />
-
     </LinearLayout>
 
 </LinearLayout> 

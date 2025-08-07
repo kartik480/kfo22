@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Database Structure Debug</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        button { padding: 10px 20px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; margin: 10px 0; }
+        button:hover { background: #0056b3; }
+        .result { margin-top: 20px; padding: 15px; border: 1px solid #ddd; border-radius: 4px; background: #f9f9f9; }
+        .error { color: red; }
+        .success { color: green; }
+        pre { white-space: pre-wrap; word-wrap: break-word; max-height: 500px; overflow-y: auto; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Database Structure Debug</h1>
+        
+        <button onclick="checkDatabaseStructure()">Check Database Structure</button>
+        <button onclick="testRBHAPI()">Test RBH API Again</button>
+        
+        <div class="result" id="result" style="display: none;">
+            <h3>Result:</h3>
+            <div id="response"></div>
+        </div>
+    </div>
+
+    <script>
+        async function checkDatabaseStructure() {
+            const resultDiv = document.getElementById('result');
+            const responseDiv = document.getElementById('response');
+            
+            try {
+                const url = 'https://emp.kfinone.com/mobile/api/debug_tables.php';
+                console.log('Calling API:', url);
+                
+                const response = await fetch(url);
+                const responseText = await response.text();
+                
+                console.log('Raw response:', responseText);
+                
+                // Show raw response
+                resultDiv.style.display = 'block';
+                responseDiv.innerHTML = `<pre>${responseText}</pre>`;
+                
+            } catch (error) {
+                console.error('Fetch error:', error);
+                resultDiv.style.display = 'block';
+                responseDiv.innerHTML = `<div class="error">❌ Network Error: ${error.message}</div>`;
+            }
+        }
+        
+        async function testRBHAPI() {
+            const resultDiv = document.getElementById('result');
+            const responseDiv = document.getElementById('response');
+            
+            try {
+                const url = 'https://emp.kfinone.com/mobile/api/rbh_my_partner_users.php?username=30000';
+                console.log('Calling API:', url);
+                
+                const response = await fetch(url);
+                const responseText = await response.text();
+                
+                console.log('Raw response:', responseText);
+                
+                // Show raw response
+                resultDiv.style.display = 'block';
+                responseDiv.innerHTML = `<h3>RBH API Response:</h3><pre>${responseText}</pre>`;
+                
+            } catch (error) {
+                console.error('Fetch error:', error);
+                resultDiv.style.display = 'block';
+                responseDiv.innerHTML = `<div class="error">❌ Network Error: ${error.message}</div>`;
+            }
+        }
+    </script>
+</body>
+</html> 

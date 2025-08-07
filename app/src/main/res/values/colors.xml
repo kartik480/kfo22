@@ -51,4 +51,8 @@
     <!-- Additional colors for RBH Active Emp List -->
     <color name="background">#F5F5F5</color>
     <color name="gray_light">#E0E0E0</color>
+    
+    <!-- Additional colors for Partner List -->
+    <color name="light_red">#FFEBEE</color>
+    <color name="light_blue">#E3F2FD</color>
 </resources>

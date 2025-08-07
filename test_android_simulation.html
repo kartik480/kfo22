@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Android App Simulation Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .container { max-width: 800px; margin: 0 auto; }
+        button { padding: 10px 20px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; margin: 10px 0; }
+        button:hover { background: #0056b3; }
+        .result { margin-top: 20px; padding: 15px; border: 1px solid #ddd; border-radius: 4px; background: #f9f9f9; }
+        .error { color: red; }
+        .success { color: green; }
+        pre { white-space: pre-wrap; word-wrap: break-word; max-height: 400px; overflow-y: auto; }
+        .partner-item { border: 1px solid #ddd; margin: 10px 0; padding: 15px; background: white; border-radius: 4px; }
+        .partner-name { font-weight: bold; font-size: 18px; color: #333; }
+        .partner-details { margin-top: 8px; color: #666; }
+        .status-active { color: green; font-weight: bold; }
+        .status-inactive { color: red; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Android App Simulation Test</h1>
+        <p>This simulates exactly what the Android app does when calling the RBH Partner API.</p>
+        
+        <button onclick="simulateAndroidApp()">Simulate Android App API Call</button>
+        
+        <div class="result" id="result" style="display: none;">
+            <h3>Simulation Results:</h3>
+            <div id="response"></div>
+        </div>
+    </div>
+
+    <script>
+        async function simulateAndroidApp() {
+            const resultDiv = document.getElementById('result');
+            const responseDiv = document.getElementById('response');
+            
+            try {
+                // Simulate exactly what the Android app does
+                const url = 'https://emp.kfinone.com/mobile/api/rbh_my_partner_users.php?username=30000';
+                console.log('Android App calling API:', url);
+                
+                const response = await fetch(url);
+                const responseText = await response.text();
+                
+                console.log('Raw response received by Android app:', responseText);
+                
+                // Parse JSON like the Android app does
+                const jsonData = JSON.parse(responseText);
+                
+                let html = '<div class="success">✅ API call successful!</div>';
+                html += `<p><strong>Status:</strong> ${jsonData.status}</p>`;
+                html += `<p><strong>Message:</strong> ${jsonData.message}</p>`;
+                
+                if (jsonData.logged_in_user) {
+                    html += `<h4>Logged In User:</h4>`;
+                    html += `<p>ID: ${jsonData.logged_in_user.id}</p>`;
+                    html += `<p>Username: ${jsonData.logged_in_user.username}</p>`;
+                    html += `<p>Name: ${jsonData.logged_in_user.full_name}</p>`;
+                    html += `<p>Designation: ${jsonData.logged_in_user.designation}</p>`;
+                }
+                
+                if (jsonData.statistics) {
+                    html += `<h4>Statistics:</h4>`;
+                    html += `<p>Total Partners: ${jsonData.statistics.total_partners}</p>`;
+                    html += `<p>Active Partners: ${jsonData.statistics.active_partners}</p>`;
+                    html += `<p>Inactive Partners: ${jsonData.statistics.inactive_partners}</p>`;
+                }
+                
+                if (jsonData.data && Array.isArray(jsonData.data)) {
+                    html += `<h4>Partner Data (${jsonData.data.length} partners):</h4>`;
+                    jsonData.data.forEach((partner, index) => {
+                        const statusClass = (partner.status == 1 || partner.status == 'Active') ? 'status-active' : 'status-inactive';
+                        const statusText = (partner.status == 1 || partner.status == 'Active') ? 'Active' : 'Inactive';
+                        
+                        html += `<div class="partner-item">`;
+                        html += `<div class="partner-name">${partner.first_name} ${partner.last_name}</div>`;
+                        html += `<div class="partner-details">`;
+                        html += `<p><strong>Username:</strong> ${partner.username}</p>`;
+                        html += `<p><strong>Email:</strong> ${partner.email_id || 'N/A'}</p>`;
+                        html += `<p><strong>Phone:</strong> ${partner.Phone_number || 'N/A'}</p>`;
+                        html += `<p><strong>Status:</strong> <span class="${statusClass}">${statusText}</span></p>`;
+                        html += `<p><strong>Company:</strong> ${partner.company_name || 'N/A'}</p>`;
+                        html += `<p><strong>Department:</strong> ${partner.department || 'N/A'}</p>`;
+                        html += `<p><strong>Designation:</strong> ${partner.designation || 'N/A'}</p>`;
+                        html += `<p><strong>Created By:</strong> ${partner.createdBy}</p>`;
+                        html += `</div>`;
+                        html += `</div>`;
+                    });
+                }
+                
+                // Show raw response for debugging
+                html += `<h4>Raw API Response:</h4>`;
+                html += `<pre>${responseText}</pre>`;
+                
+                resultDiv.style.display = 'block';
+                responseDiv.innerHTML = html;
+                
+            } catch (error) {
+                console.error('Simulation error:', error);
+                resultDiv.style.display = 'block';
+                responseDiv.innerHTML = `<div class="error">❌ Error: ${error.message}</div>`;
+            }
+        }
+    </script>
+</body>
+</html> 
