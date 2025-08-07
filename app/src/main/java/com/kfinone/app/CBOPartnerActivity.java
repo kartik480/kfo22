@@ -1,7 +1,9 @@
 package com.kfinone.app;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -44,6 +46,17 @@ public class CBOPartnerActivity extends AppCompatActivity {
         Intent intent = getIntent();
         userName = intent.getStringExtra("USERNAME");
         userId = intent.getStringExtra("USER_ID");
+
+        // Debug logging
+        Log.d("CBOPartnerActivity", "Received userName: " + userName);
+        Log.d("CBOPartnerActivity", "Received userId: " + userId);
+
+        // If userId is null, try to get it from SharedPreferences
+        if (userId == null || userId.isEmpty()) {
+            SharedPreferences prefs = getSharedPreferences("UserPrefs", MODE_PRIVATE);
+            userId = String.valueOf(prefs.getInt("user_id", 0));
+            Log.d("CBOPartnerActivity", "Retrieved userId from SharedPreferences: " + userId);
+        }
 
         initializeViews();
         setupClickListeners();

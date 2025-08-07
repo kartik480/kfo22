@@ -59,7 +59,10 @@ public class CboMyPartnerUsersActivity extends AppCompatActivity {
         }
         
         if (userId == null || userId.isEmpty() || userId.equals("0")) {
-            Toast.makeText(this, "User ID is required", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "User ID is required. Please login again.", Toast.LENGTH_LONG).show();
+            Log.e("CboMyPartnerUsers", "User ID is missing or invalid: " + userId);
+            Log.e("CboMyPartnerUsers", "Username: " + username);
+            Log.e("CboMyPartnerUsers", "User Full Name: " + userFullName);
             finish();
             return;
         }
@@ -130,10 +133,19 @@ public class CboMyPartnerUsersActivity extends AppCompatActivity {
     private void fetchPartnerUsers() {
         showLoading(true);
         
-        // Use the user ID from the class variable (set in onCreate)
-        String url = "https://emp.kfinone.com/mobile/api/cbo_my_partner_users.php?user_id=" + userId;
+        // Debug logging
+        Log.d("CBOMyPartnerUsers", "Starting fetchPartnerUsers");
+        Log.d("CBOMyPartnerUsers", "userId: " + userId);
+        Log.d("CBOMyPartnerUsers", "username: " + username);
         
-        Log.d("CBOMyPartnerUsers", "Fetching partner users for user_id: " + userId);
+        // Build URL with both user_id and username for better compatibility
+        String url = "https://emp.kfinone.com/mobile/api/cbo_my_partner_users.php?user_id=" + userId;
+        if (username != null && !username.isEmpty()) {
+            url += "&username=" + username;
+        }
+        
+        Log.d("CBOMyPartnerUsers", "API URL: " + url);
+        Log.d("CBOMyPartnerUsers", "Fetching partner users for user_id: " + userId + ", username: " + username);
         
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
                 response -> {
@@ -151,6 +163,12 @@ public class CboMyPartnerUsersActivity extends AppCompatActivity {
                             
                             // Update user list
                             updateUserList(partnerUsers);
+                            
+                            // Log success information
+                            JSONObject loggedInUser = response.getJSONObject("logged_in_user");
+                            String cboUsername = response.optString("cbo_username", "");
+                            Log.d("CBOMyPartnerUsers", "CBO Username used for filtering: " + cboUsername);
+                            Log.d("CBOMyPartnerUsers", "Total partner users found: " + partnerUsers.size());
                             
                         } else {
                             String errorMessage = response.getString("message");
@@ -190,6 +208,28 @@ public class CboMyPartnerUsersActivity extends AppCompatActivity {
                 userObj.optString("createdBy", "")
             );
             
+            // Set additional fields
+            partnerUser.setAliasName(userObj.optString("alias_name", ""));
+            partnerUser.setFirstName(userObj.optString("first_name", ""));
+            partnerUser.setLastName(userObj.optString("last_name", ""));
+            partnerUser.setAlternativeMobileNumber(userObj.optString("alternative_mobile_number", ""));
+            partnerUser.setBranchState(userObj.optString("branchstate", ""));
+            partnerUser.setBranchLocation(userObj.optString("branchloaction", ""));
+            partnerUser.setBankName(userObj.optString("bank_name", ""));
+            partnerUser.setAccountType(userObj.optString("account_type", ""));
+            partnerUser.setOfficeAddress(userObj.optString("office_address", ""));
+            partnerUser.setResidentialAddress(userObj.optString("residential_address", ""));
+            partnerUser.setAadhaarNumber(userObj.optString("aadhaar_number", ""));
+            partnerUser.setPanNumber(userObj.optString("pan_number", ""));
+            partnerUser.setAccountNumber(userObj.optString("account_number", ""));
+            partnerUser.setIfscCode(userObj.optString("ifsc_code", ""));
+            partnerUser.setRank(userObj.optString("rank", ""));
+            partnerUser.setReportingTo(userObj.optString("reportingTo", ""));
+            partnerUser.setEmployeeNo(userObj.optString("employee_no", ""));
+            partnerUser.setDepartment(userObj.optString("department", ""));
+            partnerUser.setDesignation(userObj.optString("designation", ""));
+            partnerUser.setUpdatedAt(userObj.optString("updated_at", ""));
+            
             partnerUsers.add(partnerUser);
         }
         
@@ -197,16 +237,55 @@ public class CboMyPartnerUsersActivity extends AppCompatActivity {
     }
     
     private void showPartnerUserDetails(PartnerUser partnerUser) {
-        // Show partner user details in a toast for now
-        String details = "Name: " + partnerUser.getFullName() + 
-                        "\nPhone: " + partnerUser.getPhoneNumber() + 
-                        "\nEmail: " + partnerUser.getEmail() + 
-                        "\nCompany: " + partnerUser.getCompanyName() + 
-                        "\nStatus: " + partnerUser.getStatus();
+        // Create a detailed message with all available information
+        StringBuilder details = new StringBuilder();
+        details.append("👤 Partner User Details\n\n");
+        details.append("📋 Basic Information:\n");
+        details.append("Name: ").append(partnerUser.getFullName()).append("\n");
+        details.append("Username: ").append(partnerUser.getUsername()).append("\n");
+        details.append("Employee No: ").append(partnerUser.getEmployeeNo()).append("\n");
+        details.append("Department: ").append(partnerUser.getDepartment()).append("\n");
+        details.append("Designation: ").append(partnerUser.getDesignation()).append("\n");
+        details.append("Status: ").append(partnerUser.getStatus()).append("\n\n");
         
-        Toast.makeText(this, details, Toast.LENGTH_LONG).show();
+        details.append("📞 Contact Information:\n");
+        details.append("Phone: ").append(partnerUser.getPhoneNumber()).append("\n");
+        details.append("Alternative Phone: ").append(partnerUser.getAlternativeMobileNumber()).append("\n");
+        details.append("Email: ").append(partnerUser.getEmail()).append("\n\n");
         
-        // TODO: Create PartnerUserDetailsActivity for detailed view
+        details.append("🏢 Company Information:\n");
+        details.append("Company: ").append(partnerUser.getCompanyName()).append("\n");
+        details.append("Branch State: ").append(partnerUser.getBranchState()).append("\n");
+        details.append("Branch Location: ").append(partnerUser.getBranchLocation()).append("\n\n");
+        
+        details.append("🏦 Banking Information:\n");
+        details.append("Bank Name: ").append(partnerUser.getBankName()).append("\n");
+        details.append("Account Type: ").append(partnerUser.getAccountType()).append("\n");
+        details.append("Account Number: ").append(partnerUser.getAccountNumber()).append("\n");
+        details.append("IFSC Code: ").append(partnerUser.getIfscCode()).append("\n\n");
+        
+        details.append("📍 Address Information:\n");
+        details.append("Office Address: ").append(partnerUser.getOfficeAddress()).append("\n");
+        details.append("Residential Address: ").append(partnerUser.getResidentialAddress()).append("\n\n");
+        
+        details.append("🆔 Identity Information:\n");
+        details.append("Aadhaar Number: ").append(partnerUser.getAadhaarNumber()).append("\n");
+        details.append("PAN Number: ").append(partnerUser.getPanNumber()).append("\n\n");
+        
+        details.append("📅 System Information:\n");
+        details.append("Created By: ").append(partnerUser.getCreatedBy()).append("\n");
+        details.append("Created At: ").append(partnerUser.getCreatedAt()).append("\n");
+        details.append("Updated At: ").append(partnerUser.getUpdatedAt()).append("\n");
+        
+        // Show in a dialog instead of toast for better readability
+        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
+        builder.setTitle("Partner User Details");
+        builder.setMessage(details.toString());
+        builder.setPositiveButton("OK", null);
+        builder.setNegativeButton("Close", null);
+        builder.show();
+        
+        // TODO: Create PartnerUserDetailsActivity for detailed view with better UI
         // Intent intent = new Intent(this, PartnerUserDetailsActivity.class);
         // intent.putExtra("PARTNER_USER_ID", partnerUser.getId());
         // intent.putExtra("PARTNER_USER_NAME", partnerUser.getFullName());
@@ -282,9 +361,25 @@ public class CboMyPartnerUsersActivity extends AppCompatActivity {
         private String email;
         private String alternativeMobileNumber;
         private String companyName;
+        private String branchState;
+        private String branchLocation;
+        private String bankName;
+        private String accountType;
+        private String officeAddress;
+        private String residentialAddress;
+        private String aadhaarNumber;
+        private String panNumber;
+        private String accountNumber;
+        private String ifscCode;
+        private String rank;
         private String status;
+        private String reportingTo;
+        private String employeeNo;
+        private String department;
+        private String designation;
         private String createdAt;
         private String createdBy;
+        private String updatedAt;
 
         // Constructor
         public PartnerUser(int id, String username, String fullName, String phoneNumber, 
@@ -312,9 +407,25 @@ public class CboMyPartnerUsersActivity extends AppCompatActivity {
         public String getEmail() { return email; }
         public String getAlternativeMobileNumber() { return alternativeMobileNumber; }
         public String getCompanyName() { return companyName; }
+        public String getBranchState() { return branchState; }
+        public String getBranchLocation() { return branchLocation; }
+        public String getBankName() { return bankName; }
+        public String getAccountType() { return accountType; }
+        public String getOfficeAddress() { return officeAddress; }
+        public String getResidentialAddress() { return residentialAddress; }
+        public String getAadhaarNumber() { return aadhaarNumber; }
+        public String getPanNumber() { return panNumber; }
+        public String getAccountNumber() { return accountNumber; }
+        public String getIfscCode() { return ifscCode; }
+        public String getRank() { return rank; }
         public String getStatus() { return status; }
+        public String getReportingTo() { return reportingTo; }
+        public String getEmployeeNo() { return employeeNo; }
+        public String getDepartment() { return department; }
+        public String getDesignation() { return designation; }
         public String getCreatedAt() { return createdAt; }
         public String getCreatedBy() { return createdBy; }
+        public String getUpdatedAt() { return updatedAt; }
 
         // Setters
         public void setId(int id) { this.id = id; }
@@ -327,8 +438,24 @@ public class CboMyPartnerUsersActivity extends AppCompatActivity {
         public void setEmail(String email) { this.email = email; }
         public void setAlternativeMobileNumber(String alternativeMobileNumber) { this.alternativeMobileNumber = alternativeMobileNumber; }
         public void setCompanyName(String companyName) { this.companyName = companyName; }
+        public void setBranchState(String branchState) { this.branchState = branchState; }
+        public void setBranchLocation(String branchLocation) { this.branchLocation = branchLocation; }
+        public void setBankName(String bankName) { this.bankName = bankName; }
+        public void setAccountType(String accountType) { this.accountType = accountType; }
+        public void setOfficeAddress(String officeAddress) { this.officeAddress = officeAddress; }
+        public void setResidentialAddress(String residentialAddress) { this.residentialAddress = residentialAddress; }
+        public void setAadhaarNumber(String aadhaarNumber) { this.aadhaarNumber = aadhaarNumber; }
+        public void setPanNumber(String panNumber) { this.panNumber = panNumber; }
+        public void setAccountNumber(String accountNumber) { this.accountNumber = accountNumber; }
+        public void setIfscCode(String ifscCode) { this.ifscCode = ifscCode; }
+        public void setRank(String rank) { this.rank = rank; }
         public void setStatus(String status) { this.status = status; }
+        public void setReportingTo(String reportingTo) { this.reportingTo = reportingTo; }
+        public void setEmployeeNo(String employeeNo) { this.employeeNo = employeeNo; }
+        public void setDepartment(String department) { this.department = department; }
+        public void setDesignation(String designation) { this.designation = designation; }
         public void setCreatedAt(String createdAt) { this.createdAt = createdAt; }
         public void setCreatedBy(String createdBy) { this.createdBy = createdBy; }
+        public void setUpdatedAt(String updatedAt) { this.updatedAt = updatedAt; }
     }
 } 

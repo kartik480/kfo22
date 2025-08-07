@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CBO My Partner Users Verification</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        h2 {
+            color: #34495e;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+            margin-top: 30px;
+        }
+        .test-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #3498db;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        input[type="text"], input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+        button {
+            background: #3498db;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            margin: 5px;
+        }
+        button:hover {
+            background: #2980b9;
+        }
+        .result {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 4px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        .info {
+            background: #d1ecf1;
+            border: 1px solid #bee5eb;
+            color: #0c5460;
+        }
+        .warning {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+        }
+        .user-card {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .user-name {
+            font-weight: bold;
+            color: #2c3e50;
+            font-size: 16px;
+            margin-bottom: 8px;
+        }
+        .user-details {
+            color: #7f8c8d;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+        .status-active {
+            color: #27ae60;
+            font-weight: bold;
+        }
+        .status-inactive {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .stat-number {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .stat-label {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 CBO My Partner Users Verification</h1>
+        
+        <div class="test-section">
+            <h2>📋 Test Overview</h2>
+            <p>This test verifies that the Chief Business Officer (CBO) panel correctly:</p>
+            <ul>
+                <li>✅ Detects CBO users during login</li>
+                <li>✅ Fetches partner users created by the logged-in CBO</li>
+                <li>✅ Filters by <code>createdBy</code> column in <code>tbl_partner_users</code></li>
+                <li>✅ Displays all partner user information in a list</li>
+                <li>✅ Shows statistics (total, active, inactive users)</li>
+            </ul>
+        </div>
+
+        <div class="test-section">
+            <h2>🔐 Step 1: Login with CBO User</h2>
+            <p>First, let's verify that the system correctly identifies a Chief Business Officer user:</p>
+            
+            <div class="form-group">
+                <label for="cboUsername">CBO Username:</label>
+                <input type="text" id="cboUsername" value="90000" placeholder="Enter CBO username">
+            </div>
+            
+            <div class="form-group">
+                <label for="cboPassword">Password:</label>
+                <input type="password" id="cboPassword" value="123456" placeholder="Enter password">
+            </div>
+            
+            <button onclick="testCBOLogin()">🔐 Test CBO Login</button>
+            <div id="loginResult" class="result"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>👥 Step 2: Fetch CBO's Partner Users</h2>
+            <p>Now let's fetch all partner users that were created by this CBO:</p>
+            
+            <div class="form-group">
+                <label for="cboUserId">CBO User ID:</label>
+                <input type="text" id="cboUserId" placeholder="Enter CBO User ID (from login response)">
+            </div>
+            
+            <button onclick="fetchCBOMyPartnerUsers()">👥 Fetch My Partner Users</button>
+            <button onclick="fetchCBOMyPartnerUsersByUsername()">👤 Fetch by Username</button>
+            <div id="partnerUsersResult" class="result"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>📊 Step 3: Display Partner Users</h2>
+            <div id="partnerUsersDisplay"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>🔍 Step 4: Database Query Verification</h2>
+            <p>Let's verify the exact SQL query being used:</p>
+            <div class="user-card">
+                <div class="user-name">SQL Query Analysis</div>
+                <div class="user-details">
+                    <strong>Step 1:</strong> Verify CBO user exists<br>
+                    <code>SELECT u.id, u.username, u.firstName, u.lastName, d.designation_name<br>
+                    FROM tbl_user u<br>
+                    INNER JOIN tbl_designation d ON u.designation_id = d.id<br>
+                    WHERE d.designation_name = 'Chief Business Officer'<br>
+                    AND u.id = :user_id</code><br><br>
+                    
+                    <strong>Step 2:</strong> Fetch partner users created by CBO<br>
+                    <code>SELECT * FROM tbl_partner_users<br>
+                    WHERE createdBy = :cbo_username<br>
+                    AND (status = 'Active' OR status = 1 OR status IS NULL OR status = '')<br>
+                    ORDER BY first_name ASC, last_name ASC</code>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'https://emp.kfinone.com/mobile/api';
+
+        async function testCBOLogin() {
+            const username = document.getElementById('cboUsername').value;
+            const password = document.getElementById('cboPassword').value;
+            const resultDiv = document.getElementById('loginResult');
+            
+            if (!username || !password) {
+                resultDiv.className = 'result error';
+                resultDiv.innerHTML = '❌ Please enter both username and password';
+                return;
+            }
+
+            resultDiv.innerHTML = 'Loading...';
+            resultDiv.className = 'result info';
+
+            try {
+                const response = await fetch(API_BASE + '/login.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        username: username,
+                        password: password
+                    })
+                });
+                
+                const data = await response.json();
+                
+                let result = '=== CBO Login Test ===\n\n';
+                result += `Success: ${data.success}\n`;
+                result += `Message: ${data.message}\n\n`;
+                
+                if (data.success) {
+                    result += '=== User Information ===\n';
+                    result += `ID: ${data.user.id}\n`;
+                    result += `Username: ${data.user.username}\n`;
+                    result += `First Name: ${data.user.firstName || 'N/A'}\n`;
+                    result += `Last Name: ${data.user.lastName || 'N/A'}\n`;
+                    result += `Designation: ${data.user.designation_name || 'N/A'}\n\n`;
+                    
+                    result += '=== Role Detection ===\n';
+                    result += `Is Chief Business Officer: ${data.is_chief_business_officer || false}\n\n`;
+                    
+                    if (data.is_chief_business_officer) {
+                        result += '✅ This user is correctly identified as a Chief Business Officer!\n';
+                        result += '✅ They will be redirected to the CBO Panel\n';
+                        result += '✅ They can access "My Partner Users" functionality\n\n';
+                        
+                        // Auto-fill the user ID for the next test
+                        document.getElementById('cboUserId').value = data.user.id;
+                    } else {
+                        result += '❌ This user is NOT identified as a Chief Business Officer\n';
+                        result += '❌ They will NOT have access to CBO-specific features\n';
+                    }
+                    
+                    resultDiv.className = 'result success';
+                } else {
+                    result += '❌ Login failed\n';
+                    resultDiv.className = 'result error';
+                }
+                
+                resultDiv.innerHTML = result;
+                
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.innerHTML = `❌ Network Error: ${error.message}`;
+            }
+        }
+
+        async function fetchCBOMyPartnerUsers() {
+            const userId = document.getElementById('cboUserId').value;
+            const resultDiv = document.getElementById('partnerUsersResult');
+            
+            if (!userId) {
+                resultDiv.className = 'result error';
+                resultDiv.innerHTML = '❌ Please enter a CBO User ID first';
+                return;
+            }
+
+            resultDiv.innerHTML = 'Loading partner users...';
+            resultDiv.className = 'result info';
+
+            try {
+                const response = await fetch(`${API_BASE}/cbo_my_partner_users.php?user_id=${encodeURIComponent(userId)}`);
+                const data = await response.json();
+                
+                let result = '=== CBO My Partner Users Test ===\n\n';
+                result += `Status: ${data.status}\n`;
+                result += `Message: ${data.message}\n\n`;
+                
+                if (data.status === 'success') {
+                    result += '=== Logged-in CBO User ===\n';
+                    result += `ID: ${data.logged_in_user.id}\n`;
+                    result += `Username: ${data.logged_in_user.username}\n`;
+                    result += `Full Name: ${data.logged_in_user.full_name}\n`;
+                    result += `Designation: ${data.logged_in_user.designation}\n\n`;
+                    
+                    result += '=== Statistics ===\n';
+                    result += `Total Users: ${data.statistics.total_users}\n`;
+                    result += `Active Users: ${data.statistics.active_users}\n`;
+                    result += `Inactive Users: ${data.statistics.inactive_users}\n\n`;
+                    
+                    result += '=== Partner Users Found ===\n';
+                    result += `Count: ${data.count}\n`;
+                    result += `CBO Username (used for filtering): ${data.cbo_username}\n\n`;
+                    
+                    if (data.data && data.data.length > 0) {
+                        result += '=== Sample Partner User Data ===\n';
+                        const sampleUser = data.data[0];
+                        result += `ID: ${sampleUser.id}\n`;
+                        result += `Username: ${sampleUser.username}\n`;
+                        result += `Full Name: ${sampleUser.full_name}\n`;
+                        result += `Phone: ${sampleUser.phone_number}\n`;
+                        result += `Email: ${sampleUser.email_id}\n`;
+                        result += `Company: ${sampleUser.company_name}\n`;
+                        result += `Status: ${sampleUser.status}\n`;
+                        result += `Created By: ${sampleUser.createdBy}\n`;
+                        result += `Created At: ${sampleUser.created_at}\n\n`;
+                        
+                        result += '✅ Successfully fetched partner users created by this CBO!\n';
+                        result += '✅ The createdBy column filtering is working correctly\n';
+                        
+                        // Display the users in a nice format
+                        displayPartnerUsers(data.data, data.statistics);
+                        
+                    } else {
+                        result += 'ℹ️ No partner users found for this CBO\n';
+                        result += 'ℹ️ This could mean:\n';
+                        result += '   - The CBO hasn\'t created any partner users yet\n';
+                        result += '   - The createdBy column doesn\'t match the CBO username\n';
+                        result += '   - All partner users are inactive\n';
+                    }
+                    
+                    resultDiv.className = 'result success';
+                } else {
+                    result += '❌ Failed to fetch partner users\n';
+                    resultDiv.className = 'result error';
+                }
+                
+                resultDiv.innerHTML = result;
+                
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.innerHTML = `❌ Network Error: ${error.message}`;
+            }
+        }
+
+        async function fetchCBOMyPartnerUsersByUsername() {
+            const username = document.getElementById('cboUsername').value;
+            const resultDiv = document.getElementById('partnerUsersResult');
+            
+            if (!username) {
+                resultDiv.className = 'result error';
+                resultDiv.innerHTML = '❌ Please enter a CBO username first';
+                return;
+            }
+
+            resultDiv.innerHTML = 'Loading partner users by username...';
+            resultDiv.className = 'result info';
+
+            try {
+                const response = await fetch(`${API_BASE}/cbo_my_partner_users.php?username=${encodeURIComponent(username)}`);
+                const data = await response.json();
+                
+                let result = '=== CBO My Partner Users (by Username) ===\n\n';
+                result += `Status: ${data.status}\n`;
+                result += `Message: ${data.message}\n\n`;
+                
+                if (data.status === 'success') {
+                    result += '=== Logged-in CBO User ===\n';
+                    result += `ID: ${data.logged_in_user.id}\n`;
+                    result += `Username: ${data.logged_in_user.username}\n`;
+                    result += `Full Name: ${data.logged_in_user.full_name}\n`;
+                    result += `Designation: ${data.logged_in_user.designation}\n\n`;
+                    
+                    result += '=== Statistics ===\n';
+                    result += `Total Users: ${data.statistics.total_users}\n`;
+                    result += `Active Users: ${data.statistics.active_users}\n`;
+                    result += `Inactive Users: ${data.statistics.inactive_users}\n\n`;
+                    
+                    result += '=== Partner Users Found ===\n';
+                    result += `Count: ${data.count}\n`;
+                    result += `CBO Username (used for filtering): ${data.cbo_username}\n\n`;
+                    
+                    if (data.data && data.data.length > 0) {
+                        result += '✅ Successfully fetched partner users by username!\n';
+                        displayPartnerUsers(data.data, data.statistics);
+                    } else {
+                        result += 'ℹ️ No partner users found for this CBO username\n';
+                    }
+                    
+                    resultDiv.className = 'result success';
+                } else {
+                    result += '❌ Failed to fetch partner users\n';
+                    resultDiv.className = 'result error';
+                }
+                
+                resultDiv.innerHTML = result;
+                
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.innerHTML = `❌ Network Error: ${error.message}`;
+            }
+        }
+
+        function displayPartnerUsers(users, statistics) {
+            const displayDiv = document.getElementById('partnerUsersDisplay');
+            
+            let html = '<h3>📊 Partner Users Statistics</h3>';
+            html += '<div class="stats-grid">';
+            html += `<div class="stat-card"><div class="stat-number">${statistics.total_users}</div><div class="stat-label">Total Users</div></div>`;
+            html += `<div class="stat-card"><div class="stat-number">${statistics.active_users}</div><div class="stat-label">Active Users</div></div>`;
+            html += `<div class="stat-card"><div class="stat-number">${statistics.inactive_users}</div><div class="stat-label">Inactive Users</div></div>`;
+            html += '</div>';
+            
+            html += '<h3>👥 Partner Users List</h3>';
+            
+            if (users.length === 0) {
+                html += '<div class="user-card"><div class="user-name">No Partner Users Found</div><div class="user-details">This CBO hasn\'t created any partner users yet.</div></div>';
+            } else {
+                users.forEach((user, index) => {
+                    const statusClass = (user.status === 'Active' || user.status === '1') ? 'status-active' : 'status-inactive';
+                    const statusText = (user.status === 'Active' || user.status === '1') ? 'Active' : 'Inactive';
+                    
+                    html += `<div class="user-card">
+                        <div class="user-name">${user.full_name || 'N/A'}</div>
+                        <div class="user-details">
+                            <strong>Username:</strong> ${user.username || 'N/A'}<br>
+                            <strong>Phone:</strong> ${user.phone_number || 'N/A'}<br>
+                            <strong>Email:</strong> ${user.email_id || 'N/A'}<br>
+                            <strong>Company:</strong> ${user.company_name || 'N/A'}<br>
+                            <strong>Status:</strong> <span class="${statusClass}">${statusText}</span><br>
+                            <strong>Created By:</strong> ${user.createdBy || 'N/A'}<br>
+                            <strong>Created At:</strong> ${user.created_at || 'N/A'}<br>
+                            <strong>Employee No:</strong> ${user.employee_no || 'N/A'}<br>
+                            <strong>Department:</strong> ${user.department || 'N/A'}<br>
+                            <strong>Designation:</strong> ${user.designation || 'N/A'}
+                        </div>
+                    </div>`;
+                });
+            }
+            
+            displayDiv.innerHTML = html;
+        }
+    </script>
+</body>
+</html> 

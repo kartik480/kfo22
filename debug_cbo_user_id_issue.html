@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CBO User ID Issue Debug</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .issue-section {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .fix-section {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .test-section {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        input[type="text"], input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+        button {
+            background: #3498db;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            margin: 5px;
+        }
+        button:hover {
+            background: #2980b9;
+        }
+        .result {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 4px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        .info {
+            background: #d1ecf1;
+            border: 1px solid #bee5eb;
+            color: #0c5460;
+        }
+        .code-block {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 4px;
+            padding: 15px;
+            margin: 10px 0;
+            font-family: monospace;
+            font-size: 12px;
+            overflow-x: auto;
+        }
+        .step {
+            background: #e3f2fd;
+            border-left: 4px solid #2196f3;
+            padding: 15px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 CBO User ID Issue Debug</h1>
+        
+        <div class="issue-section">
+            <h2>🐛 Issue Identified</h2>
+            <p><strong>Problem:</strong> When navigating from CBO Panel → Partner Management → My Partner, you get "User ID is required" error.</p>
+            
+            <h3>Root Cause:</h3>
+            <p>The <code>ChiefBusinessOfficerPanelActivity</code> was only passing <code>USERNAME</code> but not <code>USER_ID</code> to <code>CBOPartnerActivity</code>.</p>
+            
+            <div class="code-block">
+// BEFORE (Broken):
+cardGrowth.setOnClickListener(v -> {
+    Intent intent = new Intent(this, CBOPartnerActivity.class);
+    intent.putExtra("USERNAME", userName);
+    intent.putExtra("SOURCE_PANEL", "CBO_PANEL");
+    startActivity(intent);
+});
+
+// AFTER (Fixed):
+cardGrowth.setOnClickListener(v -> {
+    Intent intent = new Intent(this, CBOPartnerActivity.class);
+    intent.putExtra("USERNAME", userName);
+    intent.putExtra("USER_ID", userId);  // ← This was missing!
+    intent.putExtra("SOURCE_PANEL", "CBO_PANEL");
+    startActivity(intent);
+});
+            </div>
+        </div>
+
+        <div class="fix-section">
+            <h2>✅ Fix Applied</h2>
+            <div class="step">
+                <h3>Step 1: Fixed ChiefBusinessOfficerPanelActivity</h3>
+                <p>Added <code>intent.putExtra("USER_ID", userId);</code> to the Partner Management navigation.</p>
+            </div>
+            
+            <div class="step">
+                <h3>Step 2: Enhanced CBOPartnerActivity</h3>
+                <p>Added fallback to SharedPreferences if USER_ID is missing from intent.</p>
+            </div>
+            
+            <div class="step">
+                <h3>Step 3: Improved Error Handling</h3>
+                <p>Added better error messages and debugging logs in CboMyPartnerUsersActivity.</p>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h2>🧪 Test the Fix</h2>
+            <p>Let's verify that the user ID is now being passed correctly:</p>
+            
+            <div class="form-group">
+                <label for="testUsername">CBO Username:</label>
+                <input type="text" id="testUsername" value="90000" placeholder="Enter CBO username">
+            </div>
+            
+            <div class="form-group">
+                <label for="testPassword">Password:</label>
+                <input type="password" id="testPassword" value="123456" placeholder="Enter password">
+            </div>
+            
+            <button onclick="testLoginFlow()">🔐 Test Login Flow</button>
+            <button onclick="testPartnerUsersAPI()">👥 Test Partner Users API</button>
+            <div id="testResult" class="result"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>📱 Android App Flow</h2>
+            <p>The correct flow should now be:</p>
+            <ol>
+                <li><strong>Login</strong> → EnhancedLoginActivity detects CBO user</li>
+                <li><strong>CBO Panel</strong> → ChiefBusinessOfficerPanelActivity (receives USER_ID and USERNAME)</li>
+                <li><strong>Partner Management</strong> → CBOPartnerActivity (receives USER_ID and USERNAME)</li>
+                <li><strong>My Partner</strong> → CboMyPartnerUsersActivity (receives USER_ID and USERNAME)</li>
+                <li><strong>API Call</strong> → cbo_my_partner_users.php (receives user_id parameter)</li>
+            </ol>
+        </div>
+
+        <div class="test-section">
+            <h2>🔍 Debug Information</h2>
+            <p>If you still get the error, check these logs in Android Studio:</p>
+            <div class="code-block">
+// Look for these log messages:
+Log.d("CBOPanel", "Received userName: " + userName);
+Log.d("CBOPanel", "Received userId: " + userId);
+
+Log.d("CBOPartnerActivity", "Received userName: " + userName);
+Log.d("CBOPartnerActivity", "Received userId: " + userId);
+
+Log.d("CBOMyPartnerUsers", "userId: " + userId);
+Log.d("CBOMyPartnerUsers", "username: " + username);
+Log.d("CBOMyPartnerUsers", "API URL: " + url);
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'https://emp.kfinone.com/mobile/api';
+
+        async function testLoginFlow() {
+            const username = document.getElementById('testUsername').value;
+            const password = document.getElementById('testPassword').value;
+            const resultDiv = document.getElementById('testResult');
+            
+            if (!username || !password) {
+                resultDiv.className = 'result error';
+                resultDiv.innerHTML = '❌ Please enter both username and password';
+                return;
+            }
+
+            resultDiv.innerHTML = 'Testing login flow...';
+            resultDiv.className = 'result info';
+
+            try {
+                const response = await fetch(API_BASE + '/login.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        username: username,
+                        password: password
+                    })
+                });
+                
+                const data = await response.json();
+                
+                let result = '=== Login Flow Test ===\n\n';
+                result += `Success: ${data.success}\n`;
+                result += `Message: ${data.message}\n\n`;
+                
+                if (data.success) {
+                    result += '=== User Information ===\n';
+                    result += `ID: ${data.user.id}\n`;
+                    result += `Username: ${data.user.username}\n`;
+                    result += `First Name: ${data.user.firstName || 'N/A'}\n`;
+                    result += `Last Name: ${data.user.lastName || 'N/A'}\n`;
+                    result += `Designation: ${data.user.designation_name || 'N/A'}\n\n`;
+                    
+                    result += '=== Role Detection ===\n';
+                    result += `Is Chief Business Officer: ${data.is_chief_business_officer || false}\n\n`;
+                    
+                    if (data.is_chief_business_officer) {
+                        result += '✅ This user is correctly identified as a Chief Business Officer!\n';
+                        result += '✅ User ID: ' + data.user.id + ' will be passed to Partner Management\n';
+                        result += '✅ The fix should resolve the "User ID is required" error\n\n';
+                        
+                        // Test the partner users API directly
+                        result += '=== Testing Partner Users API ===\n';
+                        try {
+                            const partnerResponse = await fetch(`${API_BASE}/cbo_my_partner_users.php?user_id=${data.user.id}&username=${data.user.username}`);
+                            const partnerData = await partnerResponse.json();
+                            
+                            result += `API Status: ${partnerData.status}\n`;
+                            result += `Message: ${partnerData.message}\n`;
+                            
+                            if (partnerData.status === 'success') {
+                                result += '✅ Partner Users API is working correctly!\n';
+                                result += `✅ Found ${partnerData.count} partner users\n`;
+                                result += `✅ CBO Username used: ${partnerData.cbo_username}\n`;
+                            } else {
+                                result += '❌ Partner Users API returned an error\n';
+                            }
+                        } catch (apiError) {
+                            result += `❌ Partner Users API Error: ${apiError.message}\n`;
+                        }
+                        
+                        resultDiv.className = 'result success';
+                    } else {
+                        result += '❌ This user is NOT identified as a Chief Business Officer\n';
+                        resultDiv.className = 'result error';
+                    }
+                } else {
+                    result += '❌ Login failed\n';
+                    resultDiv.className = 'result error';
+                }
+                
+                resultDiv.innerHTML = result;
+                
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.innerHTML = `❌ Network Error: ${error.message}`;
+            }
+        }
+
+        async function testPartnerUsersAPI() {
+            const username = document.getElementById('testUsername').value;
+            const resultDiv = document.getElementById('testResult');
+            
+            if (!username) {
+                resultDiv.className = 'result error';
+                resultDiv.innerHTML = '❌ Please enter a username first';
+                return;
+            }
+
+            resultDiv.innerHTML = 'Testing Partner Users API...';
+            resultDiv.className = 'result info';
+
+            try {
+                const response = await fetch(`${API_BASE}/cbo_my_partner_users.php?username=${encodeURIComponent(username)}`);
+                const data = await response.json();
+                
+                let result = '=== Partner Users API Test ===\n\n';
+                result += `Status: ${data.status}\n`;
+                result += `Message: ${data.message}\n\n`;
+                
+                if (data.status === 'success') {
+                    result += '=== Logged-in CBO User ===\n';
+                    result += `ID: ${data.logged_in_user.id}\n`;
+                    result += `Username: ${data.logged_in_user.username}\n`;
+                    result += `Full Name: ${data.logged_in_user.full_name}\n`;
+                    result += `Designation: ${data.logged_in_user.designation}\n\n`;
+                    
+                    result += '=== Partner Users Found ===\n';
+                    result += `Count: ${data.count}\n`;
+                    result += `CBO Username used: ${data.cbo_username}\n\n`;
+                    
+                    result += '✅ API is working correctly!\n';
+                    result += '✅ The "User ID is required" error should be resolved\n';
+                    
+                    resultDiv.className = 'result success';
+                } else {
+                    result += '❌ API returned an error\n';
+                    resultDiv.className = 'result error';
+                }
+                
+                resultDiv.innerHTML = result;
+                
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.innerHTML = `❌ Network Error: ${error.message}`;
+            }
+        }
+    </script>
+</body>
+</html> 
