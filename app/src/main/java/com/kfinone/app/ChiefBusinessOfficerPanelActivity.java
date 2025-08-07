@@ -92,24 +92,18 @@ public class ChiefBusinessOfficerPanelActivity extends AppCompatActivity {
 
         // Action Card Click Listeners
         cardPortfolio.setOnClickListener(v -> {
-            Intent intent = new Intent(this, CBOEmpLinksActivity.class);
-            intent.putExtra("USERNAME", userName);
-            intent.putExtra("SOURCE_PANEL", "CBO_PANEL");
-            startActivity(intent);
+            Toast.makeText(this, "Employee Management - Coming Soon!", Toast.LENGTH_SHORT).show();
+            // TODO: Implement Employee Management functionality
         });
         
         cardTeam.setOnClickListener(v -> {
-            Intent intent = new Intent(this, CBOReportingUsersActivity.class);
-            intent.putExtra("USERNAME", userName);
-            intent.putExtra("USER_ID", userId);
-            startActivity(intent);
+            Toast.makeText(this, "Data Analytics - Coming Soon!", Toast.LENGTH_SHORT).show();
+            // TODO: Implement Data Analytics functionality
         });
         
         cardReports.setOnClickListener(v -> {
-            Intent intent = new Intent(this, CBOWorkLinksActivity.class);
-            intent.putExtra("USERNAME", userName);
-            intent.putExtra("SOURCE_PANEL", "CBO_PANEL");
-            startActivity(intent);
+            Toast.makeText(this, "Work Links - Coming Soon!", Toast.LENGTH_SHORT).show();
+            // TODO: Implement Work Links functionality
         });
         
         cardAnalytics.setOnClickListener(v -> {

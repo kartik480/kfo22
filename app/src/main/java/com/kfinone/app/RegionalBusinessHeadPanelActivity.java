@@ -84,10 +84,8 @@ public class RegionalBusinessHeadPanelActivity extends AppCompatActivity {
 
         // Action Card Click Listeners
         cardTotalEmp.setOnClickListener(v -> {
-            Intent intent = new Intent(this, RBHActiveEmpListActivity.class);
-            intent.putExtra("USERNAME", userName);
-            intent.putExtra("USER_ID", getUserIdFromUsername(userName));
-            startActivity(intent);
+            Toast.makeText(this, "Employee Management - Coming Soon!", Toast.LENGTH_SHORT).show();
+            // TODO: Implement Employee Management functionality
         });
         
         cardPortfolio.setOnClickListener(v -> {
@@ -98,17 +96,13 @@ public class RegionalBusinessHeadPanelActivity extends AppCompatActivity {
         });
         
         cardTeam.setOnClickListener(v -> {
-            Intent intent = new Intent(this, RBHReportingUsersActivity.class);
-            intent.putExtra("USERNAME", userName);
-            intent.putExtra("USER_ID", getUserIdFromUsername(userName));
-            startActivity(intent);
+            Toast.makeText(this, "Data Analytics - Coming Soon!", Toast.LENGTH_SHORT).show();
+            // TODO: Implement Data Analytics functionality
         });
         
         cardReports.setOnClickListener(v -> {
-            Intent intent = new Intent(this, RBHWorkLinksActivity.class);
-            intent.putExtra("USERNAME", userName);
-            intent.putExtra("SOURCE_PANEL", "RBH_PANEL");
-            startActivity(intent);
+            Toast.makeText(this, "Work Links - Coming Soon!", Toast.LENGTH_SHORT).show();
+            // TODO: Implement Work Links functionality
         });
         
         cardAnalytics.setOnClickListener(v -> {

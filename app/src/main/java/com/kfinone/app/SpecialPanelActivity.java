@@ -157,33 +157,28 @@ public class SpecialPanelActivity extends AppCompatActivity implements Navigatio
 
         // Quick Access Boxes - Row 1
         findViewById(R.id.empLinksBox).setOnClickListener(v -> {
-            Intent intent = new Intent(this, ManagingDirectorEmpLinksActivity.class);
-            passUserDataToIntent(intent);
-            startActivity(intent);
+            Toast.makeText(this, "Employee Management - Coming Soon!", Toast.LENGTH_SHORT).show();
+            // TODO: Implement Employee Management functionality
         });
 
         findViewById(R.id.employeeBox).setOnClickListener(v -> {
-            Intent intent = new Intent(this, EmployeePanelActivity.class);
-            passUserDataToIntent(intent);
-            startActivity(intent);
+            Toast.makeText(this, "Employee Management - Coming Soon!", Toast.LENGTH_SHORT).show();
+            // TODO: Implement Employee Management functionality
         });
 
         findViewById(R.id.sdsaBox).setOnClickListener(v -> {
-            Intent intent = new Intent(this, SdsaPanelActivity.class);
-            passUserDataToIntent(intent);
-            startActivity(intent);
+            Toast.makeText(this, "Data Analytics - Coming Soon!", Toast.LENGTH_SHORT).show();
+            // TODO: Implement Data Analytics functionality
         });
 
         findViewById(R.id.partnerBox).setOnClickListener(v -> {
-            Intent intent = new Intent(this, ManagingDirectorPartnerMasterActivity.class);
-            passUserDataToIntent(intent);
-            startActivity(intent);
+            Toast.makeText(this, "Data Analytics - Coming Soon!", Toast.LENGTH_SHORT).show();
+            // TODO: Implement Data Analytics functionality
         });
 
         findViewById(R.id.agentBox).setOnClickListener(v -> {
-            Intent intent = new Intent(this, AgentActivity.class);
-            passUserDataToIntent(intent);
-            startActivity(intent);
+            Toast.makeText(this, "Work Links - Coming Soon!", Toast.LENGTH_SHORT).show();
+            // TODO: Implement Work Links functionality
         });
 
         // Quick Access Boxes - Row 2
