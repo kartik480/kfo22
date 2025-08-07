@@ -58,13 +58,14 @@ public class CBOMySdsaActivity extends AppCompatActivity {
         android.util.Log.d("CBOMySdsa", "Received userName: " + userName);
         android.util.Log.d("CBOMySdsa", "Received userId: " + userId);
 
-        // If userId is null, try to get it from the logged-in user
+        // If userId is null, try to get it from SharedPreferences
         if (userId == null || userId.isEmpty()) {
-            android.util.Log.w("CBOMySdsa", "userId is null or empty, attempting to get from logged-in user");
-            // For now, let's use a default CBO user ID for testing
-            // In a real app, you would get this from the login session
-            userId = "21"; // Default CBO user ID for testing
-            android.util.Log.d("CBOMySdsa", "Using default userId: " + userId);
+            android.util.Log.w("CBOMySdsa", "userId is null or empty, attempting to get from SharedPreferences");
+            android.content.SharedPreferences prefs = getSharedPreferences("LoginPrefs", MODE_PRIVATE);
+            userId = prefs.getString("USER_ID", "");
+            userName = prefs.getString("USERNAME", "");
+            android.util.Log.d("CBOMySdsa", "Retrieved from SharedPreferences - userId: " + userId);
+            android.util.Log.d("CBOMySdsa", "Retrieved from SharedPreferences - userName: " + userName);
         }
 
         initializeViews();

@@ -53,9 +53,11 @@ public class CBOPartnerActivity extends AppCompatActivity {
 
         // If userId is null, try to get it from SharedPreferences
         if (userId == null || userId.isEmpty()) {
-            SharedPreferences prefs = getSharedPreferences("UserPrefs", MODE_PRIVATE);
-            userId = String.valueOf(prefs.getInt("user_id", 0));
+            SharedPreferences prefs = getSharedPreferences("LoginPrefs", MODE_PRIVATE);
+            userId = prefs.getString("USER_ID", "");
+            userName = prefs.getString("USERNAME", "");
             Log.d("CBOPartnerActivity", "Retrieved userId from SharedPreferences: " + userId);
+            Log.d("CBOPartnerActivity", "Retrieved userName from SharedPreferences: " + userName);
         }
 
         initializeViews();

@@ -54,9 +54,18 @@ public class CBOReportingUsersActivity extends AppCompatActivity {
         }
         
         if (userId == null || userId.isEmpty()) {
-            Toast.makeText(this, "User ID not found", Toast.LENGTH_SHORT).show();
-            finish();
-            return;
+            // Try to get from SharedPreferences
+            android.content.SharedPreferences prefs = getSharedPreferences("LoginPrefs", MODE_PRIVATE);
+            userId = prefs.getString("USER_ID", "");
+            userName = prefs.getString("USERNAME", "");
+            Log.d(TAG, "Retrieved from SharedPreferences - userId: " + userId);
+            Log.d(TAG, "Retrieved from SharedPreferences - userName: " + userName);
+            
+            if (userId == null || userId.isEmpty()) {
+                Toast.makeText(this, "User ID not found", Toast.LENGTH_SHORT).show();
+                finish();
+                return;
+            }
         }
         
         initializeViews();

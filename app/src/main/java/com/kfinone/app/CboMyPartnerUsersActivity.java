@@ -52,10 +52,15 @@ public class CboMyPartnerUsersActivity extends AppCompatActivity {
         
         // If not in intent, try SharedPreferences
         if (userId == null || userId.isEmpty()) {
-            SharedPreferences prefs = getSharedPreferences("UserPrefs", MODE_PRIVATE);
-            userId = String.valueOf(prefs.getInt("user_id", 0));
-            username = prefs.getString("username", "");
-            userFullName = prefs.getString("user_full_name", "");
+            SharedPreferences prefs = getSharedPreferences("LoginPrefs", MODE_PRIVATE);
+            userId = prefs.getString("USER_ID", "");
+            username = prefs.getString("USERNAME", "");
+            String firstName = prefs.getString("FIRST_NAME", "");
+            String lastName = prefs.getString("LAST_NAME", "");
+            userFullName = (firstName + " " + lastName).trim();
+            Log.d("CboMyPartnerUsers", "Retrieved from SharedPreferences - userId: " + userId);
+            Log.d("CboMyPartnerUsers", "Retrieved from SharedPreferences - username: " + username);
+            Log.d("CboMyPartnerUsers", "Retrieved from SharedPreferences - userFullName: " + userFullName);
         }
         
         if (userId == null || userId.isEmpty() || userId.equals("0")) {
