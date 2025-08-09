@@ -11,7 +11,7 @@ import androidx.appcompat.widget.Toolbar;
 
 public class RegionalBusinessHeadMyPartnerPanelActivity extends AppCompatActivity {
     private TextView welcomeText, totalPartnerCount, activePartnerCount;
-    private View cardMyPartner, cardPartnerManagement, cardPartnerReports, cardPartnerAnalytics;
+    private View cardMyPartner;
     private String userName;
 
     @Override
@@ -46,9 +46,6 @@ public class RegionalBusinessHeadMyPartnerPanelActivity extends AppCompatActivit
         
         // Initialize action cards
         cardMyPartner = findViewById(R.id.cardMyPartner);
-        cardPartnerManagement = findViewById(R.id.cardPartnerManagement);
-        cardPartnerReports = findViewById(R.id.cardPartnerReports);
-        cardPartnerAnalytics = findViewById(R.id.cardPartnerAnalytics);
         
         // Setup toolbar
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -66,21 +63,6 @@ public class RegionalBusinessHeadMyPartnerPanelActivity extends AppCompatActivit
             intent.putExtra("USERNAME", userName);
             intent.putExtra("USER_ID", getUserIdFromUsername(userName));
             startActivity(intent);
-        });
-        
-        // Partner Management card click listener
-        cardPartnerManagement.setOnClickListener(v -> {
-            Toast.makeText(this, "Partner Management functionality coming soon!", Toast.LENGTH_LONG).show();
-        });
-        
-        // Partner Reports card click listener
-        cardPartnerReports.setOnClickListener(v -> {
-            Toast.makeText(this, "Partner Reports functionality coming soon!", Toast.LENGTH_LONG).show();
-        });
-        
-        // Partner Analytics card click listener
-        cardPartnerAnalytics.setOnClickListener(v -> {
-            Toast.makeText(this, "Partner Analytics functionality coming soon!", Toast.LENGTH_LONG).show();
         });
     }
 

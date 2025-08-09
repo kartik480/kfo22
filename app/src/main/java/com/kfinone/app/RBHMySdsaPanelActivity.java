@@ -15,7 +15,7 @@ public class RBHMySdsaPanelActivity extends AppCompatActivity {
     private String userId;
     
     // Action card views
-    private View cardMySdsa, cardSdsaManagement, cardSdsaReports, cardSdsaAnalytics;
+    private View cardMySdsa;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,9 +40,6 @@ public class RBHMySdsaPanelActivity extends AppCompatActivity {
         
         // Initialize action cards
         cardMySdsa = findViewById(R.id.cardMySdsa);
-        cardSdsaManagement = findViewById(R.id.cardSdsaManagement);
-        cardSdsaReports = findViewById(R.id.cardSdsaReports);
-        cardSdsaAnalytics = findViewById(R.id.cardSdsaAnalytics);
         
         notificationIcon = findViewById(R.id.notificationIcon);
         profileIcon = findViewById(R.id.profileIcon);
@@ -77,21 +74,6 @@ public class RBHMySdsaPanelActivity extends AppCompatActivity {
             intent.putExtra("USERNAME", userName);
             intent.putExtra("USER_ID", getUserIdFromUsername(userName));
             startActivity(intent);
-        });
-        
-        cardSdsaManagement.setOnClickListener(v -> {
-            Toast.makeText(this, "SDSA Management - Coming Soon", Toast.LENGTH_SHORT).show();
-            // TODO: Implement SDSA Management functionality
-        });
-        
-        cardSdsaReports.setOnClickListener(v -> {
-            Toast.makeText(this, "SDSA Reports - Coming Soon", Toast.LENGTH_SHORT).show();
-            // TODO: Implement SDSA Reports functionality
-        });
-        
-        cardSdsaAnalytics.setOnClickListener(v -> {
-            Toast.makeText(this, "SDSA Analytics - Coming Soon", Toast.LENGTH_SHORT).show();
-            // TODO: Implement SDSA Analytics functionality
         });
     }
 
