@@ -58,13 +58,13 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Total Agent"
+                        android:text="Total Payouts"
                         android:textSize="14sp"
                         android:textColor="@color/gray"
                         android:layout_marginBottom="4dp" />
 
                     <TextView
-                        android:id="@+id/totalAgentCount"
+                        android:id="@+id/totalPayoutCount"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="0"
@@ -87,19 +87,19 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Active Agent"
+                        android:text="Pending Payouts"
                         android:textSize="14sp"
                         android:textColor="@color/gray"
                         android:layout_marginBottom="4dp" />
 
                     <TextView
-                        android:id="@+id/activeAgentCount"
+                        android:id="@+id/pendingPayoutCount"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="0"
                         android:textSize="24sp"
                         android:textStyle="bold"
-                        android:textColor="@color/green" />
+                        android:textColor="@color/orange" />
 
                 </LinearLayout>
 
@@ -114,9 +114,9 @@
                 android:alignmentMode="alignMargins"
                 android:useDefaultMargins="true">
 
-                <!-- Card 1: My Agent -->
+                <!-- Card 1: My Payout -->
                 <LinearLayout
-                    android:id="@+id/cardMyAgent"
+                    android:id="@+id/cardMyPayout"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_columnWeight="1"
@@ -130,14 +130,14 @@
                     <ImageView
                         android:layout_width="56dp"
                         android:layout_height="56dp"
-                        android:src="@drawable/ic_people"
-                        android:background="@drawable/icon_gradient_blue"
+                        android:src="@drawable/ic_money"
+                        android:background="@drawable/icon_gradient_green"
                         android:padding="14dp"
-                        android:contentDescription="My Agent" />
+                        android:contentDescription="My Payout" />
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="My Agent"
+                        android:text="My Payout"
                         android:textSize="16sp"
                         android:textStyle="bold"
                         android:textColor="@color/black"
@@ -146,7 +146,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="View and manage your agents"
+                        android:text="View and manage your payouts"
                         android:textSize="12sp"
                         android:textColor="@color/gray"
                         android:layout_marginTop="4dp"
@@ -159,4 +159,4 @@
 
     </ScrollView>
 
-</LinearLayout> 
+</LinearLayout>

@@ -41,11 +41,24 @@ public class RBHPayoutActivity extends AppCompatActivity {
     private List<PayoutItem> filteredPayoutItems = new ArrayList<>();
     private PayoutAdapter payoutAdapter;
     private ExecutorService executor = Executors.newSingleThreadExecutor();
+    
+    // User data
+    private String userName;
+    private String userId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_rbh_payout);
+        
+        // Get user data from intent
+        Intent intent = getIntent();
+        userName = intent.getStringExtra("USERNAME");
+        userId = intent.getStringExtra("USER_ID");
+        
+        // Debug logging
+        Log.d(TAG, "Received userName: " + userName);
+        Log.d(TAG, "Received userId: " + userId);
         
         initializeViews();
         setupClickListeners();
@@ -259,6 +272,16 @@ public class RBHPayoutActivity extends AppCompatActivity {
         executor.execute(() -> {
             try {
                 String urlString = BASE_URL + "get_rbh_payouts.php";
+                
+                // Add user parameters if available
+                if (userId != null && !userId.isEmpty()) {
+                    urlString += "?user_id=" + userId;
+                } else if (userName != null && !userName.isEmpty()) {
+                    urlString += "?username=" + userName;
+                }
+                
+                Log.d(TAG, "Making API call to: " + urlString);
+                
                 URL url = new URL(urlString);
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                 connection.setRequestMethod("GET");
@@ -266,6 +289,8 @@ public class RBHPayoutActivity extends AppCompatActivity {
                 connection.setReadTimeout(10000);
 
                 int responseCode = connection.getResponseCode();
+                Log.d(TAG, "Response code: " + responseCode);
+                
                 if (responseCode == HttpURLConnection.HTTP_OK) {
                     BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
                     StringBuilder response = new StringBuilder();
@@ -275,7 +300,7 @@ public class RBHPayoutActivity extends AppCompatActivity {
                     }
                     reader.close();
 
-                    Log.e(TAG, "RBH Payouts API response: " + response.toString());
+                    Log.d(TAG, "RBH Payouts API response: " + response.toString());
 
                     JSONObject jsonResponse = new JSONObject(response.toString());
                     if (jsonResponse.getBoolean("success")) {
@@ -302,10 +327,17 @@ public class RBHPayoutActivity extends AppCompatActivity {
                             payoutAdapter.notifyDataSetChanged();
                         });
                     } else {
-                        Log.e(TAG, "RBH Payouts API failed: " + jsonResponse.optString("message", "Unknown error"));
+                        String errorMessage = jsonResponse.optString("message", "Unknown error");
+                        Log.e(TAG, "RBH Payouts API failed: " + errorMessage);
+                        runOnUiThread(() -> {
+                            Toast.makeText(RBHPayoutActivity.this, "Error: " + errorMessage, Toast.LENGTH_SHORT).show();
+                        });
                     }
                 } else {
                     Log.e(TAG, "RBH Payouts API failed with response code: " + responseCode);
+                    runOnUiThread(() -> {
+                        Toast.makeText(RBHPayoutActivity.this, "Error: HTTP " + responseCode, Toast.LENGTH_SHORT).show();
+                    });
                 }
             } catch (Exception e) {
                 Log.e(TAG, "Error loading RBH payouts: " + e.getMessage());

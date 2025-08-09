@@ -11,7 +11,7 @@ import androidx.appcompat.widget.Toolbar;
 
 public class RBHMyAgentPanelActivity extends AppCompatActivity {
     private TextView welcomeText, totalAgentCount, activeAgentCount;
-    private View cardMyAgent, cardAgentManagement, cardAgentReports, cardAgentAnalytics;
+    private View cardMyAgent;
     private String userName;
     private String userId;
 
@@ -42,9 +42,6 @@ public class RBHMyAgentPanelActivity extends AppCompatActivity {
         totalAgentCount = findViewById(R.id.totalAgentCount);
         activeAgentCount = findViewById(R.id.activeAgentCount);
         cardMyAgent = findViewById(R.id.cardMyAgent);
-        cardAgentManagement = findViewById(R.id.cardAgentManagement);
-        cardAgentReports = findViewById(R.id.cardAgentReports);
-        cardAgentAnalytics = findViewById(R.id.cardAgentAnalytics);
         
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -60,18 +57,6 @@ public class RBHMyAgentPanelActivity extends AppCompatActivity {
             intent.putExtra("USERNAME", userName);
             intent.putExtra("USER_ID", userId);
             startActivity(intent);
-        });
-        
-        cardAgentManagement.setOnClickListener(v -> {
-            Toast.makeText(this, "Agent Management functionality coming soon!", Toast.LENGTH_LONG).show();
-        });
-        
-        cardAgentReports.setOnClickListener(v -> {
-            Toast.makeText(this, "Agent Reports functionality coming soon!", Toast.LENGTH_LONG).show();
-        });
-        
-        cardAgentAnalytics.setOnClickListener(v -> {
-            Toast.makeText(this, "Agent Analytics functionality coming soon!", Toast.LENGTH_LONG).show();
         });
     }
 
