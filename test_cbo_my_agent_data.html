@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CBO My Agent Data Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .test-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+        }
+        .test-section h3 {
+            color: #34495e;
+            margin-top: 0;
+        }
+        input, button {
+            padding: 10px;
+            margin: 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            cursor: pointer;
+            border: none;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        .result {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 4px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .success {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        .info {
+            background-color: #d1ecf1;
+            border: 1px solid #bee5eb;
+            color: #0c5460;
+        }
+        .debug {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>CBO My Agent Data Test</h1>
+        <p>This page tests the CBO My Agent Data API endpoint that fetches agents created by a Chief Business Officer user.</p>
+
+        <div class="test-section">
+            <h3>1. Test CBO My Agent Data API</h3>
+            <p>Fetch agents created by a CBO user using their user ID or username.</p>
+            <input type="text" id="cboUserId" placeholder="Enter CBO User ID (e.g., 21)">
+            <input type="text" id="cboUsername" placeholder="Enter CBO Username (e.g., 90000)">
+            <button onclick="testCBOMyAgentData()">Test CBO My Agent Data</button>
+            <div id="cboMyAgentResult" class="result"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>2. Test with Known CBO User (90000)</h3>
+            <p>Test with the known CBO user username "90000" from the login response.</p>
+            <button onclick="testWithKnownCBO()">Test with Username 90000</button>
+            <div id="knownCBOResult" class="result"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>3. Debug Agent Data Table</h3>
+            <p>Check the structure and sample data from tbl_agent_data table.</p>
+            <button onclick="debugAgentData()">Debug Agent Data Table</button>
+            <div id="debugResult" class="result"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>4. Test CBO User Detection</h3>
+            <p>Verify that the user is correctly identified as a Chief Business Officer.</p>
+            <input type="text" id="testUsername" placeholder="Enter username to test">
+            <button onclick="testCBOUserDetection()">Test CBO Detection</button>
+            <div id="cboDetectionResult" class="result"></div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'https://emp.kfinone.com/mobile/api';
+
+        async function testCBOMyAgentData() {
+            const userId = document.getElementById('cboUserId').value;
+            const username = document.getElementById('cboUsername').value;
+            const resultDiv = document.getElementById('cboMyAgentResult');
+            
+            if (!userId && !username) {
+                resultDiv.className = 'result error';
+                resultDiv.innerHTML = '❌ Please enter either User ID or Username';
+                return;
+            }
+
+            resultDiv.innerHTML = 'Loading...';
+            resultDiv.className = 'result info';
+
+            try {
+                let url = `${API_BASE}/cbo_my_agent_data.php?`;
+                if (userId) {
+                    url += `user_id=${encodeURIComponent(userId)}`;
+                } else {
+                    url += `username=${encodeURIComponent(username)}`;
+                }
+
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    resultDiv.className = 'result success';
+                    let result = '✅ CBO My Agent Data fetched successfully!\n\n';
+                    result += `=== CBO User Information ===\n`;
+                    result += `ID: ${data.cbo_user?.id || 'N/A'}\n`;
+                    result += `Username: ${data.cbo_user?.username || 'N/A'}\n`;
+                    result += `Name: ${data.cbo_user?.first_name || 'N/A'} ${data.cbo_user?.last_name || 'N/A'}\n`;
+                    result += `Designation: ${data.cbo_user?.designation || 'N/A'}\n\n`;
+                    
+                    result += `=== Statistics ===\n`;
+                    result += `Total Agents: ${data.statistics?.total_agents || 0}\n`;
+                    result += `Active Agents: ${data.statistics?.active_agents || 0}\n`;
+                    result += `Inactive Agents: ${data.statistics?.inactive_agents || 0}\n\n`;
+                    
+                    result += `=== Agent Data (${data.count || 0} agents) ===\n`;
+                    if (data.data && data.data.length > 0) {
+                        data.data.forEach((agent, index) => {
+                            result += `\n--- Agent ${index + 1} ---\n`;
+                            result += `ID: ${agent.id || 'N/A'}\n`;
+                            result += `Full Name: ${agent.full_name || 'N/A'}\n`;
+                            result += `Company: ${agent.company_name || 'N/A'}\n`;
+                            result += `Phone: ${agent.Phone_number || 'N/A'}\n`;
+                            result += `Email: ${agent.email_id || 'N/A'}\n`;
+                            result += `Type: ${agent.partnerType || 'N/A'}\n`;
+                            result += `State: ${agent.state || 'N/A'}\n`;
+                            result += `Location: ${agent.location || 'N/A'}\n`;
+                            result += `Created By: ${agent.createdBy || 'N/A'}\n`;
+                            result += `Status: ${agent.status || 'N/A'}\n`;
+                        });
+                    } else {
+                        result += 'No agents found for this CBO user.\n';
+                    }
+                    
+                    result += `\n=== Debug Information ===\n`;
+                    result += JSON.stringify(data.debug, null, 2);
+                    
+                    resultDiv.innerHTML = result;
+                } else {
+                    resultDiv.className = 'result error';
+                    resultDiv.innerHTML = `❌ Error: ${data.message}\n\nDebug Info:\n${JSON.stringify(data.debug, null, 2)}`;
+                }
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.innerHTML = `❌ Network Error: ${error.message}`;
+            }
+        }
+
+        async function testWithKnownCBO() {
+            const resultDiv = document.getElementById('knownCBOResult');
+            resultDiv.innerHTML = 'Loading...';
+            resultDiv.className = 'result info';
+
+            try {
+                const url = `${API_BASE}/cbo_my_agent_data.php?username=90000`;
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    resultDiv.className = 'result success';
+                    let result = '✅ Test with known CBO user (90000) successful!\n\n';
+                    result += `=== CBO User Information ===\n`;
+                    result += `ID: ${data.cbo_user?.id || 'N/A'}\n`;
+                    result += `Username: ${data.cbo_user?.username || 'N/A'}\n`;
+                    result += `Name: ${data.cbo_user?.first_name || 'N/A'} ${data.cbo_user?.last_name || 'N/A'}\n`;
+                    result += `Designation: ${data.cbo_user?.designation || 'N/A'}\n\n`;
+                    
+                    result += `=== Statistics ===\n`;
+                    result += `Total Agents: ${data.statistics?.total_agents || 0}\n`;
+                    result += `Active Agents: ${data.statistics?.active_agents || 0}\n`;
+                    result += `Inactive Agents: ${data.statistics?.inactive_agents || 0}\n\n`;
+                    
+                    result += `=== Agent Data (${data.count || 0} agents) ===\n`;
+                    if (data.data && data.data.length > 0) {
+                        data.data.forEach((agent, index) => {
+                            result += `\n--- Agent ${index + 1} ---\n`;
+                            result += `ID: ${agent.id || 'N/A'}\n`;
+                            result += `Full Name: ${agent.full_name || 'N/A'}\n`;
+                            result += `Company: ${agent.company_name || 'N/A'}\n`;
+                            result += `Phone: ${agent.Phone_number || 'N/A'}\n`;
+                            result += `Email: ${agent.email_id || 'N/A'}\n`;
+                            result += `Type: ${agent.partnerType || 'N/A'}\n`;
+                            result += `State: ${agent.state || 'N/A'}\n`;
+                            result += `Location: ${agent.location || 'N/A'}\n`;
+                            result += `Created By: ${agent.createdBy || 'N/A'}\n`;
+                            result += `Status: ${agent.status || 'N/A'}\n`;
+                        });
+                    } else {
+                        result += 'No agents found for this CBO user.\n';
+                    }
+                    
+                    resultDiv.innerHTML = result;
+                } else {
+                    resultDiv.className = 'result error';
+                    resultDiv.innerHTML = `❌ Error: ${data.message}\n\nDebug Info:\n${JSON.stringify(data.debug, null, 2)}`;
+                }
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.innerHTML = `❌ Network Error: ${error.message}`;
+            }
+        }
+
+        async function debugAgentData() {
+            const resultDiv = document.getElementById('debugResult');
+            resultDiv.innerHTML = 'Loading...';
+            resultDiv.className = 'result info';
+
+            try {
+                const url = `${API_BASE}/debug_agent_data.php`;
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    resultDiv.className = 'result debug';
+                    let result = '🔍 Agent Data Table Debug Information\n\n';
+                    result += `Table Exists: ${data.table_exists}\n`;
+                    result += `Total Records: ${data.total_records}\n\n`;
+                    
+                    result += `=== Table Structure ===\n`;
+                    if (data.table_structure) {
+                        data.table_structure.forEach(column => {
+                            result += `${column.Field} (${column.Type}) - ${column.Null === 'YES' ? 'NULL' : 'NOT NULL'}\n`;
+                        });
+                    }
+                    
+                    result += `\n=== Sample Data (First 5 records) ===\n`;
+                    if (data.sample_data) {
+                        data.sample_data.forEach((record, index) => {
+                            result += `\n--- Record ${index + 1} ---\n`;
+                            Object.keys(record).forEach(key => {
+                                result += `${key}: ${record[key] || 'NULL'}\n`;
+                            });
+                        });
+                    }
+                    
+                    result += `\n=== CreatedBy Values (Top 10) ===\n`;
+                    if (data.created_by_values) {
+                        data.created_by_values.forEach(item => {
+                            result += `${item.createdBy}: ${item.count} agents\n`;
+                        });
+                    }
+                    
+                    result += `\n=== Username Matches ===\n`;
+                    if (data.username_matches) {
+                        data.username_matches.forEach(item => {
+                            result += `${item.createdBy}: ${item.agent_count} agents\n`;
+                        });
+                    }
+                    
+                    resultDiv.innerHTML = result;
+                } else {
+                    resultDiv.className = 'result error';
+                    resultDiv.innerHTML = `❌ Error: ${data.message}`;
+                }
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.innerHTML = `❌ Network Error: ${error.message}`;
+            }
+        }
+
+        async function testCBOUserDetection() {
+            const username = document.getElementById('testUsername').value;
+            const resultDiv = document.getElementById('cboDetectionResult');
+            
+            if (!username) {
+                resultDiv.className = 'result error';
+                resultDiv.innerHTML = '❌ Please enter a username to test';
+                return;
+            }
+
+            resultDiv.innerHTML = 'Loading...';
+            resultDiv.className = 'result info';
+
+            try {
+                const url = `${API_BASE}/check_cbo_user.php?username=${encodeURIComponent(username)}`;
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    if (data.is_cbo) {
+                        resultDiv.className = 'result success';
+                        resultDiv.innerHTML = `✅ User ${username} is a Chief Business Officer!\n\nUser Data:\n${JSON.stringify(data.user_data, null, 2)}`;
+                    } else {
+                        resultDiv.className = 'result info';
+                        resultDiv.innerHTML = `ℹ️ User ${username} is NOT a Chief Business Officer\n\nMessage: ${data.message}`;
+                    }
+                } else {
+                    resultDiv.className = 'result error';
+                    resultDiv.innerHTML = `❌ Error: ${data.message}`;
+                }
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.innerHTML = `❌ Network Error: ${error.message}`;
+            }
+        }
+    </script>
+</body>
+</html>

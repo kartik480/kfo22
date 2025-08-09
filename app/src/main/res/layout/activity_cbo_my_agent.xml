@@ -65,7 +65,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <!-- Header Section -->
+            <!-- Welcome Section -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -76,9 +76,10 @@
                 android:elevation="2dp">
 
                 <TextView
+                    android:id="@+id/welcomeText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="My Agent Information"
+                    android:text="Welcome to My Agent Panel"
                     android:textSize="24sp"
                     android:textStyle="bold"
                     android:textColor="#2C3E50"
@@ -87,216 +88,107 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="View and manage your personal agent details"
+                    android:text="View and manage agents created by you"
                     android:textSize="14sp"
                     android:textColor="#7F8C8D" />
 
             </LinearLayout>
 
-            <!-- Agent Details Card -->
+            <!-- Statistics Section -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="16dp">
+
+                <!-- Total Agents Card -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:background="#FFFFFF"
+                    android:padding="16dp"
+                    android:layout_marginEnd="8dp"
+                    android:elevation="2dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Total Agents"
+                        android:textSize="12sp"
+                        android:textColor="#7F8C8D"
+                        android:layout_marginBottom="4dp" />
+
+                    <TextView
+                        android:id="@+id/totalAgentCount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0"
+                        android:textSize="24sp"
+                        android:textStyle="bold"
+                        android:textColor="#2C3E50" />
+
+                </LinearLayout>
+
+                <!-- Active Agents Card -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:background="#FFFFFF"
+                    android:padding="16dp"
+                    android:layout_marginStart="8dp"
+                    android:elevation="2dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Active Agents"
+                        android:textSize="12sp"
+                        android:textColor="#7F8C8D"
+                        android:layout_marginBottom="4dp" />
+
+                    <TextView
+                        android:id="@+id/activeAgentCount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0"
+                        android:textSize="24sp"
+                        android:textStyle="bold"
+                        android:textColor="#27AE60" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <!-- Agent List Section -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:background="#FFFFFF"
-                android:padding="20dp"
-                android:layout_marginBottom="16dp"
+                android:padding="16dp"
                 android:elevation="2dp">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Agent Details"
+                    android:text="My Agents"
                     android:textSize="18sp"
                     android:textStyle="bold"
                     android:textColor="#2C3E50"
                     android:layout_marginBottom="16dp" />
 
-                <!-- Agent Name -->
+                <!-- Agent List Container -->
                 <LinearLayout
+                    android:id="@+id/agentListContainer"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_marginBottom="12dp">
+                    android:orientation="vertical">
 
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Agent Name:"
-                        android:textSize="14sp"
-                        android:textStyle="bold"
-                        android:textColor="#34495E" />
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="2"
-                        android:text="John Doe"
-                        android:textSize="14sp"
-                        android:textColor="#7F8C8D" />
-
-                </LinearLayout>
-
-                <!-- Agent Code -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_marginBottom="12dp">
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Agent Code:"
-                        android:textSize="14sp"
-                        android:textStyle="bold"
-                        android:textColor="#34495E" />
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="2"
-                        android:text="AG001"
-                        android:textSize="14sp"
-                        android:textColor="#7F8C8D" />
-
-                </LinearLayout>
-
-                <!-- Contact Number -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_marginBottom="12dp">
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Contact:"
-                        android:textSize="14sp"
-                        android:textStyle="bold"
-                        android:textColor="#34495E" />
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="2"
-                        android:text="+91 98765 43210"
-                        android:textSize="14sp"
-                        android:textColor="#7F8C8D" />
-
-                </LinearLayout>
-
-                <!-- Email -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_marginBottom="12dp">
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Email:"
-                        android:textSize="14sp"
-                        android:textStyle="bold"
-                        android:textColor="#34495E" />
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="2"
-                        android:text="john.doe@example.com"
-                        android:textSize="14sp"
-                        android:textColor="#7F8C8D" />
-
-                </LinearLayout>
-
-                <!-- Location -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_marginBottom="12dp">
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Location:"
-                        android:textSize="14sp"
-                        android:textStyle="bold"
-                        android:textColor="#34495E" />
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="2"
-                        android:text="Mumbai, Maharashtra"
-                        android:textSize="14sp"
-                        android:textColor="#7F8C8D" />
-
-                </LinearLayout>
-
-                <!-- Status -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_marginBottom="16dp">
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Status:"
-                        android:textSize="14sp"
-                        android:textStyle="bold"
-                        android:textColor="#34495E" />
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="2"
-                        android:text="Active"
-                        android:textSize="14sp"
-                        android:textColor="#27AE60"
-                        android:textStyle="bold" />
-
-                </LinearLayout>
-
-                <!-- Action Buttons -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_marginTop="16dp">
-
-                    <Button
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Edit"
-                        android:textSize="14sp"
-                        android:textColor="#FFFFFF"
-                        android:background="@drawable/button_background"
-                        android:padding="12dp"
-                        android:layout_marginEnd="8dp" />
-
-                    <Button
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="View Details"
-                        android:textSize="14sp"
-                        android:textColor="#2C3E50"
-                        android:background="@drawable/button_background_white"
-                        android:padding="12dp"
-                        android:layout_marginStart="8dp" />
+                    <!-- This will be populated dynamically -->
 
                 </LinearLayout>
 
