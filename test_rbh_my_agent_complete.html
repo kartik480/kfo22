@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RBH My Agent - Complete Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .test-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+        .test-section h3 {
+            color: #34495e;
+            margin-top: 0;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="text"], input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        .response {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 15px;
+            margin-top: 15px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .success {
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+        .loading {
+            color: #856404;
+            background-color: #fff3cd;
+            border-color: #ffeaa7;
+        }
+        .warning {
+            background-color: #fff3cd;
+            border-color: #ffeaa7;
+            color: #856404;
+        }
+        .info-box {
+            background-color: #e3f2fd;
+            border: 1px solid #2196f3;
+            border-radius: 4px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        .info-box h4 {
+            margin-top: 0;
+            color: #1976d2;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>RBH My Agent - Complete Implementation Test</h1>
+        
+        <div class="info-box">
+            <h4>✅ Implementation Status</h4>
+            <p><strong>✅ API Endpoint:</strong> <code>api/rbh_my_agent_data.php</code> - Created and tested</p>
+            <p><strong>✅ Android Activity:</strong> <code>RBHMyAgentListActivity.java</code> - Updated with API integration</p>
+            <p><strong>✅ Layout:</strong> <code>activity_rbh_my_agent_list.xml</code> - Updated with agent list container</p>
+            <p><strong>✅ Login Integration:</strong> <code>EnhancedLoginActivity.java</code> - Updated to pass correct username</p>
+            <p><strong>✅ Navigation:</strong> <code>RegionalBusinessHeadPanelActivity.java</code> - Updated to pass user ID</p>
+            <p><strong>✅ Agent Panel:</strong> <code>RBHMyAgentPanelActivity.java</code> - Updated to pass user ID</p>
+        </div>
+        
+        <div class="test-section">
+            <h3>Test RBH My Agent Data API</h3>
+            <p>This test will fetch agents created by a Regional Business Head user from the <code>tbl_agent_data</code> table.</p>
+            <p><strong>Key Features:</strong></p>
+            <ul>
+                <li>✅ Fetches agents where <code>createdBy</code> matches the RBH username</li>
+                <li>✅ Supports both User ID and Username parameters</li>
+                <li>✅ Handles full names and numeric usernames</li>
+                <li>✅ Provides comprehensive debug information</li>
+                <li>✅ Returns agent statistics (total, active, inactive)</li>
+                <li>✅ Flexible user detection for testing</li>
+            </ul>
+            
+            <div class="form-group">
+                <label for="userId">User ID:</label>
+                <input type="number" id="userId" placeholder="Enter User ID (e.g., 1, 21, 23)">
+            </div>
+            
+            <div class="form-group">
+                <label for="username">Username:</label>
+                <input type="text" id="username" placeholder="Enter Username (e.g., 30000, 90000)">
+            </div>
+            
+            <button onclick="testWithUserId()">Test with User ID</button>
+            <button onclick="testWithUsername()">Test with Username</button>
+            <button onclick="testUser1()">Test User ID 1</button>
+            <button onclick="testUser21()">Test User ID 21 (CBO)</button>
+            <button onclick="testUser23()">Test User ID 23 (RBH)</button>
+            <button onclick="testUsername30000()">Test Username 30000 (RBH)</button>
+            <button onclick="clearResponse()">Clear Response</button>
+            
+            <div id="response" class="response" style="display: none;"></div>
+        </div>
+        
+        <div class="test-section">
+            <h3>API Information</h3>
+            <p><strong>Endpoint:</strong> <code>https://emp.kfinone.com/mobile/api/rbh_my_agent_data.php</code></p>
+            <p><strong>Method:</strong> GET</p>
+            <p><strong>Parameters:</strong></p>
+            <ul>
+                <li><code>user_id</code> - User ID of the RBH user (e.g., 23)</li>
+                <li><code>username</code> - Username of the RBH user (e.g., 30000)</li>
+            </ul>
+            <p><strong>Expected Response:</strong></p>
+            <pre>{
+  "status": "success",
+  "message": "RBH My Agent data fetched successfully",
+  "data": [
+    {
+      "id": "1",
+      "full_name": "Agent Name",
+      "company_name": "Company Name",
+      "Phone_number": "1234567890",
+      "alternative_Phone_number": "0987654321",
+      "email_id": "agent@example.com",
+      "partnerType": "Individual Agent",
+      "state": "Maharashtra",
+      "location": "Mumbai",
+      "address": "Agent Address",
+      "visiting_card": "card_url",
+      "created_user": "created_user",
+      "createdBy": "30000",
+      "status": "Active",
+      "created_at": "2024-01-01 00:00:00",
+      "updated_at": "2024-01-01 00:00:00"
+    }
+  ],
+  "count": 1,
+  "statistics": {
+    "total_agents": 1,
+    "active_agents": 1,
+    "inactive_agents": 0
+  },
+  "rbh_user": {
+    "id": "23",
+    "username": "30000",
+    "first_name": "PREM SWAROOP REDDY",
+    "last_name": "YERRA",
+    "designation": "Regional Business Head"
+  },
+  "debug": {
+    "user_id": "23",
+    "username": null,
+    "all_params": {
+      "user_id": "23"
+    }
+  }
+}</pre>
+        </div>
+        
+        <div class="test-section">
+            <h3>Android App Flow</h3>
+            <p><strong>Login Flow:</strong></p>
+            <ol>
+                <li>User logs in with username (e.g., 30000)</li>
+                <li>Login response: <code>{"user":{"id":23,"username":"30000","firstName":"PREM SWAROOP REDDY","lastName":"YERRA","designation_name":"Regional Business Head"}}</code></li>
+                <li>EnhancedLoginActivity passes <code>username: "30000"</code> to RegionalBusinessHeadPanelActivity</li>
+                <li>RegionalBusinessHeadPanelActivity passes <code>USERNAME: "30000"</code> and <code>USER_ID: "23"</code> to RBHMyAgentPanelActivity</li>
+                <li>RBHMyAgentPanelActivity passes <code>USERNAME: "30000"</code> and <code>USER_ID: "23"</code> to RBHMyAgentListActivity</li>
+                <li>RBHMyAgentListActivity calls API with <code>user_id=23</code></li>
+                <li>API returns agents where <code>createdBy = "30000"</code></li>
+            </ol>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'https://emp.kfinone.com/mobile/api/rbh_my_agent_data.php';
+        
+        function showResponse(content, type = '') {
+            const responseDiv = document.getElementById('response');
+            responseDiv.style.display = 'block';
+            responseDiv.className = `response ${type}`;
+            responseDiv.textContent = content;
+        }
+        
+        function clearResponse() {
+            const responseDiv = document.getElementById('response');
+            responseDiv.style.display = 'none';
+            responseDiv.textContent = '';
+        }
+        
+        async function makeApiCall(url) {
+            showResponse('Loading...', 'loading');
+            
+            try {
+                const response = await fetch(url);
+                const data = await response.text();
+                
+                if (response.ok) {
+                    // Try to parse as JSON for better formatting
+                    try {
+                        const jsonData = JSON.parse(data);
+                        showResponse(JSON.stringify(jsonData, null, 2), 'success');
+                    } catch (e) {
+                        showResponse(data, 'success');
+                    }
+                } else {
+                    showResponse(`Error ${response.status}: ${data}`, 'error');
+                }
+            } catch (error) {
+                showResponse(`Network error: ${error.message}`, 'error');
+            }
+        }
+        
+        function testWithUserId() {
+            const userId = document.getElementById('userId').value.trim();
+            if (!userId) {
+                showResponse('Please enter a User ID', 'error');
+                return;
+            }
+            
+            const url = `${API_BASE_URL}?user_id=${encodeURIComponent(userId)}`;
+            makeApiCall(url);
+        }
+        
+        function testWithUsername() {
+            const username = document.getElementById('username').value.trim();
+            if (!username) {
+                showResponse('Please enter a Username', 'error');
+                return;
+            }
+            
+            const url = `${API_BASE_URL}?username=${encodeURIComponent(username)}`;
+            makeApiCall(url);
+        }
+        
+        function testUser1() {
+            const url = `${API_BASE_URL}?user_id=1`;
+            makeApiCall(url);
+        }
+        
+        function testUser21() {
+            const url = `${API_BASE_URL}?user_id=21`;
+            makeApiCall(url);
+        }
+        
+        function testUser23() {
+            const url = `${API_BASE_URL}?user_id=23`;
+            makeApiCall(url);
+        }
+        
+        function testUsername30000() {
+            const url = `${API_BASE_URL}?username=30000`;
+            makeApiCall(url);
+        }
+        
+        // Auto-fill with example data
+        document.getElementById('userId').value = '23';
+        document.getElementById('username').value = '30000';
+    </script>
+</body>
+</html>

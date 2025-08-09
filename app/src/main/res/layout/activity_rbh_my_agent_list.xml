@@ -190,7 +190,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:gravity="center">
+                    android:gravity="center"
+                    android:layout_marginBottom="20dp">
 
                     <Button
                         android:id="@+id/btnFilter"
@@ -215,6 +216,15 @@
                         android:textSize="16sp" />
 
                 </LinearLayout>
+
+                <!-- Agent List Container -->
+                <LinearLayout
+                    android:id="@+id/agentListContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:background="@drawable/action_card_background"
+                    android:padding="16dp" />
 
             </LinearLayout>
 

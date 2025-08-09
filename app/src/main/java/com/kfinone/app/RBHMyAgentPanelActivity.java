@@ -13,6 +13,7 @@ public class RBHMyAgentPanelActivity extends AppCompatActivity {
     private TextView welcomeText, totalAgentCount, activeAgentCount;
     private View cardMyAgent, cardAgentManagement, cardAgentReports, cardAgentAnalytics;
     private String userName;
+    private String userId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,6 +26,7 @@ public class RBHMyAgentPanelActivity extends AppCompatActivity {
         
         Intent intent = getIntent();
         userName = intent.getStringExtra("USERNAME");
+        userId = intent.getStringExtra("USER_ID");
         if (userName == null || userName.isEmpty()) {
             userName = "RBH";
         }
@@ -56,7 +58,7 @@ public class RBHMyAgentPanelActivity extends AppCompatActivity {
         cardMyAgent.setOnClickListener(v -> {
             Intent intent = new Intent(this, RBHMyAgentListActivity.class);
             intent.putExtra("USERNAME", userName);
-            intent.putExtra("USER_ID", getUserIdFromUsername(userName));
+            intent.putExtra("USER_ID", userId);
             startActivity(intent);
         });
         
@@ -83,11 +85,6 @@ public class RBHMyAgentPanelActivity extends AppCompatActivity {
         // TODO: Implement API call to fetch agent statistics
         totalAgentCount.setText("0");
         activeAgentCount.setText("0");
-    }
-
-    private String getUserIdFromUsername(String username) {
-        // TODO: Implement proper user ID retrieval
-        return "1";
     }
 
     @Override

@@ -272,7 +272,7 @@ public class EnhancedLoginActivity extends AppCompatActivity {
                                     Log.d(TAG, "Navigating to RegionalBusinessHeadPanelActivity");
                                     // Navigate to Regional Business Head panel
                                     Intent intent = new Intent(EnhancedLoginActivity.this, RegionalBusinessHeadPanelActivity.class);
-                                    intent.putExtra("USERNAME", displayName);
+                                    intent.putExtra("USERNAME", username); // Use actual username instead of displayName
                                     intent.putExtra("FIRST_NAME", firstName);
                                     intent.putExtra("LAST_NAME", lastName);
                                     intent.putExtra("USER_ID", userId);

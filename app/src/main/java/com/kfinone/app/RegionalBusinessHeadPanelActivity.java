@@ -27,6 +27,7 @@ public class RegionalBusinessHeadPanelActivity extends AppCompatActivity {
         // Get user data from intent
         Intent intent = getIntent();
         userName = intent.getStringExtra("USERNAME");
+        userId = intent.getStringExtra("USER_ID");
         if (userName == null || userName.isEmpty()) {
             userName = "RBH"; // Default fallback
         }
@@ -134,6 +135,7 @@ public class RegionalBusinessHeadPanelActivity extends AppCompatActivity {
         cardInnovation.setOnClickListener(v -> {
             Intent intent = new Intent(this, RBHMyAgentPanelActivity.class);
             intent.putExtra("USERNAME", userName);
+            intent.putExtra("USER_ID", userId); // Pass the actual user ID
             startActivity(intent);
         });
         
