@@ -92,6 +92,7 @@ public class RegionalBusinessHeadPanelActivity extends AppCompatActivity {
         cardPortfolio.setOnClickListener(v -> {
             Intent intent = new Intent(this, RBHEmpLinksActivity.class);
             intent.putExtra("USERNAME", userName);
+            intent.putExtra("USER_ID", getUserIdFromUsername(userName));
             intent.putExtra("SOURCE_PANEL", "RBH_PANEL");
             startActivity(intent);
         });
