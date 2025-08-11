@@ -8,7 +8,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.material.card.MaterialCardView;
 
 public class CBOInsurancePanelActivity extends AppCompatActivity {
-    private MaterialCardView addInsuranceBox, myInsuranceBox, teamInsuranceBox;
+    private MaterialCardView myInsuranceBox, teamInsuranceBox;
     private ImageButton backButton;
     private String userName;
 
@@ -29,21 +29,13 @@ public class CBOInsurancePanelActivity extends AppCompatActivity {
     }
 
     private void initializeViews() {
-        addInsuranceBox = findViewById(R.id.addInsuranceBox);
         myInsuranceBox = findViewById(R.id.myInsuranceBox);
         teamInsuranceBox = findViewById(R.id.teamInsuranceBox);
         backButton = findViewById(R.id.backButton);
     }
 
     private void setupClickListeners() {
-        backButton.setOnClickListener(v -> finish());
-        
-        addInsuranceBox.setOnClickListener(v -> {
-            Intent intent = new Intent(this, AddInsuranceActivity.class);
-            intent.putExtra("USERNAME", userName);
-            intent.putExtra("SOURCE_PANEL", "CBO_PANEL");
-            startActivity(intent);
-        });
+        backButton.setOnClickListener(v -> goBack());
         
         myInsuranceBox.setOnClickListener(v -> {
             Intent intent = new Intent(this, MyInsuranceActivity.class);
@@ -58,5 +50,20 @@ public class CBOInsurancePanelActivity extends AppCompatActivity {
             intent.putExtra("SOURCE_PANEL", "CBO_PANEL");
             startActivity(intent);
         });
+    }
+    
+    private void goBack() {
+        // Navigate back to CBO home page
+        Intent intent = new Intent(this, ChiefBusinessOfficerPanelActivity.class);
+        intent.putExtra("USERNAME", userName);
+        intent.putExtra("USER_ID", getIntent().getStringExtra("USER_ID"));
+        intent.putExtra("SOURCE_PANEL", "CBO_PANEL");
+        startActivity(intent);
+        finish();
+    }
+    
+    @Override
+    public void onBackPressed() {
+        goBack();
     }
 } 

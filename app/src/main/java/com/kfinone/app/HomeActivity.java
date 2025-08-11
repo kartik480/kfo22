@@ -456,7 +456,13 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         } else if (id == R.id.nav_insurance_panel) {
             startActivity(new Intent(this, InsurancePanelActivity.class));
         } else if (id == R.id.nav_doc_check_list) {
-            startActivity(new Intent(this, DocCheckListActivity.class));
+            Intent intent = new Intent(this, DocCheckListActivity.class);
+            intent.putExtra("SOURCE_PANEL", "HOME_PANEL");
+            // Pass user data
+            if (firstName != null) intent.putExtra("FIRST_NAME", firstName);
+            if (lastName != null) intent.putExtra("LAST_NAME", lastName);
+            if (fullName != null) intent.putExtra("USERNAME", fullName);
+            startActivity(intent);
         } else if (id == R.id.nav_more) {
             startActivity(new Intent(this, MoreActivity.class));
         } else if (id == R.id.nav_help) {

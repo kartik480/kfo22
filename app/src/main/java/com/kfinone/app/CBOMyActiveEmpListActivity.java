@@ -109,20 +109,38 @@ public class CBOMyActiveEmpListActivity extends AppCompatActivity {
             Log.e(TAG, "Expected: USER_ID should contain the numeric ID from login (e.g., '21')");
             Log.e(TAG, "Received: userName='" + userName + "', userId='" + userId + "'");
             
-            // Data flow issue: USER_ID should be passed from login through the intent chain
-            // This indicates a problem in the earlier activities not passing USER_ID properly
-            Log.e(TAG, "No numeric user ID found in intent chain!");
-            Log.e(TAG, "This means the login USER_ID is not being passed properly through:");
-            Log.e(TAG, "Login → ChiefBusinessOfficerPanelActivity → CBOEmployeeActivity → CBOMyActiveEmpListActivity");
+            // Try to get userId from SharedPreferences as fallback
+            try {
+                android.content.SharedPreferences prefs = getSharedPreferences("LoginPrefs", MODE_PRIVATE);
+                String savedUserId = prefs.getString("USER_ID", null);
+                if (savedUserId != null && !savedUserId.isEmpty() && savedUserId.matches("\\d+")) {
+                    userId = savedUserId;
+                    Log.d(TAG, "Using userId from SharedPreferences fallback: " + userId);
+                    isNumericUserId = true;
+                } else {
+                    Log.e(TAG, "No valid userId found in SharedPreferences either");
+                }
+            } catch (Exception e) {
+                Log.e(TAG, "Error reading from SharedPreferences: " + e.getMessage());
+            }
             
-            // Initialize views first to avoid null pointer exceptions
-            initializeViews();
-            setupClickListeners();
-            initializeData();
-            
-            // Show error to the user since we can't proceed without any identifier
-            showError("Unable to load employee list. User ID not found. Please check the data flow from login.");
-            return; // Don't proceed with the API call
+            // If we still don't have a valid userId, show error and return
+            if (!isNumericUserId) {
+                // Data flow issue: USER_ID should be passed from login through the intent chain
+                // This indicates a problem in the earlier activities not passing USER_ID properly
+                Log.e(TAG, "No numeric user ID found in intent chain!");
+                Log.e(TAG, "This means the login USER_ID is not being passed properly through:");
+                Log.e(TAG, "Login → ChiefBusinessOfficerPanelActivity → CBOEmployeeActivity → CBOMyActiveEmpListActivity");
+                
+                // Initialize views first to avoid null pointer exceptions
+                initializeViews();
+                setupClickListeners();
+                initializeData();
+                
+                // Show error to the user since we can't proceed without any identifier
+                showError("Unable to load employee list. User ID not found. Please check the data flow from login.");
+                return; // Don't proceed with the API call
+            }
         }
         
         Log.d(TAG, "Final userId to use: " + userId);

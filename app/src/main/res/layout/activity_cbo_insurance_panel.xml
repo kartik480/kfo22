@@ -75,76 +75,6 @@
             android:orientation="vertical"
             android:padding="24dp">
 
-            <!-- Add Insurance Box -->
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/addInsuranceBox"
-                android:layout_width="match_parent"
-                android:layout_height="120dp"
-                android:layout_marginBottom="16dp"
-                android:clickable="true"
-                android:focusable="true"
-                app:cardCornerRadius="16dp"
-                app:cardElevation="8dp"
-                app:cardBackgroundColor="@color/white">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal"
-                    android:padding="20dp"
-                    android:gravity="center_vertical">
-
-                    <!-- Icon with Background -->
-                    <LinearLayout
-                        android:layout_width="60dp"
-                        android:layout_height="60dp"
-                        android:background="@drawable/circle_background_green"
-                        android:gravity="center"
-                        android:layout_marginEnd="16dp">
-
-                        <ImageView
-                            android:layout_width="30dp"
-                            android:layout_height="30dp"
-                            android:src="@drawable/ic_add"
-                            android:tint="#4CAF50"
-                            android:contentDescription="Add Insurance" />
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Add Insurance"
-                            android:textSize="18sp"
-                            android:textStyle="bold"
-                            android:textColor="#2C3E50"
-                            android:layout_marginBottom="4dp" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Create new insurance policies"
-                            android:textSize="14sp"
-                            android:textColor="#7F8C8D" />
-
-                    </LinearLayout>
-
-                    <ImageView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:src="@drawable/ic_arrow_right"
-                        android:tint="#4CAF50" />
-
-                </LinearLayout>
-
-            </com.google.android.material.card.MaterialCardView>
-
             <!-- My Insurance Box -->
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/myInsuranceBox"
@@ -311,7 +241,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="• Add new insurance policies to the system\n• View and manage your personal insurance\n• Monitor team insurance performance\n• Track insurance analytics and reports"
+                        android:text="• View and manage your personal insurance\n• Monitor team insurance performance\n• Track insurance analytics and reports"
                         android:textSize="14sp"
                         android:textColor="#5A6C7D"
                         android:lineSpacingExtra="4dp" />

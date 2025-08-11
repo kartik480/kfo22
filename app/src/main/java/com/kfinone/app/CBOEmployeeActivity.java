@@ -51,6 +51,22 @@ public class CBOEmployeeActivity extends AppCompatActivity {
             Log.e("CBOEmployeeActivity", "ERROR: No numeric user ID received!");
             Log.e("CBOEmployeeActivity", "This will cause issues in downstream activities");
             Log.e("CBOEmployeeActivity", "Expected: numeric ID like '21', Got: '" + userId + "'");
+            
+            // Try to get userId from SharedPreferences as fallback
+            try {
+                android.content.SharedPreferences prefs = getSharedPreferences("LoginPrefs", MODE_PRIVATE);
+                String savedUserId = prefs.getString("USER_ID", null);
+                if (savedUserId != null && !savedUserId.isEmpty() && savedUserId.matches("\\d+")) {
+                    userId = savedUserId;
+                    Log.d("CBOEmployeeActivity", "Using userId from SharedPreferences: " + userId);
+                } else {
+                    Log.e("CBOEmployeeActivity", "No valid userId found in SharedPreferences either");
+                }
+            } catch (Exception e) {
+                Log.e("CBOEmployeeActivity", "Error reading from SharedPreferences: " + e.getMessage());
+            }
+        } else {
+            Log.d("CBOEmployeeActivity", "✓ Valid numeric userId received: " + userId);
         }
         
         // Debug: Log ALL intent extras

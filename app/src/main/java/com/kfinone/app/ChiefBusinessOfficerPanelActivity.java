@@ -38,6 +38,29 @@ public class ChiefBusinessOfficerPanelActivity extends AppCompatActivity {
         Log.d("CBOPanel", "Received userName: " + userName);
         Log.d("CBOPanel", "Received userId: " + userId);
         
+        // Critical check: Ensure we have a valid userId
+        if (userId == null || userId.isEmpty()) {
+            Log.e("CBOPanel", "CRITICAL ERROR: No valid userId received!");
+            Log.e("CBOPanel", "This will cause navigation issues in downstream activities");
+            Log.e("CBOPanel", "Expected: numeric ID like '21', Got: '" + userId + "'");
+            
+            // Try to get userId from SharedPreferences as fallback
+            try {
+                android.content.SharedPreferences prefs = getSharedPreferences("LoginPrefs", MODE_PRIVATE);
+                String savedUserId = prefs.getString("USER_ID", null);
+                if (savedUserId != null && !savedUserId.isEmpty()) {
+                    userId = savedUserId;
+                    Log.d("CBOPanel", "Using userId from SharedPreferences: " + userId);
+                } else {
+                    Log.e("CBOPanel", "No userId found in SharedPreferences either");
+                }
+            } catch (Exception e) {
+                Log.e("CBOPanel", "Error reading from SharedPreferences: " + e.getMessage());
+            }
+        } else {
+            Log.d("CBOPanel", "✓ Valid userId received: " + userId);
+        }
+        
         initializeViews();
         setupClickListeners();
         updateStats();
@@ -116,6 +139,7 @@ public class ChiefBusinessOfficerPanelActivity extends AppCompatActivity {
         cardStrategy.setOnClickListener(v -> {
             Intent intent = new Intent(this, CBOEmployeeActivity.class);
             passUserDataToIntent(intent);
+            intent.putExtra("SOURCE_PANEL", "CBO_PANEL");
             startActivity(intent);
         });
         
@@ -144,6 +168,7 @@ public class ChiefBusinessOfficerPanelActivity extends AppCompatActivity {
         cardPartnerships.setOnClickListener(v -> {
             Intent intent = new Intent(this, CBOPayoutPanelActivity.class);
             intent.putExtra("USERNAME", userName);
+            intent.putExtra("SOURCE_PANEL", "CBO_PANEL");
             startActivity(intent);
         });
         
@@ -157,24 +182,30 @@ public class ChiefBusinessOfficerPanelActivity extends AppCompatActivity {
         cardRiskManagement.setOnClickListener(v -> {
             Intent intent = new Intent(this, CBOBankersPanelActivity.class);
             intent.putExtra("USERNAME", userName);
+            intent.putExtra("SOURCE_PANEL", "CBO_PANEL");
             startActivity(intent);
         });
         
         cardCompliance.setOnClickListener(v -> {
             Intent intent = new Intent(this, CBOPortfolioPanelActivity.class);
             intent.putExtra("USERNAME", userName);
+            intent.putExtra("USER_ID", userId);
+            intent.putExtra("SOURCE_PANEL", "CBO_PANEL");
             startActivity(intent);
         });
         
         cardBudget.setOnClickListener(v -> {
             Intent intent = new Intent(this, CBOInsurancePanelActivity.class);
             intent.putExtra("USERNAME", userName);
+            intent.putExtra("USER_ID", userId);
+            intent.putExtra("SOURCE_PANEL", "CBO_PANEL");
             startActivity(intent);
         });
         
         cardGoals.setOnClickListener(v -> {
             Intent intent = new Intent(this, DocCheckListActivity.class);
             intent.putExtra("USERNAME", userName);
+            intent.putExtra("SOURCE_PANEL", "CBO_PANEL");
             startActivity(intent);
         });
         
@@ -215,16 +246,19 @@ public class ChiefBusinessOfficerPanelActivity extends AppCompatActivity {
                     case 1: // Team Management
                         Intent teamIntent = new Intent(this, CBOTeamActivity.class);
                         teamIntent.putExtra("USERNAME", userName);
+                        teamIntent.putExtra("SOURCE_PANEL", "CBO_PANEL");
                         startActivity(teamIntent);
                         break;
                     case 2: // Portfolio Management
                         Intent portfolioIntent = new Intent(this, CBOPortfolioActivity.class);
                         portfolioIntent.putExtra("USERNAME", userName);
+                        portfolioIntent.putExtra("SOURCE_PANEL", "CBO_PANEL");
                         startActivity(portfolioIntent);
                         break;
                     case 3: // Reports & Analytics
                         Intent reportsIntent = new Intent(this, CBOReportsActivity.class);
                         reportsIntent.putExtra("USERNAME", userName);
+                        reportsIntent.putExtra("SOURCE_PANEL", "CBO_PANEL");
                         startActivity(reportsIntent);
                         break;
                     case 4: // Profile

@@ -91,9 +91,46 @@ public class DocCheckListActivity extends AppCompatActivity {
     }
 
     private void goBack() {
-        Intent intent = new Intent(this, SpecialPanelActivity.class);
-        startActivity(intent);
-        finish();
+        // Check which panel we came from and go back accordingly
+        String sourcePanel = getIntent().getStringExtra("SOURCE_PANEL");
+        if ("SPECIAL_PANEL".equals(sourcePanel)) {
+            Intent intent = new Intent(this, SpecialPanelActivity.class);
+            passUserDataToIntent(intent);
+            startActivity(intent);
+            finish();
+        } else if ("CBO_PANEL".equals(sourcePanel)) {
+            Intent intent = new Intent(this, ChiefBusinessOfficerPanelActivity.class);
+            passUserDataToIntent(intent);
+            startActivity(intent);
+            finish();
+        } else if ("RBH_PANEL".equals(sourcePanel)) {
+            Intent intent = new Intent(this, RegionalBusinessHeadPanelActivity.class);
+            passUserDataToIntent(intent);
+            startActivity(intent);
+            finish();
+        } else {
+            // Default to SpecialPanelActivity
+            Intent intent = new Intent(this, SpecialPanelActivity.class);
+            passUserDataToIntent(intent);
+            startActivity(intent);
+            finish();
+        }
+    }
+
+    private void passUserDataToIntent(Intent intent) {
+        // Get current user data and pass it to the new activity
+        Intent currentIntent = getIntent();
+        if (currentIntent != null) {
+            String userId = currentIntent.getStringExtra("USER_ID");
+            String firstName = currentIntent.getStringExtra("FIRST_NAME");
+            String lastName = currentIntent.getStringExtra("LAST_NAME");
+            String fullName = currentIntent.getStringExtra("USERNAME");
+            
+            if (userId != null) intent.putExtra("USER_ID", userId);
+            if (firstName != null) intent.putExtra("FIRST_NAME", firstName);
+            if (lastName != null) intent.putExtra("LAST_NAME", lastName);
+            if (fullName != null) intent.putExtra("USERNAME", fullName);
+        }
     }
 
     private void refreshData() {

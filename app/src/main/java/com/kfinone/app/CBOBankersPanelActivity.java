@@ -35,7 +35,7 @@ public class CBOBankersPanelActivity extends AppCompatActivity {
     }
 
     private void setupClickListeners() {
-        backButton.setOnClickListener(v -> finish());
+        backButton.setOnClickListener(v -> goBack());
         
         addBox.setOnClickListener(v -> {
             Intent intent = new Intent(this, AddBankerActivity.class);
@@ -50,5 +50,20 @@ public class CBOBankersPanelActivity extends AppCompatActivity {
             intent.putExtra("SOURCE_PANEL", "CBO_PANEL");
             startActivity(intent);
         });
+    }
+    
+    private void goBack() {
+        // Navigate back to CBO home page
+        Intent intent = new Intent(this, ChiefBusinessOfficerPanelActivity.class);
+        intent.putExtra("USERNAME", userName);
+        intent.putExtra("USER_ID", getIntent().getStringExtra("USER_ID"));
+        intent.putExtra("SOURCE_PANEL", "CBO_PANEL");
+        startActivity(intent);
+        finish();
+    }
+    
+    @Override
+    public void onBackPressed() {
+        goBack();
     }
 } 

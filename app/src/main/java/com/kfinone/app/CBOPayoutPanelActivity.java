@@ -34,12 +34,27 @@ public class CBOPayoutPanelActivity extends AppCompatActivity {
     }
 
     private void setupClickListeners() {
-        backButton.setOnClickListener(v -> finish());
+        backButton.setOnClickListener(v -> goBack());
         
         payoutTeamBox.setOnClickListener(v -> {
             // TODO: Navigate to Payout Team Activity
             // For now, show a toast message
             android.widget.Toast.makeText(this, "Payout Team - Coming Soon", android.widget.Toast.LENGTH_SHORT).show();
         });
+    }
+    
+    private void goBack() {
+        // Navigate back to CBO home page
+        Intent intent = new Intent(this, ChiefBusinessOfficerPanelActivity.class);
+        intent.putExtra("USERNAME", userName);
+        intent.putExtra("USER_ID", getIntent().getStringExtra("USER_ID"));
+        intent.putExtra("SOURCE_PANEL", "CBO_PANEL");
+        startActivity(intent);
+        finish();
+    }
+    
+    @Override
+    public void onBackPressed() {
+        goBack();
     }
 } 

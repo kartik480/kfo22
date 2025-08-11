@@ -200,6 +200,25 @@ public class EnhancedLoginActivity extends AppCompatActivity {
                         String fullName = (firstName + " " + lastName).trim();
                         String userId = user.optString("id", "");
                         
+                        // Debug: Log the user object to see what fields are available
+                        Log.d(TAG, "=== User Object Details ===");
+                        Log.d(TAG, "User object keys: " + user.toString());
+                        Log.d(TAG, "firstName: " + firstName);
+                        Log.d(TAG, "lastName: " + lastName);
+                        Log.d(TAG, "fullName: " + fullName);
+                        Log.d(TAG, "userId (id): " + userId);
+                        Log.d(TAG, "username: " + user.optString("username", "N/A"));
+                        Log.d(TAG, "========================");
+                        
+                        // Fallback: If userId is empty, try to get it from username
+                        if ((userId == null || userId.isEmpty()) && username != null && username.matches("\\d+")) {
+                            userId = username;
+                            Log.d(TAG, "Using username as userId fallback: " + userId);
+                        }
+                        
+                        // Create final variable for lambda usage
+                        final String finalUserId = userId;
+                        
                         final String displayName = fullName.isEmpty() ? user.optString("username", "User") : fullName;
                         
                         // Check for special user (ID 8 or username 10002)
@@ -240,13 +259,23 @@ public class EnhancedLoginActivity extends AppCompatActivity {
                         Log.d(TAG, "Is Business Head: " + isBusinessHead);
                         Log.d(TAG, "Designation: " + user.optString("designation_name", "N/A"));
                         Log.d(TAG, "Full response: " + responseBody);
+                        
+                        // Critical check: Ensure we have a valid userId
+                        if (userId == null || userId.isEmpty()) {
+                            Log.e(TAG, "CRITICAL ERROR: No valid userId found!");
+                            Log.e(TAG, "This will cause navigation issues in downstream activities");
+                            Log.e(TAG, "Server response may be missing the 'id' field");
+                            Log.e(TAG, "Username: " + username + ", userId: " + userId);
+                        } else {
+                            Log.d(TAG, "✓ Valid userId found: " + userId);
+                        }
 
                         runOnUiThread(() -> {
                             try {
                                 showSuccessMessage("Login successful!");
                                 
                                 // Save user data to SharedPreferences
-                                saveUserDataToSharedPreferences(username, firstName, lastName, userId);
+                                saveUserDataToSharedPreferences(username, firstName, lastName, finalUserId);
                                 
                                 if (isChiefBusinessOfficer) {
                                     Log.d(TAG, "Navigating to ChiefBusinessOfficerPanelActivity");
@@ -255,7 +284,7 @@ public class EnhancedLoginActivity extends AppCompatActivity {
                                     intent.putExtra("USERNAME", displayName);
                                     intent.putExtra("FIRST_NAME", firstName);
                                     intent.putExtra("LAST_NAME", lastName);
-                                    intent.putExtra("USER_ID", userId);
+                                    intent.putExtra("USER_ID", finalUserId);
                                     startActivity(intent);
                                     finish();
                                 } else if (finalIsBusinessHead) {
@@ -265,7 +294,7 @@ public class EnhancedLoginActivity extends AppCompatActivity {
                                     intent.putExtra("USERNAME", username);
                                     intent.putExtra("FIRST_NAME", firstName);
                                     intent.putExtra("LAST_NAME", lastName);
-                                    intent.putExtra("USER_ID", userId);
+                                    intent.putExtra("USER_ID", finalUserId);
                                     startActivity(intent);
                                     finish();
                                 } else if (finalIsRegionalBusinessHead) {
@@ -275,17 +304,17 @@ public class EnhancedLoginActivity extends AppCompatActivity {
                                     intent.putExtra("USERNAME", username); // Use actual username instead of displayName
                                     intent.putExtra("FIRST_NAME", firstName);
                                     intent.putExtra("LAST_NAME", lastName);
-                                    intent.putExtra("USER_ID", userId);
+                                    intent.putExtra("USER_ID", finalUserId);
                                     startActivity(intent);
                                     finish();
-                                } else if (isUser10002 || "10002".equals(userId)) {
+                                } else if (isUser10002 || "10002".equals(finalUserId)) {
                                     Log.d(TAG, "Navigating to User10002PanelActivity");
                                     // Navigate to new enhanced panel for user 10002
                                     Intent intent = new Intent(EnhancedLoginActivity.this, User10002PanelActivity.class);
                                     intent.putExtra("USERNAME", displayName);
                                     intent.putExtra("FIRST_NAME", firstName);
                                     intent.putExtra("LAST_NAME", lastName);
-                                    intent.putExtra("USER_ID", userId);
+                                    intent.putExtra("USER_ID", finalUserId);
                                     intent.putExtra("SPECIAL_MESSAGE", "Welcome to your enhanced dashboard!");
                                     startActivity(intent);
                                     finish();
@@ -295,7 +324,7 @@ public class EnhancedLoginActivity extends AppCompatActivity {
                                     intent.putExtra("USERNAME", displayName);
                                     intent.putExtra("FIRST_NAME", firstName);
                                     intent.putExtra("LAST_NAME", lastName);
-                                    intent.putExtra("USER_ID", userId);
+                                    intent.putExtra("USER_ID", finalUserId);
                                     intent.putExtra("SPECIAL_MESSAGE", specialMessage);
                                     startActivity(intent);
                                     finish();
@@ -305,7 +334,7 @@ public class EnhancedLoginActivity extends AppCompatActivity {
                                     intent.putExtra("USERNAME", displayName);
                                     intent.putExtra("FIRST_NAME", firstName);
                                     intent.putExtra("LAST_NAME", lastName);
-                                    intent.putExtra("USER_ID", userId);
+                                    intent.putExtra("USER_ID", finalUserId);
                                     startActivity(intent);
                                     finish();
                                 }

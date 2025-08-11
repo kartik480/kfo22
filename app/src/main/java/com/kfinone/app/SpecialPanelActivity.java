@@ -220,6 +220,7 @@ public class SpecialPanelActivity extends AppCompatActivity implements Navigatio
         findViewById(R.id.documentCheckListBox).setOnClickListener(v -> {
             Intent intent = new Intent(this, DocCheckListActivity.class);
             passUserDataToIntent(intent);
+            intent.putExtra("SOURCE_PANEL", "SPECIAL_PANEL");
             startActivity(intent);
         });
 
