@@ -63,11 +63,17 @@ public class RBHMySdsaActivity extends AppCompatActivity {
 
         // If userId is null, try to get it from the logged-in user
         if (userId == null || userId.isEmpty()) {
-            android.util.Log.w("RBHMySdsa", "userId is null or empty, attempting to get from logged-in user");
-            // For now, let's use a default RBH user ID for testing
-            // In a real app, you would get this from the login session
-            userId = "21"; // Default RBH user ID for testing
-            android.util.Log.d("RBHMySdsa", "Using default userId: " + userId);
+            android.util.Log.w("RBHMySdsa", "userId is null or empty, attempting to get from SharedPreferences");
+            try {
+                android.content.SharedPreferences prefs = getSharedPreferences("LoginPrefs", MODE_PRIVATE);
+                String storedUserId = prefs.getString("USER_ID", null);
+                if (storedUserId != null && !storedUserId.isEmpty()) {
+                    userId = storedUserId;
+                    android.util.Log.d("RBHMySdsa", "Using USER_ID from SharedPreferences: " + userId);
+                }
+            } catch (Exception e) {
+                android.util.Log.e("RBHMySdsa", "Error reading SharedPreferences: " + e.getMessage());
+            }
         }
 
         initializeViews();

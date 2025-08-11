@@ -53,48 +53,51 @@ try {
     //     throw new Exception('Access denied. Only Regional Business Head users can access this feature.');
     // }
     
-    // Query to fetch SDSA users reporting to this RBH user
+    // Query to fetch SDSA users reporting to this RBH user by joining tbl_user on reportingTo IDs
     $query = "SELECT 
-                id,
-                username,
-                alias_name,
-                first_name,
-                last_name,
-                Phone_number,
-                email_id,
-                alternative_mobile_number,
-                company_name,
-                branch_state_name_id,
-                branch_location_id,
-                bank_id,
-                account_type_id,
-                office_address,
-                residential_address,
-                aadhaar_number,
-                pan_number,
-                account_number,
-                ifsc_code,
-                rank,
-                status,
-                reportingTo,
-                employee_no,
-                department,
-                designation,
-                branchstate,
-                branchloaction,
-                bank_name,
-                account_type,
-                user_id,
-                createdBy,
-                created_at,
-                updated_at,
-                CONCAT(first_name, ' ', last_name) as fullName,
-                CONCAT(first_name, ' ', last_name, ' (', designation, ')') as displayName
-              FROM tbl_sdsa_users 
-              WHERE reportingTo = :reportingTo 
-              AND (status = 'Active' OR status = 1 OR status IS NULL OR status = '')
-              AND first_name IS NOT NULL AND first_name != ''
-              ORDER BY first_name ASC, last_name ASC";
+                su.id,
+                su.username,
+                su.alias_name,
+                su.first_name,
+                su.last_name,
+                su.Phone_number,
+                su.email_id,
+                su.alternative_mobile_number,
+                su.company_name,
+                su.branch_state_name_id,
+                su.branch_location_id,
+                su.bank_id,
+                su.account_type_id,
+                su.office_address,
+                su.residential_address,
+                su.aadhaar_number,
+                su.pan_number,
+                su.account_number,
+                su.ifsc_code,
+                su.rank,
+                su.status,
+                su.reportingTo,
+                su.employee_no,
+                su.department,
+                su.designation,
+                su.branchstate,
+                su.branchloaction,
+                su.bank_name,
+                su.account_type,
+                su.user_id,
+                su.createdBy,
+                su.created_at,
+                su.updated_at,
+                CONCAT(su.first_name, ' ', su.last_name) as fullName,
+                CONCAT(su.first_name, ' ', su.last_name, ' (', su.designation, ')') as displayName,
+                u.id as manager_id,
+                CONCAT(u.firstName, ' ', u.lastName) as manager_name
+              FROM tbl_sdsa_users su
+              INNER JOIN tbl_user u ON FIND_IN_SET(u.id, su.reportingTo)
+              WHERE u.id = :reportingTo
+              AND (su.status = 'Active' OR su.status = 1 OR su.status IS NULL OR su.status = '')
+              AND su.first_name IS NOT NULL AND su.first_name != ''
+              ORDER BY su.first_name ASC, su.last_name ASC";
     
     $stmt = $pdo->prepare($query);
     $stmt->bindParam(':reportingTo', $reportingTo, PDO::PARAM_STR);

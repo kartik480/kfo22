@@ -70,7 +70,7 @@ public class RBHMySdsaPanelActivity extends AppCompatActivity {
 
         // Action Card Click Listeners
         cardMySdsa.setOnClickListener(v -> {
-            Intent intent = new Intent(this, RBHMySdsaListActivity.class);
+            Intent intent = new Intent(this, RBHMySdsaActivity.class);
             intent.putExtra("USERNAME", userName);
             intent.putExtra("USER_ID", getUserIdFromUsername(userName));
             startActivity(intent);

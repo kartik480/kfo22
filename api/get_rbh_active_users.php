@@ -42,7 +42,7 @@ try {
               FROM tbl_user u
               INNER JOIN tbl_designation d ON u.designation_id = d.id
               LEFT JOIN tbl_department dept ON u.department_id = dept.id
-              WHERE u.reportingTo = :reportingTo 
+              WHERE FIND_IN_SET(:reportingTo, u.reportingTo)
               AND (u.status = 'Active' OR u.status = 1 OR u.status IS NULL OR u.status = '')
               AND u.firstName IS NOT NULL AND u.firstName != ''
               ORDER BY u.firstName ASC, u.lastName ASC";
