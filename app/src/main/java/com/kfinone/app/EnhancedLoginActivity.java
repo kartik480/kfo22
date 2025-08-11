@@ -208,6 +208,14 @@ public class EnhancedLoginActivity extends AppCompatActivity {
                         Log.d(TAG, "fullName: " + fullName);
                         Log.d(TAG, "userId (id): " + userId);
                         Log.d(TAG, "username: " + user.optString("username", "N/A"));
+                        
+                        // Check all available fields in the user object
+                        java.util.Iterator<String> keys = user.keys();
+                        while (keys.hasNext()) {
+                            String key = keys.next();
+                            String value = user.optString(key, "N/A");
+                            Log.d(TAG, "Field: " + key + " = " + value);
+                        }
                         Log.d(TAG, "========================");
                         
                         // Fallback: If userId is empty, try to get it from username
@@ -261,13 +269,13 @@ public class EnhancedLoginActivity extends AppCompatActivity {
                         Log.d(TAG, "Full response: " + responseBody);
                         
                         // Critical check: Ensure we have a valid userId
-                        if (userId == null || userId.isEmpty()) {
+                        if (finalUserId == null || finalUserId.isEmpty()) {
                             Log.e(TAG, "CRITICAL ERROR: No valid userId found!");
                             Log.e(TAG, "This will cause navigation issues in downstream activities");
                             Log.e(TAG, "Server response may be missing the 'id' field");
-                            Log.e(TAG, "Username: " + username + ", userId: " + userId);
+                            Log.e(TAG, "Username: " + username + ", userId: " + finalUserId);
                         } else {
-                            Log.d(TAG, "✓ Valid userId found: " + userId);
+                            Log.d(TAG, "✓ Valid userId found: " + finalUserId);
                         }
 
                         runOnUiThread(() -> {
