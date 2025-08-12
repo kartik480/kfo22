@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Business Head My Partner - Dropdown Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .filter-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .filter-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 16px;
+            color: #333;
+        }
+        .dropdown-group {
+            margin-bottom: 16px;
+        }
+        .dropdown-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #555;
+        }
+        .dropdown-group select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            background: white;
+        }
+        .search-section {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .search-input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+        .stats-section {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+        .stat-card {
+            flex: 1;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .stat-number {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+        .stat-label {
+            font-size: 12px;
+            color: #666;
+        }
+        .total { color: #007bff; }
+        .active { color: #28a745; }
+        .inactive { color: #dc3545; }
+        .results-section {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .results-title {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 16px;
+            color: #333;
+        }
+        .partner-item {
+            border: 1px solid #eee;
+            border-radius: 4px;
+            padding: 16px;
+            margin-bottom: 12px;
+            background: #fafafa;
+        }
+        .partner-name {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 8px;
+        }
+        .partner-details {
+            color: #666;
+            font-size: 14px;
+        }
+        .filter-info {
+            background: #e3f2fd;
+            padding: 12px;
+            border-radius: 4px;
+            margin-bottom: 16px;
+            font-size: 14px;
+            color: #1976d2;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Business Head My Partner - Dropdown Test</h1>
+        
+        <!-- Filter Section -->
+        <div class="filter-section">
+            <div class="filter-title">Filter Options</div>
+            
+            <div class="dropdown-group">
+                <label for="agentType">Agent Type:</label>
+                <select id="agentType" onchange="applyFilters()">
+                    <option value="All Types">All Types</option>
+                    <option value="Individual">Individual</option>
+                    <option value="Corporate">Corporate</option>
+                    <option value="Institutional">Institutional</option>
+                    <option value="Retail">Retail</option>
+                </select>
+            </div>
+            
+            <div class="dropdown-group">
+                <label for="branchState">Branch State:</label>
+                <select id="branchState" onchange="applyFilters()">
+                    <option value="All States">All States</option>
+                    <option value="Maharashtra">Maharashtra</option>
+                    <option value="Delhi">Delhi</option>
+                    <option value="Karnataka">Karnataka</option>
+                    <option value="Tamil Nadu">Tamil Nadu</option>
+                    <option value="Gujarat">Gujarat</option>
+                    <option value="Uttar Pradesh">Uttar Pradesh</option>
+                </select>
+            </div>
+            
+            <div class="dropdown-group">
+                <label for="branchLocation">Branch Location:</label>
+                <select id="branchLocation" onchange="applyFilters()">
+                    <option value="All Locations">All Locations</option>
+                    <option value="Mumbai">Mumbai</option>
+                    <option value="Delhi">Delhi</option>
+                    <option value="Bangalore">Bangalore</option>
+                    <option value="Chennai">Chennai</option>
+                    <option value="Ahmedabad">Ahmedabad</option>
+                    <option value="Lucknow">Lucknow</option>
+                </select>
+            </div>
+        </div>
+        
+        <!-- Search Section -->
+        <div class="search-section">
+            <label for="searchInput">Search Partners:</label>
+            <input type="text" id="searchInput" class="search-input" placeholder="Search by name, company, phone, or email..." oninput="applyFilters()">
+        </div>
+        
+        <!-- Statistics Section -->
+        <div class="stats-section">
+            <div class="stat-card">
+                <div class="stat-number total" id="totalCount">0</div>
+                <div class="stat-label">Total Partners</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number active" id="activeCount">0</div>
+                <div class="stat-label">Active</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number inactive" id="inactiveCount">0</div>
+                <div class="stat-label">Inactive</div>
+            </div>
+        </div>
+        
+        <!-- Filter Info -->
+        <div class="filter-info" id="filterInfo">
+            Showing all partners (no filters applied)
+        </div>
+        
+        <!-- Results Section -->
+        <div class="results-section">
+            <div class="results-title">Partner Results</div>
+            <div id="partnerResults">
+                <!-- Partner items will be populated here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sample partner data
+        const samplePartners = [
+            {
+                id: "1",
+                name: "John Doe",
+                company: "ABC Corporation",
+                phone: "+91-98765-43210",
+                email: "john.doe@abc.com",
+                agentType: "Corporate",
+                branchState: "Maharashtra",
+                branchLocation: "Mumbai",
+                status: "Active"
+            },
+            {
+                id: "2",
+                name: "Jane Smith",
+                company: "XYZ Ltd",
+                phone: "+91-98765-43211",
+                email: "jane.smith@xyz.com",
+                agentType: "Individual",
+                branchState: "Delhi",
+                branchLocation: "Delhi",
+                status: "Active"
+            },
+            {
+                id: "3",
+                name: "Bob Johnson",
+                company: "DEF Industries",
+                phone: "+91-98765-43212",
+                email: "bob.johnson@def.com",
+                agentType: "Institutional",
+                branchState: "Karnataka",
+                branchLocation: "Bangalore",
+                status: "Inactive"
+            },
+            {
+                id: "4",
+                name: "Alice Brown",
+                company: "GHI Solutions",
+                phone: "+91-98765-43213",
+                email: "alice.brown@ghi.com",
+                agentType: "Retail",
+                branchState: "Tamil Nadu",
+                branchLocation: "Chennai",
+                status: "Active"
+            },
+            {
+                id: "5",
+                name: "Charlie Wilson",
+                company: "JKL Enterprises",
+                phone: "+91-98765-43214",
+                email: "charlie.wilson@jkl.com",
+                agentType: "Corporate",
+                branchState: "Gujarat",
+                branchLocation: "Ahmedabad",
+                status: "Active"
+            }
+        ];
+
+        let filteredPartners = [...samplePartners];
+
+        function applyFilters() {
+            const agentType = document.getElementById('agentType').value;
+            const branchState = document.getElementById('branchState').value;
+            const branchLocation = document.getElementById('branchLocation').value;
+            const searchQuery = document.getElementById('searchInput').value.toLowerCase();
+
+            filteredPartners = samplePartners.filter(partner => {
+                // Agent Type filter
+                const matchesAgentType = agentType === "All Types" || partner.agentType === agentType;
+                
+                // Branch State filter
+                const matchesBranchState = branchState === "All States" || partner.branchState === branchState;
+                
+                // Branch Location filter
+                const matchesBranchLocation = branchLocation === "All Locations" || partner.branchLocation === branchLocation;
+                
+                // Search filter
+                const matchesSearch = searchQuery === "" || 
+                    partner.name.toLowerCase().includes(searchQuery) ||
+                    partner.company.toLowerCase().includes(searchQuery) ||
+                    partner.phone.toLowerCase().includes(searchQuery) ||
+                    partner.email.toLowerCase().includes(searchQuery);
+
+                return matchesAgentType && matchesBranchState && matchesBranchLocation && matchesSearch;
+            });
+
+            updateDisplay();
+            updateFilterInfo(agentType, branchState, branchLocation, searchQuery);
+        }
+
+        function updateDisplay() {
+            // Update statistics
+            const totalCount = filteredPartners.length;
+            const activeCount = filteredPartners.filter(p => p.status === "Active").length;
+            const inactiveCount = filteredPartners.filter(p => p.status === "Inactive").length;
+
+            document.getElementById('totalCount').textContent = totalCount;
+            document.getElementById('activeCount').textContent = activeCount;
+            document.getElementById('inactiveCount').textContent = inactiveCount;
+
+            // Update partner results
+            const resultsContainer = document.getElementById('partnerResults');
+            resultsContainer.innerHTML = '';
+
+            if (filteredPartners.length === 0) {
+                resultsContainer.innerHTML = '<p style="text-align: center; color: #666;">No partners found matching the current filters.</p>';
+                return;
+            }
+
+            filteredPartners.forEach(partner => {
+                const partnerDiv = document.createElement('div');
+                partnerDiv.className = 'partner-item';
+                partnerDiv.innerHTML = `
+                    <div class="partner-name">${partner.name}</div>
+                    <div class="partner-details">
+                        <strong>Company:</strong> ${partner.company}<br>
+                        <strong>Phone:</strong> ${partner.phone}<br>
+                        <strong>Email:</strong> ${partner.email}<br>
+                        <strong>Agent Type:</strong> ${partner.agentType}<br>
+                        <strong>Branch:</strong> ${partner.branchState} - ${partner.branchLocation}<br>
+                        <strong>Status:</strong> <span style="color: ${partner.status === 'Active' ? '#28a745' : '#dc3545'}">${partner.status}</span>
+                    </div>
+                `;
+                resultsContainer.appendChild(partnerDiv);
+            });
+        }
+
+        function updateFilterInfo(agentType, branchState, branchLocation, searchQuery) {
+            const filterInfo = document.getElementById('filterInfo');
+            let filterText = 'Showing all partners';
+            
+            const filters = [];
+            if (agentType !== "All Types") filters.push(`Agent Type: ${agentType}`);
+            if (branchState !== "All States") filters.push(`Branch State: ${branchState}`);
+            if (branchLocation !== "All Locations") filters.push(`Branch Location: ${branchLocation}`);
+            if (searchQuery !== "") filters.push(`Search: "${searchQuery}"`);
+            
+            if (filters.length > 0) {
+                filterText = `Filters applied: ${filters.join(', ')}`;
+            }
+            
+            filterInfo.textContent = filterText;
+        }
+
+        // Initialize display
+        updateDisplay();
+    </script>
+</body>
+</html>

@@ -1,182 +1,206 @@
 package com.kfinone.app;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
-import android.view.WindowManager;
-import android.widget.Button;
-import android.widget.EditText;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
+
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.Set;
 
 public class BusinessHeadMyPartnerActivity extends AppCompatActivity {
-    private static final String TAG = "BHMyPartner";
-    private static final String API_BASE_URL = "https://emp.kfinone.com/mobile/api/";
-    private static final String BH_PARTNER_USERS_API = "business_head_my_partner_users.php";
-
-    private TextView totalPartnerCount, activePartnerCount, welcomeText;
-    private ListView partnerListView;
-    private EditText searchEditText;
-    private Button refreshButton;
-    private ProgressBar loadingProgress;
-    private View emptyStateLayout;
     
-    private String userId;
-    private String userName;
-    private PartnerAdapter partnerAdapter;
+    private static final String TAG = "BHMyPartner";
+    private static final String API_URL = "https://emp.kfinone.com/mobile/api/business_head_my_partner_users.php";
+    
+    // UI Components
+    private Toolbar toolbar;
+    private TextView welcomeText, userInfoText;
+    private TextView totalPartnersText, activePartnersText, inactivePartnersText;
+    private AutoCompleteTextView agentTypeDropdown, branchStateDropdown, branchLocationDropdown;
+    private AutoCompleteTextView searchEditText;
+    private ListView partnersListView;
+    private ProgressBar loadingProgressBar;
+    
+    // Data
     private List<PartnerUser> partnerList;
     private List<PartnerUser> filteredPartnerList;
+    private PartnerAdapter partnerAdapter;
+    private RequestQueue requestQueue;
     
-    private ExecutorService executor = Executors.newSingleThreadExecutor();
-
+    // Filter options
+    private String selectedAgentType = "All Types";
+    private String selectedBranchState = "All States";
+    private String selectedBranchLocation = "All Locations";
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        
-        // Hide status bar and make fullscreen
-        getWindow().setFlags(
-            WindowManager.LayoutParams.FLAG_FULLSCREEN,
-            WindowManager.LayoutParams.FLAG_FULLSCREEN
-        );
-        
         setContentView(R.layout.activity_business_head_my_partner);
-        
-        // Get user data from intent
-        userName = getIntent().getStringExtra("USERNAME");
-        userId = getIntent().getStringExtra("USER_ID");
-        if (userName == null || userName.isEmpty()) {
-            userName = "Business Head"; // Default fallback
-        }
         
         initializeViews();
         setupToolbar();
-        setupClickListeners();
-        setupSearchFunctionality();
-        initializePartnerList();
+        setupDropdowns();
+        setupSearch();
+        initializeData();
         loadPartnerData();
-        updateWelcomeMessage(userName);
     }
-
+    
     private void initializeViews() {
+        toolbar = findViewById(R.id.toolbar);
         welcomeText = findViewById(R.id.welcomeText);
-        totalPartnerCount = findViewById(R.id.totalPartnerCount);
-        activePartnerCount = findViewById(R.id.activePartnerCount);
-        partnerListView = findViewById(R.id.partnerListView);
+        userInfoText = findViewById(R.id.userInfoText);
+        totalPartnersText = findViewById(R.id.totalPartnersText);
+        activePartnersText = findViewById(R.id.activePartnersText);
+        inactivePartnersText = findViewById(R.id.inactivePartnersText);
+        agentTypeDropdown = findViewById(R.id.agentTypeDropdown);
+        branchStateDropdown = findViewById(R.id.branchStateDropdown);
+        branchLocationDropdown = findViewById(R.id.branchLocationDropdown);
         searchEditText = findViewById(R.id.searchEditText);
-        refreshButton = findViewById(R.id.refreshButton);
-        loadingProgress = findViewById(R.id.loadingProgress);
-        emptyStateLayout = findViewById(R.id.emptyStateLayout);
+        partnersListView = findViewById(R.id.partnersListView);
+        loadingProgressBar = findViewById(R.id.loadingProgressBar);
+        
+        requestQueue = Volley.newRequestQueue(this);
+        partnerList = new ArrayList<>();
+        filteredPartnerList = new ArrayList<>();
     }
-
+    
     private void setupToolbar() {
-        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setTitle("My Partner Users");
+            getSupportActionBar().setTitle("BH My Partner");
         }
+        
+        // Set welcome message based on logged-in user
+        welcomeText.setText("Welcome, Business Head");
+        userInfoText.setText("Manage your partner network");
     }
-
-    private void setupClickListeners() {
-        refreshButton.setOnClickListener(v -> {
-            loadPartnerData();
+    
+    private void setupDropdowns() {
+        // Agent Type Dropdown
+        String[] agentTypes = {"All Types", "Individual", "Corporate", "Institutional", "Retail"};
+        ArrayAdapter<String> agentTypeAdapter = new ArrayAdapter<>(this, 
+            android.R.layout.simple_dropdown_item_1line, agentTypes);
+        agentTypeDropdown.setAdapter(agentTypeAdapter);
+        agentTypeDropdown.setText("All Types", false);
+        
+        // Branch State Dropdown
+        String[] branchStates = {"All States", "Maharashtra", "Delhi", "Karnataka", "Tamil Nadu", "Gujarat", "Uttar Pradesh"};
+        ArrayAdapter<String> branchStateAdapter = new ArrayAdapter<>(this, 
+            android.R.layout.simple_dropdown_item_1line, branchStates);
+        branchStateDropdown.setAdapter(branchStateAdapter);
+        branchStateDropdown.setText("All States", false);
+        
+        // Branch Location Dropdown
+        String[] branchLocations = {"All Locations", "Mumbai", "Delhi", "Bangalore", "Chennai", "Ahmedabad", "Lucknow"};
+        ArrayAdapter<String> branchLocationAdapter = new ArrayAdapter<>(this, 
+            android.R.layout.simple_dropdown_item_1line, branchLocations);
+        branchLocationDropdown.setAdapter(branchLocationAdapter);
+        branchLocationDropdown.setText("All Locations", false);
+        
+        // Set dropdown change listeners
+        agentTypeDropdown.setOnItemClickListener((parent, view, position, id) -> {
+            selectedAgentType = agentTypes[position];
+            applyFilters();
+        });
+        
+        branchStateDropdown.setOnItemClickListener((parent, view, position, id) -> {
+            selectedBranchState = branchStates[position];
+            applyFilters();
+        });
+        
+        branchLocationDropdown.setOnItemClickListener((parent, view, position, id) -> {
+            selectedBranchLocation = branchLocations[position];
+            applyFilters();
         });
     }
-
-    private void setupSearchFunctionality() {
+    
+    private void setupSearch() {
         searchEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
+            
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                filterPartners(s.toString());
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+            
+            @Override
+            public void afterTextChanged(Editable s) {
+                applyFilters();
             }
-
-            @Override
-            public void afterTextChanged(Editable s) {}
         });
     }
-
-    private void initializePartnerList() {
-        partnerList = new ArrayList<>();
-        filteredPartnerList = new ArrayList<>();
+    
+    private void initializeData() {
         partnerAdapter = new PartnerAdapter(this, filteredPartnerList);
-        partnerListView.setAdapter(partnerAdapter);
+        partnersListView.setAdapter(partnerAdapter);
     }
-
+    
     private void loadPartnerData() {
         showLoading(true);
         
-        executor.execute(() -> {
-            try {
-                String apiUrl = API_BASE_URL + BH_PARTNER_USERS_API;
-                if (userId != null) {
-                    apiUrl += "?user_id=" + userId;
-                } else if (userName != null) {
-                    apiUrl += "?username=" + userName;
-                }
-                
-                Log.d(TAG, "Calling API: " + apiUrl);
-                
-                URL url = new URL(apiUrl);
-                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                connection.setRequestMethod("GET");
-                connection.setConnectTimeout(15000);
-                connection.setReadTimeout(15000);
-                
-                int responseCode = connection.getResponseCode();
-                Log.d(TAG, "API Response Code: " + responseCode);
-                
-                if (responseCode == HttpURLConnection.HTTP_OK) {
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-                    StringBuilder response = new StringBuilder();
-                    String line;
-                    while ((line = reader.readLine()) != null) {
-                        response.append(line);
-                    }
-                    reader.close();
-                    
+        // Get logged-in user info (you'll need to implement this based on your login system)
+        String username = getLoggedInUsername(); // Implement this method
+        
+        if (username == null || username.isEmpty()) {
+            showLoading(false);
+            Toast.makeText(this, "User not logged in", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        
+        String url = API_URL + "?username=" + username;
+        
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
+            new Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject response) {
                     Log.d(TAG, "API Response: " + response.toString());
-                    parseApiResponse(new JSONObject(response.toString()));
-                } else {
-                    Log.e(TAG, "API Error: " + responseCode);
-                    runOnUiThread(() -> {
-                        showError("API Error: " + responseCode);
-                        showLoading(false);
-                    });
+                    parseApiResponse(response);
                 }
-                
-                connection.disconnect();
-                
-            } catch (Exception e) {
-                Log.e(TAG, "Error loading partner data", e);
-                runOnUiThread(() -> {
-                    showError("Network error: " + e.getMessage());
+            },
+            new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Log.e(TAG, "API Error: " + error.toString());
                     showLoading(false);
-                });
-            }
-        });
+                    Toast.makeText(BusinessHeadMyPartnerActivity.this, 
+                        "Error loading partner data", Toast.LENGTH_SHORT).show();
+                }
+            });
+        
+        requestQueue.add(request);
     }
-
+    
+    private String getLoggedInUsername() {
+        // TODO: Implement this method to get the logged-in user's username
+        // This should return the username from your login session/SharedPreferences
+        return "94000"; // Temporary hardcoded value for testing
+    }
+    
     private void parseApiResponse(JSONObject response) {
         try {
             boolean success = response.getBoolean("success");
@@ -186,53 +210,23 @@ public class BusinessHeadMyPartnerActivity extends AppCompatActivity {
                 JSONObject creatorInfo = response.getJSONObject("creator_info");
                 
                 List<PartnerUser> newPartnerList = new ArrayList<>();
-                
-                // Parse partner data from tbl_partner_users
                 for (int i = 0; i < data.length(); i++) {
                     JSONObject partner = data.getJSONObject(i);
-                    
                     PartnerUser partnerUser = new PartnerUser();
+                    
+                    // Set basic fields
                     partnerUser.setId(partner.optString("id", ""));
                     partnerUser.setUsername(partner.optString("username", ""));
-                    partnerUser.setAliasName(partner.optString("alias_name", ""));
                     partnerUser.setFirstName(partner.optString("first_name", ""));
                     partnerUser.setLastName(partner.optString("last_name", ""));
-                    partnerUser.setPassword(partner.optString("password", ""));
                     partnerUser.setPhoneNumber(partner.optString("Phone_number", ""));
                     partnerUser.setEmailId(partner.optString("email_id", ""));
-                    partnerUser.setAlternativeMobileNumber(partner.optString("alternative_mobile_number", ""));
                     partnerUser.setCompanyName(partner.optString("company_name", ""));
-                    partnerUser.setBranchStateNameId(partner.optString("branch_state_name_id", ""));
-                    partnerUser.setBranchLocationId(partner.optString("branch_location_id", ""));
-                    partnerUser.setBankId(partner.optString("bank_id", ""));
-                    partnerUser.setAccountTypeId(partner.optString("account_type_id", ""));
-                    partnerUser.setOfficeAddress(partner.optString("office_address", ""));
-                    partnerUser.setResidentialAddress(partner.optString("residential_address", ""));
-                    partnerUser.setAadhaarNumber(partner.optString("aadhaar_number", ""));
-                    partnerUser.setPanNumber(partner.optString("pan_number", ""));
-                    partnerUser.setAccountNumber(partner.optString("account_number", ""));
-                    partnerUser.setIfscCode(partner.optString("ifsc_code", ""));
-                    partnerUser.setRank(partner.optString("rank", ""));
                     partnerUser.setStatus(partner.optString("status", ""));
-                    partnerUser.setReportingTo(partner.optString("reportingTo", ""));
-                    partnerUser.setEmployeeNo(partner.optString("employee_no", ""));
-                    partnerUser.setDepartment(partner.optString("department", ""));
-                    partnerUser.setDesignation(partner.optString("designation", ""));
-                    partnerUser.setBranchState(partner.optString("branchstate", ""));
-                    partnerUser.setBranchLocation(partner.optString("branchloaction", ""));
-                    partnerUser.setBankName(partner.optString("bank_name", ""));
-                    partnerUser.setAccountType(partner.optString("account_type", ""));
-                    partnerUser.setPartnerTypeId(partner.optString("partner_type_id", ""));
-                    partnerUser.setPanImg(partner.optString("pan_img", ""));
-                    partnerUser.setAadhaarImg(partner.optString("aadhaar_img", ""));
-                    partnerUser.setPhotoImg(partner.optString("photo_img", ""));
-                    partnerUser.setBankproofImg(partner.optString("bankproof_img", ""));
-                    partnerUser.setUserId(partner.optString("user_id", ""));
-                    partnerUser.setCreatedAt(partner.optString("created_at", ""));
                     partnerUser.setCreatedBy(partner.optString("createdBy", ""));
-                    partnerUser.setUpdatedAt(partner.optString("updated_at", ""));
+                    partnerUser.setCreatedAt(partner.optString("created_at", ""));
                     
-                    // Set creator information
+                    // Set creator info
                     partnerUser.setCreatorName(creatorInfo.optString("username", ""));
                     partnerUser.setCreatorDesignationName(creatorInfo.optString("firstName", "") + " " + creatorInfo.optString("lastName", ""));
                     
@@ -244,118 +238,102 @@ public class BusinessHeadMyPartnerActivity extends AppCompatActivity {
                     updateStatistics(stats);
                     showLoading(false);
                 });
-                
             } else {
-                String errorMessage = response.optString("message", "Unknown error");
-                Log.e(TAG, "API Error: " + errorMessage);
+                String message = response.optString("message", "Unknown error");
                 runOnUiThread(() -> {
-                    showError(errorMessage);
                     showLoading(false);
+                    Toast.makeText(BusinessHeadMyPartnerActivity.this, message, Toast.LENGTH_SHORT).show();
                 });
             }
-            
         } catch (JSONException e) {
-            Log.e(TAG, "Error parsing JSON response", e);
+            Log.e(TAG, "Error parsing API response", e);
             runOnUiThread(() -> {
-                showError("Error parsing response: " + e.getMessage());
                 showLoading(false);
+                Toast.makeText(BusinessHeadMyPartnerActivity.this, "Error parsing response", Toast.LENGTH_SHORT).show();
             });
         }
     }
-
+    
     private void updatePartnerList(List<PartnerUser> newPartnerList) {
         partnerList.clear();
         partnerList.addAll(newPartnerList);
-        filteredPartnerList.clear();
-        filteredPartnerList.addAll(newPartnerList);
-        partnerAdapter.updateData(filteredPartnerList);
-        
-        if (newPartnerList.isEmpty()) {
-            showEmptyState(true);
-        } else {
-            showEmptyState(false);
-        }
+        applyFilters();
     }
-
+    
     private void updateStatistics(JSONObject stats) {
         try {
-            int totalPartners = stats.optInt("total_partners", 0);
-            int activePartners = stats.optInt("active_partners", 0);
+            int total = stats.optInt("total_partners", 0);
+            int active = stats.optInt("active_partners", 0);
+            int inactive = stats.optInt("inactive_partners", 0);
             
-            totalPartnerCount.setText(String.valueOf(totalPartners));
-            activePartnerCount.setText(String.valueOf(activePartners));
-            
+            totalPartnersText.setText(String.valueOf(total));
+            activePartnersText.setText(String.valueOf(active));
+            inactivePartnersText.setText(String.valueOf(inactive));
         } catch (Exception e) {
             Log.e(TAG, "Error updating statistics", e);
         }
     }
-
-    private void filterPartners(String query) {
-        filteredPartnerList.clear();
+    
+    private void applyFilters() {
+        String searchQuery = searchEditText.getText().toString().toLowerCase().trim();
         
-        if (query == null || query.trim().isEmpty()) {
-            filteredPartnerList.addAll(partnerList);
-        } else {
-            String lowerCaseQuery = query.toLowerCase().trim();
-            for (PartnerUser partner : partnerList) {
-                if (partner.getDisplayName().toLowerCase().contains(lowerCaseQuery) ||
-                    partner.getDisplayCompany().toLowerCase().contains(lowerCaseQuery) ||
-                    partner.getDisplayPhone().toLowerCase().contains(lowerCaseQuery) ||
-                    partner.getDisplayEmail().toLowerCase().contains(lowerCaseQuery) ||
-                    (partner.getPartnerType() != null && partner.getPartnerType().toLowerCase().contains(lowerCaseQuery)) ||
-                    (partner.getLocation() != null && partner.getLocation().toLowerCase().contains(lowerCaseQuery))) {
-                    filteredPartnerList.add(partner);
-                }
+        List<PartnerUser> filtered = new ArrayList<>();
+        
+        for (PartnerUser partner : partnerList) {
+            boolean matchesSearch = searchQuery.isEmpty() || 
+                partner.getDisplayName().toLowerCase().contains(searchQuery) ||
+                partner.getDisplayCompany().toLowerCase().contains(searchQuery) ||
+                partner.getDisplayPhone().toLowerCase().contains(searchQuery) ||
+                partner.getDisplayEmail().toLowerCase().contains(searchQuery);
+            
+            boolean matchesAgentType = selectedAgentType.equals("All Types") || 
+                (partner.getPartnerTypeId() != null && partner.getPartnerTypeId().equals(selectedAgentType));
+            
+            boolean matchesBranchState = selectedBranchState.equals("All States") || 
+                (partner.getState() != null && partner.getState().equals(selectedBranchState));
+            
+            boolean matchesBranchLocation = selectedBranchLocation.equals("All Locations") || 
+                (partner.getLocation() != null && partner.getLocation().equals(selectedBranchLocation));
+            
+            if (matchesSearch && matchesAgentType && matchesBranchState && matchesBranchLocation) {
+                filtered.add(partner);
             }
         }
         
+        filteredPartnerList.clear();
+        filteredPartnerList.addAll(filtered);
         partnerAdapter.notifyDataSetChanged();
         
-        if (filteredPartnerList.isEmpty()) {
-            showEmptyState(true);
-        } else {
-            showEmptyState(false);
-        }
+        // Update statistics for filtered results
+        updateFilteredStatistics();
     }
-
+    
+    private void updateFilteredStatistics() {
+        int total = filteredPartnerList.size();
+        int active = 0;
+        int inactive = 0;
+        
+        for (PartnerUser partner : filteredPartnerList) {
+            if (partner.isActive()) {
+                active++;
+            } else {
+                inactive++;
+            }
+        }
+        
+        totalPartnersText.setText(String.valueOf(total));
+        activePartnersText.setText(String.valueOf(active));
+        inactivePartnersText.setText(String.valueOf(inactive));
+    }
+    
     private void showLoading(boolean show) {
-        loadingProgress.setVisibility(show ? View.VISIBLE : View.GONE);
-        partnerListView.setVisibility(show ? View.GONE : View.VISIBLE);
-        emptyStateLayout.setVisibility(View.GONE);
+        loadingProgressBar.setVisibility(show ? View.VISIBLE : View.GONE);
+        partnersListView.setVisibility(show ? View.GONE : View.VISIBLE);
     }
-
-    private void showEmptyState(boolean show) {
-        emptyStateLayout.setVisibility(show ? View.VISIBLE : View.GONE);
-        partnerListView.setVisibility(show ? View.GONE : View.VISIBLE);
-    }
-
-    private void showError(String message) {
-        Toast.makeText(this, message, Toast.LENGTH_LONG).show();
-    }
-
-    private void updateWelcomeMessage(String userName) {
-        if (welcomeText != null) {
-            welcomeText.setText("Welcome, " + userName + "!");
-        }
-    }
-
+    
     @Override
     public boolean onSupportNavigateUp() {
         onBackPressed();
         return true;
-    }
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        finish();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (executor != null && !executor.isShutdown()) {
-            executor.shutdown();
-        }
     }
 } 
