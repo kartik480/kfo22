@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.ListView;
+import com.google.android.material.textfield.TextInputEditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -42,7 +43,7 @@ public class BusinessHeadMyPartnerActivity extends AppCompatActivity {
     private TextView welcomeText, userInfoText;
     private TextView totalPartnersText, activePartnersText, inactivePartnersText;
     private AutoCompleteTextView agentTypeDropdown, branchStateDropdown, branchLocationDropdown;
-    private AutoCompleteTextView searchEditText;
+    private TextInputEditText searchEditText;
     private ListView partnersListView;
     private ProgressBar loadingProgressBar;
     

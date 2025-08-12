@@ -396,9 +396,12 @@ public class BusinessHeadPanelActivity extends AppCompatActivity {
                             final int activeBusinessHeads = statistics.optInt("active_business_head_users", 0);
                             final int totalTeamMembers = statistics.optInt("total_team_members", 0);
                             final int activeTeamMembers = statistics.optInt("active_team_members", 0);
+                            final int totalSdsaUsers = statistics.optInt("total_sdsa_users", 0);
+                            final int totalPartnerUsers = statistics.optInt("total_partner_users", 0);
+                            final int totalAgentUsers = statistics.optInt("total_agent_users", 0);
                             
                             runOnUiThread(() -> {
-                                updateStats(totalBusinessHeads, activeBusinessHeads, totalTeamMembers, activeTeamMembers);
+                                updateStatsWithRealData(totalTeamMembers, totalSdsaUsers, totalPartnerUsers, 0, totalAgentUsers);
                             });
                         } else {
                             // If no statistics, use default values
@@ -428,12 +431,26 @@ public class BusinessHeadPanelActivity extends AppCompatActivity {
     }
     
     private void updateStats(int totalBusinessHeads, int activeBusinessHeads, int totalTeamMembers, int activeTeamMembers) {
-        // Set all stats to 0 as requested
-        totalEmpCount.setText("0");
-        totalSDSACount.setText("0");
-        totalPartnerCount.setText("0");
-        totalPortfolioCount.setText("0");
-        totalAgentCount.setText("0");
+        // Update stats with real data from API
+        totalEmpCount.setText(String.valueOf(totalTeamMembers));
+        totalSDSACount.setText(String.valueOf(totalTeamMembers)); // SDSA count from team members
+        totalPartnerCount.setText(String.valueOf(totalTeamMembers)); // Partner count from team members
+        totalPortfolioCount.setText(String.valueOf(totalTeamMembers)); // Portfolio count from team members
+        totalAgentCount.setText(String.valueOf(totalTeamMembers)); // Agent count from team members
+        
+        Log.d(TAG, "Updated stats - Total Team Members: " + totalTeamMembers + ", Active Team Members: " + activeTeamMembers);
+    }
+    
+    private void updateStatsWithRealData(int totalEmp, int totalSdsa, int totalPartner, int totalPortfolio, int totalAgent) {
+        // Update each stat card with real data from API
+        totalEmpCount.setText(String.valueOf(totalEmp));
+        totalSDSACount.setText(String.valueOf(totalSdsa));
+        totalPartnerCount.setText(String.valueOf(totalPartner));
+        totalPortfolioCount.setText(String.valueOf(totalPortfolio));
+        totalAgentCount.setText(String.valueOf(totalAgent));
+        
+        Log.d(TAG, "Updated stats with real data - Emp: " + totalEmp + ", SDSA: " + totalSdsa + 
+              ", Partner: " + totalPartner + ", Portfolio: " + totalPortfolio + ", Agent: " + totalAgent);
     }
     
     private void setupStatCardClickListeners() {
