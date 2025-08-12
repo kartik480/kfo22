@@ -1,6 +1,7 @@
 package com.kfinone.app;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -31,6 +32,7 @@ public class BusinessHeadMyAgentActivity extends AppCompatActivity {
     
     private static final String TAG = "BHMyAgent";
     private static final String BASE_URL = "https://emp.kfinone.com/mobile/api/";
+    private static final String AGENT_API_URL = "https://emp.kfinone.com/mobile/api/business_head_my_agents.php";
 
     private View backButton;
     private LinearLayout agentListContainer;
@@ -53,6 +55,10 @@ public class BusinessHeadMyAgentActivity extends AppCompatActivity {
     private List<String> branchLocationNames = new ArrayList<>();
     private List<String> branchLocationIds = new ArrayList<>();
     
+    // Agent data
+    private List<AgentData> agentList = new ArrayList<>();
+    private List<AgentData> filteredAgentList = new ArrayList<>();
+    
     private RequestQueue requestQueue;
 
     @Override
@@ -70,7 +76,7 @@ public class BusinessHeadMyAgentActivity extends AppCompatActivity {
         initializeViews();
         loadDropdownOptions();
         setupClickListeners();
-        loadActiveAgentList();
+        loadAgentData();
     }
 
     private void initializeViews() {
@@ -207,45 +213,150 @@ public class BusinessHeadMyAgentActivity extends AppCompatActivity {
         });
     }
     
+    private void loadAgentData() {
+        // Get logged-in user info
+        String username = getLoggedInUsername();
+        
+        if (username == null || username.isEmpty()) {
+            Toast.makeText(this, "User not logged in", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        
+        String url = AGENT_API_URL + "?username=" + username;
+        
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
+            new Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject response) {
+                    Log.d(TAG, "API Response: " + response.toString());
+                    parseApiResponse(response);
+                }
+            },
+            new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Log.e(TAG, "API Error: " + error.toString());
+                    Toast.makeText(BusinessHeadMyAgentActivity.this, 
+                        "Error loading agent data", Toast.LENGTH_SHORT).show();
+                }
+            });
+        
+        requestQueue.add(request);
+    }
+    
+    private String getLoggedInUsername() {
+        // Try to get from intent first
+        if (userName != null && !userName.isEmpty()) {
+            return userName;
+        }
+        
+        // Try to get from SharedPreferences
+        SharedPreferences prefs = getSharedPreferences("LoginPrefs", MODE_PRIVATE);
+        String savedUsername = prefs.getString("username", "");
+        
+        if (!savedUsername.isEmpty()) {
+            return savedUsername;
+        }
+        
+        // Fallback to hardcoded value for testing
+        return "94000";
+    }
+    
+    private void parseApiResponse(JSONObject response) {
+        try {
+            boolean success = response.getBoolean("success");
+            if (success) {
+                JSONArray data = response.getJSONArray("data");
+                
+                List<AgentData> newAgentList = new ArrayList<>();
+                for (int i = 0; i < data.length(); i++) {
+                    JSONObject agent = data.getJSONObject(i);
+                    AgentData agentData = new AgentData();
+                    
+                    // Set fields from tbl_agent_data
+                    agentData.setId(agent.optString("id", ""));
+                    agentData.setFullName(agent.optString("full_name", ""));
+                    agentData.setCompanyName(agent.optString("company_name", ""));
+                    agentData.setPhoneNumber(agent.optString("Phone_number", ""));
+                    agentData.setAlternativePhoneNumber(agent.optString("alternative_Phone_number", ""));
+                    agentData.setEmailId(agent.optString("email_id", ""));
+                    agentData.setPartnerType(agent.optString("partnerType", ""));
+                    agentData.setState(agent.optString("state", ""));
+                    agentData.setLocation(agent.optString("location", ""));
+                    agentData.setAddress(agent.optString("address", ""));
+                    agentData.setVisitingCard(agent.optString("visiting_card", ""));
+                    agentData.setCreatedUser(agent.optString("created_user", ""));
+                    agentData.setCreatedBy(agent.optString("createdBy", ""));
+                    agentData.setStatus(agent.optString("status", ""));
+                    agentData.setCreatedAt(agent.optString("created_at", ""));
+                    agentData.setUpdatedAt(agent.optString("updated_at", ""));
+                    
+                    newAgentList.add(agentData);
+                }
+                
+                runOnUiThread(() -> {
+                    updateAgentList(newAgentList);
+                });
+            } else {
+                String message = response.optString("message", "Unknown error");
+                runOnUiThread(() -> {
+                    Toast.makeText(BusinessHeadMyAgentActivity.this, message, Toast.LENGTH_SHORT).show();
+                });
+            }
+        } catch (JSONException e) {
+            Log.e(TAG, "Error parsing API response", e);
+            runOnUiThread(() -> {
+                Toast.makeText(BusinessHeadMyAgentActivity.this, "Error parsing response", Toast.LENGTH_SHORT).show();
+            });
+        }
+    }
+    
+    private void updateAgentList(List<AgentData> newAgentList) {
+        agentList.clear();
+        agentList.addAll(newAgentList);
+        applyFilters();
+    }
+    
     private void applyFilters() {
         // Clear current list
         agentListContainer.removeAllViews();
         
-        // Apply filters and reload agents
-        loadActiveAgentList();
+        // Apply filters
+        List<AgentData> filtered = new ArrayList<>();
+        
+        for (AgentData agent : agentList) {
+            boolean matchesAgentType = selectedAgentType.equals("All Types") || 
+                (agent.getPartnerType() != null && agent.getPartnerType().equals(selectedAgentType));
+            
+            boolean matchesBranchState = selectedBranchState.equals("All States") || 
+                (agent.getState() != null && agent.getState().equals(selectedBranchState));
+            
+            boolean matchesBranchLocation = selectedBranchLocation.equals("All Locations") || 
+                (agent.getLocation() != null && agent.getLocation().equals(selectedBranchLocation));
+            
+            if (matchesAgentType && matchesBranchState && matchesBranchLocation) {
+                filtered.add(agent);
+            }
+        }
+        
+        filteredAgentList.clear();
+        filteredAgentList.addAll(filtered);
+        
+        // Display filtered agents
+        for (AgentData agent : filteredAgentList) {
+            addAgentItem(agent);
+        }
         
         // Show filter info
         String filterInfo = "Filters: " + selectedAgentType + ", " + selectedBranchState + ", " + selectedBranchLocation;
-        Toast.makeText(this, filterInfo, Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, filterInfo + " - Found " + filteredAgentList.size() + " agents", Toast.LENGTH_SHORT).show();
     }
 
     private void setupClickListeners() {
         backButton.setOnClickListener(v -> goBack());
     }
 
-    private void loadActiveAgentList() {
-        // Sample agent data - in real implementation, this would come from API
-        addAgentItem("John Doe", "1234567890", "john@example.com", "******", "Admin User", "Individual", "Maharashtra", "Mumbai");
-        addAgentItem("Jane Smith", "9876543210", "jane@example.com", "******", "Business Head", "Corporate", "Delhi", "Delhi");
-        addAgentItem("Mike Johnson", "5555555555", "mike@example.com", "******", "Manager", "Institutional", "Karnataka", "Bangalore");
-        addAgentItem("Sarah Wilson", "1111111111", "sarah@example.com", "******", "Admin", "Retail", "Tamil Nadu", "Chennai");
-        addAgentItem("David Brown", "2222222222", "david@example.com", "******", "Manager", "Individual", "Gujarat", "Ahmedabad");
-    }
-
-    private void addAgentItem(String name, String phone, String email, String password, String createdBy, 
-                            String agentType, String branchState, String branchLocation) {
-        
-        // Apply filters
-        if (!selectedAgentType.equals("All Types") && !selectedAgentType.equals(agentType)) {
-            return;
-        }
-        if (!selectedBranchState.equals("All States") && !selectedBranchState.equals(branchState)) {
-            return;
-        }
-        if (!selectedBranchLocation.equals("All Locations") && !selectedBranchLocation.equals(branchLocation)) {
-            return;
-        }
-        
+    private void addAgentItem(AgentData agent) {
         CardView cardView = new CardView(this);
         LinearLayout.LayoutParams cardParams = new LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.MATCH_PARENT,
@@ -265,68 +376,93 @@ public class BusinessHeadMyAgentActivity extends AppCompatActivity {
         contentLayout.setOrientation(LinearLayout.VERTICAL);
         contentLayout.setPadding(20, 20, 20, 20);
 
-        TextView nameText = new TextView(this);
-        nameText.setText("Name: " + name);
-        nameText.setTextSize(16);
-        nameText.setTextColor(getResources().getColor(R.color.black));
-        nameText.setPadding(0, 0, 0, 8);
-        contentLayout.addView(nameText);
-
-        TextView phoneText = new TextView(this);
-        phoneText.setText("Phone: " + phone);
-        phoneText.setTextSize(16);
-        phoneText.setTextColor(getResources().getColor(R.color.black));
-        phoneText.setPadding(0, 0, 0, 8);
-        contentLayout.addView(phoneText);
-
-        TextView emailText = new TextView(this);
-        emailText.setText("Email: " + email);
-        emailText.setTextSize(16);
-        emailText.setTextColor(getResources().getColor(R.color.black));
-        emailText.setPadding(0, 0, 0, 8);
-        contentLayout.addView(emailText);
-
-        TextView passwordText = new TextView(this);
-        passwordText.setText("Password: " + password);
-        passwordText.setTextSize(16);
-        passwordText.setTextColor(getResources().getColor(R.color.black));
-        passwordText.setPadding(0, 0, 0, 8);
-        contentLayout.addView(passwordText);
-
-        TextView createdByText = new TextView(this);
-        createdByText.setText("Created by: " + createdBy);
-        createdByText.setTextSize(16);
-        createdByText.setTextColor(getResources().getColor(R.color.black));
-        createdByText.setPadding(0, 0, 0, 8);
-        contentLayout.addView(createdByText);
-        
-        // Add agent type, branch state, and branch location info
-        TextView agentTypeText = new TextView(this);
-        agentTypeText.setText("Agent Type: " + agentType);
-        agentTypeText.setTextSize(16);
-        agentTypeText.setTextColor(getResources().getColor(R.color.black));
-        agentTypeText.setPadding(0, 0, 0, 8);
-        contentLayout.addView(agentTypeText);
-        
-        TextView branchStateText = new TextView(this);
-        branchStateText.setText("Branch State: " + branchState);
-        branchStateText.setTextSize(16);
-        branchStateText.setTextColor(getResources().getColor(R.color.black));
-        branchStateText.setPadding(0, 0, 0, 8);
-        contentLayout.addView(branchStateText);
-        
-        TextView branchLocationText = new TextView(this);
-        branchLocationText.setText("Branch Location: " + branchLocation);
-        branchLocationText.setTextSize(16);
-        branchLocationText.setTextColor(getResources().getColor(R.color.black));
-        branchLocationText.setPadding(0, 0, 0, 8);
-        contentLayout.addView(branchLocationText);
+        // Add agent information
+        addTextView(contentLayout, "Name: " + agent.getFullName());
+        addTextView(contentLayout, "Company: " + agent.getCompanyName());
+        addTextView(contentLayout, "Phone: " + agent.getPhoneNumber());
+        if (agent.getAlternativePhoneNumber() != null && !agent.getAlternativePhoneNumber().isEmpty()) {
+            addTextView(contentLayout, "Alt Phone: " + agent.getAlternativePhoneNumber());
+        }
+        addTextView(contentLayout, "Email: " + agent.getEmailId());
+        addTextView(contentLayout, "Partner Type: " + agent.getPartnerType());
+        addTextView(contentLayout, "State: " + agent.getState());
+        addTextView(contentLayout, "Location: " + agent.getLocation());
+        if (agent.getAddress() != null && !agent.getAddress().isEmpty()) {
+            addTextView(contentLayout, "Address: " + agent.getAddress());
+        }
+        addTextView(contentLayout, "Status: " + agent.getStatus());
+        addTextView(contentLayout, "Created At: " + agent.getCreatedAt());
+        addTextView(contentLayout, "Created By: " + agent.getCreatedBy());
 
         cardView.addView(contentLayout);
         agentListContainer.addView(cardView);
     }
+    
+    private void addTextView(LinearLayout parent, String text) {
+        TextView textView = new TextView(this);
+        textView.setText(text);
+        textView.setTextSize(16);
+        textView.setTextColor(getResources().getColor(R.color.black));
+        textView.setPadding(0, 0, 0, 8);
+        parent.addView(textView);
+    }
 
     private void goBack() {
         finish();
+    }
+    
+    // Agent Data Model Class
+    private static class AgentData {
+        private String id, fullName, companyName, phoneNumber, alternativePhoneNumber, emailId;
+        private String partnerType, state, location, address, visitingCard, createdUser, createdBy, status, createdAt, updatedAt;
+        
+        // Getters and Setters
+        public String getId() { return id; }
+        public void setId(String id) { this.id = id; }
+        
+        public String getFullName() { return fullName; }
+        public void setFullName(String fullName) { this.fullName = fullName; }
+        
+        public String getCompanyName() { return companyName; }
+        public void setCompanyName(String companyName) { this.companyName = companyName; }
+        
+        public String getPhoneNumber() { return phoneNumber; }
+        public void setPhoneNumber(String phoneNumber) { this.phoneNumber = phoneNumber; }
+        
+        public String getAlternativePhoneNumber() { return alternativePhoneNumber; }
+        public void setAlternativePhoneNumber(String alternativePhoneNumber) { this.alternativePhoneNumber = alternativePhoneNumber; }
+        
+        public String getEmailId() { return emailId; }
+        public void setEmailId(String emailId) { this.emailId = emailId; }
+        
+        public String getPartnerType() { return partnerType; }
+        public void setPartnerType(String partnerType) { this.partnerType = partnerType; }
+        
+        public String getState() { return state; }
+        public void setState(String state) { this.state = state; }
+        
+        public String getLocation() { return location; }
+        public void setLocation(String location) { this.location = location; }
+        
+        public String getAddress() { return address; }
+        public void setAddress(String address) { this.address = address; }
+        
+        public String getVisitingCard() { return visitingCard; }
+        public void setVisitingCard(String visitingCard) { this.visitingCard = visitingCard; }
+        
+        public String getCreatedUser() { return createdUser; }
+        public void setCreatedUser(String createdUser) { this.createdUser = createdUser; }
+        
+        public String getCreatedBy() { return createdBy; }
+        public void setCreatedBy(String createdBy) { this.createdBy = createdBy; }
+        
+        public String getStatus() { return status; }
+        public void setStatus(String status) { this.status = status; }
+        
+        public String getCreatedAt() { return createdAt; }
+        public void setCreatedAt(String createdAt) { this.createdAt = createdAt; }
+        
+        public String getUpdatedAt() { return updatedAt; }
+        public void setUpdatedAt(String updatedAt) { this.updatedAt = updatedAt; }
     }
 } 
