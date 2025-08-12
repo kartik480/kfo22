@@ -1,175 +1,173 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/partnerCard"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:padding="16dp"
-    android:background="@color/white"
-    android:clickable="true"
-    android:focusable="true"
-    android:foreground="?attr/selectableItemBackground">
+    android:layout_margin="8dp"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="4dp"
+    app:cardBackgroundColor="@color/white">
 
-    <!-- Partner Name and Status Row -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_vertical">
-
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/partnerNameText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Partner Name"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:textColor="@color/black"
-                android:maxLines="1"
-                android:ellipsize="end" />
-
-            <TextView
-                android:id="@+id/partnerUsernameText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Username"
-                android:textSize="14sp"
-                android:textColor="@color/gray"
-                android:layout_marginTop="2dp" />
-        </LinearLayout>
-
-        <TextView
-            android:id="@+id/statusText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Active"
-            android:textSize="12sp"
-            android:textStyle="bold"
-            android:textColor="@color/green"
-            android:background="@drawable/status_active_background"
-            android:padding="4dp"
-            android:layout_marginStart="8dp" />
-    </LinearLayout>
-
-    <!-- Contact Information -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_marginTop="8dp">
+        android:padding="16dp">
 
+        <!-- Header Row with Name and Status -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginTop="4dp">
+            android:gravity="center_vertical"
+            android:layout_marginBottom="12dp">
 
+            <!-- Partner Name -->
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="📧"
-                android:textSize="14sp"
-                android:layout_marginEnd="4dp" />
-
-            <TextView
-                android:id="@+id/emailText"
+                android:id="@+id/partnerName"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="email@example.com"
-                android:textSize="14sp"
-                android:textColor="@color/gray"
-                android:maxLines="1"
+                android:text="Partner Name"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                android:maxLines="2"
                 android:ellipsize="end" />
+
+            <!-- Status Indicator -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginStart="8dp">
+
+                <View
+                    android:id="@+id/statusIndicator"
+                    android:layout_width="8dp"
+                    android:layout_height="8dp"
+                    android:background="@drawable/circle_background"
+                    android:layout_marginEnd="6dp" />
+
+                <TextView
+                    android:id="@+id/partnerStatus"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Active"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/green" />
+            </LinearLayout>
         </LinearLayout>
 
+        <!-- Company Name -->
+        <TextView
+            android:id="@+id/partnerCompany"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Company Name"
+            android:textSize="14sp"
+            android:textColor="@color/dark_gray"
+            android:layout_marginBottom="8dp"
+            android:maxLines="1"
+            android:ellipsize="end" />
+
+        <!-- Contact Information Row -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginTop="4dp">
+            android:layout_marginBottom="8dp">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="📞"
-                android:textSize="14sp"
-                android:layout_marginEnd="4dp" />
-
-            <TextView
-                android:id="@+id/phoneText"
+            <!-- Phone Number -->
+            <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="+91 98765 43210"
-                android:textSize="14sp"
-                android:textColor="@color/gray"
-                android:maxLines="1"
-                android:ellipsize="end" />
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Phone"
+                    android:textSize="10sp"
+                    android:textColor="@color/light_gray"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/partnerPhone"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="+91 98765 43210"
+                    android:textSize="12sp"
+                    android:textColor="@color/black"
+                    android:maxLines="1"
+                    android:ellipsize="end" />
+            </LinearLayout>
+
+            <!-- Email -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Email"
+                    android:textSize="10sp"
+                    android:textColor="@color/light_gray"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/partnerEmail"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="partner@email.com"
+                    android:textSize="12sp"
+                    android:textColor="@color/black"
+                    android:maxLines="1"
+                    android:ellipsize="end" />
+            </LinearLayout>
         </LinearLayout>
 
+        <!-- Tags Row -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginTop="4dp">
+            android:gravity="start">
 
+            <!-- Partner Type Tag -->
             <TextView
+                android:id="@+id/partnerTypeTag"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="🏢"
-                android:textSize="14sp"
-                android:layout_marginEnd="4dp" />
+                android:text="Partner Type"
+                android:textSize="10sp"
+                android:textColor="@color/white"
+                android:background="@drawable/tag_background_blue"
+                android:padding="4dp"
+                android:layout_marginEnd="8dp"
+                android:maxLines="1"
+                android:ellipsize="end" />
 
+            <!-- Location Tag -->
             <TextView
-                android:id="@+id/companyText"
-                android:layout_width="0dp"
+                android:id="@+id/locationTag"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Company Name"
-                android:textSize="14sp"
-                android:textColor="@color/gray"
+                android:text="Location"
+                android:textSize="10sp"
+                android:textColor="@color/white"
+                android:background="@drawable/tag_background_green"
+                android:padding="4dp"
                 android:maxLines="1"
                 android:ellipsize="end" />
         </LinearLayout>
     </LinearLayout>
-
-    <!-- Additional Details -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginTop="8dp">
-
-        <TextView
-            android:id="@+id/departmentText"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Department"
-            android:textSize="12sp"
-            android:textColor="@color/primary_blue"
-            android:background="@drawable/tag_background"
-            android:padding="4dp"
-            android:gravity="center" />
-
-        <TextView
-            android:id="@+id/designationText"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_marginStart="4dp"
-            android:text="Designation"
-            android:textSize="12sp"
-            android:textColor="@color/primary_blue"
-            android:background="@drawable/tag_background"
-            android:padding="4dp"
-            android:gravity="center" />
-    </LinearLayout>
-
-</LinearLayout> 
+</androidx.cardview.widget.CardView> 

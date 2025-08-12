@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Business Head My Partner API</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .test-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+        .test-title {
+            color: #2196F3;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        button {
+            background: #2196F3;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        button:hover {
+            background: #1976D2;
+        }
+        .response {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 15px;
+            margin-top: 15px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .error {
+            background: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+        .success {
+            background: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+        }
+        .info {
+            background: #d1ecf1;
+            border-color: #bee5eb;
+            color: #0c5460;
+        }
+        .status {
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 Test Business Head My Partner API</h1>
+        <p>This page tests the Business Head My Partner Users API endpoint to fetch users created by a Business Head user.</p>
+    </div>
+
+    <div class="container">
+        <div class="test-section">
+            <div class="test-title">🔍 Test by User ID</div>
+            <div class="input-group">
+                <label for="userId">User ID:</label>
+                <input type="text" id="userId" placeholder="Enter Business Head User ID (e.g., 41)" value="41">
+            </div>
+            <button onclick="testByUserId()">Test by User ID</button>
+            <div id="userIdResponse" class="response" style="display: none;"></div>
+        </div>
+
+        <div class="test-section">
+            <div class="test-title">👤 Test by Username</div>
+            <div class="input-group">
+                <label for="username">Username:</label>
+                <input type="text" id="username" placeholder="Enter Business Head Username (e.g., 94000)" value="94000">
+            </div>
+            <button onclick="testByUsername()">Test by Username</button>
+            <div id="usernameResponse" class="response" style="display: none;"></div>
+        </div>
+
+        <div class="test-section">
+            <div class="test-title">📊 API Information</div>
+            <div class="info">
+                <strong>Endpoint:</strong> /api/business_head_my_partner_users.php<br>
+                <strong>Method:</strong> GET<br>
+                <strong>Parameters:</strong> user_id OR username<br>
+                <strong>Purpose:</strong> Fetch all users created by a Business Head user from tbl_agent_data table<br>
+                <strong>Authentication:</strong> Verifies user is a Business Head by checking designation
+            </div>
+        </div>
+
+        <div class="test-section">
+            <div class="test-title">📋 Expected Response Structure</div>
+            <div class="info">
+                <strong>Success Response:</strong><br>
+                - status: "success"<br>
+                - business_head_info: User details<br>
+                - data: Array of partner users<br>
+                - statistics: Total and active partner counts<br>
+                - counts: Total count<br><br>
+                
+                <strong>Partner User Fields:</strong><br>
+                - id, full_name, company_name, Phone_number<br>
+                - alternative_Phone_number, email_id, partnerType<br>
+                - state, location, address, visiting_card<br>
+                - created_user, createdBy, status, created_at, updated_at
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'https://emp.kfinone.com/mobile/api/';
+
+        async function testByUserId() {
+            const userId = document.getElementById('userId').value.trim();
+            if (!userId) {
+                alert('Please enter a User ID');
+                return;
+            }
+
+            const responseDiv = document.getElementById('userIdResponse');
+            responseDiv.style.display = 'block';
+            responseDiv.innerHTML = '⏳ Testing...';
+            responseDiv.className = 'response';
+
+            try {
+                const url = `${API_BASE_URL}business_head_my_partner_users.php?user_id=${userId}`;
+                console.log('Testing URL:', url);
+
+                const response = await fetch(url);
+                const data = await response.json();
+
+                if (response.ok) {
+                    if (data.status === 'success') {
+                        responseDiv.className = 'response success';
+                        responseDiv.innerHTML = `✅ SUCCESS!\n\n${JSON.stringify(data, null, 2)}`;
+                    } else {
+                        responseDiv.className = 'response error';
+                        responseDiv.innerHTML = `❌ API Error: ${data.message}\n\n${JSON.stringify(data, null, 2)}`;
+                    }
+                } else {
+                    responseDiv.className = 'response error';
+                    responseDiv.innerHTML = `❌ HTTP Error: ${response.status}\n\n${JSON.stringify(data, null, 2)}`;
+                }
+            } catch (error) {
+                responseDiv.className = 'response error';
+                responseDiv.innerHTML = `❌ Network Error: ${error.message}`;
+            }
+        }
+
+        async function testByUsername() {
+            const username = document.getElementById('username').value.trim();
+            if (!username) {
+                alert('Please enter a Username');
+                return;
+            }
+
+            const responseDiv = document.getElementById('usernameResponse');
+            responseDiv.style.display = 'block';
+            responseDiv.innerHTML = '⏳ Testing...';
+            responseDiv.className = 'response';
+
+            try {
+                const url = `${API_BASE_URL}business_head_my_partner_users.php?username=${username}`;
+                console.log('Testing URL:', url);
+
+                const response = await fetch(url);
+                const data = await response.json();
+
+                if (response.ok) {
+                    if (data.status === 'success') {
+                        responseDiv.className = 'response success';
+                        responseDiv.innerHTML = `✅ SUCCESS!\n\n${JSON.stringify(data, null, 2)}`;
+                    } else {
+                        responseDiv.className = 'response error';
+                        responseDiv.innerHTML = `❌ API Error: ${data.message}\n\n${JSON.stringify(data, null, 2)}`;
+                    }
+                } else {
+                    responseDiv.className = 'response error';
+                    responseDiv.innerHTML = `❌ HTTP Error: ${response.status}\n\n${JSON.stringify(data, null, 2)}`;
+                }
+            } catch (error) {
+                responseDiv.className = 'response error';
+                responseDiv.innerHTML = `❌ Network Error: ${error.message}`;
+            }
+        }
+
+        // Auto-test on page load
+        window.onload = function() {
+            console.log('🧪 Business Head My Partner API Test Page Loaded');
+            console.log('📡 API Base URL:', API_BASE_URL);
+        };
+    </script>
+</body>
+</html>

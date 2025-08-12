@@ -4,146 +4,162 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
+import android.widget.ArrayAdapter;
 import android.widget.TextView;
-import java.util.ArrayList;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.cardview.widget.CardView;
 import java.util.List;
+import java.util.ArrayList;
 
-public class PartnerAdapter extends BaseAdapter {
+public class PartnerAdapter extends ArrayAdapter<PartnerUser> {
     private Context context;
     private List<PartnerUser> partnerList;
-    private List<PartnerUser> filteredList;
+    private List<PartnerUser> filteredPartnerList;
 
     public PartnerAdapter(Context context, List<PartnerUser> partnerList) {
+        super(context, 0, partnerList);
         this.context = context;
         this.partnerList = partnerList;
-        this.filteredList = new ArrayList<>(partnerList);
+        this.filteredPartnerList = new ArrayList<>(partnerList);
     }
 
     @Override
     public int getCount() {
-        System.out.println("🔧 PartnerAdapter.getCount() called, returning: " + filteredList.size());
-        return filteredList.size();
+        return filteredPartnerList.size();
     }
 
     @Override
     public PartnerUser getItem(int position) {
-        return filteredList.get(position);
+        return filteredPartnerList.get(position);
     }
 
+    @NonNull
     @Override
-    public long getItemId(int position) {
-        return position;
-    }
-
-    @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        System.out.println("🔧 PartnerAdapter.getView() called for position: " + position);
+    public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         ViewHolder holder;
         
         if (convertView == null) {
             convertView = LayoutInflater.from(context).inflate(R.layout.partner_list_item, parent, false);
             holder = new ViewHolder();
-            
-            holder.partnerNameText = convertView.findViewById(R.id.partnerNameText);
-            holder.partnerUsernameText = convertView.findViewById(R.id.partnerUsernameText);
-            holder.statusText = convertView.findViewById(R.id.statusText);
-            holder.emailText = convertView.findViewById(R.id.emailText);
-            holder.phoneText = convertView.findViewById(R.id.phoneText);
+            holder.partnerCard = convertView.findViewById(R.id.partnerCard);
+            holder.nameText = convertView.findViewById(R.id.nameText);
             holder.companyText = convertView.findViewById(R.id.companyText);
-            holder.departmentText = convertView.findViewById(R.id.departmentText);
-            holder.designationText = convertView.findViewById(R.id.designationText);
-            
+            holder.phoneText = convertView.findViewById(R.id.phoneText);
+            holder.emailText = convertView.findViewById(R.id.emailText);
+            holder.locationText = convertView.findViewById(R.id.locationText);
+            holder.statusText = convertView.findViewById(R.id.statusText);
+            holder.partnerTypeTag = convertView.findViewById(R.id.partnerTypeTag);
+            holder.locationTag = convertView.findViewById(R.id.locationTag);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
         
-        PartnerUser partner = getItem(position);
+        PartnerUser partner = filteredPartnerList.get(position);
         
         // Set partner name
-        String fullName = partner.getFirstName() + " " + partner.getLastName();
-        holder.partnerNameText.setText(fullName);
+        holder.nameText.setText(partner.getDisplayName());
         
-        // Set username
-        holder.partnerUsernameText.setText(partner.getUsername());
-        
-        // Set status
-        String status = partner.getStatus();
-        String displayStatus = "1".equals(status) ? "Active" : (status != null ? status : "Inactive");
-        holder.statusText.setText(displayStatus);
-        
-        // Set status color based on status
-        if ("Active".equalsIgnoreCase(displayStatus) || "1".equals(status)) {
-            holder.statusText.setTextColor(context.getResources().getColor(R.color.green));
-            holder.statusText.setBackgroundResource(R.drawable.status_active_background);
+        // Set company information
+        if (partner.getDisplayCompany() != null && !partner.getDisplayCompany().equals("No company")) { 
+            holder.companyText.setVisibility(View.VISIBLE);
+            holder.companyText.setText(partner.getDisplayCompany());
         } else {
-            holder.statusText.setTextColor(context.getResources().getColor(R.color.red));
-            holder.statusText.setBackgroundResource(R.drawable.status_inactive_background);
+            holder.companyText.setVisibility(View.GONE);
         }
         
-        // Set email
-        String email = partner.getEmailId();
-        holder.emailText.setText(email != null ? email : "N/A");
+        // Set phone information
+        holder.phoneText.setText(partner.getDisplayPhone());
         
-        // Set phone
-        String phone = partner.getPhoneNumber();
-        holder.phoneText.setText(phone != null ? phone : "N/A");
+        // Set email information
+        if (partner.getDisplayEmail() != null && !partner.getDisplayEmail().equals("No email")) {
+            holder.emailText.setVisibility(View.VISIBLE);
+            holder.emailText.setText(partner.getDisplayEmail());
+        } else {
+            holder.emailText.setVisibility(View.GONE);
+        }
         
-        // Set company
-        String company = partner.getCompanyName();
-        holder.companyText.setText(company != null ? company : "N/A");
+        // Set location information
+        if (partner.getLocation() != null && !partner.getLocation().trim().isEmpty()) {
+            holder.locationText.setVisibility(View.VISIBLE);
+            holder.locationText.setText(partner.getLocation());
+        } else {
+            holder.locationText.setVisibility(View.GONE);
+        }
         
-        // Set department
-        String department = partner.getDepartment();
-        holder.departmentText.setText(department != null ? department : "N/A");
+        // Set status with color
+        if (partner.isActive()) {
+            holder.statusText.setText("Active");
+            holder.statusText.setTextColor(context.getResources().getColor(R.color.green));
+        } else {
+            holder.statusText.setText("Inactive");
+            holder.statusText.setTextColor(context.getResources().getColor(R.color.red));
+        }
         
-        // Set designation
-        String designation = partner.getDesignation();
-        holder.designationText.setText(designation != null ? designation : "N/A");
+        // Set partner type tag
+        if (partner.getPartnerType() != null && !partner.getPartnerType().trim().isEmpty()) {
+            holder.partnerTypeTag.setVisibility(View.VISIBLE);
+            holder.partnerTypeTag.setText(partner.getPartnerType());
+        } else {
+            holder.partnerTypeTag.setVisibility(View.GONE);
+        }
+        
+        // Set location tag
+        if (partner.getState() != null && !partner.getState().trim().isEmpty()) {
+            holder.locationTag.setVisibility(View.VISIBLE);
+            holder.locationTag.setText(partner.getState());
+        } else {
+            holder.locationTag.setVisibility(View.GONE);
+        }
         
         return convertView;
     }
-    
+
+    private static class ViewHolder {
+        CardView partnerCard;
+        TextView nameText;
+        TextView companyText;
+        TextView phoneText;
+        TextView emailText;
+        TextView locationText;
+        TextView statusText;
+        TextView partnerTypeTag;
+        TextView locationTag;
+    }
+
+    public void updateData(List<PartnerUser> newData) {
+        partnerList.clear();
+        partnerList.addAll(newData);
+        notifyDataSetChanged();
+    }
+
+    public void setPartnerList(List<PartnerUser> partnerList) {
+        this.partnerList = partnerList;
+        notifyDataSetChanged();
+    }
+
+    // Filter method for search functionality
     public void filter(String query) {
-        filteredList.clear();
+        List<PartnerUser> filteredList = new ArrayList<>();
         
-        if (query == null || query.isEmpty()) {
+        if (query == null || query.trim().isEmpty()) {
             filteredList.addAll(partnerList);
         } else {
-            String lowerCaseQuery = query.toLowerCase();
+            String lowerCaseQuery = query.toLowerCase().trim();
             for (PartnerUser partner : partnerList) {
-                if (partner.getFirstName().toLowerCase().contains(lowerCaseQuery) ||
-                    partner.getLastName().toLowerCase().contains(lowerCaseQuery) ||
-                    partner.getUsername().toLowerCase().contains(lowerCaseQuery) ||
-                    (partner.getEmailId() != null && partner.getEmailId().toLowerCase().contains(lowerCaseQuery)) ||
-                    (partner.getPhoneNumber() != null && partner.getPhoneNumber().toLowerCase().contains(lowerCaseQuery)) ||
-                    (partner.getCompanyName() != null && partner.getCompanyName().toLowerCase().contains(lowerCaseQuery))) {
+                if (partner.getDisplayName().toLowerCase().contains(lowerCaseQuery) ||
+                    partner.getDisplayCompany().toLowerCase().contains(lowerCaseQuery) ||
+                    partner.getDisplayPhone().toLowerCase().contains(lowerCaseQuery) ||
+                    partner.getDisplayEmail().toLowerCase().contains(lowerCaseQuery) ||
+                    (partner.getLocation() != null && partner.getLocation().toLowerCase().contains(lowerCaseQuery)) ||
+                    (partner.getState() != null && partner.getState().toLowerCase().contains(lowerCaseQuery))) {
                     filteredList.add(partner);
                 }
             }
         }
+        
+        this.filteredPartnerList = filteredList;
         notifyDataSetChanged();
-    }
-    
-    public void updateData(List<PartnerUser> newPartnerList) {
-        System.out.println("🔧 PartnerAdapter.updateData() called with " + newPartnerList.size() + " partners");
-        this.partnerList = newPartnerList;
-        this.filteredList = new ArrayList<>(newPartnerList);
-        System.out.println("🔧 PartnerAdapter: partnerList size = " + this.partnerList.size());
-        System.out.println("🔧 PartnerAdapter: filteredList size = " + this.filteredList.size());
-        notifyDataSetChanged();
-        System.out.println("🔧 PartnerAdapter: notifyDataSetChanged() called");
-    }
-    
-    private static class ViewHolder {
-        TextView partnerNameText;
-        TextView partnerUsernameText;
-        TextView statusText;
-        TextView emailText;
-        TextView phoneText;
-        TextView companyText;
-        TextView departmentText;
-        TextView designationText;
     }
 } 
