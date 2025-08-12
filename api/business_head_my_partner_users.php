@@ -10,10 +10,46 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
     exit();
 }
 
-require_once 'db_config.php';
+// Error reporting for debugging
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 
 try {
-    $conn = getConnection();
+    // Database connection - try multiple approaches
+    $conn = null;
+    
+    // Method 1: Try to include db_config.php if it exists
+    if (file_exists('db_config.php')) {
+        require_once 'db_config.php';
+        if (function_exists('getConnection')) {
+            $conn = getConnection();
+        }
+    }
+    
+    // Method 2: Direct connection if db_config.php doesn't exist
+    if (!$conn) {
+        // Updated with actual KfinOne production database credentials
+        $host = 'p3plzcpnl508816.prod.phx3.secureserver.net';
+        $dbname = 'emp_kfinone';
+        $username = 'emp_kfinone';
+        $password = '*F*im1!Y0D25';
+        
+        try {
+            // Try PDO first
+            $conn = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $username, $password);
+            $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        } catch (PDOException $e) {
+            // If PDO fails, try MySQLi
+            $conn = new mysqli($host, $username, $password, $dbname);
+            if ($conn->connect_error) {
+                throw new Exception("Connection failed: " . $conn->connect_error);
+            }
+        }
+    }
+    
+    if (!$conn) {
+        throw new Exception("Could not establish database connection");
+    }
     
     // Get parameters
     $userId = isset($_GET['user_id']) ? $_GET['user_id'] : null;
@@ -23,143 +59,210 @@ try {
     $debug = [
         'user_id' => $userId,
         'username' => $username,
-        'all_params' => $_GET
+        'all_params' => $_GET,
+        'connection_type' => get_class($conn)
     ];
     
+    // Validate input
     if (!$userId && !$username) {
-        throw new Exception("User ID or username is required");
+        http_response_code(400);
+        echo json_encode([
+            'success' => false,
+            'message' => 'Missing required parameter',
+            'error' => 'Either user_id or username must be provided',
+            'debug' => $debug
+        ]);
+        exit();
     }
     
-    // Get the Business Head user's username
-    $bhUsername = null;
+    // First, verify the user is a Business Head
+    $verifyQuery = "SELECT u.id, u.username, u.firstName, u.lastName, d.designation_name 
+                    FROM tbl_user u 
+                    JOIN tbl_designation d ON u.designation_id = d.id 
+                    WHERE ";
     
     if ($userId) {
-        // Get username from user ID
-        $userQuery = "SELECT username, firstName, lastName, designation_id FROM tbl_user WHERE id = :userId";
-        $userStmt = $conn->prepare($userQuery);
-        $userStmt->bindParam(':userId', $userId, PDO::PARAM_STR);
-        $userStmt->execute();
-        $userResult = $userStmt->fetch(PDO::FETCH_ASSOC);
-        
-        if (!$userResult) {
-            throw new Exception("User not found with ID: " + $userId);
-        }
-        
-        $bhUsername = $userResult['username'];
-        
-        // Verify the user is a Business Head
-        if ($userResult['designation_id']) {
-            $designationQuery = "SELECT designation_name FROM tbl_designation WHERE id = :designation_id";
-            $designationStmt = $conn->prepare($designationQuery);
-            $designationStmt->bindParam(':designation_id', $userResult['designation_id'], PDO::PARAM_STR);
-            $designationStmt->execute();
-            $designationResult = $designationStmt->fetch(PDO::FETCH_ASSOC);
+        $verifyQuery .= "u.id = :param";
+    } else {
+        $verifyQuery .= "u.username = :param";
+    }
+    
+    // Execute verification query
+    try {
+        if ($conn instanceof PDO) {
+            $verifyStmt = $conn->prepare($verifyQuery);
+            $paramValue = $userId ?: $username;
+            $verifyStmt->bindParam(':param', $paramValue, PDO::PARAM_STR);
+            $verifyStmt->execute();
+            $verifyResult = $verifyStmt->fetch(PDO::FETCH_ASSOC);
             
-            if (!$designationResult || $designationResult['designation_name'] !== 'Business Head') {
-                throw new Exception("User is not a Business Head. Current designation: " . ($designationResult['designation_name'] ?? 'Unknown'));
+            if (!$verifyResult) {
+                http_response_code(404);
+                echo json_encode([
+                    'success' => false,
+                    'message' => 'User not found',
+                    'error' => 'User with ' . ($userId ? 'ID' : 'username') . ' not found',
+                    'debug' => $debug
+                ]);
+                exit();
+            }
+            
+            $userData = $verifyResult;
+        } else {
+            // MySQLi
+            $verifyStmt = $conn->prepare($verifyQuery);
+            $paramValue = $userId ?: $username;
+            $verifyStmt->bind_param("s", $paramValue);
+            $verifyStmt->execute();
+            $verifyResult = $verifyStmt->get_result();
+            
+            if ($verifyResult->num_rows === 0) {
+                http_response_code(404);
+                echo json_encode([
+                    'success' => false,
+                    'message' => 'User not found',
+                    'error' => 'User with ' . ($userId ? 'ID' : 'username') . ' not found',
+                    'debug' => $debug
+                ]);
+                exit();
+            }
+            
+            $userData = $verifyResult->fetch_assoc();
+        }
+    } catch (Exception $e) {
+        http_response_code(500);
+        echo json_encode([
+            'success' => false,
+            'message' => 'Database query error',
+            'error' => 'Verification query failed: ' . $e->getMessage(),
+            'debug' => $debug
+        ]);
+        exit();
+    }
+    
+    // Check if user is a Business Head
+    if ($userData['designation_name'] !== 'Business Head') {
+        http_response_code(403);
+        echo json_encode([
+            'success' => false,
+            'message' => 'Access denied',
+            'error' => 'User is not a Business Head. Current designation: ' . $userData['designation_name'],
+            'debug' => $debug
+        ]);
+        exit();
+    }
+    
+    // Validate that username exists
+    if (!isset($userData['username']) || empty($userData['username'])) {
+        http_response_code(500);
+        echo json_encode([
+            'success' => false,
+            'message' => 'Invalid user data',
+            'error' => 'Username not found in user data',
+            'debug' => $debug
+        ]);
+        exit();
+    }
+    
+    // Now fetch all partner users created by this Business Head
+    // Use a simpler query first to test if the table exists
+    $partnerQuery = "SELECT 
+                        pu.id,
+                        pu.username,
+                        pu.first_name,
+                        pu.last_name,
+                        pu.Phone_number,
+                        pu.email_id,
+                        pu.company_name,
+                        pu.status,
+                        pu.createdBy,
+                        pu.created_at
+                    FROM tbl_partner_users pu
+                    WHERE pu.createdBy = :username
+                    ORDER BY pu.created_at DESC";
+    
+    // Execute partner query
+    try {
+        if ($conn instanceof PDO) {
+            $partnerStmt = $conn->prepare($partnerQuery);
+            $partnerStmt->bindParam(':username', $userData['username'], PDO::PARAM_STR);
+            $partnerStmt->execute();
+            $partners = $partnerStmt->fetchAll(PDO::FETCH_ASSOC);
+        } else {
+            // MySQLi
+            $partnerStmt = $conn->prepare($partnerQuery);
+            $partnerStmt->bind_param("s", $userData['username']);
+            $partnerStmt->execute();
+            $partnerResult = $partnerStmt->get_result();
+            $partners = [];
+            while ($row = $partnerResult->fetch_assoc()) {
+                $partners[] = $row;
             }
         }
-    } else {
-        $bhUsername = $username;
-        
-        // Verify the user is a Business Head by username
-        $userQuery = "SELECT u.id, u.firstName, u.lastName, u.designation_id, d.designation_name 
-                      FROM tbl_user u 
-                      LEFT JOIN tbl_designation d ON u.designation_id = d.id 
-                      WHERE u.username = :username";
-        $userStmt = $conn->prepare($userQuery);
-        $userStmt->bindParam(':username', $bhUsername, PDO::PARAM_STR);
-        $userStmt->execute();
-        $userResult = $userStmt->fetch(PDO::FETCH_ASSOC);
-        
-        if (!$userResult) {
-            throw new Exception("User not found with username: " . $bhUsername);
-        }
-        
-        if ($userResult['designation_name'] !== 'Business Head') {
-            throw new Exception("User is not a Business Head. Current designation: " . $userResult['designation_name']);
-        }
+    } catch (Exception $e) {
+        http_response_code(500);
+        echo json_encode([
+            'success' => false,
+            'message' => 'Database query error',
+            'error' => 'Partner query failed: ' . $e->getMessage(),
+            'debug' => $debug
+        ]);
+        exit();
     }
-    
-    // Query to fetch agent data filtered by createdBy username
-    $sql = "
-        SELECT 
-            a.id,
-            a.full_name,
-            a.company_name,
-            a.Phone_number,
-            a.alternative_Phone_number,
-            a.email_id,
-            a.partnerType,
-            a.state,
-            a.location,
-            a.address,
-            a.visiting_card,
-            a.created_user,
-            a.createdBy,
-            a.status,
-            a.created_at,
-            a.updated_at,
-            u.id as user_id,
-            u.username,
-            u.firstName,
-            u.lastName,
-            CONCAT(u.firstName, ' ', u.lastName) as created_by_name
-        FROM tbl_agent_data a
-        LEFT JOIN tbl_user u ON a.createdBy = u.username
-        WHERE a.createdBy = :username
-        ORDER BY a.created_at DESC
-    ";
-    
-    $stmt = $conn->prepare($sql);
-    $stmt->bindParam(':username', $bhUsername, PDO::PARAM_STR);
-    $stmt->execute();
-    $agents = $stmt->fetchAll(PDO::FETCH_ASSOC);
     
     // Count statistics
-    $totalAgents = count($agents);
-    $activeAgents = 0;
-    $inactiveAgents = 0;
+    $totalPartners = count($partners);
+    $activePartners = 0;
+    $inactivePartners = 0;
     
-    foreach ($agents as $agent) {
-        if ($agent['status'] === 'Active' || $agent['status'] === '1' || $agent['status'] === null || $agent['status'] === '') {
-            $activeAgents++;
+    foreach ($partners as $row) {
+        if ($row['status'] === 'Active' || $row['status'] === '1') {
+            $activePartners++;
         } else {
-            $inactiveAgents++;
+            $inactivePartners++;
         }
     }
     
-    // Format response
-    $response = [
-        'status' => 'success',
-        'message' => 'Business Head partner users fetched successfully',
-        'business_head_info' => [
-            'username' => $bhUsername,
-            'full_name' => $userResult['firstName'] . ' ' . $userResult['lastName'],
-            'designation' => 'Business Head'
-        ],
-        'data' => $agents,
-        'statistics' => [
-            'total_partners' => $totalAgents,
-            'active_partners' => $activeAgents,
-            'inactive_partners' => $inactiveAgents
-        ],
-        'counts' => [
-            'total_count' => $totalAgents
+    // Prepare statistics
+    $stats = [
+        'total_partners' => $totalPartners,
+        'active_partners' => $activePartners,
+        'inactive_partners' => $inactivePartners
+    ];
+    
+    // Return success response
+    echo json_encode([
+        'success' => true,
+        'message' => 'Partners fetched successfully',
+        'data' => $partners,
+        'stats' => $stats,
+        'creator_info' => [
+            'id' => $userData['id'],
+            'username' => $userData['username'],
+            'firstName' => $userData['firstName'],
+            'lastName' => $userData['lastName'],
+            'designation' => $userData['designation_name']
         ],
         'debug' => $debug
-    ];
-    
-    echo json_encode($response, JSON_PRETTY_PRINT);
+    ]);
     
 } catch (Exception $e) {
-    $response = [
-        'status' => 'error',
-        'message' => 'Server error: ' . $e->getMessage(),
-        'debug' => $debug ?? []
-    ];
-    
     http_response_code(500);
-    echo json_encode($response, JSON_PRETTY_PRINT);
+    echo json_encode([
+        'success' => false,
+        'message' => 'Internal server error',
+        'error' => $e->getMessage(),
+        'debug' => $debug ?? [],
+        'file' => $e->getFile(),
+        'line' => $e->getLine()
+    ]);
+} finally {
+    if (isset($conn)) {
+        if ($conn instanceof PDO) {
+            $conn = null;
+        } else {
+            $conn->close();
+        }
+    }
 }
 ?>

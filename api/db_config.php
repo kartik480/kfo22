@@ -1,34 +1,93 @@
 <?php
-// Database configuration for kfinone database
-$db_host = "p3plzcpnl508816.prod.phx3.secureserver.net";
-$db_name = "emp_kfinone";
-$db_username = "emp_kfinone";
-$db_password = "*F*im1!Y0D25";
+/**
+ * Database Configuration File
+ * Updated with actual KfinOne production database credentials
+ */
 
+// Database connection parameters
+$DB_HOST = 'p3plzcpnl508816.prod.phx3.secureserver.net';
+$DB_NAME = 'emp_kfinone';
+$DB_USER = 'emp_kfinone';
+$DB_PASS = '*F*im1!Y0D25';
+$DB_CHARSET = 'utf8';
+
+/**
+ * Get database connection using PDO
+ * @return PDO
+ * @throws Exception
+ */
 function getConnection() {
-    global $db_host, $db_name, $db_username, $db_password;
+    global $DB_HOST, $DB_NAME, $DB_USER, $DB_PASS, $DB_CHARSET;
     
     try {
-        $conn = new PDO("mysql:host=$db_host;dbname=$db_name", $db_username, $db_password);
-        $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        error_log("Database connection successful");
-        return $conn;
-    } catch(PDOException $e) {
-        error_log("Connection failed: " . $e->getMessage());
+        $dsn = "mysql:host=$DB_HOST;dbname=$DB_NAME;charset=$DB_CHARSET";
+        $pdo = new PDO($dsn, $DB_USER, $DB_PASS);
+        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+        return $pdo;
+    } catch (PDOException $e) {
         throw new Exception("Database connection failed: " . $e->getMessage());
     }
 }
 
-function closeConnection($conn) {
-    $conn = null;
-    error_log("Database connection closed");
+/**
+ * Get database connection using MySQLi
+ * @return mysqli
+ * @throws Exception
+ */
+function getMysqliConnection() {
+    global $DB_HOST, $DB_NAME, $DB_USER, $DB_PASS;
+    
+    $mysqli = new mysqli($DB_HOST, $DB_USER, $DB_PASS, $DB_NAME);
+    
+    if ($mysqli->connect_error) {
+        throw new Exception("Database connection failed: " . $mysqli->connect_error);
+    }
+    
+    $mysqli->set_charset("utf8");
+    return $mysqli;
 }
 
-// Keep mysqli connection for backward compatibility with existing code
-$conn = mysqli_connect($db_host, $db_username, $db_password, $db_name);
-
-// Check connection
-if (!$conn) {
-    die("Connection failed: " . mysqli_connect_error());
+/**
+ * Test database connection
+ * @return array
+ */
+function testConnection() {
+    try {
+        $pdo = getConnection();
+        $stmt = $pdo->query("SELECT 1 as test");
+        $result = $stmt->fetch();
+        
+        return [
+            'success' => true,
+            'message' => 'Database connection successful',
+            'connection_type' => 'PDO',
+            'test_result' => $result
+        ];
+    } catch (Exception $e) {
+        try {
+            $mysqli = getMysqliConnection();
+            $result = $mysqli->query("SELECT 1 as test");
+            $row = $result->fetch_assoc();
+            $mysqli->close();
+            
+            return [
+                'success' => true,
+                'message' => 'Database connection successful',
+                'connection_type' => 'MySQLi',
+                'test_result' => $row
+            ];
+        } catch (Exception $e2) {
+            return [
+                'success' => false,
+                'message' => 'Database connection failed',
+                'pdo_error' => $e->getMessage(),
+                'mysqli_error' => $e2->getMessage()
+            ];
+        }
+    }
 }
+
+// Uncomment the line below to test database connection
+// echo json_encode(testConnection());
 ?> 

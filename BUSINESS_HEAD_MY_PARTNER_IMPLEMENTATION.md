@@ -1,8 +1,8 @@
-# Business Head My Partner Implementation
+# Business Head My Partner Implementation - tbl_partner_users
 
 ## Overview
 
-This implementation provides Business Head users with the ability to view all partner users they have created through the `tbl_agent_data` table. The system automatically detects users with the "Business Head" designation and filters partner data based on the `createdBy` column to show only users created by the logged-in Business Head.
+This implementation provides Business Head users with the ability to view all partner users they have created through the `tbl_partner_users` table. The system automatically detects users with the "Business Head" designation and filters partner data based on the `createdBy` column to show only users created by the logged-in Business Head.
 
 ## Key Features
 
@@ -19,163 +19,208 @@ This implementation provides Business Head users with the ability to view all pa
       "firstName": "DUBEY SATYA ",
       "lastName": "SAIBABA",
       "designation_name": "Business Head"
-    },
-    "is_special_user": false,
-    "is_chief_business_officer": false
+    }
   }
   ```
 
 ### 2. Data Source
-- **Primary Table**: `tbl_agent_data` - Contains all partner/agent information
-- **Key Column**: `createdBy` - Stores the username of the user who created each partner
-- **Filtering**: Partners are filtered where `createdBy = logged_in_business_head_username`
+- **Table**: `tbl_partner_users` (NOT `tbl_agent_data`)
+- **Key Column**: `createdBy` - Contains usernames of creators
+- **Filtering**: `WHERE createdBy = 'Business Head Username'`
 
-### 3. API Implementation
+### 3. Database Schema - tbl_partner_users
+The API fetches all columns from the `tbl_partner_users` table:
 
-#### Endpoint: `business_head_my_partner_users.php`
-- **Method**: GET
-- **Parameters**: 
-  - `user_id` (optional): Business Head user ID
-  - `username` (optional): Business Head username
-- **Authentication**: Verifies user is a Business Head
-- **Response**: JSON with partner data and statistics
+| Column | Description | Example |
+|--------|-------------|---------|
+| `id` | Primary key | "1" |
+| `username` | Partner username | "partner001" |
+| `alias_name` | Alias/Short name | "JD" |
+| `first_name` | First name | "John" |
+| `last_name` | Last name | "Doe" |
+| `Phone_number` | Contact number | "1234567890" |
+| `email_id` | Email address | "john@example.com" |
+| `company_name` | Company name | "ABC Company" |
+| `status` | Active/Inactive | "Active" |
+| `createdBy` | Creator username | "94000" |
+| `created_at` | Creation timestamp | "2024-01-15 10:30:00" |
+| `department` | Department | "Sales" |
+| `designation` | Job title | "Manager" |
+| `branchstate` | Branch state | "Maharashtra" |
+| `branchloaction` | Branch location | "Mumbai" |
+| `bank_name` | Bank name | "HDFC Bank" |
+| `account_type` | Account type | "Savings" |
+| `rank` | Employee rank | "Senior" |
+| `reportingTo` | Reports to | "Manager ID" |
+| `employee_no` | Employee number | "EMP001" |
 
-#### API Features:
-- **User Verification**: Ensures only Business Head users can access
-- **Data Filtering**: Returns only partners created by the requesting user
-- **Statistics**: Provides total and active partner counts
-- **Error Handling**: Comprehensive error messages and validation
+## API Implementation
 
-### 4. Android Implementation
+### Endpoint
+```
+GET https://emp.kfinone.com/mobile/api/business_head_my_partner_users.php
+```
 
-#### Activities
-1. **`BusinessHeadMyPartnerActivity`**: Main activity for displaying partner list
-2. **`PartnerAdapter`**: Custom adapter for ListView display
-3. **`PartnerUser`**: Model class for partner data
+### Parameters
+- `user_id` (optional): Business Head user ID
+- `username` (optional): Business Head username (recommended)
 
-#### Layout Files
-1. **`activity_business_head_my_partner.xml`**: Main layout with search, stats, and list
-2. **`partner_list_item.xml`**: Individual partner item layout
-3. **Drawable resources**: Status indicators, tag backgrounds, search styling
+### SQL Query
+```sql
+-- First verify user is a Business Head
+SELECT u.id, u.username, u.firstName, u.lastName, d.designation_name 
+FROM tbl_user u 
+JOIN tbl_designation d ON u.designation_id = d.id 
+WHERE u.username = ? OR u.id = ?
 
-### 5. Core Functionality
+-- Then fetch partner users created by this Business Head
+SELECT * FROM tbl_partner_users pu
+WHERE pu.createdBy = 'Business Head Username'
+ORDER BY pu.created_at DESC
+```
 
-#### Partner Data Display
-Based on `tbl_agent_data` columns:
-- **Basic Info**: `id`, `full_name`, `company_name`
-- **Contact**: `Phone_number`, `alternative_Phone_number`, `email_id`
-- **Business**: `partnerType`, `state`, `location`, `address`
-- **System**: `created_user`, `createdBy`, `status`, `created_at`, `updated_at`
+### Response Format
+```json
+{
+  "success": true,
+  "message": "Partners fetched successfully",
+  "data": [
+    {
+      "id": "1",
+      "username": "partner001",
+      "alias_name": "JD",
+      "first_name": "John",
+      "last_name": "Doe",
+      "Phone_number": "1234567890",
+      "email_id": "john@example.com",
+      "company_name": "ABC Company",
+      "status": "Active",
+      "createdBy": "94000",
+      "created_at": "2024-01-15 10:30:00"
+    }
+  ],
+  "stats": {
+    "total_partners": 5,
+    "active_partners": 4,
+    "inactive_partners": 1
+  },
+  "creator_info": {
+    "id": "41",
+    "username": "94000",
+    "firstName": "DUBEY SATYA ",
+    "lastName": "SAIBABA",
+    "designation": "Business Head"
+  }
+}
+```
 
-#### Search & Filtering
-- **Real-time Search**: Across partner names, companies, phones, emails
-- **Multi-field Search**: Includes partner type and location
-- **Instant Results**: Updates list as user types
+## Android Implementation
 
-#### Statistics Display
-- **Total Partners**: Count of all partners created by the Business Head
-- **Active Partners**: Count of partners with "Active" status
-- **Real-time Updates**: Statistics refresh with data
+### 1. PartnerUser Model
+- **Comprehensive Fields**: All 40+ fields from `tbl_partner_users` table
+- **Helper Methods**: `getDisplayName()`, `getDisplayCompany()`, `getDisplayPhone()`, `getDisplayEmail()`
+- **Status Methods**: `isActive()` for status checking
 
-### 6. User Experience Features
+### 2. BusinessHeadMyPartnerActivity
+- **API Integration**: Fetches data from updated endpoint
+- **Data Parsing**: Handles new response structure
+- **Search Functionality**: Real-time filtering across all fields
+- **Statistics Display**: Shows total, active, and inactive partner counts
 
-#### Professional Interface
-- **Modern Design**: Card-based layout with proper spacing
-- **Status Indicators**: Visual status indicators (Active/Inactive)
-- **Tag System**: Partner type and location displayed as colored tags
-- **Responsive Layout**: Adapts to different screen sizes
+### 3. PartnerAdapter
+- **ListView Adapter**: Displays partner data in cards
+- **Filtering**: Implements search functionality
+- **ViewHolder Pattern**: Efficient list rendering
 
-#### Navigation & Controls
-- **Toolbar**: Professional header with back navigation
-- **Search Bar**: Prominent search functionality
-- **Refresh Button**: Manual data refresh capability
-- **Empty States**: Helpful messages when no data is found
+### 4. Layout Files
+- **Modern UI**: Card-based design with Material Design
+- **Responsive**: Handles empty states and loading
+- **Status Indicators**: Visual status representation
 
-### 7. Technical Implementation
+## Testing
 
-#### Data Flow
-1. **User Login** → System detects Business Head designation
-2. **Panel Navigation** → User clicks "My Partner" in Business Head panel
-3. **API Call** → Fetches partners where `createdBy = username`
-4. **Data Processing** → Parses JSON response into PartnerUser objects
-5. **UI Update** → Displays data in ListView with search functionality
+### Postman URLs
+```
+# Using username (recommended)
+GET https://emp.kfinone.com/mobile/api/business_head_my_partner_users.php?username=94000
 
-#### Error Handling
-- **Network Errors**: Graceful handling of connection issues
-- **API Errors**: Clear error messages for different failure types
-- **Empty States**: User-friendly messages when no data is available
-- **Loading States**: Progress indicators during data fetching
+# Using user ID
+GET https://emp.kfinone.com/mobile/api/business_head_my_partner_users.php?user_id=41
+```
 
-#### Performance Optimizations
-- **Async Operations**: Network calls on background threads
-- **Efficient Filtering**: Client-side search for better responsiveness
-- **Memory Management**: Proper cleanup of resources and executors
+### Test HTML File
+- **File**: `test_business_head_my_partner_api.html`
+- **Purpose**: Interactive API testing
+- **Features**: Username/ID testing, response validation
 
-### 8. Security Features
+## Security & Validation
 
-#### User Authentication
-- **Designation Verification**: Ensures only Business Head users can access
-- **Data Isolation**: Users can only see partners they created
-- **Parameter Validation**: Input sanitization and validation
+### 1. User Verification
+- **Designation Check**: Verifies user has "Business Head" designation
+- **Access Control**: Only Business Head users can access the API
+- **Parameter Validation**: Requires either user_id or username
 
-#### API Security
-- **CORS Headers**: Proper cross-origin resource sharing
-- **Input Validation**: SQL injection prevention with prepared statements
-- **Error Handling**: No sensitive information in error messages
+### 2. Data Filtering
+- **Creator Isolation**: Users can only see partners they created
+- **Username Matching**: Filters by exact username match in `createdBy` column
+- **SQL Injection Protection**: Uses prepared statements
 
-### 9. Testing & Validation
+## Error Handling
 
-#### API Testing
-- **Test File**: `test_business_head_my_partner_api.html`
-- **Test Cases**: 
-  - Test by User ID
-  - Test by Username
-  - Error handling scenarios
-- **Response Validation**: JSON structure and data integrity
+### Common Error Responses
+```json
+// User not found
+{
+  "success": false,
+  "message": "User not found",
+  "error": "User with username '94000' not found"
+}
 
-#### Android Testing
-- **UI Testing**: Layout rendering and user interactions
-- **Data Binding**: Correct display of partner information
-- **Search Functionality**: Real-time filtering accuracy
-- **Navigation**: Proper back navigation and state management
+// Not a Business Head
+{
+  "success": false,
+  "message": "Access denied",
+  "error": "User is not a Business Head. Current designation: 'Manager'"
+}
 
-### 10. Integration Points
+// Missing parameters
+{
+  "success": false,
+  "message": "Missing required parameter",
+  "error": "Either user_id or username must be provided"
+}
+```
 
-#### Business Head Panel
-- **Navigation**: Integrated into Business Head dashboard
-- **User Data**: Receives user information from parent activities
-- **Consistent Design**: Matches overall Business Head panel theme
+## Usage Flow
 
-#### Database Integration
-- **Table Structure**: Leverages existing `tbl_agent_data` structure
-- **User Relationships**: Uses `tbl_user` and `tbl_designation` for validation
-- **Data Consistency**: Maintains referential integrity
+1. **User Login**: Business Head user logs in and gets user details
+2. **API Call**: App calls API with username or user ID
+3. **Verification**: API verifies user is a Business Head
+4. **Data Fetch**: Retrieves partners from `tbl_partner_users` where `createdBy = username`
+5. **Response**: Returns filtered partner list with statistics
+6. **Display**: Android app displays data in organized list view
 
-### 11. Future Enhancements
+## Database Relationships
 
-#### Potential Features
-- **Partner Details**: Expandable partner information
-- **Edit Capability**: Modify partner information
-- **Bulk Operations**: Select and manage multiple partners
-- **Export Functionality**: Download partner data as CSV/PDF
-- **Advanced Filtering**: Date ranges, status filters, location filters
+```
+tbl_user (Business Head)
+├── id: 41
+├── username: "94000"
+├── designation_id → tbl_designation.id
+└── designation_name: "Business Head"
 
-#### Performance Improvements
-- **Pagination**: Handle large numbers of partners efficiently
-- **Caching**: Local storage for offline access
-- **Real-time Updates**: Push notifications for partner changes
-- **Image Support**: Display partner photos and documents
+tbl_partner_users (Partner Users)
+├── id: 1
+├── username: "partner001"
+├── createdBy: "94000" ← Links to Business Head username
+└── created_at: "2024-01-15 10:30:00"
+```
 
-## Summary
+## Performance Considerations
 
-This implementation provides Business Head users with a comprehensive view of all partner users they have created, featuring:
+- **Indexing**: Ensure `createdBy` column is indexed for fast filtering
+- **Pagination**: Consider implementing pagination for large datasets
+- **Caching**: Cache user designation verification results
+- **Connection Pooling**: Use database connection pooling for scalability
 
-- **Secure Access**: Only Business Head users can access the functionality
-- **Data Isolation**: Users see only their own created partners
-- **Professional Interface**: Modern, responsive design with search capabilities
-- **Real-time Statistics**: Live counts of total and active partners
-- **Comprehensive Search**: Multi-field search across partner information
-- **Error Handling**: Robust error handling and user feedback
-- **Performance**: Efficient data loading and filtering
-
-The system successfully addresses the requirement to detect Business Head users and display all users created by them from the `tbl_agent_data` table, focusing on the `createdBy` column for proper data filtering and user isolation.
+This implementation provides a secure, efficient, and user-friendly way for Business Head users to view and manage their partner users from the `tbl_partner_users` table.

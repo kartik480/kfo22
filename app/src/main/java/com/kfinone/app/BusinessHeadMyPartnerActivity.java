@@ -156,7 +156,7 @@ public class BusinessHeadMyPartnerActivity extends AppCompatActivity {
                     reader.close();
                     
                     Log.d(TAG, "API Response: " + response.toString());
-                    parsePartnerData(response.toString());
+                    parseApiResponse(new JSONObject(response.toString()));
                 } else {
                     Log.e(TAG, "API Error: " + responseCode);
                     runOnUiThread(() -> {
@@ -177,41 +177,64 @@ public class BusinessHeadMyPartnerActivity extends AppCompatActivity {
         });
     }
 
-    private void parsePartnerData(String jsonResponse) {
+    private void parseApiResponse(JSONObject response) {
         try {
-            JSONObject response = new JSONObject(jsonResponse);
-            
-            if (response.getString("status").equals("success")) {
+            boolean success = response.getBoolean("success");
+            if (success) {
                 JSONArray data = response.getJSONArray("data");
-                JSONObject stats = response.getJSONObject("statistics");
+                JSONObject stats = response.getJSONObject("stats");
+                JSONObject creatorInfo = response.getJSONObject("creator_info");
                 
                 List<PartnerUser> newPartnerList = new ArrayList<>();
                 
+                // Parse partner data from tbl_partner_users
                 for (int i = 0; i < data.length(); i++) {
                     JSONObject partner = data.getJSONObject(i);
                     
                     PartnerUser partnerUser = new PartnerUser();
                     partnerUser.setId(partner.optString("id", ""));
-                    partnerUser.setFullName(partner.optString("full_name", ""));
-                    partnerUser.setCompanyName(partner.optString("company_name", ""));
-                    partnerUser.setPhoneNumber(partner.optString("Phone_number", ""));
-                    partnerUser.setAlternativePhoneNumber(partner.optString("alternative_Phone_number", ""));
-                    partnerUser.setEmailId(partner.optString("email_id", ""));
-                    partnerUser.setPartnerType(partner.optString("partnerType", ""));
-                    partnerUser.setState(partner.optString("state", ""));
-                    partnerUser.setLocation(partner.optString("location", ""));
-                    partnerUser.setAddress(partner.optString("address", ""));
-                    partnerUser.setVisitingCard(partner.optString("visiting_card", ""));
-                    partnerUser.setCreatedUser(partner.optString("created_user", ""));
-                    partnerUser.setCreatedBy(partner.optString("createdBy", ""));
-                    partnerUser.setStatus(partner.optString("status", ""));
-                    partnerUser.setCreatedAt(partner.optString("created_at", ""));
-                    partnerUser.setUpdatedAt(partner.optString("updated_at", ""));
-                    partnerUser.setUserId(partner.optString("user_id", ""));
                     partnerUser.setUsername(partner.optString("username", ""));
-                    partnerUser.setFirstName(partner.optString("firstName", ""));
-                    partnerUser.setLastName(partner.optString("lastName", ""));
-                    partnerUser.setCreatedByName(partner.optString("created_by_name", ""));
+                    partnerUser.setAliasName(partner.optString("alias_name", ""));
+                    partnerUser.setFirstName(partner.optString("first_name", ""));
+                    partnerUser.setLastName(partner.optString("last_name", ""));
+                    partnerUser.setPassword(partner.optString("password", ""));
+                    partnerUser.setPhoneNumber(partner.optString("Phone_number", ""));
+                    partnerUser.setEmailId(partner.optString("email_id", ""));
+                    partnerUser.setAlternativeMobileNumber(partner.optString("alternative_mobile_number", ""));
+                    partnerUser.setCompanyName(partner.optString("company_name", ""));
+                    partnerUser.setBranchStateNameId(partner.optString("branch_state_name_id", ""));
+                    partnerUser.setBranchLocationId(partner.optString("branch_location_id", ""));
+                    partnerUser.setBankId(partner.optString("bank_id", ""));
+                    partnerUser.setAccountTypeId(partner.optString("account_type_id", ""));
+                    partnerUser.setOfficeAddress(partner.optString("office_address", ""));
+                    partnerUser.setResidentialAddress(partner.optString("residential_address", ""));
+                    partnerUser.setAadhaarNumber(partner.optString("aadhaar_number", ""));
+                    partnerUser.setPanNumber(partner.optString("pan_number", ""));
+                    partnerUser.setAccountNumber(partner.optString("account_number", ""));
+                    partnerUser.setIfscCode(partner.optString("ifsc_code", ""));
+                    partnerUser.setRank(partner.optString("rank", ""));
+                    partnerUser.setStatus(partner.optString("status", ""));
+                    partnerUser.setReportingTo(partner.optString("reportingTo", ""));
+                    partnerUser.setEmployeeNo(partner.optString("employee_no", ""));
+                    partnerUser.setDepartment(partner.optString("department", ""));
+                    partnerUser.setDesignation(partner.optString("designation", ""));
+                    partnerUser.setBranchState(partner.optString("branchstate", ""));
+                    partnerUser.setBranchLocation(partner.optString("branchloaction", ""));
+                    partnerUser.setBankName(partner.optString("bank_name", ""));
+                    partnerUser.setAccountType(partner.optString("account_type", ""));
+                    partnerUser.setPartnerTypeId(partner.optString("partner_type_id", ""));
+                    partnerUser.setPanImg(partner.optString("pan_img", ""));
+                    partnerUser.setAadhaarImg(partner.optString("aadhaar_img", ""));
+                    partnerUser.setPhotoImg(partner.optString("photo_img", ""));
+                    partnerUser.setBankproofImg(partner.optString("bankproof_img", ""));
+                    partnerUser.setUserId(partner.optString("user_id", ""));
+                    partnerUser.setCreatedAt(partner.optString("created_at", ""));
+                    partnerUser.setCreatedBy(partner.optString("createdBy", ""));
+                    partnerUser.setUpdatedAt(partner.optString("updated_at", ""));
+                    
+                    // Set creator information
+                    partnerUser.setCreatorName(creatorInfo.optString("username", ""));
+                    partnerUser.setCreatorDesignationName(creatorInfo.optString("firstName", "") + " " + creatorInfo.optString("lastName", ""));
                     
                     newPartnerList.add(partnerUser);
                 }

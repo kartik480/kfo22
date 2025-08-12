@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Test Business Head My Partner API</title>
+    <title>Test Business Head My Partner API - tbl_partner_users</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -26,10 +26,10 @@
             border-radius: 8px;
         }
         .test-title {
-            color: #2196F3;
             font-size: 18px;
             font-weight: bold;
             margin-bottom: 15px;
+            color: #333;
         }
         .input-group {
             margin-bottom: 15px;
@@ -41,13 +41,13 @@
         }
         input[type="text"] {
             width: 100%;
-            padding: 10px;
+            padding: 8px;
             border: 1px solid #ddd;
             border-radius: 4px;
             font-size: 14px;
         }
         button {
-            background: #2196F3;
+            background-color: #007bff;
             color: white;
             padding: 10px 20px;
             border: none;
@@ -56,10 +56,10 @@
             font-size: 14px;
         }
         button:hover {
-            background: #1976D2;
+            background-color: #0056b3;
         }
         .response {
-            background: #f8f9fa;
+            background-color: #f8f9fa;
             border: 1px solid #dee2e6;
             border-radius: 4px;
             padding: 15px;
@@ -71,168 +71,173 @@
             overflow-y: auto;
         }
         .error {
-            background: #f8d7da;
+            background-color: #f8d7da;
             border-color: #f5c6cb;
             color: #721c24;
         }
         .success {
-            background: #d4edda;
+            background-color: #d4edda;
             border-color: #c3e6cb;
             color: #155724;
         }
         .info {
-            background: #d1ecf1;
+            background-color: #d1ecf1;
             border-color: #bee5eb;
             color: #0c5460;
-        }
-        .status {
-            padding: 5px 10px;
-            border-radius: 4px;
-            font-size: 12px;
-            font-weight: bold;
-            margin-bottom: 10px;
         }
     </style>
 </head>
 <body>
+    <h1>Business Head My Partner API Test - tbl_partner_users</h1>
+    
     <div class="container">
-        <h1>🧪 Test Business Head My Partner API</h1>
-        <p>This page tests the Business Head My Partner Users API endpoint to fetch users created by a Business Head user.</p>
+        <h2>API Information</h2>
+        <p><strong>Endpoint:</strong> <code>https://emp.kfinone.com/mobile/api/business_head_my_partner_users.php</code></p>
+        <p><strong>Method:</strong> GET</p>
+        <p><strong>Purpose:</strong> Fetch all partner users created by a Business Head user from tbl_partner_users table</p>
+        <p><strong>Table:</strong> tbl_partner_users (not tbl_agent_data)</p>
+        <p><strong>Key Column:</strong> createdBy (contains usernames)</p>
     </div>
 
-    <div class="container">
-        <div class="test-section">
-            <div class="test-title">🔍 Test by User ID</div>
-            <div class="input-group">
-                <label for="userId">User ID:</label>
-                <input type="text" id="userId" placeholder="Enter Business Head User ID (e.g., 41)" value="41">
-            </div>
-            <button onclick="testByUserId()">Test by User ID</button>
-            <div id="userIdResponse" class="response" style="display: none;"></div>
+    <div class="test-section">
+        <div class="test-title">Test 1: Using Username (Recommended)</div>
+        <div class="input-group">
+            <label for="username">Business Head Username:</label>
+            <input type="text" id="username" value="94000" placeholder="Enter username (e.g., 94000)">
         </div>
+        <button onclick="testWithUsername()">Test with Username</button>
+        <div id="response1" class="response"></div>
+    </div>
 
-        <div class="test-section">
-            <div class="test-title">👤 Test by Username</div>
-            <div class="input-group">
-                <label for="username">Username:</label>
-                <input type="text" id="username" placeholder="Enter Business Head Username (e.g., 94000)" value="94000">
-            </div>
-            <button onclick="testByUsername()">Test by Username</button>
-            <div id="usernameResponse" class="response" style="display: none;"></div>
+    <div class="test-section">
+        <div class="test-title">Test 2: Using User ID</div>
+        <div class="input-group">
+            <label for="userid">Business Head User ID:</label>
+            <input type="text" id="userid" value="41" placeholder="Enter user ID (e.g., 41)">
         </div>
+        <button onclick="testWithUserId()">Test with User ID</button>
+        <div id="response2" class="response"></div>
+    </div>
 
-        <div class="test-section">
-            <div class="test-title">📊 API Information</div>
-            <div class="info">
-                <strong>Endpoint:</strong> /api/business_head_my_partner_users.php<br>
-                <strong>Method:</strong> GET<br>
-                <strong>Parameters:</strong> user_id OR username<br>
-                <strong>Purpose:</strong> Fetch all users created by a Business Head user from tbl_agent_data table<br>
-                <strong>Authentication:</strong> Verifies user is a Business Head by checking designation
-            </div>
+    <div class="test-section">
+        <div class="test-title">Test 3: Sample Business Head Data</div>
+        <div class="info">
+            <p><strong>Sample Login Response:</strong></p>
+            <pre>{
+  "success": true,
+  "message": "Login successful.",
+  "user": {
+    "id": 41,
+    "username": "94000",
+    "firstName": "DUBEY SATYA ",
+    "lastName": "SAIBABA",
+    "designation_name": "Business Head"
+  }
+}</pre>
+            <p><strong>Expected API Response:</strong></p>
+            <pre>{
+  "success": true,
+  "message": "Partners fetched successfully",
+  "data": [
+    {
+      "id": "1",
+      "username": "partner001",
+      "alias_name": "JD",
+      "first_name": "John",
+      "last_name": "Doe",
+      "Phone_number": "1234567890",
+      "email_id": "john@example.com",
+      "company_name": "ABC Company",
+      "status": "Active",
+      "createdBy": "94000",
+      "created_at": "2024-01-15 10:30:00"
+    }
+  ],
+  "stats": {
+    "total_partners": 5,
+    "active_partners": 4,
+    "inactive_partners": 1
+  },
+  "creator_info": {
+    "id": "41",
+    "username": "94000",
+    "firstName": "DUBEY SATYA ",
+    "lastName": "SAIBABA",
+    "designation": "Business Head"
+  }
+}</pre>
         </div>
+    </div>
 
-        <div class="test-section">
-            <div class="test-title">📋 Expected Response Structure</div>
-            <div class="info">
-                <strong>Success Response:</strong><br>
-                - status: "success"<br>
-                - business_head_info: User details<br>
-                - data: Array of partner users<br>
-                - statistics: Total and active partner counts<br>
-                - counts: Total count<br><br>
-                
-                <strong>Partner User Fields:</strong><br>
-                - id, full_name, company_name, Phone_number<br>
-                - alternative_Phone_number, email_id, partnerType<br>
-                - state, location, address, visiting_card<br>
-                - created_user, createdBy, status, created_at, updated_at
-            </div>
+    <div class="test-section">
+        <div class="test-title">Database Schema - tbl_partner_users</div>
+        <div class="info">
+            <p><strong>Key Columns:</strong></p>
+            <ul>
+                <li><strong>id</strong> - Primary key</li>
+                <li><strong>username</strong> - Partner username</li>
+                <li><strong>first_name, last_name</strong> - Partner full name</li>
+                <li><strong>Phone_number</strong> - Contact number</li>
+                <li><strong>email_id</strong> - Email address</li>
+                <li><strong>company_name</strong> - Company name</li>
+                <li><strong>status</strong> - Active/Inactive status</li>
+                <li><strong>createdBy</strong> - Username of creator (Business Head)</li>
+                <li><strong>created_at</strong> - Creation timestamp</li>
+            </ul>
+            <p><strong>Filtering Logic:</strong> WHERE createdBy = 'Business Head Username'</p>
         </div>
     </div>
 
     <script>
-        const API_BASE_URL = 'https://emp.kfinone.com/mobile/api/';
-
-        async function testByUserId() {
-            const userId = document.getElementById('userId').value.trim();
-            if (!userId) {
-                alert('Please enter a User ID');
-                return;
-            }
-
-            const responseDiv = document.getElementById('userIdResponse');
-            responseDiv.style.display = 'block';
-            responseDiv.innerHTML = '⏳ Testing...';
-            responseDiv.className = 'response';
-
-            try {
-                const url = `${API_BASE_URL}business_head_my_partner_users.php?user_id=${userId}`;
-                console.log('Testing URL:', url);
-
-                const response = await fetch(url);
-                const data = await response.json();
-
-                if (response.ok) {
-                    if (data.status === 'success') {
-                        responseDiv.className = 'response success';
-                        responseDiv.innerHTML = `✅ SUCCESS!\n\n${JSON.stringify(data, null, 2)}`;
-                    } else {
-                        responseDiv.className = 'response error';
-                        responseDiv.innerHTML = `❌ API Error: ${data.message}\n\n${JSON.stringify(data, null, 2)}`;
-                    }
-                } else {
-                    responseDiv.className = 'response error';
-                    responseDiv.innerHTML = `❌ HTTP Error: ${response.status}\n\n${JSON.stringify(data, null, 2)}`;
-                }
-            } catch (error) {
-                responseDiv.className = 'response error';
-                responseDiv.innerHTML = `❌ Network Error: ${error.message}`;
-            }
-        }
-
-        async function testByUsername() {
-            const username = document.getElementById('username').value.trim();
+        async function testWithUsername() {
+            const username = document.getElementById('username').value;
+            const responseDiv = document.getElementById('response1');
+            
             if (!username) {
-                alert('Please enter a Username');
+                responseDiv.className = 'response error';
+                responseDiv.textContent = 'Please enter a username';
                 return;
             }
-
-            const responseDiv = document.getElementById('usernameResponse');
-            responseDiv.style.display = 'block';
-            responseDiv.innerHTML = '⏳ Testing...';
+            
             responseDiv.className = 'response';
-
+            responseDiv.textContent = 'Testing...';
+            
             try {
-                const url = `${API_BASE_URL}business_head_my_partner_users.php?username=${username}`;
-                console.log('Testing URL:', url);
-
-                const response = await fetch(url);
+                const response = await fetch(`https://emp.kfinone.com/mobile/api/business_head_my_partner_users.php?username=${username}`);
                 const data = await response.json();
-
-                if (response.ok) {
-                    if (data.status === 'success') {
-                        responseDiv.className = 'response success';
-                        responseDiv.innerHTML = `✅ SUCCESS!\n\n${JSON.stringify(data, null, 2)}`;
-                    } else {
-                        responseDiv.className = 'response error';
-                        responseDiv.innerHTML = `❌ API Error: ${data.message}\n\n${JSON.stringify(data, null, 2)}`;
-                    }
-                } else {
-                    responseDiv.className = 'response error';
-                    responseDiv.innerHTML = `❌ HTTP Error: ${response.status}\n\n${JSON.stringify(data, null, 2)}`;
-                }
+                
+                responseDiv.className = 'response ' + (data.success ? 'success' : 'error');
+                responseDiv.textContent = JSON.stringify(data, null, 2);
             } catch (error) {
                 responseDiv.className = 'response error';
-                responseDiv.innerHTML = `❌ Network Error: ${error.message}`;
+                responseDiv.textContent = 'Error: ' + error.message;
             }
         }
 
-        // Auto-test on page load
-        window.onload = function() {
-            console.log('🧪 Business Head My Partner API Test Page Loaded');
-            console.log('📡 API Base URL:', API_BASE_URL);
-        };
+        async function testWithUserId() {
+            const userid = document.getElementById('userid').value;
+            const responseDiv = document.getElementById('response2');
+            
+            if (!userid) {
+                responseDiv.className = 'response error';
+                responseDiv.textContent = 'Please enter a user ID';
+                return;
+            }
+            
+            responseDiv.className = 'response';
+            responseDiv.textContent = 'Testing...';
+            
+            try {
+                const response = await fetch(`https://emp.kfinone.com/mobile/api/business_head_my_partner_users.php?user_id=${userid}`);
+                const data = await response.json();
+                
+                responseDiv.className = 'response ' + (data.success ? 'success' : 'error');
+                responseDiv.textContent = JSON.stringify(data, null, 2);
+            } catch (error) {
+                responseDiv.className = 'response error';
+                responseDiv.textContent = 'Error: ' + error.message;
+            }
+        }
     </script>
 </body>
 </html>
