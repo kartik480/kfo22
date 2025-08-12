@@ -17,11 +17,13 @@ public class RegionalBusinessHeadPanelActivity extends AppCompatActivity {
     private View notificationIcon, profileIcon, menuButton;
     private String userName;
     private String userId;
+    private String firstName;
+    private String lastName;
     
     // Action card views
     private View cardTotalEmp, cardTotalSdsa, cardTotalPartner, cardTotalAgent, cardTeam, cardReports, cardAnalytics, cardStrategy, 
                  cardPerformance, cardGrowth, cardInnovation, cardPartnerships, 
-                 cardMarketAnalysis, cardCompliance;
+                 cardMarketAnalysis, cardCompliance, cardDocumentCheckList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +35,8 @@ public class RegionalBusinessHeadPanelActivity extends AppCompatActivity {
         Intent intent = getIntent();
         userName = intent.getStringExtra("USERNAME");
         userId = intent.getStringExtra("USER_ID");
+        firstName = intent.getStringExtra("FIRST_NAME");
+        lastName = intent.getStringExtra("LAST_NAME");
         if (userName == null || userName.isEmpty()) {
             userName = "RBH"; // Default fallback
         }
@@ -65,6 +69,7 @@ public class RegionalBusinessHeadPanelActivity extends AppCompatActivity {
         cardPartnerships = findViewById(R.id.cardPartnerships);
         cardMarketAnalysis = findViewById(R.id.cardMarketAnalysis);
         cardCompliance = findViewById(R.id.cardCompliance);
+        cardDocumentCheckList = findViewById(R.id.cardDocumentCheckList);
         
         notificationIcon = findViewById(R.id.notificationIcon);
         profileIcon = findViewById(R.id.profileIcon);
@@ -86,6 +91,7 @@ public class RegionalBusinessHeadPanelActivity extends AppCompatActivity {
         android.util.Log.d("RBHPanel", "cardPartnerships: " + (cardPartnerships != null ? "FOUND" : "NULL"));
         android.util.Log.d("RBHPanel", "cardMarketAnalysis: " + (cardMarketAnalysis != null ? "FOUND" : "NULL"));
         android.util.Log.d("RBHPanel", "cardCompliance: " + (cardCompliance != null ? "FOUND" : "NULL"));
+        android.util.Log.d("RBHPanel", "cardDocumentCheckList: " + (cardDocumentCheckList != null ? "FOUND" : "NULL"));
     }
 
     private void setupClickListeners() {
@@ -233,6 +239,18 @@ public class RegionalBusinessHeadPanelActivity extends AppCompatActivity {
             cardCompliance.setOnClickListener(v -> {
                 Intent intent = new Intent(this, RBHPortfolioPanelActivity.class);
                 intent.putExtra("USERNAME", userName);
+                startActivity(intent);
+            });
+        }
+        
+        if (cardDocumentCheckList != null) {
+            cardDocumentCheckList.setOnClickListener(v -> {
+                android.util.Log.d("RBHPanel", "Document Check List Card clicked! Navigating to RBHDocumentCheckListActivity");
+                Intent intent = new Intent(this, RBHDocumentCheckListActivity.class);
+                intent.putExtra("USERNAME", userName);
+                intent.putExtra("USER_ID", userId);
+                intent.putExtra("FIRST_NAME", firstName);
+                intent.putExtra("LAST_NAME", lastName);
                 startActivity(intent);
             });
         }

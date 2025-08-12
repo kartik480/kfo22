@@ -1032,6 +1032,12 @@
               android:label="RBH My Agent List"
               android:parentActivityName=".RBHMyAgentPanelActivity"
               android:theme="@style/FullscreenTheme" />
+          <activity
+              android:name=".RBHDocumentCheckListActivity"
+              android:exported="false"
+              android:label="RBH Document Check List"
+              android:parentActivityName=".RegionalBusinessHeadPanelActivity"
+              android:theme="@style/FullscreenTheme" />
               
           <!-- Managing Director Emp Links Activities -->
         <activity
