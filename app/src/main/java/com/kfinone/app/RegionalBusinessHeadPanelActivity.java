@@ -23,7 +23,7 @@ public class RegionalBusinessHeadPanelActivity extends AppCompatActivity {
     // Action card views
     private View cardTotalEmp, cardTotalSdsa, cardTotalPartner, cardTotalAgent, cardTeam, cardReports, cardAnalytics, cardStrategy, 
                  cardPerformance, cardGrowth, cardInnovation, cardPartnerships, 
-                 cardMarketAnalysis, cardCompliance, cardDocumentCheckList;
+                 cardMarketAnalysis, cardCompliance, cardDocumentCheckList, cardInsurance;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +70,7 @@ public class RegionalBusinessHeadPanelActivity extends AppCompatActivity {
         cardMarketAnalysis = findViewById(R.id.cardMarketAnalysis);
         cardCompliance = findViewById(R.id.cardCompliance);
         cardDocumentCheckList = findViewById(R.id.cardDocumentCheckList);
+        cardInsurance = findViewById(R.id.cardInsurance);
         
         notificationIcon = findViewById(R.id.notificationIcon);
         profileIcon = findViewById(R.id.profileIcon);
@@ -92,6 +93,7 @@ public class RegionalBusinessHeadPanelActivity extends AppCompatActivity {
         android.util.Log.d("RBHPanel", "cardMarketAnalysis: " + (cardMarketAnalysis != null ? "FOUND" : "NULL"));
         android.util.Log.d("RBHPanel", "cardCompliance: " + (cardCompliance != null ? "FOUND" : "NULL"));
         android.util.Log.d("RBHPanel", "cardDocumentCheckList: " + (cardDocumentCheckList != null ? "FOUND" : "NULL"));
+        android.util.Log.d("RBHPanel", "cardInsurance: " + (cardInsurance != null ? "FOUND" : "NULL"));
     }
 
     private void setupClickListeners() {
@@ -251,6 +253,19 @@ public class RegionalBusinessHeadPanelActivity extends AppCompatActivity {
                 intent.putExtra("USER_ID", userId);
                 intent.putExtra("FIRST_NAME", firstName);
                 intent.putExtra("LAST_NAME", lastName);
+                startActivity(intent);
+            });
+        }
+        
+        if (cardInsurance != null) {
+            cardInsurance.setOnClickListener(v -> {
+                android.util.Log.d("RBHPanel", "Insurance Card clicked! Navigating to RBHInsurancePanelActivity");
+                Intent intent = new Intent(this, RBHInsurancePanelActivity.class);
+                intent.putExtra("USERNAME", userName);
+                intent.putExtra("USER_ID", userId);
+                intent.putExtra("FIRST_NAME", firstName);
+                intent.putExtra("LAST_NAME", lastName);
+                intent.putExtra("SOURCE_PANEL", "RBH_PANEL");
                 startActivity(intent);
             });
         }

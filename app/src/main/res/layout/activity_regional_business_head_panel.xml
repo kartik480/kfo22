@@ -625,7 +625,7 @@
 
                 <!-- Card 12: Insurance -->
                 <LinearLayout
-                    android:id="@+id/cardCompliance"
+                    android:id="@+id/cardInsurance"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_columnWeight="1"
@@ -640,7 +640,7 @@
                     <ImageView
                         android:layout_width="48dp"
                         android:layout_height="48dp"
-                        android:src="@drawable/ic_compliance"
+                        android:src="@drawable/ic_insurance"
                         android:background="@drawable/icon_gradient_blue"
                         android:padding="12dp"
                         android:contentDescription="Insurance" />
