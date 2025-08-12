@@ -207,43 +207,6 @@
 
                 </androidx.cardview.widget.CardView>
 
-                <!-- Total Portfolio -->
-                <androidx.cardview.widget.CardView
-                    android:layout_width="140dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="12dp"
-                    app:cardCornerRadius="12dp"
-                    app:cardElevation="4dp"
-                    app:cardBackgroundColor="@color/white">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:padding="16dp"
-                        android:gravity="center">
-
-                        <TextView
-                            android:id="@+id/totalPortfolioCount"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="0"
-                            android:textSize="28sp"
-                            android:textStyle="bold"
-                            android:textColor="#9C27B0" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Portfolio"
-                            android:textSize="12sp"
-                            android:textColor="@color/gray"
-                            android:layout_marginTop="4dp" />
-
-                    </LinearLayout>
-
-                </androidx.cardview.widget.CardView>
-
                 <!-- Total Agents -->
                 <androidx.cardview.widget.CardView
                     android:layout_width="140dp"
@@ -648,39 +611,6 @@
                         android:gravity="center" />
                 </LinearLayout>
 
-                <!-- Card 11: Portfolio -->
-                <LinearLayout
-                    android:id="@+id/cardRiskManagement"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_columnWeight="1"
-                    android:orientation="vertical"
-                    android:background="@drawable/action_card_background"
-                    android:padding="16dp"
-                    android:gravity="center"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:foreground="?attr/selectableItemBackground">
-
-                    <ImageView
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"
-                        android:src="@drawable/ic_risk_management"
-                        android:background="@drawable/icon_gradient_lime"
-                        android:padding="12dp"
-                        android:contentDescription="Portfolio" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Portfolio"
-                        android:textSize="14sp"
-                        android:textStyle="bold"
-                        android:textColor="@color/black"
-                        android:layout_marginTop="8dp"
-                        android:gravity="center" />
-                </LinearLayout>
-
                 <!-- Card 12: Insurance -->
                 <LinearLayout
                     android:id="@+id/cardCompliance"
@@ -714,38 +644,7 @@
                         android:gravity="center" />
                 </LinearLayout>
 
-                <!-- Card 13: Reports -->
-                <LinearLayout
-                    android:id="@+id/cardBudget"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_columnWeight="1"
-                    android:orientation="vertical"
-                    android:background="@drawable/action_card_background"
-                    android:padding="16dp"
-                    android:gravity="center"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:foreground="?attr/selectableItemBackground">
 
-                    <ImageView
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"
-                        android:src="@drawable/ic_budget"
-                        android:background="@drawable/icon_gradient_green"
-                        android:padding="12dp"
-                        android:contentDescription="Reports" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Reports"
-                        android:textSize="14sp"
-                        android:textStyle="bold"
-                        android:textColor="@color/black"
-                        android:layout_marginTop="8dp"
-                        android:gravity="center" />
-                </LinearLayout>
 
 
 

@@ -11,14 +11,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MyPortfolioActivity extends AppCompatActivity {
+public class MyPortfolioActivity extends AppCompatActivity implements PortfolioAdapter.OnPortfolioActionListener {
 
     private RecyclerView portfolioRecyclerView;
     private View emptyStateLayout;
     private TextView backButton;
     private View refreshButton;
     private PortfolioAdapter portfolioAdapter;
-    private List<PortfolioItem> portfolioList;
+    private List<Portfolio> portfolioList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +39,7 @@ public class MyPortfolioActivity extends AppCompatActivity {
         // Setup RecyclerView
         portfolioRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         portfolioList = new ArrayList<>();
-        portfolioAdapter = new PortfolioAdapter(portfolioList);
+        portfolioAdapter = new PortfolioAdapter(portfolioList, this, this);
         portfolioRecyclerView.setAdapter(portfolioAdapter);
     }
 
@@ -70,35 +70,23 @@ public class MyPortfolioActivity extends AppCompatActivity {
         }
     }
 
-    // Portfolio Item class with all required fields
-    public static class PortfolioItem {
-        private String id;
-        private String customerName;
-        private String companyName;
-        private String mobile;
-        private String state;
-        private String location;
-        private String createdBy;
+    // Portfolio Action Listener Implementation
+    @Override
+    public void onViewPortfolio(Portfolio portfolio) {
+        Toast.makeText(this, "Viewing portfolio: " + portfolio.getCustomerName(), Toast.LENGTH_SHORT).show();
+        // TODO: Navigate to portfolio details view
+    }
 
-        public PortfolioItem(String id, String customerName, String companyName, String mobile, 
-                           String state, String location, String createdBy) {
-            this.id = id;
-            this.customerName = customerName;
-            this.companyName = companyName;
-            this.mobile = mobile;
-            this.state = state;
-            this.location = location;
-            this.createdBy = createdBy;
-        }
+    @Override
+    public void onEditPortfolio(Portfolio portfolio) {
+        Toast.makeText(this, "Editing portfolio: " + portfolio.getCustomerName(), Toast.LENGTH_SHORT).show();
+        // TODO: Navigate to portfolio edit form
+    }
 
-        // Getters
-        public String getId() { return id; }
-        public String getCustomerName() { return customerName; }
-        public String getCompanyName() { return companyName; }
-        public String getMobile() { return mobile; }
-        public String getState() { return state; }
-        public String getLocation() { return location; }
-        public String getCreatedBy() { return createdBy; }
+    @Override
+    public void onDeletePortfolio(Portfolio portfolio) {
+        Toast.makeText(this, "Deleting portfolio: " + portfolio.getCustomerName(), Toast.LENGTH_SHORT).show();
+        // TODO: Implement delete functionality
     }
 
     @Override

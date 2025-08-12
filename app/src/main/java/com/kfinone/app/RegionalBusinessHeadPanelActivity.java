@@ -8,15 +8,15 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class RegionalBusinessHeadPanelActivity extends AppCompatActivity {
-    private TextView totalEmpCount, totalSdsaCount, totalPartnerCount, totalPortfolioCount, totalAgentCount, welcomeText;
+    private TextView totalEmpCount, totalSdsaCount, totalPartnerCount, totalAgentCount, welcomeText;
     private View notificationIcon, profileIcon, menuButton;
     private String userName;
     private String userId;
     
     // Action card views
-    private View cardTotalEmp, cardPortfolio, cardTeam, cardReports, cardAnalytics, cardStrategy, 
+    private View cardTotalEmp, cardTeam, cardReports, cardAnalytics, cardStrategy, 
                  cardPerformance, cardGrowth, cardInnovation, cardPartnerships, 
-                 cardMarketAnalysis, cardRiskManagement, cardCompliance, cardBudget;
+                 cardMarketAnalysis, cardCompliance;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,13 +42,11 @@ public class RegionalBusinessHeadPanelActivity extends AppCompatActivity {
         totalEmpCount = findViewById(R.id.totalEmpCount);
         totalSdsaCount = findViewById(R.id.totalSdsaCount);
         totalPartnerCount = findViewById(R.id.totalPartnerCount);
-        totalPortfolioCount = findViewById(R.id.totalPortfolioCount);
         totalAgentCount = findViewById(R.id.totalAgentCount);
         welcomeText = findViewById(R.id.welcomeText);
         
         // Initialize action cards
         cardTotalEmp = findViewById(R.id.cardTotalEmp);
-        cardPortfolio = findViewById(R.id.cardPortfolio);
         cardTeam = findViewById(R.id.cardTeam);
         cardReports = findViewById(R.id.cardReports);
         cardAnalytics = findViewById(R.id.cardAnalytics);
@@ -58,119 +56,139 @@ public class RegionalBusinessHeadPanelActivity extends AppCompatActivity {
         cardInnovation = findViewById(R.id.cardInnovation);
         cardPartnerships = findViewById(R.id.cardPartnerships);
         cardMarketAnalysis = findViewById(R.id.cardMarketAnalysis);
-        cardRiskManagement = findViewById(R.id.cardRiskManagement);
         cardCompliance = findViewById(R.id.cardCompliance);
-        cardBudget = findViewById(R.id.cardBudget);
         
         notificationIcon = findViewById(R.id.notificationIcon);
         profileIcon = findViewById(R.id.profileIcon);
         menuButton = findViewById(R.id.menuButton);
+        
+        // Log card initialization
+        android.util.Log.d("RBHPanel", "Card initialization:");
+        android.util.Log.d("RBHPanel", "cardTotalEmp: " + (cardTotalEmp != null ? "FOUND" : "NULL"));
+        android.util.Log.d("RBHPanel", "cardTeam: " + (cardTeam != null ? "FOUND" : "NULL"));
+        android.util.Log.d("RBHPanel", "cardReports: " + (cardReports != null ? "FOUND" : "NULL"));
+        android.util.Log.d("RBHPanel", "cardAnalytics: " + (cardAnalytics != null ? "FOUND" : "NULL"));
+        android.util.Log.d("RBHPanel", "cardStrategy: " + (cardStrategy != null ? "FOUND" : "NULL"));
+        android.util.Log.d("RBHPanel", "cardPerformance: " + (cardPerformance != null ? "FOUND" : "NULL"));
+        android.util.Log.d("RBHPanel", "cardGrowth: " + (cardGrowth != null ? "FOUND" : "NULL"));
+        android.util.Log.d("RBHPanel", "cardInnovation: " + (cardInnovation != null ? "FOUND" : "NULL"));
+        android.util.Log.d("RBHPanel", "cardPartnerships: " + (cardPartnerships != null ? "FOUND" : "NULL"));
+        android.util.Log.d("RBHPanel", "cardMarketAnalysis: " + (cardMarketAnalysis != null ? "FOUND" : "NULL"));
+        android.util.Log.d("RBHPanel", "cardCompliance: " + (cardCompliance != null ? "FOUND" : "NULL"));
     }
 
     private void setupClickListeners() {
         // Menu button click listener
-        menuButton.setOnClickListener(v -> {
-            showMenuOptions();
-        });
+        if (menuButton != null) {
+            menuButton.setOnClickListener(v -> {
+                showMenuOptions();
+            });
+        }
 
-        notificationIcon.setOnClickListener(v -> {
-            Toast.makeText(this, "Notifications", Toast.LENGTH_SHORT).show();
-            // TODO: Open notifications panel
-        });
+        if (notificationIcon != null) {
+            notificationIcon.setOnClickListener(v -> {
+                Toast.makeText(this, "Notifications", Toast.LENGTH_SHORT).show();
+                // TODO: Open notifications panel
+            });
+        }
 
-        profileIcon.setOnClickListener(v -> {
-            Toast.makeText(this, "Profile Settings", Toast.LENGTH_SHORT).show();
-            // TODO: Open profile settings
-        });
+        if (profileIcon != null) {
+            profileIcon.setOnClickListener(v -> {
+                Toast.makeText(this, "Profile Settings", Toast.LENGTH_SHORT).show();
+                // TODO: Open profile settings
+            });
+        }
 
         // Action Card Click Listeners
-        cardTotalEmp.setOnClickListener(v -> {
-            Toast.makeText(this, "Employee Management - Coming Soon!", Toast.LENGTH_SHORT).show();
-            // TODO: Implement Employee Management functionality
-        });
+        if (cardTotalEmp != null) {
+            cardTotalEmp.setOnClickListener(v -> {
+                Toast.makeText(this, "Employee Management - Coming Soon!", Toast.LENGTH_SHORT).show();
+                // TODO: Implement Employee Management functionality
+            });
+        }
         
-        cardPortfolio.setOnClickListener(v -> {
-            Intent intent = new Intent(this, RBHEmpLinksActivity.class);
-            intent.putExtra("USERNAME", userName);
-            intent.putExtra("USER_ID", getUserIdFromUsername(userName));
-            intent.putExtra("SOURCE_PANEL", "RBH_PANEL");
-            startActivity(intent);
-        });
+        if (cardTeam != null) {
+            cardTeam.setOnClickListener(v -> {
+                Toast.makeText(this, "Data Analytics - Coming Soon!", Toast.LENGTH_SHORT).show();
+                // TODO: Implement Data Analytics functionality
+            });
+        }
         
-        cardTeam.setOnClickListener(v -> {
-            Toast.makeText(this, "Data Analytics - Coming Soon!", Toast.LENGTH_SHORT).show();
-            // TODO: Implement Data Analytics functionality
-        });
+        if (cardReports != null) {
+            cardReports.setOnClickListener(v -> {
+                Toast.makeText(this, "Work Links - Coming Soon!", Toast.LENGTH_SHORT).show();
+                // TODO: Implement Work Links functionality
+            });
+        }
         
-        cardReports.setOnClickListener(v -> {
-            Toast.makeText(this, "Work Links - Coming Soon!", Toast.LENGTH_SHORT).show();
-            // TODO: Implement Work Links functionality
-        });
+        if (cardAnalytics != null) {
+            cardAnalytics.setOnClickListener(v -> {
+                Intent intent = new Intent(this, RBHEmpMasterActivity.class);
+                intent.putExtra("USERNAME", userName);
+                intent.putExtra("SOURCE_PANEL", "RBH_PANEL");
+                startActivity(intent);
+            });
+        }
         
-        cardAnalytics.setOnClickListener(v -> {
-            Intent intent = new Intent(this, RBHEmpMasterActivity.class);
-            intent.putExtra("USERNAME", userName);
-            intent.putExtra("SOURCE_PANEL", "RBH_PANEL");
-            startActivity(intent);
-        });
+        if (cardStrategy != null) {
+            cardStrategy.setOnClickListener(v -> {
+                Intent intent = new Intent(this, RBHActiveEmpListActivity.class);
+                intent.putExtra("USERNAME", userName);
+                intent.putExtra("USER_ID", getUserIdFromUsername(userName));
+                startActivity(intent);
+            });
+        }
         
-        cardStrategy.setOnClickListener(v -> {
-            Intent intent = new Intent(this, RBHActiveEmpListActivity.class);
-            intent.putExtra("USERNAME", userName);
-            intent.putExtra("USER_ID", getUserIdFromUsername(userName));
-            startActivity(intent);
-        });
+        if (cardPerformance != null) {
+            cardPerformance.setOnClickListener(v -> {
+                Intent intent = new Intent(this, RBHMySdsaPanelActivity.class);
+                intent.putExtra("USERNAME", userName);
+                intent.putExtra("USER_ID", userId);
+                startActivity(intent);
+            });
+        }
         
-        cardPerformance.setOnClickListener(v -> {
-            Intent intent = new Intent(this, RBHMySdsaPanelActivity.class);
-            intent.putExtra("USERNAME", userName);
-            intent.putExtra("USER_ID", userId);
-            startActivity(intent);
-        });
+        if (cardGrowth != null) {
+            cardGrowth.setOnClickListener(v -> {
+                Intent intent = new Intent(this, RegionalBusinessHeadMyPartnerPanelActivity.class);
+                intent.putExtra("USERNAME", userName);
+                startActivity(intent);
+            });
+        }
         
-        cardGrowth.setOnClickListener(v -> {
-            Intent intent = new Intent(this, RegionalBusinessHeadMyPartnerPanelActivity.class);
-            intent.putExtra("USERNAME", userName);
-            startActivity(intent);
-        });
+        if (cardInnovation != null) {
+            cardInnovation.setOnClickListener(v -> {
+                Intent intent = new Intent(this, RBHMyAgentPanelActivity.class);
+                intent.putExtra("USERNAME", userName);
+                intent.putExtra("USER_ID", userId); // Pass the actual user ID
+                startActivity(intent);
+            });
+        }
         
-        cardInnovation.setOnClickListener(v -> {
-            Intent intent = new Intent(this, RBHMyAgentPanelActivity.class);
-            intent.putExtra("USERNAME", userName);
-            intent.putExtra("USER_ID", userId); // Pass the actual user ID
-            startActivity(intent);
-        });
+        if (cardPartnerships != null) {
+            cardPartnerships.setOnClickListener(v -> {
+                Intent intent = new Intent(this, RBHPayoutPanelActivity.class);
+                intent.putExtra("USERNAME", userName);
+                startActivity(intent);
+            });
+        }
         
-        cardPartnerships.setOnClickListener(v -> {
-            Intent intent = new Intent(this, RBHPayoutPanelActivity.class);
-            intent.putExtra("USERNAME", userName);
-            startActivity(intent);
-        });
+        if (cardMarketAnalysis != null) {
+            cardMarketAnalysis.setOnClickListener(v -> {
+                Intent intent = new Intent(this, DsaCodeListActivity.class);
+                intent.putExtra("USERNAME", userName);
+                intent.putExtra("SOURCE_PANEL", "RBH_PANEL");
+                startActivity(intent);
+            });
+        }
         
-        cardMarketAnalysis.setOnClickListener(v -> {
-            Intent intent = new Intent(this, DsaCodeListActivity.class);
-            intent.putExtra("USERNAME", userName);
-            intent.putExtra("SOURCE_PANEL", "RBH_PANEL");
-            startActivity(intent);
-        });
-        
-        cardRiskManagement.setOnClickListener(v -> {
-            Intent intent = new Intent(this, RBHBankersPanelActivity.class);
-            intent.putExtra("USERNAME", userName);
-            startActivity(intent);
-        });
-        
-        cardCompliance.setOnClickListener(v -> {
-            Intent intent = new Intent(this, RBHPortfolioPanelActivity.class);
-            intent.putExtra("USERNAME", userName);
-            startActivity(intent);
-        });
-        
-        cardBudget.setOnClickListener(v -> {
-            Intent intent = new Intent(this, RBHInsurancePanelActivity.class);
-            intent.putExtra("USERNAME", userName);
-            startActivity(intent);
-        });
+        if (cardCompliance != null) {
+            cardCompliance.setOnClickListener(v -> {
+                Intent intent = new Intent(this, RBHPortfolioPanelActivity.class);
+                intent.putExtra("USERNAME", userName);
+                startActivity(intent);
+            });
+        }
     }
 
     private void updateWelcomeMessage() {
@@ -212,7 +230,6 @@ public class RegionalBusinessHeadPanelActivity extends AppCompatActivity {
         totalEmpCount.setText("0");
         totalSdsaCount.setText("0");
         totalPartnerCount.setText("0");
-        totalPortfolioCount.setText("0");
         totalAgentCount.setText("0");
     }
 

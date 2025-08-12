@@ -940,6 +940,12 @@
             android:label="RBH Portfolio Management"
             android:parentActivityName=".RegionalBusinessHeadPanelActivity" />
         <activity
+            android:name=".RBHPortfolioActivity"
+            android:exported="false"
+            android:label="RBH Portfolio Lists"
+            android:parentActivityName=".RegionalBusinessHeadPanelActivity"
+            android:theme="@style/FullscreenTheme" />
+        <activity
             android:name=".RBHInsurancePanelActivity"
             android:exported="false"
             android:label="RBH Insurance Management"
