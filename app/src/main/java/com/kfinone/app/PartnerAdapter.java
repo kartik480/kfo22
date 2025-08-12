@@ -18,10 +18,10 @@ public class PartnerAdapter extends ArrayAdapter<PartnerUser> {
     private List<PartnerUser> filteredPartnerList;
 
     public PartnerAdapter(Context context, List<PartnerUser> partnerList) {
-        super(context, 0, partnerList);
+        super(context, 0, partnerList != null ? partnerList : new ArrayList<>());
         this.context = context;
-        this.partnerList = partnerList;
-        this.filteredPartnerList = new ArrayList<>(partnerList);
+        this.partnerList = partnerList != null ? new ArrayList<>(partnerList) : new ArrayList<>();
+        this.filteredPartnerList = new ArrayList<>(this.partnerList);
     }
 
     @Override
@@ -43,12 +43,11 @@ public class PartnerAdapter extends ArrayAdapter<PartnerUser> {
             convertView = LayoutInflater.from(context).inflate(R.layout.partner_list_item, parent, false);
             holder = new ViewHolder();
             holder.partnerCard = convertView.findViewById(R.id.partnerCard);
-            holder.nameText = convertView.findViewById(R.id.nameText);
-            holder.companyText = convertView.findViewById(R.id.companyText);
-            holder.phoneText = convertView.findViewById(R.id.phoneText);
-            holder.emailText = convertView.findViewById(R.id.emailText);
-            holder.locationText = convertView.findViewById(R.id.locationText);
-            holder.statusText = convertView.findViewById(R.id.statusText);
+            holder.nameText = convertView.findViewById(R.id.partnerName);
+            holder.companyText = convertView.findViewById(R.id.partnerCompany);
+            holder.phoneText = convertView.findViewById(R.id.partnerPhone);
+            holder.emailText = convertView.findViewById(R.id.partnerEmail);
+            holder.statusText = convertView.findViewById(R.id.partnerStatus);
             holder.partnerTypeTag = convertView.findViewById(R.id.partnerTypeTag);
             holder.locationTag = convertView.findViewById(R.id.locationTag);
             convertView.setTag(holder);
@@ -80,13 +79,7 @@ public class PartnerAdapter extends ArrayAdapter<PartnerUser> {
             holder.emailText.setVisibility(View.GONE);
         }
         
-        // Set location information
-        if (partner.getLocation() != null && !partner.getLocation().trim().isEmpty()) {
-            holder.locationText.setVisibility(View.VISIBLE);
-            holder.locationText.setText(partner.getLocation());
-        } else {
-            holder.locationText.setVisibility(View.GONE);
-        }
+        // Location information is not displayed in this layout
         
         // Set status with color
         if (partner.isActive()) {
@@ -122,15 +115,17 @@ public class PartnerAdapter extends ArrayAdapter<PartnerUser> {
         TextView companyText;
         TextView phoneText;
         TextView emailText;
-        TextView locationText;
         TextView statusText;
         TextView partnerTypeTag;
         TextView locationTag;
     }
 
     public void updateData(List<PartnerUser> newData) {
-        partnerList.clear();
-        partnerList.addAll(newData);
+        if (newData != null) {
+            // Create new lists to avoid clearing the original data
+            this.partnerList = new ArrayList<>(newData);
+            this.filteredPartnerList = new ArrayList<>(newData);
+        }
         notifyDataSetChanged();
     }
 

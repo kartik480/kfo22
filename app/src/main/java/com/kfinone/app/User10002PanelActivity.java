@@ -65,9 +65,6 @@ public class User10002PanelActivity extends AppCompatActivity implements Navigat
     private TextView specialMessageText;
 
     // Quick access boxes
-    private MaterialCardView empLinksBox;
-    private MaterialCardView dataLinksBox;
-    private MaterialCardView workLinksBox;
     private MaterialCardView employeeBox;
     private MaterialCardView sdsaBox;
     private MaterialCardView partnerBox;
@@ -177,9 +174,7 @@ public class User10002PanelActivity extends AppCompatActivity implements Navigat
         specialMessageText = findViewById(R.id.specialMessageText);
 
         // Quick access boxes
-        empLinksBox = findViewById(R.id.empLinksBox);
-        dataLinksBox = findViewById(R.id.dataLinksBox);
-        workLinksBox = findViewById(R.id.workLinksBox);
+
         employeeBox = findViewById(R.id.employeeBox);
         sdsaBox = findViewById(R.id.sdsaBox);
         partnerBox = findViewById(R.id.partnerBox);
@@ -239,7 +234,7 @@ public class User10002PanelActivity extends AppCompatActivity implements Navigat
         totalEmpCard.setOnClickListener(v -> {
             String empCount = totalEmpCount.getText().toString();
             Toast.makeText(this, "Total Employees: " + empCount, Toast.LENGTH_SHORT).show();
-            Intent intent = new Intent(this, ActiveEmpListActivity.class);
+            Intent intent = new Intent(this, DirectorEmployeeActivity.class);
             passUserDataToIntent(intent);
             startActivity(intent);
         });
@@ -247,7 +242,7 @@ public class User10002PanelActivity extends AppCompatActivity implements Navigat
         totalSdsaCard.setOnClickListener(v -> {
             String sdsaCount = totalSdsaCount.getText().toString();
             Toast.makeText(this, "Total SDSA: " + sdsaCount, Toast.LENGTH_SHORT).show();
-            Intent intent = new Intent(this, MySdsaActivity.class);
+            Intent intent = new Intent(this, DirectorSdsaActivity.class);
             passUserDataToIntent(intent);
             startActivity(intent);
         });
@@ -279,23 +274,6 @@ public class User10002PanelActivity extends AppCompatActivity implements Navigat
 
 
         // Quick access boxes
-        empLinksBox.setOnClickListener(v -> {
-            Intent intent = new Intent(this, DirectorEmpLinksActivity.class);
-            passUserDataToIntent(intent);
-            startActivity(intent);
-        });
-
-        dataLinksBox.setOnClickListener(v -> {
-            Intent intent = new Intent(this, DirectorDataLinksActivity.class);
-            passUserDataToIntent(intent);
-            startActivity(intent);
-        });
-
-        workLinksBox.setOnClickListener(v -> {
-            Intent intent = new Intent(this, DirectorWorkLinksActivity.class);
-            passUserDataToIntent(intent);
-            startActivity(intent);
-        });
 
         employeeBox.setOnClickListener(v -> {
             Intent intent = new Intent(this, DirectorEmployeeActivity.class);

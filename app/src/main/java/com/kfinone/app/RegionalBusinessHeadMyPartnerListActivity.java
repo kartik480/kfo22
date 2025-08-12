@@ -194,12 +194,15 @@ public class RegionalBusinessHeadMyPartnerListActivity extends AppCompatActivity
                 partnerAdapter.updateData(partnerList);
                 System.out.println("Adapter updated successfully");
                 
-                // Show/hide empty state
-                if (partnerList.isEmpty()) {
-                    System.out.println("Partner list is empty, showing empty state");
+                // Show/hide empty state based on adapter data
+                int adapterCount = partnerAdapter.getCount();
+                System.out.println("Adapter count: " + adapterCount + ", Partner list size: " + partnerList.size());
+                
+                if (adapterCount == 0) {
+                    System.out.println("Adapter has no data, showing empty state");
                     showEmptyState(true);
                 } else {
-                    System.out.println("Partner list has data, hiding empty state");
+                    System.out.println("Adapter has " + adapterCount + " items, hiding empty state");
                     showEmptyState(false);
                 }
                 
@@ -277,9 +280,16 @@ public class RegionalBusinessHeadMyPartnerListActivity extends AppCompatActivity
     }
 
     private void showEmptyState(boolean show) {
+        System.out.println("showEmptyState called with show=" + show);
+        System.out.println("Current adapter count: " + (partnerAdapter != null ? partnerAdapter.getCount() : "null"));
+        System.out.println("Current partner list size: " + (partnerList != null ? partnerList.size() : "null"));
+        
         emptyStateLayout.setVisibility(show ? View.VISIBLE : View.GONE);
         partnerListView.setVisibility(show ? View.GONE : View.VISIBLE);
         loadingProgress.setVisibility(View.GONE);
+        
+        System.out.println("Empty state visibility: " + (show ? "VISIBLE" : "GONE"));
+        System.out.println("ListView visibility: " + (show ? "GONE" : "VISIBLE"));
     }
 
     private void updateWelcomeMessage(String userName) {

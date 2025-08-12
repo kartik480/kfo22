@@ -156,11 +156,6 @@ public class SpecialPanelActivity extends AppCompatActivity implements Navigatio
         });
 
         // Quick Access Boxes - Row 1
-        findViewById(R.id.empLinksBox).setOnClickListener(v -> {
-            Intent intent = new Intent(this, ManagingDirectorEmpLinksActivity.class);
-            passUserDataToIntent(intent);
-            startActivity(intent);
-        });
 
         findViewById(R.id.employeeBox).setOnClickListener(v -> {
             Intent intent = new Intent(this, MyEmpActivity.class);
