@@ -5,11 +5,12 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
@@ -21,7 +22,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import android.content.Intent;
+import android.os.Handler;
+import android.os.Looper;
 
 public class MyAgentActivity extends AppCompatActivity {
     private static final String TAG = "MyAgentActivity";
@@ -31,20 +36,30 @@ public class MyAgentActivity extends AppCompatActivity {
     private TextView backButton;
     private Spinner agentTypeSpinner, branchStateSpinner, branchLocationSpinner;
     private Button filterButton, resetButton, loadAllButton;
-    private LinearLayout tableContent;
+    private RecyclerView agentRecyclerView;
     private RequestQueue requestQueue;
 
     // Data
     private List<AgentItem> agentList = new ArrayList<>();
+    private AgentAdapter agentAdapter;
+    
+    // Background processing
+    private ExecutorService executorService;
+    private Handler mainHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_agent);
 
+        // Initialize background processing
+        executorService = Executors.newFixedThreadPool(2);
+        mainHandler = new Handler(Looper.getMainLooper());
+
         initializeViews();
         setupVolley();
         setupClickListeners();
+        setupRecyclerView();
         loadDropdownData();
         loadAgentData();
     }
@@ -57,7 +72,13 @@ public class MyAgentActivity extends AppCompatActivity {
         filterButton = findViewById(R.id.filterButton);
         resetButton = findViewById(R.id.resetButton);
         loadAllButton = findViewById(R.id.loadAllButton);
-        tableContent = findViewById(R.id.tableContent);
+        agentRecyclerView = findViewById(R.id.agentRecyclerView);
+    }
+
+    private void setupRecyclerView() {
+        agentAdapter = new AgentAdapter(agentList);
+        agentRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        agentRecyclerView.setAdapter(agentAdapter);
     }
 
     private void setupVolley() {
@@ -284,33 +305,29 @@ public class MyAgentActivity extends AppCompatActivity {
     }
 
     private void loadAgentData() {
-        // Show loading message
-        tableContent.removeAllViews();
-        TextView loadingText = new TextView(this);
-        loadingText.setText("Loading agent data...");
-        loadingText.setTextSize(16);
-        loadingText.setTextColor(getResources().getColor(android.R.color.darker_gray));
-        loadingText.setGravity(android.view.Gravity.CENTER);
-        loadingText.setPadding(20, 50, 20, 50);
-        tableContent.addView(loadingText);
+        // Show loading state
+        showLoadingState();
         
         String url = BASE_URL + "get_all_agent_data_simple.php";
         
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
             response -> {
-                try {
-                    String status = response.getString("status");
-                    if ("success".equals(status)) {
-                        JSONArray data = response.getJSONArray("data");
-                        parseAgentData(data);
-                    } else {
-                        // Show sample data if API fails
+                // Process data in background thread
+                executorService.execute(() -> {
+                    try {
+                        String status = response.getString("status");
+                        if ("success".equals(status)) {
+                            JSONArray data = response.getJSONArray("data");
+                            parseAgentData(data);
+                        } else {
+                            // Show sample data if API fails
+                            displaySampleData();
+                        }
+                    } catch (JSONException e) {
+                        Log.e(TAG, "Error parsing agent data: " + e.getMessage());
                         displaySampleData();
                     }
-                } catch (JSONException e) {
-                    Log.e(TAG, "Error parsing agent data: " + e.getMessage());
-                    displaySampleData();
-                }
+                });
             },
             error -> {
                 Log.e(TAG, "Error loading agent data: " + error.getMessage());
@@ -362,31 +379,37 @@ public class MyAgentActivity extends AppCompatActivity {
                 newAgentList.add(agentItem);
                 Log.d(TAG, "Added agent: " + agentItem.getFullName());
             }
-            agentList.clear();
-            agentList.addAll(newAgentList);
-            displayAllAgents();
             
-            Log.d(TAG, "Agent list updated, total items: " + agentList.size());
+            // Update UI on main thread
+            mainHandler.post(() -> {
+                agentList.clear();
+                agentList.addAll(newAgentList);
+                agentAdapter.notifyDataSetChanged();
+                
+                Log.d(TAG, "Agent list updated, total items: " + agentList.size());
+                
+                if (newAgentList.isEmpty()) {
+                    Log.w(TAG, "No agent data found");
+                    Toast.makeText(this, "No agent data found", Toast.LENGTH_SHORT).show();
+                } else {
+                    Log.d(TAG, "Successfully loaded " + newAgentList.size() + " agents");
+                    Toast.makeText(this, "Found " + newAgentList.size() + " agents!", Toast.LENGTH_SHORT).show();
+                }
+            });
             
-            if (newAgentList.isEmpty()) {
-                Log.w(TAG, "No agent data found");
-                Toast.makeText(this, "No agent data found", Toast.LENGTH_SHORT).show();
-            } else {
-                Log.d(TAG, "Successfully loaded " + newAgentList.size() + " agents");
-                Toast.makeText(this, "Found " + newAgentList.size() + " agents!", Toast.LENGTH_SHORT).show();
-            }
         } catch (Exception e) {
             Log.e(TAG, "Error parsing agent data: " + e.getMessage());
-            displaySampleData();
+            mainHandler.post(this::displaySampleData);
         }
     }
 
+    private void showLoadingState() {
+        agentList.clear();
+        agentAdapter.notifyDataSetChanged();
+    }
+
     private void displayAllAgents() {
-        tableContent.removeAllViews();
-        addTableHeader();
-        for (AgentItem agent : agentList) {
-            addTableRow(agent);
-        }
+        agentAdapter.notifyDataSetChanged();
     }
 
     // Maps to store name to ID mappings
@@ -425,18 +448,25 @@ public class MyAgentActivity extends AppCompatActivity {
         
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, jsonBody,
             response -> {
-                try {
-                    String status = response.getString("status");
-                    if ("success".equals(status)) {
-                        JSONArray data = response.getJSONArray("data");
-                        parseFilteredAgentData(data);
-                    } else {
-                        Toast.makeText(MyAgentActivity.this, "No agents found with selected filters", Toast.LENGTH_SHORT).show();
+                // Process data in background thread
+                executorService.execute(() -> {
+                    try {
+                        String status = response.getString("status");
+                        if ("success".equals(status)) {
+                            JSONArray data = response.getJSONArray("data");
+                            parseFilteredAgentData(data);
+                        } else {
+                            mainHandler.post(() -> 
+                                Toast.makeText(MyAgentActivity.this, "No agents found with selected filters", Toast.LENGTH_SHORT).show()
+                            );
+                        }
+                    } catch (JSONException e) {
+                        Log.e(TAG, "Error parsing filtered agent data: " + e.getMessage());
+                        mainHandler.post(() -> 
+                            Toast.makeText(MyAgentActivity.this, "Error parsing response", Toast.LENGTH_SHORT).show()
+                        );
                     }
-                } catch (JSONException e) {
-                    Log.e(TAG, "Error parsing filtered agent data: " + e.getMessage());
-                    Toast.makeText(MyAgentActivity.this, "Error parsing response", Toast.LENGTH_SHORT).show();
-                }
+                });
             },
             error -> {
                 Log.e(TAG, "Error filtering agents: " + error.getMessage());
@@ -471,30 +501,32 @@ public class MyAgentActivity extends AppCompatActivity {
                 Log.d(TAG, "Added filtered agent: " + agentItem.getFullName());
             }
             
-            // Display filtered results
-            tableContent.removeAllViews();
-            addTableHeader();
-            for (AgentItem agent : filteredList) {
-                addTableRow(agent);
-            }
+            // Update UI on main thread
+            mainHandler.post(() -> {
+                agentList.clear();
+                agentList.addAll(filteredList);
+                agentAdapter.notifyDataSetChanged();
+                
+                Log.d(TAG, "Filtered agent list updated, total items: " + filteredList.size());
+                
+                if (filteredList.isEmpty()) {
+                    Log.w(TAG, "No filtered agent data found");
+                    Toast.makeText(this, "No agents found with selected filters", Toast.LENGTH_SHORT).show();
+                } else {
+                    Log.d(TAG, "Successfully filtered " + filteredList.size() + " agents");
+                    Toast.makeText(this, "Found " + filteredList.size() + " matching agents!", Toast.LENGTH_SHORT).show();
+                }
+            });
             
-            Log.d(TAG, "Filtered agent list updated, total items: " + filteredList.size());
-            
-            if (filteredList.isEmpty()) {
-                Log.w(TAG, "No filtered agent data found");
-                Toast.makeText(this, "No agents found with selected filters", Toast.LENGTH_SHORT).show();
-            } else {
-                Log.d(TAG, "Successfully filtered " + filteredList.size() + " agents");
-                Toast.makeText(this, "Found " + filteredList.size() + " matching agents!", Toast.LENGTH_SHORT).show();
-            }
         } catch (Exception e) {
             Log.e(TAG, "Error parsing filtered agent data: " + e.getMessage());
-            Toast.makeText(this, "Error parsing filtered data", Toast.LENGTH_SHORT).show();
+            mainHandler.post(() -> 
+                Toast.makeText(this, "Error parsing filtered data", Toast.LENGTH_SHORT).show()
+            );
         }
     }
 
     private void filterAgents(String agentType, String branchState, String branchLocation) {
-        tableContent.removeAllViews();
         List<AgentItem> filteredList = new ArrayList<>();
         
         for (AgentItem agent : agentList) {
@@ -507,182 +539,31 @@ public class MyAgentActivity extends AppCompatActivity {
             }
         }
         
-        tableContent.removeAllViews();
-        addTableHeader();
-        for (AgentItem agent : filteredList) {
-            addTableRow(agent);
-        }
+        agentList.clear();
+        agentList.addAll(filteredList);
+        agentAdapter.notifyDataSetChanged();
         
         Toast.makeText(this, "Found " + filteredList.size() + " matching agents", Toast.LENGTH_SHORT).show();
     }
 
-    private void addTableHeader() {
-        LinearLayout headerLayout = new LinearLayout(this);
-        headerLayout.setLayoutParams(new LinearLayout.LayoutParams(
-            LinearLayout.LayoutParams.MATCH_PARENT,
-            LinearLayout.LayoutParams.WRAP_CONTENT
-        ));
-        headerLayout.setOrientation(LinearLayout.HORIZONTAL);
-        headerLayout.setPadding(8, 12, 8, 12);
-        headerLayout.setBackgroundResource(R.drawable.table_header_background);
-
-        // Header columns
-        String[] headers = {"Name", "Company", "Phone", "Type", "State", "Location", "Action"};
-        float[] weights = {1.5f, 1.5f, 1.2f, 1.2f, 1.2f, 1.2f, 1.0f};
-
-        for (int i = 0; i < headers.length; i++) {
-            TextView headerText = new TextView(this);
-            LinearLayout.LayoutParams headerParams = new LinearLayout.LayoutParams(
-                0, LinearLayout.LayoutParams.WRAP_CONTENT);
-            headerParams.weight = weights[i];
-            headerText.setLayoutParams(headerParams);
-            headerText.setText(headers[i]);
-            headerText.setTextSize(14);
-            headerText.setTextColor(getResources().getColor(android.R.color.white));
-            headerText.setGravity(android.view.Gravity.CENTER);
-            headerText.setTypeface(null, android.graphics.Typeface.BOLD);
-            headerLayout.addView(headerText);
-        }
-
-        tableContent.addView(headerLayout);
-    }
-
-    private void addTableRow(AgentItem agent) {
-        LinearLayout rowLayout = new LinearLayout(this);
-        rowLayout.setLayoutParams(new LinearLayout.LayoutParams(
-            LinearLayout.LayoutParams.MATCH_PARENT,
-            LinearLayout.LayoutParams.WRAP_CONTENT
-        ));
-        rowLayout.setOrientation(LinearLayout.HORIZONTAL);
-        rowLayout.setPadding(8, 12, 8, 12);
-        
-        // Alternate row colors for better readability
-        if ((tableContent.getChildCount() - 1) % 2 == 0) { // -1 to account for header
-            rowLayout.setBackgroundColor(getResources().getColor(android.R.color.white));
-        } else {
-            rowLayout.setBackgroundColor(getResources().getColor(android.R.color.background_light));
-        }
-
-        // Add border to each row
-        rowLayout.setPadding(8, 12, 8, 12);
-        rowLayout.setBackgroundResource(R.drawable.table_row_background);
-
-        // Full Name
-        TextView fullNameText = createTableCell(agent.getFullName(), 1.5f);
-        rowLayout.addView(fullNameText);
-
-        // Company Name
-        TextView companyText = createTableCell(agent.getCompanyName(), 1.5f);
-        rowLayout.addView(companyText);
-
-        // Mobile
-        TextView mobileText = createTableCell(agent.getPhoneNumber(), 1.2f);
-        rowLayout.addView(mobileText);
-
-        // Agent Type
-        TextView agentTypeText = createTableCell(agent.getPartnerType(), 1.2f);
-        rowLayout.addView(agentTypeText);
-
-        // Branch State
-        TextView branchStateText = createTableCell(agent.getState(), 1.2f);
-        rowLayout.addView(branchStateText);
-
-        // Branch Location
-        TextView branchLocationText = createTableCell(agent.getLocation(), 1.2f);
-        rowLayout.addView(branchLocationText);
-
-        // Action Button
-        Button actionButton = new Button(this);
-        LinearLayout.LayoutParams actionParams = new LinearLayout.LayoutParams(
-            0, LinearLayout.LayoutParams.WRAP_CONTENT);
-        actionParams.weight = 1.0f;
-        actionParams.setMargins(4, 4, 4, 4);
-        actionButton.setLayoutParams(actionParams);
-        actionButton.setText("View");
-        actionButton.setTextSize(11);
-        actionButton.setPadding(8, 6, 8, 6);
-        actionButton.setBackgroundColor(getResources().getColor(android.R.color.holo_blue_dark));
-        actionButton.setTextColor(getResources().getColor(android.R.color.white));
-        actionButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showAgentDetails(agent);
-            }
-        });
-        rowLayout.addView(actionButton);
-
-        tableContent.addView(rowLayout);
-    }
-
-    private TextView createTableCell(String text, float weight) {
-        TextView textView = new TextView(this);
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-            0, LinearLayout.LayoutParams.WRAP_CONTENT);
-        params.weight = weight;
-        params.setMargins(4, 4, 4, 4);
-        textView.setLayoutParams(params);
-        textView.setText(text.isEmpty() ? "-" : text);
-        textView.setTextSize(12);
-        textView.setTextColor(getResources().getColor(android.R.color.black));
-        textView.setGravity(android.view.Gravity.CENTER);
-        textView.setPadding(4, 4, 4, 4);
-        return textView;
-    }
-
-    private void showAgentDetails(AgentItem agent) {
-        // Create a dialog to show agent details
-        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
-        builder.setTitle("Agent Details - " + agent.getFullName());
-        
-        String details = "Name: " + agent.getFullName() + "\n" +
-                        "Company: " + agent.getCompanyName() + "\n" +
-                        "Phone: " + agent.getPhoneNumber() + "\n" +
-                        "Alternative Phone: " + agent.getAlternativePhoneNumber() + "\n" +
-                        "Email: " + agent.getEmailId() + "\n" +
-                        "Type: " + agent.getPartnerType() + "\n" +
-                        "State: " + agent.getState() + "\n" +
-                        "Location: " + agent.getLocation() + "\n" +
-                        "Address: " + agent.getAddress() + "\n" +
-                        "Created By: " + agent.getCreatedBy();
-        
-        builder.setMessage(details);
-        builder.setPositiveButton("Close", null);
-        builder.show();
-    }
-
     private void displaySampleData() {
-        // Only fetch real data here. No sample data.
+        // Create sample data for testing
+        List<AgentItem> sampleList = new ArrayList<>();
+        sampleList.add(new AgentItem("John Doe", "ABC Corp", "1234567890", "0987654321", "john@abc.com", "Business", "Maharashtra", "Mumbai", "Mumbai Address", "", "Admin", "Admin"));
+        sampleList.add(new AgentItem("Jane Smith", "XYZ Ltd", "9876543210", "0123456789", "jane@xyz.com", "Individual", "Delhi", "New Delhi", "Delhi Address", "", "Admin", "Admin"));
+        
+        agentList.clear();
+        agentList.addAll(sampleList);
+        agentAdapter.notifyDataSetChanged();
+        
+        Toast.makeText(this, "Loaded sample data", Toast.LENGTH_SHORT).show();
     }
 
     @Override
-    public void onBackPressed() {
-        // Check if we came from Director panel
-        String sourcePanel = getIntent().getStringExtra("SOURCE_PANEL");
-        if ("DIRECTOR_PANEL".equals(sourcePanel)) {
-            // Navigate back to Director Agent Activity
-            Intent intent = new Intent(this, DirectorAgentActivity.class);
-            passUserDataToIntent(intent);
-            startActivity(intent);
-            finish();
-        } else {
-            // Default behavior
-            super.onBackPressed();
-        }
-    }
-
-    private void passUserDataToIntent(Intent intent) {
-        // Get current user data and pass it to the new activity
-        Intent currentIntent = getIntent();
-        if (currentIntent != null) {
-            String userId = currentIntent.getStringExtra("USER_ID");
-            String firstName = currentIntent.getStringExtra("FIRST_NAME");
-            String lastName = currentIntent.getStringExtra("LAST_NAME");
-            String fullName = currentIntent.getStringExtra("USERNAME");
-            
-            if (userId != null) intent.putExtra("USER_ID", userId);
-            if (firstName != null) intent.putExtra("FIRST_NAME", firstName);
-            if (lastName != null) intent.putExtra("LAST_NAME", lastName);
-            if (fullName != null) intent.putExtra("USERNAME", fullName);
+    protected void onDestroy() {
+        super.onDestroy();
+        if (executorService != null) {
+            executorService.shutdown();
         }
     }
 } 

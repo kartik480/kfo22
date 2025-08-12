@@ -68,7 +68,10 @@ public class DirectorTeamEmpLinksActivity extends AppCompatActivity {
         public final String managerName;
         public final String managerDesignation;
         public final List<String> manageIcons;
-        public ReportingUser(String username, String fullname, String mobile, String email, String reportingTo, String employeeNo, String designationName, String managerName, String managerDesignation, List<String> manageIcons) {
+        public final String department;
+        public final Integer status;
+        
+        public ReportingUser(String username, String fullname, String mobile, String email, String reportingTo, String employeeNo, String designationName, String managerName, String managerDesignation, List<String> manageIcons, String department, Integer status) {
             this.username = username;
             this.fullname = fullname;
             this.mobile = mobile;
@@ -79,6 +82,8 @@ public class DirectorTeamEmpLinksActivity extends AppCompatActivity {
             this.managerName = managerName;
             this.managerDesignation = managerDesignation;
             this.manageIcons = manageIcons;
+            this.department = department;
+            this.status = status;
         }
     }
 
@@ -95,41 +100,75 @@ public class DirectorTeamEmpLinksActivity extends AppCompatActivity {
         @Override
         public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
             ReportingUser user = users.get(position);
-            holder.employeeName.setText("Name: " + user.fullname);
-            holder.employeeId.setText("Employee ID: " + (user.employeeNo != null ? user.employeeNo : "N/A"));
-            holder.mobile.setText("Phone: " + (user.mobile != null ? user.mobile : "N/A"));
-            holder.email.setText("Email: " + (user.email != null ? user.email : "N/A"));
             
-            // Add designation and manager information
-            String designationText = "Designation: " + (user.designationName != null ? user.designationName : "N/A");
-            String managerText = "Reports to: " + (user.managerName != null ? user.managerName : "N/A") + 
-                               " (" + (user.managerDesignation != null ? user.managerDesignation : "N/A") + ")";
-            
-            // Format manage icons
-            if (user.manageIcons != null && !user.manageIcons.isEmpty()) {
-                holder.manageIcons.setText("Manage Icons: " + String.join(", ", user.manageIcons));
-            } else {
-                holder.manageIcons.setText("Manage Icons: None");
+            // Set employee name with designation
+            if (holder.employeeName != null) {
+                String nameText = user.fullname != null ? user.fullname : "N/A";
+                String designationText = user.designationName != null ? user.designationName : "N/A";
+                holder.employeeName.setText(nameText + " (" + designationText + ")");
             }
             
-            // Update the layout to show designation and manager info
-            holder.employeeName.setText("Name: " + user.fullname + " (" + (user.designationName != null ? user.designationName : "N/A") + ")");
-            holder.employeeId.setText("Employee ID: " + (user.employeeNo != null ? user.employeeNo : "N/A"));
-            holder.mobile.setText("Phone: " + (user.mobile != null ? user.mobile : "N/A"));
-            holder.email.setText("Email: " + (user.email != null ? user.email : "N/A"));
-            holder.manageIcons.setText("Reports to: " + (user.managerName != null ? user.managerName : "N/A") + 
-                                     " (" + (user.managerDesignation != null ? user.managerDesignation : "N/A") + ")");
+            // Set employee ID
+            if (holder.employeeId != null) {
+                String employeeIdText = "Employee ID: " + (user.employeeNo != null ? user.employeeNo : "N/A");
+                holder.employeeId.setText(employeeIdText);
+            }
+            
+            // Set contact information (combine mobile and email)
+            if (holder.mobile != null) {
+                StringBuilder contactInfo = new StringBuilder();
+                if (user.mobile != null && !user.mobile.isEmpty()) {
+                    contactInfo.append("Phone: ").append(user.mobile);
+                }
+                if (user.email != null && !user.email.isEmpty()) {
+                    if (contactInfo.length() > 0) contactInfo.append(" | ");
+                    contactInfo.append("Email: ").append(user.email);
+                }
+                if (contactInfo.length() == 0) {
+                    contactInfo.append("Contact info not available");
+                }
+                holder.mobile.setText(contactInfo.toString());
+            }
+            
+            // Set designation
+            if (holder.designation != null) {
+                String designationText = user.designationName != null ? user.designationName : "Designation: Not Assigned";
+                holder.designation.setText(designationText);
+            }
+            
+            // Set department
+            if (holder.department != null) {
+                String departmentText = "Department: " + (user.department != null ? user.department : "Not Assigned");
+                holder.department.setText(departmentText);
+            }
+            
+            // Set status
+            if (holder.status != null) {
+                String statusText = user.status != null && user.status == 1 ? "Active" : "Inactive";
+                holder.status.setText(statusText);
+            }
+            
+            // Set manage icons
+            if (holder.manageIcons != null) {
+                if (user.manageIcons != null && !user.manageIcons.isEmpty()) {
+                    holder.manageIcons.setText("Manage Icons: " + String.join(", ", user.manageIcons));
+                } else {
+                    holder.manageIcons.setText("Manage Icons: None");
+                }
+            }
         }
         @Override
         public int getItemCount() { return users.size(); }
         class ViewHolder extends RecyclerView.ViewHolder {
-            TextView employeeName, employeeId, mobile, email, manageIcons;
+            TextView employeeName, employeeId, mobile, manageIcons, designation, department, status;
             ViewHolder(View itemView) {
                 super(itemView);
-                employeeName = itemView.findViewById(R.id.employeeName);
-                employeeId = itemView.findViewById(R.id.employeeId);
-                mobile = itemView.findViewById(R.id.mobile);
-                email = itemView.findViewById(R.id.email);
+                employeeName = itemView.findViewById(R.id.nameText);
+                employeeId = itemView.findViewById(R.id.employeeNoText);
+                mobile = itemView.findViewById(R.id.contactText);
+                designation = itemView.findViewById(R.id.designationText);
+                department = itemView.findViewById(R.id.departmentText);
+                status = itemView.findViewById(R.id.statusText);
                 manageIcons = itemView.findViewById(R.id.manageIcons);
             }
         }
@@ -296,7 +335,9 @@ public class DirectorTeamEmpLinksActivity extends AppCompatActivity {
                                     user.optString("designation_name", ""),
                                     user.optString("manager_name", ""),
                                     user.optString("manager_designation", ""),
-                                    manageIcons
+                                    manageIcons,
+                                    user.optString("department", ""),
+                                    user.optInt("status", 1)
                                 ));
                             }
                             reportingUserAdapter.notifyDataSetChanged();
@@ -358,7 +399,9 @@ public class DirectorTeamEmpLinksActivity extends AppCompatActivity {
                                     user.optString("designation_name", ""),
                                     "", // manager name not available in this API
                                     "", // manager designation not available in this API
-                                    manageIcons
+                                    manageIcons,
+                                    user.optString("department", ""),
+                                    user.optInt("status", 1)
                                 ));
                             }
                             reportingUserAdapter.notifyDataSetChanged();

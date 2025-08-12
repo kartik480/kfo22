@@ -41,7 +41,7 @@ public class User10002PanelActivity extends AppCompatActivity implements Navigat
     private MaterialCardView totalPartnerCard;
     private MaterialCardView totalPortfolioCard;
     private MaterialCardView totalAgentCard;
-    private MaterialCardView totalPayoutCard;
+
 
     // Card counts
     private TextView totalEmpCount;
@@ -49,7 +49,7 @@ public class User10002PanelActivity extends AppCompatActivity implements Navigat
     private TextView totalPartnerCount;
     private TextView totalPortfolioCount;
     private TextView totalAgentCount;
-    private TextView totalPayoutCount;
+
 
     // Change indicators
     private TextView totalEmpChange;
@@ -57,7 +57,7 @@ public class User10002PanelActivity extends AppCompatActivity implements Navigat
     private TextView totalPartnerChange;
     private TextView totalPortfolioChange;
     private TextView totalAgentChange;
-    private TextView totalPayoutChange;
+
 
     // Welcome elements
     private TextView welcomeText;
@@ -119,13 +119,13 @@ public class User10002PanelActivity extends AppCompatActivity implements Navigat
         if (totalPartnerCount != null) totalPartnerCount.setText("0");
         if (totalPortfolioCount != null) totalPortfolioCount.setText("0");
         if (totalAgentCount != null) totalAgentCount.setText("0");
-        if (totalPayoutCount != null) totalPayoutCount.setText("0");
+
         if (totalEmpChange != null) totalEmpChange.setText("0");
         if (totalSdsaChange != null) totalSdsaChange.setText("0");
         if (totalPartnerChange != null) totalPartnerChange.setText("0");
         if (totalPortfolioChange != null) totalPortfolioChange.setText("0");
         if (totalAgentChange != null) totalAgentChange.setText("0");
-        if (totalPayoutChange != null) totalPayoutChange.setText("0");
+
     }
 
     private void initializeViews() {
@@ -153,7 +153,7 @@ public class User10002PanelActivity extends AppCompatActivity implements Navigat
         totalPartnerCard = findViewById(R.id.totalPartnerCard);
         totalPortfolioCard = findViewById(R.id.totalPortfolioCard);
         totalAgentCard = findViewById(R.id.totalAgentCard);
-        totalPayoutCard = findViewById(R.id.totalPayoutCard);
+
 
         // Card counts
         totalEmpCount = findViewById(R.id.totalEmpCount);
@@ -161,7 +161,7 @@ public class User10002PanelActivity extends AppCompatActivity implements Navigat
         totalPartnerCount = findViewById(R.id.totalPartnerCount);
         totalPortfolioCount = findViewById(R.id.totalPortfolioCount);
         totalAgentCount = findViewById(R.id.totalAgentCount);
-        totalPayoutCount = findViewById(R.id.totalPayoutCount);
+
 
         // Change indicators
         totalEmpChange = findViewById(R.id.totalEmpChange);
@@ -169,7 +169,7 @@ public class User10002PanelActivity extends AppCompatActivity implements Navigat
         totalPartnerChange = findViewById(R.id.totalPartnerChange);
         totalPortfolioChange = findViewById(R.id.totalPortfolioChange);
         totalAgentChange = findViewById(R.id.totalAgentChange);
-        totalPayoutChange = findViewById(R.id.totalPayoutChange);
+
 
         // Welcome elements
         welcomeText = findViewById(R.id.welcomeText);
@@ -276,11 +276,7 @@ public class User10002PanelActivity extends AppCompatActivity implements Navigat
             startActivity(intent);
         });
 
-        totalPayoutCard.setOnClickListener(v -> {
-            String payoutCount = totalPayoutCount.getText().toString();
-            Toast.makeText(this, "Total Payouts: " + payoutCount, Toast.LENGTH_SHORT).show();
-            // TODO: Navigate to payout activity
-        });
+
 
         // Quick access boxes
         empLinksBox.setOnClickListener(v -> {
@@ -366,7 +362,7 @@ public class User10002PanelActivity extends AppCompatActivity implements Navigat
         totalPartnerCard.startAnimation(fadeIn);
         totalPortfolioCard.startAnimation(fadeIn);
         totalAgentCard.startAnimation(fadeIn);
-        totalPayoutCard.startAnimation(fadeIn);
+
     }
 
     private void loadDashboardData() {
@@ -377,14 +373,14 @@ public class User10002PanelActivity extends AppCompatActivity implements Navigat
         totalPartnerCount.setText("45");
         totalPortfolioCount.setText("234");
         totalAgentCount.setText("67");
-        totalPayoutCount.setText("12");
+
 
         totalEmpChange.setText("+12% this month");
         totalSdsaChange.setText("+8% this month");
         totalPartnerChange.setText("+15% this month");
         totalPortfolioChange.setText("+22% this month");
         totalAgentChange.setText("+5% this month");
-        totalPayoutChange.setText("+18% this month");
+
     }
 
     private void updateWelcomeMessage() {

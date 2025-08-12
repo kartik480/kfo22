@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="8dp"
+    android:background="@drawable/table_row_background"
+    android:gravity="center_vertical">
+
+    <!-- Full Name -->
+    <TextView
+        android:id="@+id/fullNameText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1.5"
+        android:text="Name"
+        android:textSize="12sp"
+        android:textColor="@android:color/black"
+        android:gravity="center"
+        android:padding="4dp"
+        android:maxLines="2"
+        android:ellipsize="end" />
+
+    <!-- Company Name -->
+    <TextView
+        android:id="@+id/companyText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1.5"
+        android:text="Company"
+        android:textSize="12sp"
+        android:textColor="@android:color/black"
+        android:gravity="center"
+        android:padding="4dp"
+        android:maxLines="2"
+        android:ellipsize="end" />
+
+    <!-- Mobile -->
+    <TextView
+        android:id="@+id/mobileText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1.2"
+        android:text="Phone"
+        android:textSize="12sp"
+        android:textColor="@android:color/black"
+        android:gravity="center"
+        android:padding="4dp"
+        android:maxLines="1"
+        android:ellipsize="end" />
+
+    <!-- Agent Type -->
+    <TextView
+        android:id="@+id/agentTypeText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1.2"
+        android:text="Type"
+        android:textSize="12sp"
+        android:textColor="@android:color/black"
+        android:gravity="center"
+        android:padding="4dp"
+        android:maxLines="1"
+        android:ellipsize="end" />
+
+    <!-- Branch State -->
+    <TextView
+        android:id="@+id/branchStateText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1.2"
+        android:text="State"
+        android:textSize="12sp"
+        android:textColor="@android:color/black"
+        android:gravity="center"
+        android:padding="4dp"
+        android:maxLines="1"
+        android:ellipsize="end" />
+
+    <!-- Branch Location -->
+    <TextView
+        android:id="@+id/branchLocationText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1.2"
+        android:text="Location"
+        android:textSize="12sp"
+        android:textColor="@android:color/black"
+        android:gravity="center"
+        android:padding="4dp"
+        android:maxLines="1"
+        android:ellipsize="end" />
+
+    <!-- Action Button -->
+    <Button
+        android:id="@+id/actionButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1.0"
+        android:text="View"
+        android:textSize="11sp"
+        android:padding="8dp"
+        android:background="@android:color/holo_blue_dark"
+        android:textColor="@android:color/white"
+        android:layout_margin="4dp" />
+
+</LinearLayout>
