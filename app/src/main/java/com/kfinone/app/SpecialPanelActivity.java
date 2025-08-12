@@ -157,28 +157,33 @@ public class SpecialPanelActivity extends AppCompatActivity implements Navigatio
 
         // Quick Access Boxes - Row 1
         findViewById(R.id.empLinksBox).setOnClickListener(v -> {
-            Toast.makeText(this, "Employee Management - Coming Soon!", Toast.LENGTH_SHORT).show();
-            // TODO: Implement Employee Management functionality
+            Intent intent = new Intent(this, ManagingDirectorEmpLinksActivity.class);
+            passUserDataToIntent(intent);
+            startActivity(intent);
         });
 
         findViewById(R.id.employeeBox).setOnClickListener(v -> {
-            Toast.makeText(this, "Employee Management - Coming Soon!", Toast.LENGTH_SHORT).show();
-            // TODO: Implement Employee Management functionality
+            Intent intent = new Intent(this, MyEmpActivity.class);
+            passUserDataToIntent(intent);
+            startActivity(intent);
         });
 
         findViewById(R.id.sdsaBox).setOnClickListener(v -> {
-            Toast.makeText(this, "Data Analytics - Coming Soon!", Toast.LENGTH_SHORT).show();
-            // TODO: Implement Data Analytics functionality
+            Intent intent = new Intent(this, MySdsaActivity.class);
+            passUserDataToIntent(intent);
+            startActivity(intent);
         });
 
         findViewById(R.id.partnerBox).setOnClickListener(v -> {
-            Toast.makeText(this, "Data Analytics - Coming Soon!", Toast.LENGTH_SHORT).show();
-            // TODO: Implement Data Analytics functionality
+            Intent intent = new Intent(this, MyPartnerActivity.class);
+            passUserDataToIntent(intent);
+            startActivity(intent);
         });
 
         findViewById(R.id.agentBox).setOnClickListener(v -> {
-            Toast.makeText(this, "Work Links - Coming Soon!", Toast.LENGTH_SHORT).show();
-            // TODO: Implement Work Links functionality
+            Intent intent = new Intent(this, MyAgentActivity.class);
+            passUserDataToIntent(intent);
+            startActivity(intent);
         });
 
         // Quick Access Boxes - Row 2
