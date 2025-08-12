@@ -14,7 +14,7 @@ public class RegionalBusinessHeadPanelActivity extends AppCompatActivity {
     private String userId;
     
     // Action card views
-    private View cardTotalEmp, cardTeam, cardReports, cardAnalytics, cardStrategy, 
+    private View cardTotalEmp, cardTotalSdsa, cardTotalPartner, cardTotalAgent, cardTeam, cardReports, cardAnalytics, cardStrategy, 
                  cardPerformance, cardGrowth, cardInnovation, cardPartnerships, 
                  cardMarketAnalysis, cardCompliance;
 
@@ -47,6 +47,9 @@ public class RegionalBusinessHeadPanelActivity extends AppCompatActivity {
         
         // Initialize action cards
         cardTotalEmp = findViewById(R.id.cardTotalEmp);
+        cardTotalSdsa = findViewById(R.id.cardTotalSdsa);
+        cardTotalPartner = findViewById(R.id.cardTotalPartner);
+        cardTotalAgent = findViewById(R.id.cardTotalAgent);
         cardTeam = findViewById(R.id.cardTeam);
         cardReports = findViewById(R.id.cardReports);
         cardAnalytics = findViewById(R.id.cardAnalytics);
@@ -65,6 +68,9 @@ public class RegionalBusinessHeadPanelActivity extends AppCompatActivity {
         // Log card initialization
         android.util.Log.d("RBHPanel", "Card initialization:");
         android.util.Log.d("RBHPanel", "cardTotalEmp: " + (cardTotalEmp != null ? "FOUND" : "NULL"));
+        android.util.Log.d("RBHPanel", "cardTotalSdsa: " + (cardTotalSdsa != null ? "FOUND" : "NULL"));
+        android.util.Log.d("RBHPanel", "cardTotalPartner: " + (cardTotalPartner != null ? "FOUND" : "NULL"));
+        android.util.Log.d("RBHPanel", "cardTotalAgent: " + (cardTotalAgent != null ? "FOUND" : "NULL"));
         android.util.Log.d("RBHPanel", "cardTeam: " + (cardTeam != null ? "FOUND" : "NULL"));
         android.util.Log.d("RBHPanel", "cardReports: " + (cardReports != null ? "FOUND" : "NULL"));
         android.util.Log.d("RBHPanel", "cardAnalytics: " + (cardAnalytics != null ? "FOUND" : "NULL"));
@@ -102,8 +108,44 @@ public class RegionalBusinessHeadPanelActivity extends AppCompatActivity {
         // Action Card Click Listeners
         if (cardTotalEmp != null) {
             cardTotalEmp.setOnClickListener(v -> {
-                Toast.makeText(this, "Employee Management - Coming Soon!", Toast.LENGTH_SHORT).show();
-                // TODO: Implement Employee Management functionality
+                // Navigate to RBH Active Emp List
+                android.util.Log.d("RBHPanel", "Total Emp Card clicked! Navigating to RBHActiveEmpListActivity");
+                Intent intent = new Intent(this, RBHActiveEmpListActivity.class);
+                intent.putExtra("USERNAME", userName);
+                intent.putExtra("USER_ID", userId);
+                startActivity(intent);
+            });
+        }
+        
+        if (cardTotalSdsa != null) {
+            cardTotalSdsa.setOnClickListener(v -> {
+                // Navigate to RBH My SDSA Panel
+                android.util.Log.d("RBHPanel", "Total SDSA Card clicked! Navigating to RBHMySdsaPanelActivity");
+                Intent intent = new Intent(this, RBHMySdsaPanelActivity.class);
+                intent.putExtra("USERNAME", userName);
+                intent.putExtra("USER_ID", userId);
+                startActivity(intent);
+            });
+        }
+        
+        if (cardTotalPartner != null) {
+            cardTotalPartner.setOnClickListener(v -> {
+                // Navigate to RBH My Partner Panel
+                android.util.Log.d("RBHPanel", "Total Partner Card clicked! Navigating to RegionalBusinessHeadMyPartnerPanelActivity");
+                Intent intent = new Intent(this, RegionalBusinessHeadMyPartnerPanelActivity.class);
+                intent.putExtra("USERNAME", userName);
+                startActivity(intent);
+            });
+        }
+        
+        if (cardTotalAgent != null) {
+            cardTotalAgent.setOnClickListener(v -> {
+                // Navigate to RBH My Agent List
+                android.util.Log.d("RBHPanel", "Total Agent Card clicked! Navigating to RBHMyAgentListActivity");
+                Intent intent = new Intent(this, RBHMyAgentListActivity.class);
+                intent.putExtra("USERNAME", userName);
+                intent.putExtra("USER_ID", userId);
+                startActivity(intent);
             });
         }
         
