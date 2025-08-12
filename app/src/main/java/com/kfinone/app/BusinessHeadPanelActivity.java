@@ -73,8 +73,6 @@ public class BusinessHeadPanelActivity extends AppCompatActivity {
     private LinearLayout cardRiskManagement;
     private LinearLayout cardCompliance;
     private LinearLayout cardBudgetManagement;
-    private LinearLayout cardGoalsKPIs;
-    private LinearLayout cardSettings;
     
     private ExecutorService executor = Executors.newSingleThreadExecutor();
     
@@ -146,8 +144,6 @@ public class BusinessHeadPanelActivity extends AppCompatActivity {
         cardRiskManagement = findViewById(R.id.cardRiskManagement);
         cardCompliance = findViewById(R.id.cardCompliance);
         cardBudgetManagement = findViewById(R.id.cardBudgetManagement);
-        cardGoalsKPIs = findViewById(R.id.cardGoalsKPIs);
-        cardSettings = findViewById(R.id.cardSettings);
     }
     
     private void setupHeaderClickListeners() {
@@ -337,15 +333,7 @@ public class BusinessHeadPanelActivity extends AppCompatActivity {
             startActivity(intent);
         });
         
-        // Goals & KPIs
-        cardGoalsKPIs.setOnClickListener(v -> {
-            showToast("Goals & KPIs - Coming Soon!");
-        });
-        
-        // Settings
-        cardSettings.setOnClickListener(v -> {
-            showToast("Settings - Coming Soon!");
-        });
+
 
         // SDSA
         cardStrategicPlanning.setOnClickListener(v -> {

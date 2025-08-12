@@ -800,71 +800,7 @@
                         android:gravity="center" />
                 </LinearLayout>
 
-                <!-- Card 14: Goals &amp; KPIs -->
-                <LinearLayout
-                    android:id="@+id/cardGoalsKPIs"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_columnWeight="1"
-                    android:orientation="vertical"
-                    android:background="@drawable/action_card_background"
-                    android:padding="16dp"
-                    android:gravity="center"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:foreground="?attr/selectableItemBackground">
 
-                    <ImageView
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"
-                        android:src="@drawable/ic_goals"
-                        android:background="@drawable/blue_gradient_icon_background"
-                        android:padding="12dp"
-                        android:contentDescription="Goals &amp; KPIs" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Goals &amp; KPIs"
-                        android:textSize="14sp"
-                        android:textStyle="bold"
-                        android:textColor="@color/black"
-                        android:layout_marginTop="8dp"
-                        android:gravity="center" />
-                </LinearLayout>
-
-                <!-- Card 15: Settings -->
-                <LinearLayout
-                    android:id="@+id/cardSettings"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_columnWeight="1"
-                    android:orientation="vertical"
-                    android:background="@drawable/action_card_background"
-                    android:padding="16dp"
-                    android:gravity="center"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:foreground="?attr/selectableItemBackground">
-
-                    <ImageView
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"
-                        android:src="@drawable/ic_settings"
-                        android:background="@drawable/blue_gradient_icon_background"
-                        android:padding="12dp"
-                        android:contentDescription="Settings" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Settings"
-                        android:textSize="14sp"
-                        android:textStyle="bold"
-                        android:textColor="@color/black"
-                        android:layout_marginTop="8dp"
-                        android:gravity="center" />
-                </LinearLayout>
 
             </GridLayout>
 
