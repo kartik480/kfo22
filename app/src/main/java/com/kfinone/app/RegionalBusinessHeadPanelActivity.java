@@ -6,6 +6,11 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import org.json.JSONObject;
 
 public class RegionalBusinessHeadPanelActivity extends AppCompatActivity {
     private TextView totalEmpCount, totalSdsaCount, totalPartnerCount, totalAgentCount, welcomeText;
@@ -268,11 +273,226 @@ public class RegionalBusinessHeadPanelActivity extends AppCompatActivity {
     }
 
     private void updateStats() {
-        // TODO: Fetch real statistics from API
-        totalEmpCount.setText("0");
-        totalSdsaCount.setText("0");
-        totalPartnerCount.setText("0");
-        totalAgentCount.setText("0");
+        // Fetch real statistics from APIs
+        fetchEmployeeCount();
+        fetchSdsaCount();
+        fetchPartnerCount();
+        fetchAgentCount();
+    }
+    
+    private void fetchEmployeeCount() {
+        if (userId == null || userId.isEmpty()) {
+            totalEmpCount.setText("0");
+            return;
+        }
+        
+        new Thread(() -> {
+            try {
+                String urlString = "https://emp.kfinone.com/mobile/api/get_rbh_active_emp_list.php?user_id=" + userId;
+                URL url = new URL(urlString);
+                
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setRequestMethod("GET");
+                conn.setConnectTimeout(10000);
+                conn.setReadTimeout(10000);
+                
+                int responseCode = conn.getResponseCode();
+                
+                if (responseCode == HttpURLConnection.HTTP_OK) {
+                    BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                    StringBuilder response = new StringBuilder();
+                    String line;
+                    while ((line = in.readLine()) != null) {
+                        response.append(line);
+                    }
+                    in.close();
+                    
+                    String responseString = response.toString();
+                    android.util.Log.d("RBHPanel", "Employee API Response: " + responseString);
+                    
+                    JSONObject json = new JSONObject(responseString);
+                    if (json.getString("status").equals("success")) {
+                        int totalCount = json.getInt("total_employees");
+                        runOnUiThread(() -> {
+                            totalEmpCount.setText(String.valueOf(totalCount));
+                            android.util.Log.d("RBHPanel", "Employee count updated: " + totalCount);
+                        });
+                    } else {
+                        runOnUiThread(() -> totalEmpCount.setText("0"));
+                    }
+                } else {
+                    runOnUiThread(() -> totalEmpCount.setText("0"));
+                }
+            } catch (Exception e) {
+                android.util.Log.e("RBHPanel", "Error fetching employee count: " + e.getMessage());
+                runOnUiThread(() -> totalEmpCount.setText("0"));
+            }
+        }).start();
+    }
+    
+    private void fetchSdsaCount() {
+        if (userId == null || userId.isEmpty()) {
+            totalSdsaCount.setText("0");
+            return;
+        }
+        
+        new Thread(() -> {
+            try {
+                String urlString = "https://emp.kfinone.com/mobile/api/get_rbh_my_sdsa_users.php?reportingTo=" + userId + "&status=active";
+                URL url = new URL(urlString);
+                
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setRequestMethod("GET");
+                conn.setConnectTimeout(10000);
+                conn.setReadTimeout(10000);
+                
+                int responseCode = conn.getResponseCode();
+                
+                if (responseCode == HttpURLConnection.HTTP_OK) {
+                    BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                    StringBuilder response = new StringBuilder();
+                    String line;
+                    while ((line = in.readLine()) != null) {
+                        response.append(line);
+                    }
+                    in.close();
+                    
+                    String responseString = response.toString();
+                    android.util.Log.d("RBHPanel", "SDSA API Response: " + responseString);
+                    
+                    JSONObject json = new JSONObject(responseString);
+                    if (json.getString("status").equals("success")) {
+                        JSONObject stats = json.optJSONObject("statistics");
+                        if (stats != null) {
+                            int totalCount = stats.optInt("total_users", 0);
+                            runOnUiThread(() -> {
+                                totalSdsaCount.setText(String.valueOf(totalCount));
+                                android.util.Log.d("RBHPanel", "SDSA count updated: " + totalCount);
+                            });
+                        } else {
+                            runOnUiThread(() -> totalSdsaCount.setText("0"));
+                        }
+                    } else {
+                        runOnUiThread(() -> totalSdsaCount.setText("0"));
+                    }
+                } else {
+                    runOnUiThread(() -> totalSdsaCount.setText("0"));
+                }
+            } catch (Exception e) {
+                android.util.Log.e("RBHPanel", "Error fetching SDSA count: " + e.getMessage());
+                runOnUiThread(() -> totalSdsaCount.setText("0"));
+            }
+        }).start();
+    }
+    
+    private void fetchPartnerCount() {
+        if (userName == null || userName.isEmpty()) {
+            totalPartnerCount.setText("0");
+            return;
+        }
+        
+        new Thread(() -> {
+            try {
+                String urlString = "https://emp.kfinone.com/mobile/api/rbh_my_partner_users.php?username=" + userName;
+                URL url = new URL(urlString);
+                
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setRequestMethod("GET");
+                conn.setConnectTimeout(10000);
+                conn.setReadTimeout(10000);
+                
+                int responseCode = conn.getResponseCode();
+                
+                if (responseCode == HttpURLConnection.HTTP_OK) {
+                    BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                    StringBuilder response = new StringBuilder();
+                    String line;
+                    while ((line = in.readLine()) != null) {
+                        response.append(line);
+                    }
+                    in.close();
+                    
+                    String responseString = response.toString();
+                    android.util.Log.d("RBHPanel", "Partner API Response: " + responseString);
+                    
+                    JSONObject json = new JSONObject(responseString);
+                    if (json.getString("status").equals("success")) {
+                        JSONObject stats = json.optJSONObject("statistics");
+                        if (stats != null) {
+                            int totalCount = stats.optInt("total_partners", 0);
+                            runOnUiThread(() -> {
+                                totalPartnerCount.setText(String.valueOf(totalCount));
+                                android.util.Log.d("RBHPanel", "Partner count updated: " + totalCount);
+                            });
+                        } else {
+                            runOnUiThread(() -> totalPartnerCount.setText("0"));
+                        }
+                    } else {
+                        runOnUiThread(() -> totalPartnerCount.setText("0"));
+                    }
+                } else {
+                    runOnUiThread(() -> totalPartnerCount.setText("0"));
+                }
+            } catch (Exception e) {
+                android.util.Log.e("RBHPanel", "Error fetching partner count: " + e.getMessage());
+                runOnUiThread(() -> totalPartnerCount.setText("0"));
+            }
+        }).start();
+    }
+    
+    private void fetchAgentCount() {
+        if (userId == null || userId.isEmpty()) {
+            totalAgentCount.setText("0");
+            return;
+        }
+        
+        new Thread(() -> {
+            try {
+                String urlString = "https://emp.kfinone.com/mobile/api/rbh_my_agent_data.php?user_id=" + userId;
+                URL url = new URL(urlString);
+                
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setRequestMethod("GET");
+                conn.setConnectTimeout(10000);
+                conn.setReadTimeout(10000);
+                
+                int responseCode = conn.getResponseCode();
+                
+                if (responseCode == HttpURLConnection.HTTP_OK) {
+                    BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                    StringBuilder response = new StringBuilder();
+                    String line;
+                    while ((line = in.readLine()) != null) {
+                        response.append(line);
+                    }
+                    in.close();
+                    
+                    String responseString = response.toString();
+                    android.util.Log.d("RBHPanel", "Agent API Response: " + responseString);
+                    
+                    JSONObject json = new JSONObject(responseString);
+                    if (json.getString("status").equals("success")) {
+                        JSONObject stats = json.optJSONObject("statistics");
+                        if (stats != null) {
+                            int totalCount = stats.optInt("total_agents", 0);
+                            runOnUiThread(() -> {
+                                totalAgentCount.setText(String.valueOf(totalCount));
+                                android.util.Log.d("RBHPanel", "Agent count updated: " + totalCount);
+                            });
+                        } else {
+                            runOnUiThread(() -> totalAgentCount.setText("0"));
+                        }
+                    } else {
+                        runOnUiThread(() -> totalAgentCount.setText("0"));
+                    }
+                } else {
+                    runOnUiThread(() -> totalAgentCount.setText("0"));
+                }
+            } catch (Exception e) {
+                android.util.Log.e("RBHPanel", "Error fetching agent count: " + e.getMessage());
+                runOnUiThread(() -> totalAgentCount.setText("0"));
+            }
+        }).start();
     }
 
     private void showLogoutConfirmation() {
