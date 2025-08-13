@@ -2,6 +2,7 @@ package com.kfinone.app;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import androidx.appcompat.app.AppCompatActivity;
@@ -20,8 +21,20 @@ public class CBOPayoutPanelActivity extends AppCompatActivity {
         // Get user data from intent
         Intent intent = getIntent();
         userName = intent.getStringExtra("USERNAME");
+        String userId = intent.getStringExtra("USER_ID");
+        
         if (userName == null || userName.isEmpty()) {
             userName = "CBO"; // Default fallback
+        }
+        
+        // Debug logging
+        Log.d("CBOPayoutPanel", "Received userName: " + userName);
+        Log.d("CBOPayoutPanel", "Received userId: " + userId);
+        
+        if (userId == null || userId.isEmpty()) {
+            Log.e("CBOPayoutPanel", "CRITICAL ERROR: No valid userId received!");
+        } else {
+            Log.d("CBOPayoutPanel", "✓ Valid userId received: " + userId);
         }
         
         initializeViews();
@@ -37,9 +50,11 @@ public class CBOPayoutPanelActivity extends AppCompatActivity {
         backButton.setOnClickListener(v -> goBack());
         
         payoutTeamBox.setOnClickListener(v -> {
-            // TODO: Navigate to Payout Team Activity
-            // For now, show a toast message
-            android.widget.Toast.makeText(this, "Payout Team - Coming Soon", android.widget.Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(this, CBOPayoutTeamActivity.class);
+            intent.putExtra("USERNAME", userName);
+            intent.putExtra("USER_ID", getIntent().getStringExtra("USER_ID"));
+            intent.putExtra("USER_DESIGNATION", "CBO");
+            startActivity(intent);
         });
     }
     

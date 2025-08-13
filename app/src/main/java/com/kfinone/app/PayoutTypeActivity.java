@@ -25,7 +25,7 @@ public class PayoutTypeActivity extends AppCompatActivity {
     private EditText payoutNameInput;
     private Button submitButton;
     private RecyclerView payoutTypeRecyclerView;
-    private PayoutTypeAdapter payoutTypeAdapter;
+    private PayoutTypeItemAdapter payoutTypeAdapter;
     private List<PayoutTypeItem> payoutTypeList;
     private static final String FETCH_PAYOUT_TYPES_URL = "https://emp.kfinone.com/mobile/api/fetch_payout_types.php";
     private static final String TEST_URL = "https://emp.kfinone.com/mobile/api/test_db.php";
@@ -51,7 +51,7 @@ public class PayoutTypeActivity extends AppCompatActivity {
 
         // Initialize RecyclerView
         payoutTypeList = new ArrayList<>();
-        payoutTypeAdapter = new PayoutTypeAdapter(payoutTypeList);
+        payoutTypeAdapter = new PayoutTypeItemAdapter(payoutTypeList);
         payoutTypeRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         payoutTypeRecyclerView.setAdapter(payoutTypeAdapter);
 

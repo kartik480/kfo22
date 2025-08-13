@@ -8,10 +8,10 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
-public class PayoutTypeAdapter extends RecyclerView.Adapter<PayoutTypeAdapter.ViewHolder> {
-    private List<PayoutType> payoutTypeList;
+public class PayoutTypeItemAdapter extends RecyclerView.Adapter<PayoutTypeItemAdapter.ViewHolder> {
+    private List<PayoutTypeItem> payoutTypeList;
 
-    public PayoutTypeAdapter(List<PayoutType> payoutTypeList) {
+    public PayoutTypeItemAdapter(List<PayoutTypeItem> payoutTypeList) {
         this.payoutTypeList = payoutTypeList;
     }
 
@@ -24,9 +24,9 @@ public class PayoutTypeAdapter extends RecyclerView.Adapter<PayoutTypeAdapter.Vi
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        PayoutType item = payoutTypeList.get(position);
-        holder.payoutTypeName.setText(item.getName());
-        holder.payoutTypeId.setText("ID: " + item.getId());
+        PayoutTypeItem item = payoutTypeList.get(position);
+        holder.payoutTypeName.setText(item.getPayoutName());
+        holder.payoutTypeId.setText("Status: " + item.getStatus());
     }
 
     @Override
@@ -43,4 +43,4 @@ public class PayoutTypeAdapter extends RecyclerView.Adapter<PayoutTypeAdapter.Vi
             payoutTypeId = itemView.findViewById(R.id.payoutTypeId);
         }
     }
-} 
+}

@@ -711,6 +711,11 @@
             android:label="CBO Payout Management"
             android:parentActivityName=".ChiefBusinessOfficerPanelActivity" />
         <activity
+            android:name=".CBOPayoutTeamActivity"
+            android:exported="false"
+            android:label="CBO Payout Team"
+            android:parentActivityName=".CBOPayoutPanelActivity" />
+        <activity
             android:name=".CBOBankersPanelActivity"
             android:exported="false"
             android:label="CBO Bankers Management"

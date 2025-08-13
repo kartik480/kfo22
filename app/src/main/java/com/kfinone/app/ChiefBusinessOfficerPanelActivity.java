@@ -219,6 +219,7 @@ public class ChiefBusinessOfficerPanelActivity extends AppCompatActivity {
         cardPartnerships.setOnClickListener(v -> {
             Intent intent = new Intent(this, CBOPayoutPanelActivity.class);
             intent.putExtra("USERNAME", userName);
+            intent.putExtra("USER_ID", userId);
             intent.putExtra("SOURCE_PANEL", "CBO_PANEL");
             startActivity(intent);
         });
