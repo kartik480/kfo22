@@ -15,6 +15,7 @@ public class DirectorPayoutActivity extends AppCompatActivity {
     private LinearLayout addPayoutButton;
     private LinearLayout payoutAnalyticsButton;
     private LinearLayout payoutReportsButton;
+    private LinearLayout payoutTeamButton;
     
     private String userId;
     private String userName;
@@ -45,6 +46,7 @@ public class DirectorPayoutActivity extends AppCompatActivity {
         addPayoutButton = findViewById(R.id.addPayoutButton);
         payoutAnalyticsButton = findViewById(R.id.payoutAnalyticsButton);
         payoutReportsButton = findViewById(R.id.payoutReportsButton);
+        payoutTeamButton = findViewById(R.id.payoutTeamButton);
     }
 
     private void setupClickListeners() {
@@ -68,6 +70,13 @@ public class DirectorPayoutActivity extends AppCompatActivity {
 
         payoutReportsButton.setOnClickListener(v -> {
             Toast.makeText(this, "Payout Reports - Coming Soon", Toast.LENGTH_SHORT).show();
+        });
+
+        payoutTeamButton.setOnClickListener(v -> {
+            Intent intent = new Intent(this, DirectorPayoutTeamActivity.class);
+            passUserDataToIntent(intent);
+            intent.putExtra("USER_DESIGNATION", "Director");
+            startActivity(intent);
         });
     }
 

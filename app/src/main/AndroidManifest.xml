@@ -715,6 +715,42 @@
             android:exported="false"
             android:label="CBO Payout Team"
             android:parentActivityName=".CBOPayoutPanelActivity" />
+            
+        <!-- RBH Payout Activities -->
+        <activity
+            android:name=".RBHPayoutPanelActivity"
+            android:exported="false"
+            android:label="RBH Payout Management"
+            android:parentActivityName=".RegionalBusinessHeadPanelActivity" />
+        <activity
+            android:name=".RBHPayoutTeamActivity"
+            android:exported="false"
+            android:label="RBH Payout Team"
+            android:parentActivityName=".RBHPayoutPanelActivity" />
+            
+        <!-- BH Payout Activities -->
+        <activity
+            android:name=".BHPayoutPanelActivity"
+            android:exported="false"
+            android:label="BH Payout Management"
+            android:parentActivityName=".BusinessHeadPanelActivity" />
+        <activity
+            android:name=".BHPayoutTeamActivity"
+            android:exported="false"
+            android:label="BH Payout Team"
+            android:parentActivityName=".BHPayoutPanelActivity" />
+            
+        <!-- Director Payout Activities -->
+        <activity
+            android:name=".DirectorPayoutPanelActivity"
+            android:exported="false"
+            android:label="Director Payout Management"
+            android:parentActivityName=".SpecialPanelActivity" />
+        <activity
+            android:name=".DirectorPayoutTeamActivity"
+            android:exported="false"
+            android:label="Director Payout Team"
+            android:parentActivityName=".DirectorPayoutPanelActivity" />
         <activity
             android:name=".CBOBankersPanelActivity"
             android:exported="false"
@@ -928,11 +964,6 @@
             android:name=".RBHAgentActivity"
             android:exported="false"
             android:label="RBH Agent"
-            android:parentActivityName=".RegionalBusinessHeadPanelActivity" />
-        <activity
-            android:name=".RBHPayoutPanelActivity"
-            android:exported="false"
-            android:label="RBH Payout Management"
             android:parentActivityName=".RegionalBusinessHeadPanelActivity" />
         <activity
             android:name=".RBHBankersPanelActivity"

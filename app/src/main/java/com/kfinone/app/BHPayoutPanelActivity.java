@@ -8,7 +8,7 @@ import android.widget.ImageButton;
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.material.card.MaterialCardView;
 
-public class RBHPayoutPanelActivity extends AppCompatActivity {
+public class BHPayoutPanelActivity extends AppCompatActivity {
     private MaterialCardView payoutTeamBox;
     private ImageButton backButton;
     private String userName;
@@ -16,7 +16,7 @@ public class RBHPayoutPanelActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_rbh_payout_panel);
+        setContentView(R.layout.activity_bh_payout_panel);
         
         // Get user data from intent
         Intent intent = getIntent();
@@ -24,17 +24,17 @@ public class RBHPayoutPanelActivity extends AppCompatActivity {
         String userId = intent.getStringExtra("USER_ID");
         
         if (userName == null || userName.isEmpty()) {
-            userName = "RBH"; // Default fallback
+            userName = "BH"; // Default fallback
         }
         
         // Debug logging
-        Log.d("RBHPayoutPanel", "Received userName: " + userName);
-        Log.d("RBHPayoutPanel", "Received userId: " + userId);
+        Log.d("BHPayoutPanel", "Received userName: " + userName);
+        Log.d("BHPayoutPanel", "Received userId: " + userId);
         
         if (userId == null || userId.isEmpty()) {
-            Log.e("RBHPayoutPanel", "CRITICAL ERROR: No valid userId received!");
+            Log.e("BHPayoutPanel", "CRITICAL ERROR: No valid userId received!");
         } else {
-            Log.d("RBHPayoutPanel", "✓ Valid userId received: " + userId);
+            Log.d("BHPayoutPanel", "✓ Valid userId received: " + userId);
         }
         
         initializeViews();
@@ -50,20 +50,20 @@ public class RBHPayoutPanelActivity extends AppCompatActivity {
         backButton.setOnClickListener(v -> goBack());
         
         payoutTeamBox.setOnClickListener(v -> {
-            Intent intent = new Intent(this, RBHPayoutTeamActivity.class);
+            Intent intent = new Intent(this, BHPayoutTeamActivity.class);
             intent.putExtra("USERNAME", userName);
             intent.putExtra("USER_ID", getIntent().getStringExtra("USER_ID"));
-            intent.putExtra("USER_DESIGNATION", "RBH");
+            intent.putExtra("USER_DESIGNATION", "BH");
             startActivity(intent);
         });
     }
     
     private void goBack() {
-        // Navigate back to RBH home page
-        Intent intent = new Intent(this, RegionalBusinessHeadPanelActivity.class);
+        // Navigate back to BH home page
+        Intent intent = new Intent(this, BusinessHeadPanelActivity.class);
         intent.putExtra("USERNAME", userName);
         intent.putExtra("USER_ID", getIntent().getStringExtra("USER_ID"));
-        intent.putExtra("SOURCE_PANEL", "RBH_PANEL");
+        intent.putExtra("SOURCE_PANEL", "BH_PANEL");
         startActivity(intent);
         finish();
     }
@@ -72,4 +72,4 @@ public class RBHPayoutPanelActivity extends AppCompatActivity {
     public void onBackPressed() {
         goBack();
     }
-} 
+}

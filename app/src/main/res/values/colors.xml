@@ -55,4 +55,7 @@
     <!-- Additional colors for Partner List -->
     <color name="light_red">#FFEBEE</color>
     <color name="light_blue">#E3F2FD</color>
+    
+    <!-- Payout Panel Colors -->
+    <color name="blue_gradient_icon_background">#3498DB</color>
 </resources>

@@ -224,6 +224,7 @@ public class RegionalBusinessHeadPanelActivity extends AppCompatActivity {
             cardPartnerships.setOnClickListener(v -> {
                 Intent intent = new Intent(this, RBHPayoutPanelActivity.class);
                 intent.putExtra("USERNAME", userName);
+                intent.putExtra("USER_ID", userId);
                 startActivity(intent);
             });
         }
