@@ -180,7 +180,7 @@ public class SpecialPanelActivity extends AppCompatActivity implements Navigatio
         });
 
         findViewById(R.id.employeeBox).setOnClickListener(v -> {
-            Intent intent = new Intent(this, MyEmpActivity.class);
+            Intent intent = new Intent(this, EmployeePanelActivity.class);
             passUserDataToIntent(intent);
             startActivity(intent);
         });
