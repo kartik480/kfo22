@@ -509,7 +509,98 @@
                         android:orientation="horizontal"
                         android:paddingHorizontal="8dp">
 
+                        <!-- Emp Links -->
+                        <LinearLayout
+                            android:id="@+id/empLinksBox"
+                            android:layout_width="120dp"
+                            android:layout_height="120dp"
+                            android:orientation="vertical"
+                            android:background="#FFFFFF"
+                            android:padding="16dp"
+                            android:layout_marginEnd="12dp"
+                            android:elevation="3dp"
+                            android:gravity="center"
+                            android:backgroundTint="#E3F2FD">
 
+                            <ImageView
+                                android:layout_width="32dp"
+                                android:layout_height="32dp"
+                                android:src="@drawable/ic_people"
+                                android:tint="#1976D2"
+                                android:layout_marginBottom="8dp" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Emp Links"
+                                android:textSize="12sp"
+                                android:textColor="#2C3E50"
+                                android:textStyle="bold"
+                                android:gravity="center" />
+
+                        </LinearLayout>
+
+                        <!-- Data Links -->
+                        <LinearLayout
+                            android:id="@+id/dataLinksBox"
+                            android:layout_width="120dp"
+                            android:layout_height="120dp"
+                            android:orientation="vertical"
+                            android:background="#FFFFFF"
+                            android:padding="16dp"
+                            android:layout_marginEnd="12dp"
+                            android:elevation="3dp"
+                            android:gravity="center"
+                            android:backgroundTint="#F3E5F5">
+
+                            <ImageView
+                                android:layout_width="32dp"
+                                android:layout_height="32dp"
+                                android:src="@drawable/ic_analytics"
+                                android:tint="#7B1FA2"
+                                android:layout_marginBottom="8dp" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Data Links"
+                                android:textSize="12sp"
+                                android:textColor="#2C3E50"
+                                android:textStyle="bold"
+                                android:gravity="center" />
+
+                        </LinearLayout>
+
+                        <!-- Work Link -->
+                        <LinearLayout
+                            android:id="@+id/workLinkBox"
+                            android:layout_width="120dp"
+                            android:layout_height="120dp"
+                            android:orientation="vertical"
+                            android:background="#FFFFFF"
+                            android:padding="16dp"
+                            android:layout_marginEnd="12dp"
+                            android:elevation="3dp"
+                            android:gravity="center"
+                            android:backgroundTint="#FFF3E0">
+
+                            <ImageView
+                                android:layout_width="32dp"
+                                android:layout_height="32dp"
+                                android:src="@drawable/ic_work"
+                                android:tint="#F57C00"
+                                android:layout_marginBottom="8dp" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Work Link"
+                                android:textSize="12sp"
+                                android:textColor="#2C3E50"
+                                android:textStyle="bold"
+                                android:gravity="center" />
+
+                        </LinearLayout>
 
                         <!-- Employee -->
                         <LinearLayout

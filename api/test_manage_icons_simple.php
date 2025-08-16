@@ -44,10 +44,15 @@ try {
     $result = $stmt->fetch(PDO::FETCH_ASSOC);
     echo "\nTotal records in tbl_manage_icon: " . $result['total'] . "\n";
     
-    // Check active records
-    $stmt = $pdo->query("SELECT COUNT(*) as count FROM tbl_manage_icon WHERE status = 'active'");
-    $result = $stmt->fetch(PDO::FETCH_ASSOC);
-    echo "Active records: " . $result['count'] . "\n";
+    // Check if specific IDs exist
+    $testIds = [1, 2, 3, 4, 5];
+    echo "\nChecking if test IDs exist:\n";
+    foreach ($testIds as $id) {
+        $stmt = $pdo->prepare("SELECT COUNT(*) as count FROM tbl_manage_icon WHERE id = ?");
+        $stmt->execute([$id]);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        echo "- ID $id: " . ($result['count'] > 0 ? "EXISTS" : "NOT FOUND") . "\n";
+    }
     
     // Show sample records
     $stmt = $pdo->query("SELECT id, icon_name, icon_url, icon_description, status FROM tbl_manage_icon LIMIT 5");
@@ -61,4 +66,4 @@ try {
 } catch (Exception $e) {
     echo "Server error: " . $e->getMessage() . "\n";
 }
-?> 
+?>

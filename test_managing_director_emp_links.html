@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Managing Director Emp Links APIs</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .api-section {
+            margin-bottom: 30px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+        }
+        .api-title {
+            color: #333;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-right: 10px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .response {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 15px;
+            margin-top: 15px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .error {
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+        .success {
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+        }
+        .info {
+            background-color: #d1ecf1;
+            border-color: #bee5eb;
+            color: #0c5460;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Test Managing Director Emp Links APIs</h1>
+        <p>This page tests the new APIs for the Managing Director Emp Links feature.</p>
+    </div>
+
+    <!-- Test Get User Manage Icons API -->
+    <div class="container api-section">
+        <h2 class="api-title">1. Get User Manage Icons API</h2>
+        <p>Fetches user's manage_icons from tbl_user table</p>
+        
+        <div class="form-group">
+            <label for="userId">User ID:</label>
+            <input type="text" id="userId" value="8" placeholder="Enter User ID (e.g., 8 for K RAJESH KUMAR)">
+        </div>
+        
+        <button onclick="testGetUserManageIcons()">Test API</button>
+        <button onclick="clearResponse('userResponse')">Clear Response</button>
+        
+        <div id="userResponse" class="response info">Response will appear here...</div>
+    </div>
+
+    <!-- Test Get Manage Icons API -->
+    <div class="container api-section">
+        <h2 class="api-title">2. Get Manage Icons API</h2>
+        <p>Fetches icon details from tbl_manage_icon table using comma-separated IDs</p>
+        
+        <div class="form-group">
+            <label for="iconIds">Icon IDs (comma-separated):</label>
+            <input type="text" id="iconIds" value="1,2,3,4,5" placeholder="Enter comma-separated icon IDs">
+        </div>
+        
+        <button onclick="testGetManageIcons()">Test API</button>
+        <button onclick="clearResponse('iconsResponse')">Clear Response</button>
+        
+        <div id="iconsResponse" class="response info">Response will appear here...</div>
+    </div>
+
+    <!-- Test Complete Flow -->
+    <div class="container api-section">
+        <h2 class="api-title">3. Test Complete Flow</h2>
+        <p>Tests the complete flow: Get user's manage_icons, then fetch icon details</p>
+        
+        <div class="form-group">
+            <label for="completeUserId">User ID:</label>
+            <input type="text" id="completeUserId" value="8" placeholder="Enter User ID">
+        </div>
+        
+        <button onclick="testCompleteFlow()">Test Complete Flow</button>
+        <button onclick="clearResponse('completeResponse')">Clear Response</button>
+        
+        <div id="completeResponse" class="response info">Response will appear here...</div>
+    </div>
+
+    <script>
+        const baseUrl = 'https://emp.kfinone.com/mobile/api';
+
+        async function testGetUserManageIcons() {
+            const userId = document.getElementById('userId').value;
+            const responseDiv = document.getElementById('userResponse');
+            
+            if (!userId) {
+                responseDiv.className = 'response error';
+                responseDiv.textContent = 'Please enter a User ID';
+                return;
+            }
+
+            responseDiv.className = 'response info';
+            responseDiv.textContent = 'Fetching user data...';
+
+            try {
+                const response = await fetch(`${baseUrl}/get_user_manage_icons.php?user_id=${userId}`);
+                const data = await response.json();
+                
+                responseDiv.className = 'response success';
+                responseDiv.textContent = JSON.stringify(data, null, 2);
+            } catch (error) {
+                responseDiv.className = 'response error';
+                responseDiv.textContent = `Error: ${error.message}`;
+            }
+        }
+
+        async function testGetManageIcons() {
+            const iconIds = document.getElementById('iconIds').value;
+            const responseDiv = document.getElementById('iconsResponse');
+            
+            if (!iconIds) {
+                responseDiv.className = 'response error';
+                responseDiv.textContent = 'Please enter Icon IDs';
+                return;
+            }
+
+            responseDiv.className = 'response info';
+            responseDiv.textContent = 'Fetching icon details...';
+
+            try {
+                const response = await fetch(`${baseUrl}/get_manage_icons.php?ids=${iconIds}`);
+                const data = await response.json();
+                
+                responseDiv.className = 'response success';
+                responseDiv.textContent = JSON.stringify(data, null, 2);
+            } catch (error) {
+                responseDiv.className = 'response error';
+                responseDiv.textContent = `Error: ${error.message}`;
+            }
+        }
+
+        async function testCompleteFlow() {
+            const userId = document.getElementById('completeUserId').value;
+            const responseDiv = document.getElementById('completeResponse');
+            
+            if (!userId) {
+                responseDiv.className = 'response error';
+                responseDiv.textContent = 'Please enter a User ID';
+                return;
+            }
+
+            responseDiv.className = 'response info';
+            responseDiv.textContent = 'Testing complete flow...\n\n';
+
+            try {
+                // Step 1: Get user's manage_icons
+                responseDiv.textContent += 'Step 1: Fetching user data...\n';
+                const userResponse = await fetch(`${baseUrl}/get_user_manage_icons.php?user_id=${userId}`);
+                const userData = await userResponse.json();
+                
+                if (!userData.success) {
+                    throw new Error(userData.error || 'Failed to fetch user data');
+                }
+
+                responseDiv.textContent += `✓ User data fetched successfully\n`;
+                responseDiv.textContent += `User: ${userData.user.first_name} ${userData.user.last_name}\n`;
+                responseDiv.textContent += `Manage Icons: ${userData.user.manage_icons}\n\n`;
+
+                // Step 2: Get icon details
+                if (userData.user.manage_icons) {
+                    responseDiv.textContent += 'Step 2: Fetching icon details...\n';
+                    const iconsResponse = await fetch(`${baseUrl}/get_manage_icons.php?ids=${userData.user.manage_icons}`);
+                    const iconsData = await iconsResponse.json();
+                    
+                    if (!iconsData.success) {
+                        throw new Error(iconsData.error || 'Failed to fetch icon data');
+                    }
+
+                    responseDiv.textContent += `✓ Icon details fetched successfully\n`;
+                    responseDiv.textContent += `Total Icons: ${iconsData.total_icons}\n`;
+                    responseDiv.textContent += `Icons: ${JSON.stringify(iconsData.icons, null, 2)}\n`;
+                } else {
+                    responseDiv.textContent += 'No manage_icons found for this user\n';
+                }
+
+                responseDiv.className = 'response success';
+            } catch (error) {
+                responseDiv.className = 'response error';
+                responseDiv.textContent += `Error: ${error.message}`;
+            }
+        }
+
+        function clearResponse(elementId) {
+            const element = document.getElementById(elementId);
+            element.className = 'response info';
+            element.textContent = 'Response cleared...';
+        }
+    </script>
+</body>
+</html>
+

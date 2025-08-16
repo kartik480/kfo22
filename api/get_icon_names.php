@@ -17,38 +17,45 @@ $username = 'emp_kfinone';
 $password = '*F*im1!Y0D25';
 
 try {
-    // Check if ids parameter is provided
-    if (!isset($_GET['ids']) || empty($_GET['ids'])) {
-        throw new Exception("Icon IDs are required");
-    }
-    
-    $iconIds = $_GET['ids'];
-    
     // Create PDO connection
     $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $username, $password);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     
-    // Convert comma-separated string to array and clean it
-    $idArray = array_map('trim', explode(',', $iconIds));
-    $idArray = array_filter($idArray, 'is_numeric'); // Only keep numeric IDs
-    
-    if (empty($idArray)) {
-        throw new Exception("No valid icon IDs provided");
+    // First, check if the table exists
+    $stmt = $pdo->query("SHOW TABLES LIKE 'tbl_manage_icon'");
+    if ($stmt->rowCount() == 0) {
+        throw new Exception("Table 'tbl_manage_icon' does not exist");
     }
     
-    // Create placeholders for IN clause
-    $placeholders = str_repeat('?,', count($idArray) - 1) . '?';
+    // Check table structure
+    $stmt = $pdo->query("DESCRIBE tbl_manage_icon");
+    $columns = $stmt->fetchAll(PDO::FETCH_COLUMN);
     
-    // Fetch icon details from tbl_manage_icon
-    $stmt = $pdo->prepare("SELECT id, icon_name, icon_url, icon_image, icon_description, status FROM tbl_manage_icon WHERE id IN ($placeholders) ORDER BY icon_name ASC");
-    $stmt->execute($idArray);
+    // Build dynamic SELECT query based on available columns
+    $selectColumns = [];
+    if (in_array('id', $columns)) $selectColumns[] = 'id';
+    if (in_array('icon_name', $columns)) $selectColumns[] = 'icon_name';
+    if (in_array('icon_url', $columns)) $selectColumns[] = 'icon_url';
+    if (in_array('icon_description', $columns)) $selectColumns[] = 'icon_description';
+    if (in_array('status', $columns)) $selectColumns[] = 'status';
+    
+    if (empty($selectColumns)) {
+        throw new Exception("No valid columns found in tbl_manage_icon table");
+    }
+    
+    $selectClause = implode(', ', $selectColumns);
+    $query = "SELECT $selectClause FROM tbl_manage_icon ORDER BY icon_name ASC";
+    
+    // Execute the query
+    $stmt = $pdo->query($query);
     $icons = $stmt->fetchAll(PDO::FETCH_ASSOC);
     
     // Prepare response
     $response = [
         'success' => true,
         'total_icons' => count($icons),
-        'requested_ids' => $idArray,
+        'table_structure' => $columns,
+        'query_executed' => $query,
         'icons' => $icons
     ];
     
@@ -67,4 +74,4 @@ try {
     ];
     echo json_encode($response, JSON_PRETTY_PRINT);
 }
-?> 
+?>
