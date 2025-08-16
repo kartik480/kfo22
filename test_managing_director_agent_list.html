@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Managing Director Agent List - Demo</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: linear-gradient(135deg, #1976D2 0%, #1565C0 100%);
+            color: white;
+            border-radius: 8px;
+        }
+        .demo-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #fafafa;
+        }
+        .agent-list-demo {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .filter-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .filter-row {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+        .filter-group {
+            flex: 1;
+        }
+        .filter-label {
+            display: block;
+            font-size: 12px;
+            color: #7F8C8D;
+            margin-bottom: 4px;
+            font-weight: bold;
+        }
+        .filter-select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background: white;
+            font-size: 14px;
+        }
+        .filter-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+            color: white;
+        }
+        .btn-secondary {
+            background: #6c757d;
+        }
+        .btn-primary {
+            background: #1976D2;
+        }
+        .table-header {
+            background: #424242;
+            color: white;
+            padding: 12px;
+            border-radius: 4px;
+            margin-bottom: 8px;
+            display: flex;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .table-header > div {
+            flex: 1;
+            padding: 0 8px;
+        }
+        .table-header .full-name,
+        .table-header .company-name {
+            flex: 2;
+        }
+        .table-header .actions {
+            flex: 0 0 auto;
+            width: 120px;
+        }
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #9E9E9E;
+        }
+        .empty-state img {
+            width: 64px;
+            height: 64px;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+        .empty-state h3 {
+            margin: 0 0 8px 0;
+            font-size: 16px;
+        }
+        .empty-state p {
+            margin: 0;
+            font-size: 14px;
+            color: #BDBDBD;
+        }
+        .feature-list {
+            background: #E3F2FD;
+            padding: 15px;
+            border-radius: 6px;
+            border-left: 4px solid #1976D2;
+            margin-top: 20px;
+        }
+        .feature-list h4 {
+            margin-top: 0;
+            color: #1565C0;
+        }
+        .feature-list ul {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+        .feature-list li {
+            margin: 5px 0;
+            color: #1976D2;
+        }
+        .mobile-features {
+            background: #F3E5F5;
+            padding: 15px;
+            border-radius: 6px;
+            border-left: 4px solid #9C27B0;
+            margin-top: 20px;
+        }
+        .mobile-features h4 {
+            margin-top: 0;
+            color: #7B1FA2;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Managing Director Agent List Panel</h1>
+            <p>Mobile-Friendly Agent Management Interface with Advanced Filtering</p>
+        </div>
+
+        <div class="demo-section">
+            <h2>What's New</h2>
+            <div class="feature-list">
+                <h4>🎯 New Agent List Panel:</h4>
+                <ul>
+                    <li><strong>Mobile-First Design:</strong> Optimized for mobile devices with responsive layout</li>
+                    <li><strong>Advanced Filtering:</strong> Agent Type, Branch State, and Branch Location filters</li>
+                    <li><strong>Professional Table Layout:</strong> Clean table structure matching the image requirements</li>
+                    <li><strong>Action Buttons:</strong> Edit and Delete actions for each agent</li>
+                    <li><strong>Empty State Handling:</strong> Beautiful empty state when no agents found</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="demo-section">
+            <h2>Mobile Design Features</h2>
+            <div class="mobile-features">
+                <h4>📱 Mobile-Optimized Design:</h4>
+                <ul>
+                    <li><strong>Responsive Layout:</strong> Adapts to different screen sizes</li>
+                    <li><strong>Touch-Friendly:</strong> Proper button sizes and spacing for mobile</li>
+                    <li><strong>Scrollable Content:</strong> Smooth scrolling for long agent lists</li>
+                    <li><strong>Compact Filters:</strong> Efficient use of screen space</li>
+                    <li><strong>Mobile Navigation:</strong> Easy back navigation and intuitive controls</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="demo-section">
+            <h2>Agent List Panel Demo</h2>
+            <p>This is how the new Agent List panel looks on mobile devices:</p>
+            
+            <div class="agent-list-demo">
+                <!-- Filter Section -->
+                <div class="filter-section">
+                    <h3 style="margin-top: 0; color: #2C3E50; margin-bottom: 16px;">Filter Agents</h3>
+                    
+                    <div class="filter-row">
+                        <div class="filter-group">
+                            <label class="filter-label">Agent Type</label>
+                            <select class="filter-select" id="agentTypeFilter">
+                                <option>Select Agent Type</option>
+                                <option>Individual</option>
+                                <option>Corporate</option>
+                                <option>Partner</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label class="filter-label">Branch State</label>
+                            <select class="filter-select" id="branchStateFilter">
+                                <option>Select Branch State</option>
+                                <option>Maharashtra</option>
+                                <option>Delhi</option>
+                                <option>Karnataka</option>
+                                <option>Tamil Nadu</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="filter-row">
+                        <div class="filter-group">
+                            <label class="filter-label">Branch Location</label>
+                            <select class="filter-select" id="branchLocationFilter">
+                                <option>Select Branch Location</option>
+                                <option>Mumbai</option>
+                                <option>Pune</option>
+                                <option>Delhi</option>
+                                <option>Bangalore</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="filter-buttons">
+                        <button class="btn btn-secondary" onclick="resetFilters()">Reset</button>
+                        <button class="btn btn-primary" onclick="applyFilters()">Filter</button>
+                    </div>
+                </div>
+
+                <!-- Table Header -->
+                <div class="table-header">
+                    <div class="full-name">FULL NAME</div>
+                    <div class="company-name">COMPANY NAME</div>
+                    <div>MOBILE</div>
+                    <div>AGENT TYPE</div>
+                    <div>BRANCH STATE</div>
+                    <div>BRANCH LOCATION</div>
+                    <div class="actions">ACTIONS</div>
+                </div>
+
+                <!-- Empty State -->
+                <div class="empty-state" id="emptyState">
+                    <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjQiIGhlaWdodD0iNjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iI0JEQkRCQyI+PHBhdGggZD0iTTE2IDExYzEuNjYgMCAzLTEuMzQgMy0zczMtMS4zNCAzLTEuMzQgMy0zLTEuMzQgMy0zIi8+PHBhdGggZD0iTTEyIDE2YzEuNjYgMCAzLTEuMzQgMy0zczMtMS4zNCAzLTEuMzQgMy0zLTEuMzQgMy0zIi8+PHBhdGggZD0iTTggMTFjMS42NiAwIDMtMS4zNCAzLTMtMy0xLjM0LTMtMy0xLjM0IDMtMyAzczEgMS4zNCAxIDN6Ii8+PHBhdGggZD0iTTEyIDJDNi40OCAyIDIgNi40OCAyIDEyczQuNDggMTAgMTAgMTAgMTAtNC40OCAxMC0xMFMxNy41MiAyIDEyIDJ6bTAgMThjLTQuNDEgMC04LTMuNTktOC04czMuNTktOCA4LTggOCAzLjU5IDggOC0zLjU5IDgtOCA4eiIvPjwvc3ZnPg==" alt="No Agents">
+                    <h3>No Agents Found</h3>
+                    <p>Try adjusting your filters or add new agents</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="demo-section">
+            <h2>Navigation Flow</h2>
+            <div class="feature-list">
+                <h4>📱 How It Works:</h4>
+                <ol>
+                    <li><strong>Managing Director Panel:</strong> Click on the <strong>Agent</strong> box</li>
+                    <li><strong>Agent Panel:</strong> Opens showing "My Agent" and "Agent Team" options</li>
+                    <li><strong>My Agent Panel:</strong> Click on <strong>View Agents</strong> box</li>
+                    <li><strong>Agent List Panel:</strong> Opens with filters and table structure</li>
+                    <li><strong>Filter & View:</strong> Use filters to find specific agents</li>
+                    <li><strong>Actions:</strong> Edit or delete agents as needed</li>
+                </ol>
+            </div>
+        </div>
+
+        <div class="demo-section">
+            <h2>Technical Implementation</h2>
+            <div class="mobile-features">
+                <h4>🔧 What Was Created:</h4>
+                <ul>
+                    <li><strong>New Layout:</strong> <code>activity_managing_director_agent_list.xml</code></li>
+                    <li><strong>New Activity:</strong> <code>ManagingDirectorAgentListActivity.java</code></li>
+                    <li><strong>Filter System:</strong> Dropdown filters for Agent Type, Branch State, Branch Location</li>
+                    <li><strong>Table Structure:</strong> Mobile-optimized table with proper column weights</li>
+                    <li><strong>State Management:</strong> Loading, empty, and populated states</li>
+                    <li><strong>Navigation:</strong> Updated My Agent panel to open Agent List</li>
+                    <li><strong>Manifest Entry:</strong> Added new activity to AndroidManifest.xml</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="demo-section">
+            <h2>Benefits of Mobile Design</h2>
+            <div class="feature-list">
+                <h4>✅ Mobile-First Advantages:</h4>
+                <ul>
+                    <li><strong>Better User Experience:</strong> Optimized for mobile device usage</li>
+                    <li><strong>Responsive Layout:</strong> Works on all screen sizes</li>
+                    <li><strong>Touch-Friendly:</strong> Proper button sizes and spacing</li>
+                    <li><strong>Efficient Navigation:</strong> Easy to use on mobile devices</li>
+                    <li><strong>Professional Look:</strong> Clean, modern interface design</li>
+                    <li><strong>Fast Performance:</strong> Optimized for mobile performance</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function applyFilters() {
+            const agentType = document.getElementById('agentTypeFilter').value;
+            const branchState = document.getElementById('branchStateFilter').value;
+            const branchLocation = document.getElementById('branchLocationFilter').value;
+            
+            if (agentType === 'Select Agent Type' && 
+                branchState === 'Select Branch State' && 
+                branchLocation === 'Select Branch Location') {
+                alert('Please select at least one filter');
+                return;
+            }
+            
+            alert('Filters applied: ' + 
+                (agentType === 'Select Agent Type' ? '' : agentType + ', ') +
+                (branchState === 'Select Branch State' ? '' : branchState + ', ') +
+                (branchLocation === 'Select Branch Location' ? '' : branchLocation));
+        }
+        
+        function resetFilters() {
+            document.getElementById('agentTypeFilter').selectedIndex = 0;
+            document.getElementById('branchStateFilter').selectedIndex = 0;
+            document.getElementById('branchLocationFilter').selectedIndex = 0;
+            alert('Filters reset');
+        }
+    </script>
+</body>
+</html>

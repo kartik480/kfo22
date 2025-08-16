@@ -1112,6 +1112,30 @@
             android:label="Managing Director Employee Team"
             android:parentActivityName=".EmployeePanelActivity"
             android:theme="@style/FullscreenTheme" />
+        <activity
+            android:name=".ManagingDirectorAgentPanelActivity"
+            android:exported="false"
+            android:label="Managing Director Agent Panel"
+            android:parentActivityName=".SpecialPanelActivity"
+            android:theme="@style/FullscreenTheme" />
+        <activity
+            android:name=".ManagingDirectorMyAgentSimpleActivity"
+            android:exported="false"
+            android:label="Managing Director My Agent Simple"
+            android:parentActivityName=".ManagingDirectorAgentPanelActivity"
+            android:theme="@style/FullscreenTheme" />
+        <activity
+            android:name=".ManagingDirectorAgentTeamSimpleActivity"
+            android:exported="false"
+            android:label="Managing Director Agent Team Simple"
+            android:parentActivityName=".ManagingDirectorAgentPanelActivity"
+            android:theme="@style/FullscreenTheme" />
+        <activity
+            android:name=".ManagingDirectorAgentListActivity"
+            android:exported="false"
+            android:label="Managing Director Agent List"
+            android:parentActivityName=".ManagingDirectorMyAgentSimpleActivity"
+            android:theme="@style/FullscreenTheme" />
     </application>
 
 </manifest>

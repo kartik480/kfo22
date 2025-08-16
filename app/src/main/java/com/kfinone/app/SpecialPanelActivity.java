@@ -17,6 +17,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import com.google.android.material.navigation.NavigationView;
 import com.kfinone.app.ManagingDirectorPayoutPanelActivity;
 import com.kfinone.app.ManagingDirectorEmpLinksActivity;
+import com.kfinone.app.ManagingDirectorAgentPanelActivity;
 import com.kfinone.app.ManagingDirectorDataLinksActivity;
 import com.kfinone.app.ManagingDirectorWorkLinksActivity;
 
@@ -198,7 +199,7 @@ public class SpecialPanelActivity extends AppCompatActivity implements Navigatio
         });
 
         findViewById(R.id.agentBox).setOnClickListener(v -> {
-            Intent intent = new Intent(this, MyAgentActivity.class);
+            Intent intent = new Intent(this, ManagingDirectorAgentPanelActivity.class);
             passUserDataToIntent(intent);
             startActivity(intent);
         });
