@@ -1083,6 +1083,18 @@
             android:parentActivityName=".SpecialPanelActivity"
             android:theme="@style/FullscreenTheme" />
         <activity
+            android:name=".ManagingDirectorDataLinksActivity"
+            android:exported="false"
+            android:label="Managing Director Data Links"
+            android:parentActivityName=".SpecialPanelActivity"
+            android:theme="@style/FullscreenTheme" />
+        <activity
+            android:name=".ManagingDirectorWorkLinksActivity"
+            android:exported="false"
+            android:label="Managing Director Work Links"
+            android:parentActivityName=".SpecialPanelActivity"
+            android:theme="@style/FullscreenTheme" />
+        <activity
             android:name=".ManagingDirectorMyEmpLinksActivity"
             android:exported="false"
             android:label="My Employee Links"

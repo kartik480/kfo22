@@ -17,6 +17,8 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import com.google.android.material.navigation.NavigationView;
 import com.kfinone.app.ManagingDirectorPayoutPanelActivity;
 import com.kfinone.app.ManagingDirectorEmpLinksActivity;
+import com.kfinone.app.ManagingDirectorDataLinksActivity;
+import com.kfinone.app.ManagingDirectorWorkLinksActivity;
 
 public class SpecialPanelActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -166,23 +168,15 @@ public class SpecialPanelActivity extends AppCompatActivity implements Navigatio
         });
 
         findViewById(R.id.dataLinksBox).setOnClickListener(v -> {
-            // Show coming soon overlay for Data Links
-            comingSoonOverlay.setVisibility(View.VISIBLE);
-            
-            // Hide overlay after 2 seconds
-            comingSoonOverlay.postDelayed(() -> {
-                comingSoonOverlay.setVisibility(View.GONE);
-            }, 2000);
+            Intent intent = new Intent(this, ManagingDirectorDataLinksActivity.class);
+            passUserDataToIntent(intent);
+            startActivity(intent);
         });
 
         findViewById(R.id.workLinkBox).setOnClickListener(v -> {
-            // Show coming soon overlay for Work Link
-            comingSoonOverlay.setVisibility(View.VISIBLE);
-            
-            // Hide overlay after 2 seconds
-            comingSoonOverlay.postDelayed(() -> {
-                comingSoonOverlay.setVisibility(View.GONE);
-            }, 2000);
+            Intent intent = new Intent(this, ManagingDirectorWorkLinksActivity.class);
+            passUserDataToIntent(intent);
+            startActivity(intent);
         });
 
         findViewById(R.id.employeeBox).setOnClickListener(v -> {

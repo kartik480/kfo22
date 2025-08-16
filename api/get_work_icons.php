@@ -1,111 +1,70 @@
 <?php
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: GET');
+header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type');
 
-require_once 'db_config.php';
-
-try {
-    global $conn;
-    if ($conn->connect_error) {
-        throw new Exception('Connection failed: ' . $conn->connect_error);
-    }
-    
-    // Check if tbl_work_icon table exists
-    $tableCheck = $conn->query("SHOW TABLES LIKE 'tbl_work_icon'");
-    if ($tableCheck->num_rows == 0) {
-        throw new Exception('Table tbl_work_icon does not exist');
-    }
-    
-    // Get table structure to understand available columns
-    $columnsQuery = $conn->query("DESCRIBE tbl_work_icon");
-    $columns = [];
-    while ($column = $columnsQuery->fetch_assoc()) {
-        $columns[] = $column['Field'];
-    }
-    
-    // Build SELECT query based on available columns
-    $selectColumns = [];
-    if (in_array('id', $columns)) $selectColumns[] = 'id';
-    if (in_array('icon_name', $columns)) $selectColumns[] = 'icon_name';
-    if (in_array('icon_url', $columns)) $selectColumns[] = 'icon_url';
-    if (in_array('icon_image', $columns)) $selectColumns[] = 'icon_image';
-    if (in_array('icon_description', $columns)) $selectColumns[] = 'icon_description';
-    if (in_array('status', $columns)) $selectColumns[] = 'status';
-    if (in_array('created_at', $columns)) $selectColumns[] = 'created_at';
-    if (in_array('updated_at', $columns)) $selectColumns[] = 'updated_at';
-    
-    // If no specific columns found, use all columns
-    if (empty($selectColumns)) {
-        $selectColumns = ['*'];
-    }
-    
-    // Build SQL query
-    $sql = "SELECT " . implode(', ', $selectColumns) . " FROM tbl_work_icon ORDER BY ";
-    
-    // Add ORDER BY clause based on available columns
-    if (in_array('created_at', $columns)) {
-        $sql .= "created_at DESC";
-    } else if (in_array('id', $columns)) {
-        $sql .= "id DESC";
-    } else {
-        $sql .= "1"; // Order by first column
-    }
-    
-    $result = $conn->query($sql);
-    
-    if (!$result) {
-        throw new Exception('Query failed: ' . $conn->error . ' | SQL: ' . $sql);
-    }
-    
-    $workIcons = [];
-    $totalCount = 0;
-    
-    if ($result->num_rows > 0) {
-        while ($row = $result->fetch_assoc()) {
-            $totalCount++;
-            
-            $iconData = [
-                'id' => isset($row['id']) ? $row['id'] : '',
-                'icon_name' => isset($row['icon_name']) ? $row['icon_name'] : '',
-                'icon_url' => isset($row['icon_url']) ? $row['icon_url'] : '',
-                'icon_image' => isset($row['icon_image']) ? $row['icon_image'] : '',
-                'icon_description' => isset($row['icon_description']) ? $row['icon_description'] : '',
-                'status' => isset($row['status']) ? $row['status'] : 'Active',
-                'created_at' => isset($row['created_at']) ? $row['created_at'] : '',
-                'updated_at' => isset($row['updated_at']) ? $row['updated_at'] : ''
-            ];
-            
-            $workIcons[] = $iconData;
-        }
-    }
-    
-    echo json_encode([
-        'status' => 'success',
-        'message' => 'Work icons fetched successfully from tbl_work_icon',
-        'data' => $workIcons,
-        'summary' => [
-            'total_icons' => $totalCount
-        ],
-        'debug' => [
-            'available_columns' => $columns,
-            'selected_columns' => $selectColumns,
-            'query_used' => $sql
-        ]
-    ]);
-    
-} catch (Exception $e) {
-    http_response_code(500);
-    echo json_encode([
-        'status' => 'error',
-        'message' => 'Database error: ' . $e->getMessage(),
-        'data' => [],
-        'summary' => [
-            'total_icons' => 0
-        ]
-    ]);
+// Handle preflight OPTIONS request
+if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
+    http_response_code(200);
+    exit();
 }
 
-$conn->close();
+// Database configuration
+$host = 'p3plzcpnl508816.prod.phx3.secureserver.net';
+$dbname = 'emp_kfinone';
+$username = 'emp_kfinone';
+$password = '*F*im1!Y0D25';
+
+try {
+    // Check if ids parameter is provided
+    if (!isset($_GET['ids']) || empty($_GET['ids'])) {
+        throw new Exception("Icon IDs are required");
+    }
+    
+    $iconIds = $_GET['ids'];
+    
+    // Create PDO connection
+    $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $username, $password);
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    
+    // Convert comma-separated string to array and clean it
+    $idArray = array_map('trim', explode(',', $iconIds));
+    $idArray = array_filter($idArray, 'is_numeric'); // Only keep numeric IDs
+    
+    if (empty($idArray)) {
+        throw new Exception("No valid icon IDs provided");
+    }
+    
+    // Create placeholders for IN clause
+    $placeholders = str_repeat('?,', count($idArray) - 1) . '?';
+    
+    // Fetch icon details from tbl_work_icon
+    $stmt = $pdo->prepare("SELECT id, icon_name, icon_url, icon_image, icon_description FROM tbl_work_icon WHERE id IN ($placeholders) ORDER BY icon_name ASC");
+    $stmt->execute($idArray);
+    $icons = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    
+    // Prepare response
+    $response = [
+        'success' => true,
+        'total_icons' => count($icons),
+        'requested_ids' => $idArray,
+        'icons' => $icons
+    ];
+    
+    echo json_encode($response, JSON_PRETTY_PRINT);
+    
+} catch (PDOException $e) {
+    $response = [
+        'success' => false,
+        'error' => 'Database error: ' . $e->getMessage()
+    ];
+    echo json_encode($response, JSON_PRETTY_PRINT);
+} catch (Exception $e) {
+    $response = [
+        'success' => false,
+        'error' => 'Server error: ' . $e->getMessage()
+    ];
+    echo json_encode($response, JSON_PRETTY_PRINT);
+}
 ?> 
