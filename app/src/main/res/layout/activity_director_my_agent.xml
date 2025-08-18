@@ -4,88 +4,276 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="0dp">
+    android:background="#F5F5F5">
 
+    <!-- Toolbar -->
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="?attr/colorPrimary"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"/>
+        android:background="@color/light_pink"
+        android:elevation="4dp"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
-    <TextView
-        android:id="@+id/headingText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="My Agents"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        android:layout_gravity="center_horizontal"
-        android:paddingTop="12dp"
-        android:paddingBottom="16dp"/>
-
-    <!-- Dropdowns -->
+    <!-- Header Section -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:paddingBottom="8dp"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp">
+        android:padding="24dp"
+        android:background="@color/light_pink">
 
-        <Spinner
-            android:id="@+id/spinner_partner_type"
-            android:layout_width="match_parent"
+        <TextView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:prompt="@string/prompt_type_of_partner" />
+            android:text="Director My Agent"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:textColor="#2C3E50"
+            android:fontFamily="sans-serif-medium"
+            android:layout_marginBottom="8dp" />
 
-        <Spinner
-            android:id="@+id/spinner_branch_state"
-            android:layout_width="match_parent"
+        <TextView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:prompt="@string/prompt_branch_state" />
+            android:text="Filter and view your agent information"
+            android:textSize="14sp"
+            android:textColor="#5D5D5D"
+            android:fontFamily="sans-serif-light" />
 
-        <Spinner
-            android:id="@+id/spinner_branch_location"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:prompt="@string/prompt_branch_location" />
     </LinearLayout>
 
-    <!-- Filter/Reset Buttons -->
+    <!-- Filter Section -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="end"
-        android:paddingBottom="12dp"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp">
+        android:orientation="vertical"
+        android:background="#FFFFFF"
+        android:padding="20dp"
+        android:layout_margin="16dp"
+        android:elevation="2dp">
 
-        <Button
-            android:id="@+id/btn_filter"
-            android:layout_width="0dp"
+        <TextView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Filter"
-            android:layout_marginEnd="8dp" />
+            android:text="Filter Agents"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="#2C3E50"
+            android:layout_marginBottom="20dp" />
 
-        <Button
-            android:id="@+id/btn_reset"
-            android:layout_width="0dp"
+        <!-- Filter Row 1 -->
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Reset" />
+            android:orientation="horizontal"
+            android:layout_marginBottom="16dp">
+
+            <!-- Agent Type Filter -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:layout_marginEnd="8dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Agent Type"
+                    android:textSize="14sp"
+                    android:textColor="#7F8C8D"
+                    android:layout_marginBottom="8dp" />
+
+                <Spinner
+                    android:id="@+id/spinner_partner_type"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:background="@drawable/dropdown_background"
+                    android:paddingHorizontal="12dp"
+                    android:popupBackground="#FFFFFF" />
+
+            </LinearLayout>
+
+            <!-- Branch State Filter -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:layout_marginStart="8dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Branch State"
+                    android:textSize="14sp"
+                    android:textColor="#7F8C8D"
+                    android:layout_marginBottom="8dp" />
+
+                <Spinner
+                    android:id="@+id/spinner_branch_state"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:background="@drawable/dropdown_background"
+                    android:paddingHorizontal="12dp"
+                    android:popupBackground="#FFFFFF" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <!-- Filter Row 2 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="20dp">
+
+            <!-- Branch Location Filter -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:layout_marginEnd="8dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Branch Location"
+                    android:textSize="14sp"
+                    android:textColor="#7F8C8D"
+                    android:layout_marginBottom="8dp" />
+
+                <Spinner
+                    android:id="@+id/spinner_branch_location"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:background="@drawable/dropdown_background"
+                    android:paddingHorizontal="12dp"
+                    android:popupBackground="#FFFFFF" />
+
+            </LinearLayout>
+
+            <!-- Empty space for alignment -->
+            <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1" />
+
+        </LinearLayout>
+
+        <!-- Filter Buttons -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="end">
+
+            <!-- Reset Button -->
+            <Button
+                android:id="@+id/btn_reset"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:text="Reset"
+                android:textSize="14sp"
+                android:textColor="#FFFFFF"
+                android:background="@drawable/button_background_secondary"
+                android:paddingHorizontal="24dp"
+                android:layout_marginEnd="12dp" />
+
+            <!-- Filter Button -->
+            <Button
+                android:id="@+id/btn_filter"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:text="Filter"
+                android:textSize="14sp"
+                android:textColor="#FFFFFF"
+                android:background="@drawable/button_background_primary"
+                android:paddingHorizontal="24dp" />
+
+        </LinearLayout>
+
     </LinearLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler_agents"
+    <!-- Content Area -->
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
+        android:paddingHorizontal="16dp">
+
+        <LinearLayout
+            android:id="@+id/agentListContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- Empty State -->
+            <LinearLayout
+                android:id="@+id/emptyStateContainer"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:background="#FFFFFF"
+                android:padding="16dp">
+
+                <ImageView
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    android:src="@drawable/ic_people"
+                    android:tint="#BDBDBD"
+                    android:layout_marginBottom="16dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="No Agents Found"
+                    android:textSize="16sp"
+                    android:textColor="#9E9E9E"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Try adjusting your filters or add new agents"
+                    android:textSize="14sp"
+                    android:textColor="#BDBDBD"
+                    android:gravity="center"
+                    android:layout_marginTop="8dp" />
+
+            </LinearLayout>
+
+            <!-- Loading State -->
+            <LinearLayout
+                android:id="@+id/loadingContainer"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:background="#FFFFFF"
+                android:padding="16dp"
+                android:visibility="gone">
+
+                <ProgressBar
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_marginBottom="16dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Loading Agents..."
+                    android:textSize="16sp"
+                    android:textColor="#7F8C8D" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </ScrollView>
 
 </LinearLayout> 

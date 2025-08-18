@@ -8,8 +8,6 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -20,16 +18,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class DirectorMyAgentActivity extends AppCompatActivity {
     private Spinner spinnerPartnerType, spinnerBranchState, spinnerBranchLocation;
     private Button btnFilter, btnReset;
-    private RecyclerView recyclerAgents;
-    private AgentListAdapter agentListAdapter;
-    private List<AgentItem> agentList = new ArrayList<>();
     private RequestQueue requestQueue;
 
     // For mapping dropdown display names to IDs
@@ -51,7 +44,7 @@ public class DirectorMyAgentActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setTitle("My Agents");
+            getSupportActionBar().setTitle("Director My Agent");
         }
 
         spinnerPartnerType = findViewById(R.id.spinner_partner_type);
@@ -59,23 +52,17 @@ public class DirectorMyAgentActivity extends AppCompatActivity {
         spinnerBranchLocation = findViewById(R.id.spinner_branch_location);
         btnFilter = findViewById(R.id.btn_filter);
         btnReset = findViewById(R.id.btn_reset);
-        recyclerAgents = findViewById(R.id.recycler_agents);
-
-        agentListAdapter = new AgentListAdapter(agentList);
-        recyclerAgents.setLayoutManager(new LinearLayoutManager(this));
-        recyclerAgents.setAdapter(agentListAdapter);
 
         requestQueue = Volley.newRequestQueue(this);
 
         loadDropdownOptions();
-        loadAllAgents();
 
         btnFilter.setOnClickListener(v -> filterAgents());
         btnReset.setOnClickListener(v -> {
             spinnerPartnerType.setSelection(0);
             spinnerBranchState.setSelection(0);
             spinnerBranchLocation.setSelection(0);
-            loadAllAgents();
+            Toast.makeText(this, "Filters reset", Toast.LENGTH_SHORT).show();
         });
     }
 
@@ -86,124 +73,69 @@ public class DirectorMyAgentActivity extends AppCompatActivity {
     }
 
     private void loadDropdownOptions() {
-        String url = BASE_URL + "director_agent_dropdowns.php";
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
-            response -> {
-                try {
-                    JSONArray partnerTypes = response.getJSONArray("partner_types");
-                    partnerTypeNames.clear(); partnerTypeIds.clear();
-                    partnerTypeNames.add("All Types"); partnerTypeIds.add("0");
-                    for (int i = 0; i < partnerTypes.length(); i++) {
-                        JSONObject obj = partnerTypes.getJSONObject(i);
-                        partnerTypeNames.add(obj.getString("name"));
-                        partnerTypeIds.add(obj.getString("id"));
-                    }
-                    ArrayAdapter<String> partnerTypeAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, partnerTypeNames);
-                    partnerTypeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                    spinnerPartnerType.setAdapter(partnerTypeAdapter);
+        // Load sample data for spinners (replace with actual API calls)
+        partnerTypeNames.add("Select Agent Type");
+        partnerTypeNames.add("Individual");
+        partnerTypeNames.add("Corporate");
+        partnerTypeNames.add("Partner");
 
-                    JSONArray branchStates = response.getJSONArray("branch_states");
-                    branchStateNames.clear(); branchStateIds.clear();
-                    branchStateNames.add("All States"); branchStateIds.add("0");
-                    for (int i = 0; i < branchStates.length(); i++) {
-                        JSONObject obj = branchStates.getJSONObject(i);
-                        branchStateNames.add(obj.getString("name"));
-                        branchStateIds.add(obj.getString("id"));
-                    }
-                    ArrayAdapter<String> branchStateAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, branchStateNames);
-                    branchStateAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                    spinnerBranchState.setAdapter(branchStateAdapter);
+        branchStateNames.add("Select Branch State");
+        branchStateNames.add("Maharashtra");
+        branchStateNames.add("Delhi");
+        branchStateNames.add("Karnataka");
+        branchStateNames.add("Tamil Nadu");
 
-                    JSONArray branchLocations = response.getJSONArray("branch_locations");
-                    branchLocationNames.clear(); branchLocationIds.clear();
-                    branchLocationNames.add("All Locations"); branchLocationIds.add("0");
-                    for (int i = 0; i < branchLocations.length(); i++) {
-                        JSONObject obj = branchLocations.getJSONObject(i);
-                        branchLocationNames.add(obj.getString("name"));
-                        branchLocationIds.add(obj.getString("id"));
-                    }
-                    ArrayAdapter<String> branchLocationAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, branchLocationNames);
-                    branchLocationAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                    spinnerBranchLocation.setAdapter(branchLocationAdapter);
-                } catch (JSONException e) {
-                    Toast.makeText(this, "Dropdown parse error", Toast.LENGTH_SHORT).show();
-                }
-            },
-            error -> Toast.makeText(this, "Failed to load dropdowns", Toast.LENGTH_SHORT).show()
-        );
-        requestQueue.add(request);
-    }
+        branchLocationNames.add("Select Branch Location");
+        branchLocationNames.add("Mumbai");
+        branchLocationNames.add("Pune");
+        branchLocationNames.add("Delhi");
+        branchLocationNames.add("Bangalore");
 
-    private void loadAllAgents() {
-        String url = BASE_URL + "get_agent_list.php";
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
-            response -> {
-                try {
-                    if (response.getString("status").equals("success")) {
-                        JSONArray data = response.getJSONArray("data");
-                        List<AgentItem> agents = parseAgentList(data);
-                        agentListAdapter.updateData(agents);
-                    }
-                } catch (Exception e) {
-                    Toast.makeText(this, "Failed to load agents", Toast.LENGTH_SHORT).show();
-                }
-            },
-            error -> Toast.makeText(this, "Failed to load agents", Toast.LENGTH_SHORT).show()
-        );
-        requestQueue.add(request);
+        // Set up spinners
+        ArrayAdapter<String> partnerTypeAdapter = new ArrayAdapter<>(this, 
+            android.R.layout.simple_spinner_item, partnerTypeNames);
+        partnerTypeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerPartnerType.setAdapter(partnerTypeAdapter);
+
+        ArrayAdapter<String> branchStateAdapter = new ArrayAdapter<>(this, 
+            android.R.layout.simple_spinner_item, branchStateNames);
+        branchStateAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerBranchState.setAdapter(branchStateAdapter);
+
+        ArrayAdapter<String> branchLocationAdapter = new ArrayAdapter<>(this, 
+            android.R.layout.simple_spinner_item, branchLocationNames);
+        branchLocationAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerBranchLocation.setAdapter(branchLocationAdapter);
     }
 
     private void filterAgents() {
-        int partnerTypePos = spinnerPartnerType.getSelectedItemPosition();
-        int branchStatePos = spinnerBranchState.getSelectedItemPosition();
-        int branchLocationPos = spinnerBranchLocation.getSelectedItemPosition();
-        String partnerTypeId = partnerTypeIds.get(partnerTypePos);
-        String branchStateId = branchStateIds.get(branchStatePos);
-        String branchLocationId = branchLocationIds.get(branchLocationPos);
+        String selectedAgentType = spinnerPartnerType.getSelectedItem().toString();
+        String selectedBranchState = spinnerBranchState.getSelectedItem().toString();
+        String selectedBranchLocation = spinnerBranchLocation.getSelectedItem().toString();
 
-        Map<String, String> params = new HashMap<>();
-        params.put("partner_type_id", partnerTypeId);
-        params.put("state_id", branchStateId);
-        params.put("location_id", branchLocationId);
-
-        JSONObject jsonParams = new JSONObject(params);
-        String url = BASE_URL + "filter_agents.php";
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, jsonParams,
-            response -> {
-                try {
-                    if (response.getString("status").equals("success")) {
-                        JSONArray data = response.getJSONArray("data");
-                        List<AgentItem> agents = parseAgentList(data);
-                        agentListAdapter.updateData(agents);
-                    }
-                } catch (Exception e) {
-                    Toast.makeText(this, "Failed to filter agents", Toast.LENGTH_SHORT).show();
-                }
-            },
-            error -> Toast.makeText(this, "Failed to filter agents", Toast.LENGTH_SHORT).show()
-        );
-        requestQueue.add(request);
-    }
-
-    private List<AgentItem> parseAgentList(JSONArray data) throws JSONException {
-        List<AgentItem> agents = new ArrayList<>();
-        for (int i = 0; i < data.length(); i++) {
-            JSONObject obj = data.getJSONObject(i);
-            agents.add(new AgentItem(
-                    obj.optString("full_name"),
-                    obj.optString("company_name"),
-                    obj.optString("Phone_number"),
-                    obj.optString("alternative_Phone_number"),
-                    obj.optString("email_id"),
-                    obj.optString("partnerType"),
-                    obj.optString("state"),
-                    obj.optString("location"),
-                    obj.optString("address"),
-                    obj.optString("visiting_card"),
-                    obj.optString("created_user"),
-                    obj.optString("createdBy")
-            ));
+        // Check if any filter is selected
+        if (selectedAgentType.equals("Select Agent Type") && 
+            selectedBranchState.equals("Select Branch State") && 
+            selectedBranchLocation.equals("Select Branch Location")) {
+            Toast.makeText(this, "Please select at least one filter", Toast.LENGTH_SHORT).show();
+            return;
         }
-        return agents;
+
+        // Show filter applied message
+        String filterMessage = "Filters applied: ";
+        if (!selectedAgentType.equals("Select Agent Type")) {
+            filterMessage += selectedAgentType;
+        }
+        if (!selectedBranchState.equals("Select Branch State")) {
+            filterMessage += (filterMessage.endsWith(": ") ? "" : ", ") + selectedBranchState;
+        }
+        if (!selectedBranchLocation.equals("Select Branch Location")) {
+            filterMessage += (filterMessage.endsWith(": ") ? "" : ", ") + selectedBranchLocation;
+        }
+        
+        Toast.makeText(this, filterMessage, Toast.LENGTH_LONG).show();
+        
+        // TODO: Implement actual filtering logic here
+        // For now, just show the message
     }
 } 

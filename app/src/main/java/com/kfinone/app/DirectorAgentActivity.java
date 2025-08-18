@@ -12,7 +12,7 @@ import androidx.appcompat.widget.Toolbar;
 public class DirectorAgentActivity extends AppCompatActivity {
 
     // Remove old buttons and use new boxes
-    private LinearLayout addAgentBox, myAgentBox, agentTeamBox;
+    private LinearLayout myAgentBox, agentTeamBox;
     
     private String userId;
     private String userName;
@@ -23,16 +23,10 @@ public class DirectorAgentActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_director_agent);
-        addAgentBox = findViewById(R.id.addAgentBox);
         myAgentBox = findViewById(R.id.myAgentBox);
         agentTeamBox = findViewById(R.id.agentTeamBox);
+        
         // Set up click listeners for the new boxes as needed
-        addAgentBox.setOnClickListener(v -> {
-            Intent intent = new Intent(this, DirectorAddAgentActivity.class);
-            // Pass user data if needed
-            startActivity(intent);
-        });
-
         myAgentBox.setOnClickListener(v -> {
             Intent intent = new Intent(this, DirectorMyAgentActivity.class);
             passUserDataToIntent(intent);
