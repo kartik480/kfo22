@@ -74,6 +74,9 @@ public class User10002PanelActivity extends AppCompatActivity implements Navigat
     private MaterialCardView bankersBox;
     private MaterialCardView portfolioBox;
     private MaterialCardView addInsuranceBox;
+    private MaterialCardView empLinksBox;
+    private MaterialCardView dataLinksBox;
+    private MaterialCardView workLinksBox;
 
     // User data
     private String userId;
@@ -184,6 +187,9 @@ public class User10002PanelActivity extends AppCompatActivity implements Navigat
         bankersBox = findViewById(R.id.bankersBox);
         portfolioBox = findViewById(R.id.portfolioBox);
         addInsuranceBox = findViewById(R.id.addInsuranceBox);
+        empLinksBox = findViewById(R.id.empLinksBox);
+        dataLinksBox = findViewById(R.id.dataLinksBox);
+        workLinksBox = findViewById(R.id.workLinksBox);
 
         // Set up navigation view
         navigationView.setNavigationItemSelectedListener(this);
@@ -328,6 +334,9 @@ public class User10002PanelActivity extends AppCompatActivity implements Navigat
             passUserDataToIntent(intent);
             startActivity(intent);
         });
+
+        // New Management Tool boxes - No navigation, just boxes
+        // empLinksBox, dataLinksBox, workLinksBox are display-only boxes
     }
 
     private void setupAnimations() {
@@ -341,6 +350,19 @@ public class User10002PanelActivity extends AppCompatActivity implements Navigat
         totalPortfolioCard.startAnimation(fadeIn);
         totalAgentCard.startAnimation(fadeIn);
 
+        // Add animations for Management Tool boxes
+        employeeBox.startAnimation(fadeIn);
+        sdsaBox.startAnimation(fadeIn);
+        partnerBox.startAnimation(fadeIn);
+        agentBox.startAnimation(fadeIn);
+        payoutBox.startAnimation(fadeIn);
+        dsaCodesBox.startAnimation(fadeIn);
+        bankersBox.startAnimation(fadeIn);
+        portfolioBox.startAnimation(fadeIn);
+        addInsuranceBox.startAnimation(fadeIn);
+        empLinksBox.startAnimation(fadeIn);
+        dataLinksBox.startAnimation(fadeIn);
+        workLinksBox.startAnimation(fadeIn);
     }
 
     private void loadDashboardData() {
