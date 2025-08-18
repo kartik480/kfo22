@@ -273,6 +273,11 @@ public class DsaCodeListActivity extends AppCompatActivity {
             passUserDataToIntent(intent);
             startActivity(intent);
             finish();
+        } else if ("DIRECTOR_PANEL".equals(sourcePanel)) {
+            Intent intent = new Intent(this, User10002PanelActivity.class);
+            passUserDataToIntent(intent);
+            startActivity(intent);
+            finish();
         } else if ("CBO_PANEL".equals(sourcePanel)) {
             Intent intent = new Intent(this, ChiefBusinessOfficerPanelActivity.class);
             passUserDataToIntent(intent);

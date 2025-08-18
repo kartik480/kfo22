@@ -43,7 +43,7 @@ public class DirectorDsaCodeActivity extends AppCompatActivity {
 
     private void setupClickListeners() {
         viewDsaCodesButton.setOnClickListener(v -> {
-            Intent intent = new Intent(this, DsaListActivity.class);
+            Intent intent = new Intent(this, DsaCodeListActivity.class);
             passUserDataToIntent(intent);
             intent.putExtra("SOURCE_PANEL", "DIRECTOR_PANEL");
             startActivity(intent);
