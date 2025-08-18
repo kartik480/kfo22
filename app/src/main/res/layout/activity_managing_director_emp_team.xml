@@ -33,10 +33,20 @@
                 android:id="@+id/employeeTeamHeading"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Employee Team"
+                android:text="Available Users &amp; Employee Team"
                 android:textSize="28sp"
                 android:textStyle="bold"
                 android:textColor="@color/primary_color"
+                android:gravity="center"
+                android:layout_marginBottom="16dp" />
+
+            <!-- Subtitle -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="All available users are shown below. Select a user to view their team members."
+                android:textSize="16sp"
+                android:textColor="@color/light_gray"
                 android:gravity="center"
                 android:layout_marginBottom="32dp" />
 
@@ -100,13 +110,13 @@
                 android:id="@+id/teamDataHeading"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Team Members"
+                android:text="Available Users"
                 android:textSize="20sp"
                 android:textStyle="bold"
                 android:textColor="@color/black"
                 android:layout_marginTop="32dp"
                 android:layout_marginBottom="16dp"
-                android:visibility="gone" />
+                android:visibility="visible" />
 
             <!-- RecyclerView for Team Data -->
             <androidx.recyclerview.widget.RecyclerView
@@ -114,7 +124,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:visibility="gone" />
+                android:visibility="visible" />
 
             <!-- No Data Message -->
             <TextView

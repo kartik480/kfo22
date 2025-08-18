@@ -55,6 +55,9 @@ public class ManagingDirectorEmpTeamActivity extends AppCompatActivity {
         setupToolbar();
         setupClickListeners();
         loadUsersForDropdown();
+        
+        // Show all available users by default
+        showAllAvailableUsers();
     }
 
     private void initializeViews() {
@@ -77,6 +80,11 @@ public class ManagingDirectorEmpTeamActivity extends AppCompatActivity {
         // Setup RecyclerView
         teamRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         teamRecyclerView.setAdapter(teamAdapter);
+        
+        // Show initial state - available users will be loaded
+        teamDataHeading.setVisibility(View.VISIBLE);
+        teamRecyclerView.setVisibility(View.VISIBLE);
+        noDataMessage.setVisibility(View.GONE);
     }
 
     private void setupToolbar() {
@@ -103,8 +111,9 @@ public class ManagingDirectorEmpTeamActivity extends AppCompatActivity {
 
         resetButton.setOnClickListener(v -> {
             userSpinner.setSelection(0);
-            hideTeamData();
-            Toast.makeText(this, "Data reset", Toast.LENGTH_SHORT).show();
+            // Instead of hiding data, show all available users again
+            displayAllAvailableUsers();
+            Toast.makeText(this, "Showing all available users", Toast.LENGTH_SHORT).show();
         });
     }
 
@@ -165,6 +174,11 @@ public class ManagingDirectorEmpTeamActivity extends AppCompatActivity {
                             Log.d(TAG, "Loaded " + userNames.size() + " Managing Director designated users in dropdown");
                             Toast.makeText(ManagingDirectorEmpTeamActivity.this, 
                                 "Loaded " + (userNames.size() - 1) + " designated users", Toast.LENGTH_SHORT).show();
+                            
+                            // After loading users, automatically show all available users
+                            if (userList.size() > 0) {
+                                showAllAvailableUsers();
+                            }
                         });
                     } else {
                         String errorMsg = json.optString("message");
@@ -278,6 +292,8 @@ public class ManagingDirectorEmpTeamActivity extends AppCompatActivity {
                 showNoDataMessage();
             } else {
                 showTeamData();
+                // Update heading to show team members for specific manager
+                teamDataHeading.setText("Team Members for " + managerName + " (" + teamMembers.size() + ")");
                 Toast.makeText(this, "Found " + teamMembers.size() + " team members for " + managerName, Toast.LENGTH_SHORT).show();
             }
         } catch (Exception e) {
@@ -299,11 +315,66 @@ public class ManagingDirectorEmpTeamActivity extends AppCompatActivity {
     }
 
     private void hideTeamData() {
-        teamDataHeading.setVisibility(View.GONE);
+        // Instead of hiding everything, show available users
+        if (userList.size() > 0) {
+            displayAllAvailableUsers();
+        } else {
+            showLoadingState();
+        }
+    }
+
+    private void showAllAvailableUsers() {
+        // Show all available users by default
+        if (userList.size() > 0) {
+            // Display all users as available users
+            displayAllAvailableUsers();
+        } else {
+            // If no users loaded yet, show loading state
+            showLoadingState();
+        }
+    }
+
+    private void showLoadingState() {
+        teamDataHeading.setText("Loading Available Users...");
+        teamDataHeading.setVisibility(View.VISIBLE);
         teamRecyclerView.setVisibility(View.GONE);
         noDataMessage.setVisibility(View.GONE);
     }
 
+    private void displayAllAvailableUsers() {
+        try {
+            teamMembers.clear();
+            
+            // Add all users from the dropdown as available users
+            for (UserItem user : userList) {
+                TeamMember teamMember = new TeamMember(
+                    user.id,
+                    user.fullName.split(" ")[0], // First name
+                    user.fullName.split(" ").length > 1 ? user.fullName.split(" ")[1] : "", // Last name
+                    user.designation,
+                    "", // Email - not available in dropdown data
+                    "", // Mobile - not available in dropdown data
+                    "", // Employee no - not available in dropdown data
+                    "Available User" // Manager name placeholder
+                );
+                teamMembers.add(teamMember);
+            }
+            
+            teamAdapter.notifyDataSetChanged();
+            
+            if (teamMembers.isEmpty()) {
+                showNoDataMessage();
+            } else {
+                showTeamData();
+                // Update the heading to show "Available Users" instead of "Team Members"
+                teamDataHeading.setText("Available Users (" + teamMembers.size() + ")");
+                Toast.makeText(this, "Showing " + teamMembers.size() + " available users", Toast.LENGTH_SHORT).show();
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error displaying all available users: " + e.getMessage(), e);
+            Toast.makeText(this, "Error displaying available users", Toast.LENGTH_LONG).show();
+        }
+    }
 
 
     // User Item data class for dropdown

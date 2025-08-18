@@ -44,7 +44,7 @@
                     android:layout_height="wrap_content"
                     android:text="Employee ID"
                     android:textSize="12sp"
-                    android:textColor="@color/light_gray"
+                    android:textColor="@color/black"
                     android:layout_marginBottom="2dp" />
 
                 <TextView
@@ -69,7 +69,7 @@
                     android:layout_height="wrap_content"
                     android:text="Designation"
                     android:textSize="12sp"
-                    android:textColor="@color/light_gray"
+                    android:textColor="@color/black"
                     android:layout_marginBottom="2dp" />
 
                 <TextView
@@ -101,7 +101,7 @@
                     android:layout_height="wrap_content"
                     android:text="Mobile"
                     android:textSize="12sp"
-                    android:textColor="@color/light_gray"
+                    android:textColor="@color/black"
                     android:layout_marginBottom="2dp" />
 
                 <TextView
@@ -125,7 +125,7 @@
                     android:layout_height="wrap_content"
                     android:text="Email"
                     android:textSize="12sp"
-                    android:textColor="@color/light_gray"
+                    android:textColor="@color/black"
                     android:layout_marginBottom="2dp" />
 
                 <TextView
