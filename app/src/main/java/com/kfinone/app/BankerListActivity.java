@@ -113,6 +113,8 @@ public class BankerListActivity extends AppCompatActivity {
                 connection.setReadTimeout(10000);
                 
                 int responseCode = connection.getResponseCode();
+                Log.d(TAG, "Vendor Banks API Response Code: " + responseCode);
+                
                 if (responseCode == java.net.HttpURLConnection.HTTP_OK) {
                     java.io.BufferedReader reader = new java.io.BufferedReader(new java.io.InputStreamReader(connection.getInputStream()));
                     StringBuilder response = new StringBuilder();
@@ -122,27 +124,64 @@ public class BankerListActivity extends AppCompatActivity {
                     }
                     reader.close();
                     
+                    Log.d(TAG, "Vendor Banks API Raw Response: " + response.toString());
+                    
                     org.json.JSONObject jsonResponse = new org.json.JSONObject(response.toString());
-                    if (jsonResponse.getBoolean("success")) {
-                        org.json.JSONArray dataArray = jsonResponse.getJSONArray("data");
-                        java.util.List<String> vendorBanks = new java.util.ArrayList<>();
-                        for (int i = 0; i < dataArray.length(); i++) {
-                            vendorBanks.add(dataArray.getJSONObject(i).getString("vendor_bank_name"));
+                    Log.d(TAG, "Vendor Banks JSON Response Keys: " + jsonResponse.keys().toString());
+                    
+                    if (jsonResponse.getString("status").equals("success")) {
+                        if (jsonResponse.has("data")) {
+                            org.json.JSONArray dataArray = jsonResponse.getJSONArray("data");
+                            java.util.List<String> vendorBanks = new java.util.ArrayList<>();
+                            vendorBanks.add("All Vendor Banks"); // Add default option
+                            
+                            Log.d(TAG, "Vendor Banks Data Array Length: " + dataArray.length());
+                            
+                            for (int i = 0; i < dataArray.length(); i++) {
+                                org.json.JSONObject vendorBankObj = dataArray.getJSONObject(i);
+                                Log.d(TAG, "Vendor Bank Object " + i + ": " + vendorBankObj.toString());
+                                
+                                if (vendorBankObj.has("vendor_bank_name")) {
+                                    String vendorBankName = vendorBankObj.getString("vendor_bank_name");
+                                    vendorBanks.add(vendorBankName);
+                                    Log.d(TAG, "Added Vendor Bank: " + vendorBankName);
+                                } else {
+                                    Log.e(TAG, "Vendor Bank Object " + i + " missing vendor_bank_name field");
+                                }
+                            }
+                            
+                            Log.d(TAG, "Total Vendor Banks (including 'All'): " + vendorBanks.size());
+                            
+                            runOnUiThread(() -> {
+                                ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, vendorBanks);
+                                vendorBankFilter.setAdapter(adapter);
+                                Log.d(TAG, "Vendor Banks dropdown populated with " + vendorBanks.size() + " items");
+                            });
+                        } else {
+                            Log.e(TAG, "Vendor Banks API response missing 'data' field");
+                            runOnUiThread(() -> {
+                                Toast.makeText(this, "Error: Vendor banks API missing data field", Toast.LENGTH_SHORT).show();
+                            });
                         }
+                    } else {
+                        Log.e(TAG, "Vendor Banks API returned status: " + jsonResponse.optString("status", "unknown"));
                         runOnUiThread(() -> {
-                            ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, vendorBanks);
-                            vendorBankFilter.setAdapter(adapter);
+                            Toast.makeText(this, "Error: Vendor banks API returned failure", Toast.LENGTH_SHORT).show();
                         });
                     }
+                } else {
+                    Log.e(TAG, "Vendor Banks API returned response code: " + responseCode);
                 }
                 connection.disconnect();
             } catch (Exception e) {
                 Log.e(TAG, "Error loading vendor banks: " + e.getMessage(), e);
                 runOnUiThread(() -> {
                     // Add fallback data
-                    String[] fallbackBanks = {"HDFC Bank", "ICICI Bank", "SBI Bank", "Axis Bank"};
+                    String[] fallbackBanks = {"All Vendor Banks", "HDFC Bank", "ICICI Bank", "SBI Bank", "Axis Bank"};
                     ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, fallbackBanks);
                     vendorBankFilter.setAdapter(adapter);
+                    Log.d(TAG, "Using fallback vendor banks data due to error");
+                    Toast.makeText(this, "Using fallback vendor banks data", Toast.LENGTH_SHORT).show();
                 });
             }
         });
@@ -169,9 +208,10 @@ public class BankerListActivity extends AppCompatActivity {
                     reader.close();
                     
                     org.json.JSONObject jsonResponse = new org.json.JSONObject(response.toString());
-                    if (jsonResponse.getBoolean("success")) {
+                    if (jsonResponse.getString("status").equals("success")) {
                         org.json.JSONArray dataArray = jsonResponse.getJSONArray("data");
                         java.util.List<String> loanTypes = new java.util.ArrayList<>();
+                        loanTypes.add("All Loan Types"); // Add default option
                         for (int i = 0; i < dataArray.length(); i++) {
                             loanTypes.add(dataArray.getJSONObject(i).getString("loan_type"));
                         }
@@ -186,7 +226,7 @@ public class BankerListActivity extends AppCompatActivity {
                 Log.e(TAG, "Error loading loan types: " + e.getMessage(), e);
                 runOnUiThread(() -> {
                     // Add fallback data
-                    String[] fallbackTypes = {"Personal Loan", "Home Loan", "Business Loan", "Vehicle Loan"};
+                    String[] fallbackTypes = {"All Loan Types", "Personal Loan", "Home Loan", "Business Loan", "Vehicle Loan"};
                     ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, fallbackTypes);
                     loanTypeFilter.setAdapter(adapter);
                 });
@@ -197,7 +237,7 @@ public class BankerListActivity extends AppCompatActivity {
     private void loadStateOptions() {
         executorService.execute(() -> {
             try {
-                String urlString = "https://emp.kfinone.com/mobile/api/fetch_branch_states.php";
+                String urlString = "https://emp.kfinone.com/mobile/api/get_states_for_dropdown.php";
                 java.net.URL url = new java.net.URL(urlString);
                 java.net.HttpURLConnection connection = (java.net.HttpURLConnection) url.openConnection();
                 connection.setRequestMethod("GET");
@@ -216,10 +256,11 @@ public class BankerListActivity extends AppCompatActivity {
                     
                     org.json.JSONObject jsonResponse = new org.json.JSONObject(response.toString());
                     if (jsonResponse.getBoolean("success")) {
-                        org.json.JSONArray dataArray = jsonResponse.getJSONArray("data");
+                        org.json.JSONArray dataArray = jsonResponse.getJSONArray("states");
                         java.util.List<String> states = new java.util.ArrayList<>();
+                        states.add("All States"); // Add default option
                         for (int i = 0; i < dataArray.length(); i++) {
-                            states.add(dataArray.getJSONObject(i).getString("branch_state_name"));
+                            states.add(dataArray.getString(i));
                         }
                         runOnUiThread(() -> {
                             ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, states);
@@ -232,7 +273,7 @@ public class BankerListActivity extends AppCompatActivity {
                 Log.e(TAG, "Error loading states: " + e.getMessage(), e);
                 runOnUiThread(() -> {
                     // Add fallback data
-                    String[] fallbackStates = {"Maharashtra", "Delhi", "Karnataka", "Tamil Nadu"};
+                    String[] fallbackStates = {"All States", "Maharashtra", "Delhi", "Karnataka", "Tamil Nadu"};
                     ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, fallbackStates);
                     stateFilter.setAdapter(adapter);
                 });
@@ -243,7 +284,7 @@ public class BankerListActivity extends AppCompatActivity {
     private void loadLocationOptions() {
         executorService.execute(() -> {
             try {
-                String urlString = "https://emp.kfinone.com/mobile/api/fetch_branch_locations.php";
+                String urlString = "https://emp.kfinone.com/mobile/api/get_branch_locations_dropdown.php";
                 java.net.URL url = new java.net.URL(urlString);
                 java.net.HttpURLConnection connection = (java.net.HttpURLConnection) url.openConnection();
                 connection.setRequestMethod("GET");
@@ -261,11 +302,12 @@ public class BankerListActivity extends AppCompatActivity {
                     reader.close();
                     
                     org.json.JSONObject jsonResponse = new org.json.JSONObject(response.toString());
-                    if (jsonResponse.getBoolean("success")) {
+                    if (jsonResponse.getString("status").equals("success")) {
                         org.json.JSONArray dataArray = jsonResponse.getJSONArray("data");
                         java.util.List<String> locations = new java.util.ArrayList<>();
+                        locations.add("All Locations"); // Add default option
                         for (int i = 0; i < dataArray.length(); i++) {
-                            locations.add(dataArray.getJSONObject(i).getString("branch_location"));
+                            locations.add(dataArray.getJSONObject(i).getString("name"));
                         }
                         runOnUiThread(() -> {
                             ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, locations);
@@ -278,7 +320,7 @@ public class BankerListActivity extends AppCompatActivity {
                 Log.e(TAG, "Error loading locations: " + e.getMessage(), e);
                 runOnUiThread(() -> {
                     // Add fallback data
-                    String[] fallbackLocations = {"Mumbai", "Pune", "Delhi", "Bangalore"};
+                    String[] fallbackLocations = {"All Locations", "Mumbai", "Pune", "Delhi", "Bangalore"};
                     ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, fallbackLocations);
                     locationFilter.setAdapter(adapter);
                 });
@@ -297,16 +339,16 @@ public class BankerListActivity extends AppCompatActivity {
                 String state = stateFilter.getText().toString();
                 String location = locationFilter.getText().toString();
                 
-                if (!vendorBank.isEmpty()) {
+                if (!vendorBank.isEmpty() && !"All Vendor Banks".equals(vendorBank)) {
                     urlBuilder.append("vendor_bank=").append(java.net.URLEncoder.encode(vendorBank, "UTF-8")).append("&");
                 }
-                if (!loanType.isEmpty()) {
+                if (!loanType.isEmpty() && !"All Loan Types".equals(loanType)) {
                     urlBuilder.append("loan_type=").append(java.net.URLEncoder.encode(loanType, "UTF-8")).append("&");
                 }
-                if (!state.isEmpty()) {
+                if (!state.isEmpty() && !"All States".equals(state)) {
                     urlBuilder.append("state=").append(java.net.URLEncoder.encode(state, "UTF-8")).append("&");
                 }
-                if (!location.isEmpty()) {
+                if (!location.isEmpty() && !"All Locations".equals(location)) {
                     urlBuilder.append("location=").append(java.net.URLEncoder.encode(location, "UTF-8")).append("&");
                 }
                 
