@@ -1113,6 +1113,12 @@
             android:parentActivityName=".EmployeePanelActivity"
             android:theme="@style/FullscreenTheme" />
         <activity
+            android:name=".ManagingDirectorActiveEmpListActivity"
+            android:exported="false"
+            android:label="Managing Director Active Employee List"
+            android:parentActivityName=".EmployeePanelActivity"
+            android:theme="@style/FullscreenTheme" />
+        <activity
             android:name=".ManagingDirectorAgentPanelActivity"
             android:exported="false"
             android:label="Managing Director Agent Panel"

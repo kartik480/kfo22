@@ -33,10 +33,12 @@ public class EmployeePanelActivity extends AppCompatActivity {
     // Employee boxes
     private LinearLayout myEmpBox;
     private LinearLayout empTeamBox;
+    private LinearLayout activeEmpListBox;
 
     // Count displays
     private TextView myEmpCount;
     private TextView empTeamCount;
+    private TextView activeEmpListCount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,10 +65,12 @@ public class EmployeePanelActivity extends AppCompatActivity {
         // Employee boxes
         myEmpBox = findViewById(R.id.myEmpBox);
         empTeamBox = findViewById(R.id.empTeamBox);
+        activeEmpListBox = findViewById(R.id.activeEmpListBox);
 
         // Count displays
         myEmpCount = findViewById(R.id.myEmpCount);
         empTeamCount = findViewById(R.id.empTeamCount);
+        activeEmpListCount = findViewById(R.id.activeEmpListCount);
     }
 
     private void setupClickListeners() {
@@ -105,6 +109,11 @@ public class EmployeePanelActivity extends AppCompatActivity {
 
         empTeamBox.setOnClickListener(v -> {
             Intent intent = new Intent(this, ManagingDirectorEmpTeamActivity.class);
+            startActivity(intent);
+        });
+
+        activeEmpListBox.setOnClickListener(v -> {
+            Intent intent = new Intent(this, ManagingDirectorActiveEmpListActivity.class);
             startActivity(intent);
         });
     }
@@ -176,6 +185,9 @@ public class EmployeePanelActivity extends AppCompatActivity {
                             empTeamCount.setText(totalTeams + " teams");
                             Log.d("EmployeePanel", "Updated UI with " + totalEmployees + " employees and " + totalTeams + " teams");
                         });
+                        
+                        // Also fetch active employee count for Managing Director
+                        fetchActiveEmployeeCount();
                     } else {
                         String errorMsg = json.optString("message");
                         Log.e("EmployeePanel", "Server returned error: " + errorMsg);
@@ -212,6 +224,77 @@ public class EmployeePanelActivity extends AppCompatActivity {
                     // Set default values on error
                     myEmpCount.setText("0 employees");
                     empTeamCount.setText("0 teams");
+                });
+            }
+        }).start();
+    }
+
+    private void fetchActiveEmployeeCount() {
+        new Thread(() -> {
+            try {
+                Log.d("EmployeePanel", "Starting to fetch active employee count from Managing Director API...");
+                
+                URL url = new URL("https://emp.kfinone.com/mobile/api/get_managing_director_active_emp_list.php");
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setRequestMethod("GET");
+                conn.setConnectTimeout(5000);
+                conn.setReadTimeout(5000);
+
+                int responseCode = conn.getResponseCode();
+                Log.d("EmployeePanel", "Managing Director API response code: " + responseCode);
+                
+                if (responseCode == HttpURLConnection.HTTP_OK) {
+                    BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                    StringBuilder response = new StringBuilder();
+                    String line;
+                    while ((line = in.readLine()) != null) {
+                        response.append(line);
+                    }
+                    in.close();
+
+                    String responseString = response.toString();
+                    Log.d("EmployeePanel", "Managing Director API response: " + responseString);
+
+                    JSONObject json = new JSONObject(responseString);
+                    if (json.getString("status").equals("success")) {
+                        JSONObject statistics = json.optJSONObject("statistics");
+                        final int activeEmpCount;
+                        
+                        if (statistics != null) {
+                            activeEmpCount = statistics.optInt("active_members", 0);
+                        } else {
+                            // Fallback: count the data array
+                            JSONArray data = json.optJSONArray("data");
+                            if (data != null) {
+                                activeEmpCount = data.length();
+                            } else {
+                                activeEmpCount = 0;
+                            }
+                        }
+                        
+                        Log.d("EmployeePanel", "Found " + activeEmpCount + " active employees");
+                        
+                        runOnUiThread(() -> {
+                            activeEmpListCount.setText(activeEmpCount + " active employees");
+                            Log.d("EmployeePanel", "Updated UI with " + activeEmpCount + " active employees");
+                        });
+                    } else {
+                        String errorMsg = json.optString("message");
+                        Log.e("EmployeePanel", "Server returned error for active employees: " + errorMsg);
+                        runOnUiThread(() -> {
+                            activeEmpListCount.setText("0 active employees");
+                        });
+                    }
+                } else {
+                    Log.e("EmployeePanel", "Server error with response code for active employees: " + responseCode);
+                    runOnUiThread(() -> {
+                        activeEmpListCount.setText("0 active employees");
+                    });
+                }
+            } catch (Exception e) {
+                Log.e("EmployeePanel", "Exception in fetchActiveEmployeeCount: " + e.getMessage(), e);
+                runOnUiThread(() -> {
+                    activeEmpListCount.setText("0 active employees");
                 });
             }
         }).start();
