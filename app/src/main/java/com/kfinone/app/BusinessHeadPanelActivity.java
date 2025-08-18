@@ -278,13 +278,8 @@ public class BusinessHeadPanelActivity extends AppCompatActivity {
             startActivity(intent);
         });
         
-        // Innovation Hub
+        // Innovation Hub (Payout)
         cardInnovationHub.setOnClickListener(v -> {
-            showToast("Innovation Hub - Coming Soon!");
-        });
-        
-        // Partnerships (Payout Management)
-        cardPartnerships.setOnClickListener(v -> {
             Intent intent = new Intent(BusinessHeadPanelActivity.this, BHPayoutPanelActivity.class);
             // Pass user data
             if (userId != null) intent.putExtra("USER_ID", userId);
@@ -292,6 +287,17 @@ public class BusinessHeadPanelActivity extends AppCompatActivity {
             if (firstName != null) intent.putExtra("FIRST_NAME", firstName);
             if (lastName != null) intent.putExtra("LAST_NAME", lastName);
             intent.putExtra("SOURCE_PANEL", "BUSINESS_HEAD_PANEL");
+            startActivity(intent);
+        });
+        
+        // Partnerships (Bankers List)
+        cardPartnerships.setOnClickListener(v -> {
+            Intent intent = new Intent(BusinessHeadPanelActivity.this, BusinessHeadBankersListActivity.class);
+            // Pass user data
+            if (userId != null) intent.putExtra("USER_ID", userId);
+            if (username != null) intent.putExtra("USERNAME", username);
+            if (firstName != null) intent.putExtra("FIRST_NAME", firstName);
+            if (lastName != null) intent.putExtra("LAST_NAME", lastName);
             startActivity(intent);
         });
         

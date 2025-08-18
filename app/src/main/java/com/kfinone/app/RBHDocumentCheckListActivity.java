@@ -103,8 +103,12 @@ public class RBHDocumentCheckListActivity extends AppCompatActivity {
     }
 
     private void goBack() {
+        // Navigate back to RBH Panel
         Intent intent = new Intent(this, RegionalBusinessHeadPanelActivity.class);
-        passUserDataToIntent(intent);
+        intent.putExtra("USERNAME", userName);
+        intent.putExtra("FIRST_NAME", firstName);
+        intent.putExtra("LAST_NAME", lastName);
+        intent.putExtra("USER_ID", userId);
         startActivity(intent);
         finish();
     }

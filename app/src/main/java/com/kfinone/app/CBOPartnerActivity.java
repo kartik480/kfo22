@@ -24,12 +24,10 @@ public class CBOPartnerActivity extends AppCompatActivity {
     private LinearLayout settingsButton;
 
     // CBO Partner boxes
-    private LinearLayout addPartnerBox;
     private LinearLayout myPartnerBox;
     private LinearLayout partnerTeamBox;
 
     // Count displays
-    private TextView addPartnerCount;
     private TextView myPartnerCount;
     private TextView partnerTeamCount;
 
@@ -78,12 +76,10 @@ public class CBOPartnerActivity extends AppCompatActivity {
         settingsButton = findViewById(R.id.settingsButton);
 
         // CBO Partner boxes
-        addPartnerBox = findViewById(R.id.addPartnerBox);
         myPartnerBox = findViewById(R.id.myPartnerBox);
         partnerTeamBox = findViewById(R.id.partnerTeamBox);
 
         // Count displays
-        addPartnerCount = findViewById(R.id.addPartnerCount);
         myPartnerCount = findViewById(R.id.myPartnerCount);
         partnerTeamCount = findViewById(R.id.partnerTeamCount);
     }
@@ -120,12 +116,6 @@ public class CBOPartnerActivity extends AppCompatActivity {
         });
 
         // CBO Partner box click listeners
-        addPartnerBox.setOnClickListener(v -> {
-            Intent intent = new Intent(this, CBOAddPartnerActivity.class);
-            passUserDataToIntent(intent);
-            startActivity(intent);
-        });
-
         myPartnerBox.setOnClickListener(v -> {
             Intent intent = new Intent(this, CboMyPartnerUsersActivity.class);
             passUserDataToIntent(intent);
@@ -133,7 +123,7 @@ public class CBOPartnerActivity extends AppCompatActivity {
         });
 
         partnerTeamBox.setOnClickListener(v -> {
-            Intent intent = new Intent(this, CBOPartnerTeamActivity.class);
+            Intent intent = new Intent(this, CBOPartnerTeamManagementActivity.class);
             passUserDataToIntent(intent);
             startActivity(intent);
         });
@@ -159,7 +149,6 @@ public class CBOPartnerActivity extends AppCompatActivity {
     private void loadCBOPartnerData() {
         // TODO: Load real CBO partner data from server
         // For now, set some sample data
-        addPartnerCount.setText("Add Partner");
         myPartnerCount.setText("My Partner");
         partnerTeamCount.setText("Partner Team");
     }

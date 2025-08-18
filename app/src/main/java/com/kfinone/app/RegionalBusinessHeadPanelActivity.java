@@ -273,7 +273,15 @@ public class RegionalBusinessHeadPanelActivity extends AppCompatActivity {
     }
 
     private void updateWelcomeMessage() {
-        welcomeText.setText("Welcome back, " + userName);
+        if (firstName != null && lastName != null && !firstName.isEmpty() && !lastName.isEmpty()) {
+            welcomeText.setText("Welcome back, " + firstName + " " + lastName);
+        } else if (firstName != null && !firstName.isEmpty()) {
+            welcomeText.setText("Welcome back, " + firstName);
+        } else if (userName != null && !userName.isEmpty()) {
+            welcomeText.setText("Welcome back, " + userName);
+        } else {
+            welcomeText.setText("Welcome back, RBH");
+        }
     }
 
     private void showMenuOptions() {

@@ -33,6 +33,8 @@ public class RBHSdsaActivity extends AppCompatActivity {
     // User data
     private String userName;
     private String userId;
+    private String firstName;
+    private String lastName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +45,8 @@ public class RBHSdsaActivity extends AppCompatActivity {
         Intent intent = getIntent();
         userName = intent.getStringExtra("USERNAME");
         userId = intent.getStringExtra("USER_ID");
+        firstName = intent.getStringExtra("FIRST_NAME");
+        lastName = intent.getStringExtra("LAST_NAME");
 
         initializeViews();
         setupClickListeners();
@@ -115,8 +119,12 @@ public class RBHSdsaActivity extends AppCompatActivity {
     }
 
     private void goBack() {
+        // Navigate back to RBH Panel
         Intent intent = new Intent(this, RegionalBusinessHeadPanelActivity.class);
-        passUserDataToIntent(intent);
+        intent.putExtra("USERNAME", userName);
+        intent.putExtra("FIRST_NAME", firstName);
+        intent.putExtra("LAST_NAME", lastName);
+        intent.putExtra("USER_ID", userId);
         startActivity(intent);
         finish();
     }
@@ -141,6 +149,8 @@ public class RBHSdsaActivity extends AppCompatActivity {
     private void passUserDataToIntent(Intent intent) {
         if (userId != null) intent.putExtra("USER_ID", userId);
         if (userName != null) intent.putExtra("USERNAME", userName);
+        if (firstName != null) intent.putExtra("FIRST_NAME", firstName);
+        if (lastName != null) intent.putExtra("LAST_NAME", lastName);
         intent.putExtra("SOURCE_PANEL", "RBH_PANEL");
     }
 

@@ -15,6 +15,8 @@ public class RBHEmpMasterActivity extends AppCompatActivity {
     private View activeEmpListBox, inactiveEmpListBox;
     private String userName;
     private String userId;
+    private String firstName;
+    private String lastName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +33,9 @@ public class RBHEmpMasterActivity extends AppCompatActivity {
         // Get user data from intent
         Intent intent = getIntent();
         userName = intent.getStringExtra("USERNAME");
+        userId = intent.getStringExtra("USER_ID");
+        firstName = intent.getStringExtra("FIRST_NAME");
+        lastName = intent.getStringExtra("LAST_NAME");
         if (userName == null || userName.isEmpty()) {
             userName = "RBH"; // Default fallback
         }
@@ -59,7 +64,16 @@ public class RBHEmpMasterActivity extends AppCompatActivity {
 
     private void setupClickListeners() {
         // Back button
-        backButton.setOnClickListener(v -> finish());
+        backButton.setOnClickListener(v -> {
+            // Navigate back to RBH Panel
+            Intent intent = new Intent(this, RegionalBusinessHeadPanelActivity.class);
+            intent.putExtra("USERNAME", userName);
+            intent.putExtra("FIRST_NAME", firstName);
+            intent.putExtra("LAST_NAME", lastName);
+            intent.putExtra("USER_ID", userId);
+            startActivity(intent);
+            finish();
+        });
 
         // Refresh button
         refreshButton.setOnClickListener(v -> {
@@ -77,7 +91,9 @@ public class RBHEmpMasterActivity extends AppCompatActivity {
         activeEmpListBox.setOnClickListener(v -> {
             Intent intent = new Intent(this, RegionalBusinessHeadActiveEmpListActivity.class);
             intent.putExtra("USERNAME", userName);
-            intent.putExtra("USER_ID", userName); // Using username as user ID for now
+            intent.putExtra("USER_ID", userId);
+            intent.putExtra("FIRST_NAME", firstName);
+            intent.putExtra("LAST_NAME", lastName);
             intent.putExtra("SOURCE_PANEL", "RBH_EMP_MASTER");
             startActivity(intent);
         });
@@ -86,7 +102,9 @@ public class RBHEmpMasterActivity extends AppCompatActivity {
         inactiveEmpListBox.setOnClickListener(v -> {
             Intent intent = new Intent(this, RBHInactiveEmpListActivity.class);
             intent.putExtra("USERNAME", userName);
-            intent.putExtra("USER_ID", userName); // Using username as user ID for now
+            intent.putExtra("USER_ID", userId);
+            intent.putExtra("FIRST_NAME", firstName);
+            intent.putExtra("LAST_NAME", lastName);
             intent.putExtra("SOURCE_PANEL", "RBH_EMP_MASTER");
             startActivity(intent);
         });
@@ -124,7 +142,15 @@ public class RBHEmpMasterActivity extends AppCompatActivity {
     }
 
     private void updateWelcomeMessage() {
-        welcomeText.setText("Manage Employee Master Data");
+        if (firstName != null && lastName != null && !firstName.isEmpty() && !lastName.isEmpty()) {
+            welcomeText.setText("Welcome, " + firstName + " " + lastName);
+        } else if (firstName != null && !firstName.isEmpty()) {
+            welcomeText.setText("Welcome, " + firstName);
+        } else if (userName != null && !userName.isEmpty()) {
+            welcomeText.setText("Welcome, " + userName);
+        } else {
+            welcomeText.setText("Welcome, RBH");
+        }
     }
 
     private void updateStats() {

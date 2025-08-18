@@ -938,6 +938,13 @@
                       android:exported="false"
                       android:label="Business Head Policy"
                       android:theme="@style/FullscreenTheme" />
+                      
+                  <!-- Business Head Bankers List Activity -->
+                  <activity
+                      android:name=".BusinessHeadBankersListActivity"
+                      android:exported="false"
+                      android:label="Business Head Bankers List"
+                      android:theme="@style/FullscreenTheme" />
             
         <!-- Regional Business Head Activities -->
         <activity
@@ -1167,6 +1174,12 @@
             android:label="Managing Director Agent List"
             android:parentActivityName=".ManagingDirectorMyAgentSimpleActivity"
             android:theme="@style/FullscreenTheme" />
+            
+        <activity
+            android:name=".CBOPartnerTeamManagementActivity"
+            android:exported="false"
+            android:label="CBO Partner Team Management"
+            android:parentActivityName=".CBOPartnerActivity" />
     </application>
 
 </manifest>
