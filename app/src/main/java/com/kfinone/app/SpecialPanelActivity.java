@@ -21,6 +21,14 @@ import com.kfinone.app.ManagingDirectorAgentPanelActivity;
 import com.kfinone.app.ManagingDirectorDataLinksActivity;
 import com.kfinone.app.ManagingDirectorWorkLinksActivity;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
 public class SpecialPanelActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     // Drawer layout
@@ -130,7 +138,7 @@ public class SpecialPanelActivity extends AppCompatActivity implements Navigatio
 
         // Card click listeners
         findViewById(R.id.totalEmpCard).setOnClickListener(v -> {
-            Intent intent = new Intent(this, MyEmpActivity.class);
+            Intent intent = new Intent(this, ManagingDirectorActiveEmpListActivity.class);
             passUserDataToIntent(intent);
             startActivity(intent);
         });
@@ -279,23 +287,26 @@ public class SpecialPanelActivity extends AppCompatActivity implements Navigatio
         totalPortfolioCount.setText("--");
         totalAgentCount.setText("--");
         
+        // Fetch active employee count for Total Employee card
+        fetchActiveEmployeeCount();
+        
         DataService.fetchDashboardData(new DataService.DataCallback() {
             @Override
             public void onSuccess(int employeeCount, int sdsaCount, int partnerCount, int portfolioCount, int agentCount) {
                 runOnUiThread(() -> {
-                    totalEmpCount.setText(String.valueOf(employeeCount));
+                    // Don't update totalEmpCount here as it will be updated by fetchActiveEmployeeCount
                     totalSdsaCount.setText(String.valueOf(sdsaCount));
                     totalPartnerCount.setText(String.valueOf(partnerCount));
                     totalPortfolioCount.setText(String.valueOf(portfolioCount));
                     totalAgentCount.setText(String.valueOf(agentCount));
-                    Log.d("SpecialPanelActivity", "Updated counts - Employees: " + employeeCount + ", SDSA: " + sdsaCount + ", Partners: " + partnerCount + ", Portfolio: " + portfolioCount + ", Agents: " + agentCount);
+                    Log.d("SpecialPanelActivity", "Updated counts - SDSA: " + sdsaCount + ", Partners: " + partnerCount + ", Portfolio: " + portfolioCount + ", Agents: " + agentCount);
                 });
             }
 
             @Override
             public void onError(String error) {
                 runOnUiThread(() -> {
-                    totalEmpCount.setText("--");
+                    // Don't update totalEmpCount here as it will be updated by fetchActiveEmployeeCount
                     totalSdsaCount.setText("--");
                     totalPartnerCount.setText("--");
                     totalPortfolioCount.setText("--");
@@ -304,6 +315,77 @@ public class SpecialPanelActivity extends AppCompatActivity implements Navigatio
                 });
             }
         });
+    }
+    
+    private void fetchActiveEmployeeCount() {
+        new Thread(() -> {
+            try {
+                Log.d("SpecialPanelActivity", "Fetching active employee count...");
+                
+                URL url = new URL("https://emp.kfinone.com/mobile/api/get_managing_director_active_emp_list.php");
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setRequestMethod("GET");
+                conn.setConnectTimeout(5000);
+                conn.setReadTimeout(5000);
+
+                int responseCode = conn.getResponseCode();
+                Log.d("SpecialPanelActivity", "Active employee API response code: " + responseCode);
+                
+                if (responseCode == HttpURLConnection.HTTP_OK) {
+                    BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                    StringBuilder response = new StringBuilder();
+                    String line;
+                    while ((line = in.readLine()) != null) {
+                        response.append(line);
+                    }
+                    in.close();
+
+                    String responseString = response.toString();
+                    Log.d("SpecialPanelActivity", "Active employee API response: " + responseString);
+
+                    JSONObject json = new JSONObject(responseString);
+                    if (json.getString("status").equals("success")) {
+                        JSONObject statistics = json.optJSONObject("statistics");
+                        final int activeEmpCount;
+                        
+                        if (statistics != null) {
+                            activeEmpCount = statistics.optInt("active_members", 0);
+                        } else {
+                            // Fallback: count the data array
+                            JSONArray data = json.optJSONArray("data");
+                            if (data != null) {
+                                activeEmpCount = data.length();
+                            } else {
+                                activeEmpCount = 0;
+                            }
+                        }
+                        
+                        Log.d("SpecialPanelActivity", "Found " + activeEmpCount + " active employees");
+                        
+                        runOnUiThread(() -> {
+                            totalEmpCount.setText(String.valueOf(activeEmpCount));
+                            Log.d("SpecialPanelActivity", "Updated Total Employee card with " + activeEmpCount + " active employees");
+                        });
+                    } else {
+                        String errorMsg = json.optString("message");
+                        Log.e("SpecialPanelActivity", "Server returned error for active employees: " + errorMsg);
+                        runOnUiThread(() -> {
+                            totalEmpCount.setText("0");
+                        });
+                    }
+                } else {
+                    Log.e("SpecialPanelActivity", "Server error with response code for active employees: " + responseCode);
+                    runOnUiThread(() -> {
+                        totalEmpCount.setText("0");
+                    });
+                }
+            } catch (Exception e) {
+                Log.e("SpecialPanelActivity", "Exception in fetchActiveEmployeeCount: " + e.getMessage(), e);
+                runOnUiThread(() -> {
+                    totalEmpCount.setText("0");
+                });
+            }
+        }).start();
     }
 
     private void updateWelcomeMessage() {
