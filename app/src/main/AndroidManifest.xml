@@ -537,6 +537,21 @@
             android:label="Director My Work Links"
             android:parentActivityName=".DirectorWorkLinksActivity" />
         <activity
+            android:name=".ChiefBusinessOfficerEmpLinksActivity"
+            android:exported="false"
+            android:label="Chief Business Officer Emp Links"
+            android:parentActivityName=".ChiefBusinessOfficerPanelActivity" />
+        <activity
+            android:name=".ChiefBusinessOfficerDataLinksActivity"
+            android:exported="false"
+            android:label="Chief Business Officer Data Links"
+            android:parentActivityName=".ChiefBusinessOfficerPanelActivity" />
+        <activity
+            android:name=".ChiefBusinessOfficerWorkLinksActivity"
+            android:exported="false"
+            android:label="Chief Business Officer Work Links"
+            android:parentActivityName=".ChiefBusinessOfficerPanelActivity" />
+        <activity
             android:name=".DirectorTeamEmpLinksActivity"
             android:exported="false"
             android:label="Director Team Employee Links"

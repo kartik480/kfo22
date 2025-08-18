@@ -166,18 +166,21 @@ public class ChiefBusinessOfficerPanelActivity extends AppCompatActivity {
 
         // Action Card Click Listeners
         cardPortfolio.setOnClickListener(v -> {
-            Toast.makeText(this, "Employee Management - Coming Soon!", Toast.LENGTH_SHORT).show();
-            // TODO: Implement Employee Management functionality
+            Intent intent = new Intent(this, ChiefBusinessOfficerEmpLinksActivity.class);
+            passUserDataToIntent(intent);
+            startActivity(intent);
         });
         
         cardTeam.setOnClickListener(v -> {
-            Toast.makeText(this, "Data Analytics - Coming Soon!", Toast.LENGTH_SHORT).show();
-            // TODO: Implement Data Analytics functionality
+            Intent intent = new Intent(this, ChiefBusinessOfficerDataLinksActivity.class);
+            passUserDataToIntent(intent);
+            startActivity(intent);
         });
         
         cardReports.setOnClickListener(v -> {
-            Toast.makeText(this, "Work Links - Coming Soon!", Toast.LENGTH_SHORT).show();
-            // TODO: Implement Work Links functionality
+            Intent intent = new Intent(this, ChiefBusinessOfficerWorkLinksActivity.class);
+            passUserDataToIntent(intent);
+            startActivity(intent);
         });
         
         cardAnalytics.setOnClickListener(v -> {
