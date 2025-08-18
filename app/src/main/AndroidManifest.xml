@@ -527,6 +527,16 @@
             android:label="Director My Employee Links"
             android:parentActivityName=".DirectorEmpLinksActivity" />
         <activity
+            android:name=".DirectorMyDataLinksActivity"
+            android:exported="false"
+            android:label="Director My Data Links"
+            android:parentActivityName=".DirectorDataLinksActivity" />
+        <activity
+            android:name=".DirectorMyWorkLinksActivity"
+            android:exported="false"
+            android:label="Director My Work Links"
+            android:parentActivityName=".DirectorWorkLinksActivity" />
+        <activity
             android:name=".DirectorTeamEmpLinksActivity"
             android:exported="false"
             android:label="Director Team Employee Links"

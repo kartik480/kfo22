@@ -11,9 +11,7 @@ import androidx.appcompat.widget.Toolbar;
 
 public class DirectorDataLinksActivity extends AppCompatActivity {
 
-    private LinearLayout myDataLinksButton;
-    private LinearLayout dataAnalyticsButton;
-    private LinearLayout dataReportsButton;
+    private LinearLayout myDataLinksBox;
     
     private String userId;
     private String userName;
@@ -40,25 +38,14 @@ public class DirectorDataLinksActivity extends AppCompatActivity {
     }
 
     private void initializeViews() {
-        myDataLinksButton = findViewById(R.id.myDataLinksButton);
-        dataAnalyticsButton = findViewById(R.id.dataAnalyticsButton);
-        dataReportsButton = findViewById(R.id.dataReportsButton);
+        myDataLinksBox = findViewById(R.id.myDataLinksBox);
     }
 
     private void setupClickListeners() {
-        myDataLinksButton.setOnClickListener(v -> {
-            Intent intent = new Intent(this, MyDataLinksActivity.class);
+        myDataLinksBox.setOnClickListener(v -> {
+            Intent intent = new Intent(this, DirectorMyDataLinksActivity.class);
             passUserDataToIntent(intent);
-            intent.putExtra("SOURCE_PANEL", "DIRECTOR_PANEL");
             startActivity(intent);
-        });
-
-        dataAnalyticsButton.setOnClickListener(v -> {
-            Toast.makeText(this, "Data Analytics - Coming Soon", Toast.LENGTH_SHORT).show();
-        });
-
-        dataReportsButton.setOnClickListener(v -> {
-            Toast.makeText(this, "Data Reports - Coming Soon", Toast.LENGTH_SHORT).show();
         });
     }
 

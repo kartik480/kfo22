@@ -306,9 +306,7 @@ public class User10002PanelActivity extends AppCompatActivity implements Navigat
         });
 
         payoutBox.setOnClickListener(v -> {
-            Intent intent = new Intent(this, DirectorPayoutActivity.class);
-            passUserDataToIntent(intent);
-            startActivity(intent);
+            Toast.makeText(this, "Payout - Coming Soon", Toast.LENGTH_SHORT).show();
         });
 
         dsaCodesBox.setOnClickListener(v -> {
@@ -330,13 +328,27 @@ public class User10002PanelActivity extends AppCompatActivity implements Navigat
         });
 
         addInsuranceBox.setOnClickListener(v -> {
-            Intent intent = new Intent(this, DirectorInsurancePanelActivity.class);
+            Toast.makeText(this, "Add Insurance - Coming Soon", Toast.LENGTH_SHORT).show();
+        });
+
+        // New Management Tool boxes - with navigation to their panels
+        empLinksBox.setOnClickListener(v -> {
+            Intent intent = new Intent(this, DirectorEmpLinksActivity.class);
             passUserDataToIntent(intent);
             startActivity(intent);
         });
 
-        // New Management Tool boxes - No navigation, just boxes
-        // empLinksBox, dataLinksBox, workLinksBox are display-only boxes
+        dataLinksBox.setOnClickListener(v -> {
+            Intent intent = new Intent(this, DirectorDataLinksActivity.class);
+            passUserDataToIntent(intent);
+            startActivity(intent);
+        });
+
+        workLinksBox.setOnClickListener(v -> {
+            Intent intent = new Intent(this, DirectorWorkLinksActivity.class);
+            passUserDataToIntent(intent);
+            startActivity(intent);
+        });
     }
 
     private void setupAnimations() {

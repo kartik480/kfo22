@@ -18,9 +18,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -30,9 +28,9 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-public class DirectorMyEmpLinksActivity extends AppCompatActivity {
+public class DirectorMyDataLinksActivity extends AppCompatActivity {
 
-    private static final String TAG = "DirectorMyEmpLinksActivity";
+    private static final String TAG = "DirectorMyDataLinksActivity";
     
     private LinearLayout linksContainer;
     private ExecutorService executor;
@@ -47,7 +45,7 @@ public class DirectorMyEmpLinksActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_director_my_emp_links);
+        setContentView(R.layout.activity_director_my_data_links);
 
         // Get user data from intent
         Intent intent = getIntent();
@@ -63,7 +61,7 @@ public class DirectorMyEmpLinksActivity extends AppCompatActivity {
 
         initializeViews();
         setupToolbar();
-        loadManageIcons();
+        loadDataIcons();
     }
 
     private void initializeViews() {
@@ -81,25 +79,25 @@ public class DirectorMyEmpLinksActivity extends AppCompatActivity {
         }
     }
 
-    private void loadManageIcons() {
+    private void loadDataIcons() {
         executor.execute(() -> {
             try {
-                // First, get the manage_icons IDs from tbl_user
-                String userUrl = BASE_URL + "get_director_user_manage_icons.php";
+                // First, get the data_icons IDs from tbl_user
+                String userUrl = BASE_URL + "get_director_user_data_icons.php";
                 JSONObject userRequest = new JSONObject();
                 userRequest.put("user_id", userId);
                 
                 String userResponse = makeHttpRequest(userUrl, userRequest.toString());
-                Log.d(TAG, "User Manage Icons API response: " + userResponse);
+                Log.d(TAG, "User Data Icons API response: " + userResponse);
                 
                 if (userResponse != null) {
                     JSONObject userJson = new JSONObject(userResponse);
                     if (userJson.getBoolean("success")) {
-                        String manageIconsIds = userJson.getString("manage_icons");
-                        Log.d(TAG, "Manage Icons IDs: " + manageIconsIds);
+                        String dataIconsIds = userJson.getString("data_icons");
+                        Log.d(TAG, "Data Icons IDs: " + dataIconsIds);
                         
                         // Parse the comma-separated IDs
-                        String[] iconIds = manageIconsIds.split(",");
+                        String[] iconIds = dataIconsIds.split(",");
                         List<String> iconIdList = new ArrayList<>();
                         for (String id : iconIds) {
                             String trimmedId = id.trim();
@@ -108,13 +106,13 @@ public class DirectorMyEmpLinksActivity extends AppCompatActivity {
                             }
                         }
                         
-                        // Now fetch the actual icon data from tbl_manage_icon
+                        // Now fetch the actual icon data from tbl_data_icon
                         if (!iconIdList.isEmpty()) {
-                            fetchManageIconDetails(iconIdList);
+                            fetchDataIconDetails(iconIdList);
                         } else {
                             runOnUiThread(() -> {
                                 TextView noDataText = new TextView(this);
-                                noDataText.setText("No manage icons found for this user");
+                                noDataText.setText("No data icons found for this user");
                                 noDataText.setTextSize(16);
                                 noDataText.setTextColor(getResources().getColor(android.R.color.darker_gray));
                                 noDataText.setGravity(Gravity.CENTER);
@@ -137,45 +135,44 @@ public class DirectorMyEmpLinksActivity extends AppCompatActivity {
                     });
                 }
             } catch (Exception e) {
-                Log.e(TAG, "Error loading manage icons", e);
+                Log.e(TAG, "Error loading data icons", e);
                 runOnUiThread(() -> {
-                    Toast.makeText(this, "Error loading manage icons: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Error loading data icons: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 });
             }
         });
     }
 
-    private void fetchManageIconDetails(List<String> iconIds) {
+    private void fetchDataIconDetails(List<String> iconIds) {
         executor.execute(() -> {
             try {
-                // Fetch icon details from tbl_manage_icon
-                String iconUrl = BASE_URL + "get_director_manage_icon_details.php";
+                // Fetch icon details from tbl_data_icon
+                String iconUrl = BASE_URL + "get_director_data_icon_details.php";
                 JSONObject iconRequest = new JSONObject();
                 iconRequest.put("icon_ids", new JSONArray(iconIds));
                 
                 String iconResponse = makeHttpRequest(iconUrl, iconRequest.toString());
-                Log.d(TAG, "Manage Icon Details API response: " + iconResponse);
+                Log.d(TAG, "Data Icon Details API response: " + iconResponse);
                 
                 if (iconResponse != null) {
                     JSONObject iconJson = new JSONObject(iconResponse);
                     if (iconJson.getBoolean("success")) {
                         JSONArray iconData = iconJson.getJSONArray("data");
-                        List<ManageIcon> manageIcons = new ArrayList<>();
+                        List<DataIcon> dataIcons = new ArrayList<>();
                         
                         for (int i = 0; i < iconData.length(); i++) {
                             JSONObject icon = iconData.getJSONObject(i);
-                            manageIcons.add(new ManageIcon(
+                            dataIcons.add(new DataIcon(
                                 icon.getString("id"),
                                 icon.getString("icon_name"),
                                 icon.getString("icon_url"),
                                 icon.getString("icon_image"),
-                                icon.getString("icon_description"),
-                                icon.getString("status")
+                                icon.getString("icon_description")
                             ));
                         }
                         
                         // Display the icons on UI thread
-                        runOnUiThread(() -> displayManageIcons(manageIcons));
+                        runOnUiThread(() -> displayDataIcons(dataIcons));
                     } else {
                         runOnUiThread(() -> {
                             try {
@@ -199,12 +196,12 @@ public class DirectorMyEmpLinksActivity extends AppCompatActivity {
         });
     }
 
-    private void displayManageIcons(List<ManageIcon> manageIcons) {
+    private void displayDataIcons(List<DataIcon> dataIcons) {
         linksContainer.removeAllViews();
         
-        if (manageIcons.isEmpty()) {
+        if (dataIcons.isEmpty()) {
             TextView noDataText = new TextView(this);
-            noDataText.setText("No manage icons found");
+            noDataText.setText("No data icons found");
             noDataText.setTextSize(16);
             noDataText.setTextColor(getResources().getColor(android.R.color.darker_gray));
             noDataText.setGravity(Gravity.CENTER);
@@ -213,7 +210,7 @@ public class DirectorMyEmpLinksActivity extends AppCompatActivity {
             return;
         }
         
-        for (ManageIcon icon : manageIcons) {
+        for (DataIcon icon : dataIcons) {
             // Create icon box
             LinearLayout iconBox = createIconBox(icon);
             linksContainer.addView(iconBox);
@@ -230,7 +227,7 @@ public class DirectorMyEmpLinksActivity extends AppCompatActivity {
         }
     }
 
-    private LinearLayout createIconBox(ManageIcon icon) {
+    private LinearLayout createIconBox(DataIcon icon) {
         LinearLayout iconBox = new LinearLayout(this);
         iconBox.setLayoutParams(new LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.MATCH_PARENT,
@@ -250,7 +247,7 @@ public class DirectorMyEmpLinksActivity extends AppCompatActivity {
             LinearLayout.LayoutParams.WRAP_CONTENT,
             LinearLayout.LayoutParams.WRAP_CONTENT
         ));
-        iconText.setText("🔗");
+        iconText.setText("📊");
         iconText.setTextSize(24);
         iconText.setPadding(0, 0, 16, 0);
         iconBox.addView(iconText);
@@ -344,8 +341,8 @@ public class DirectorMyEmpLinksActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        // Navigate back to Emp Links panel
-        Intent intent = new Intent(this, DirectorEmpLinksActivity.class);
+        // Navigate back to Data Links panel
+        Intent intent = new Intent(this, DirectorDataLinksActivity.class);
         passUserDataToIntent(intent);
         startActivity(intent);
         finish();
@@ -359,22 +356,20 @@ public class DirectorMyEmpLinksActivity extends AppCompatActivity {
         }
     }
 
-    // Data class for Manage Icon
-    private static class ManageIcon {
+    // Data class for Data Icon
+    private static class DataIcon {
         private String id;
         private String iconName;
         private String iconUrl;
         private String iconImage;
         private String iconDescription;
-        private String status;
         
-        public ManageIcon(String id, String iconName, String iconUrl, String iconImage, String iconDescription, String status) {
+        public DataIcon(String id, String iconName, String iconUrl, String iconImage, String iconDescription) {
             this.id = id;
             this.iconName = iconName;
             this.iconUrl = iconUrl;
             this.iconImage = iconImage;
             this.iconDescription = iconDescription;
-            this.status = status;
         }
         
         public String getId() { return id; }
@@ -382,6 +377,5 @@ public class DirectorMyEmpLinksActivity extends AppCompatActivity {
         public String getIconUrl() { return iconUrl; }
         public String getIconImage() { return iconImage; }
         public String getIconDescription() { return iconDescription; }
-        public String getStatus() { return status; }
     }
-} 
+}

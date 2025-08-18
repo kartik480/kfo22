@@ -11,9 +11,7 @@ import androidx.appcompat.widget.Toolbar;
 
 public class DirectorWorkLinksActivity extends AppCompatActivity {
 
-    private LinearLayout myWorkLinksButton;
-    private LinearLayout workAnalyticsButton;
-    private LinearLayout workReportsButton;
+    private LinearLayout myWorkLinksBox;
     
     private String userId;
     private String userName;
@@ -40,25 +38,14 @@ public class DirectorWorkLinksActivity extends AppCompatActivity {
     }
 
     private void initializeViews() {
-        myWorkLinksButton = findViewById(R.id.myWorkLinksButton);
-        workAnalyticsButton = findViewById(R.id.workAnalyticsButton);
-        workReportsButton = findViewById(R.id.workReportsButton);
+        myWorkLinksBox = findViewById(R.id.myWorkLinksBox);
     }
 
     private void setupClickListeners() {
-        myWorkLinksButton.setOnClickListener(v -> {
-            Intent intent = new Intent(this, MyWorkLinksActivity.class);
+        myWorkLinksBox.setOnClickListener(v -> {
+            Intent intent = new Intent(this, DirectorMyWorkLinksActivity.class);
             passUserDataToIntent(intent);
-            intent.putExtra("SOURCE_PANEL", "DIRECTOR_PANEL");
             startActivity(intent);
-        });
-
-        workAnalyticsButton.setOnClickListener(v -> {
-            Toast.makeText(this, "Work Analytics - Coming Soon", Toast.LENGTH_SHORT).show();
-        });
-
-        workReportsButton.setOnClickListener(v -> {
-            Toast.makeText(this, "Work Reports - Coming Soon", Toast.LENGTH_SHORT).show();
         });
     }
 

@@ -11,8 +11,7 @@ import androidx.appcompat.widget.Toolbar;
 
 public class DirectorEmpLinksActivity extends AppCompatActivity {
 
-    private LinearLayout myEmpLinksButton;
-    private LinearLayout teamEmpLinksButton;
+    private LinearLayout myEmpLinksBox;
     
     private String userId;
     private String userName;
@@ -39,19 +38,12 @@ public class DirectorEmpLinksActivity extends AppCompatActivity {
     }
 
     private void initializeViews() {
-        myEmpLinksButton = findViewById(R.id.myEmpLinksButton);
-        teamEmpLinksButton = findViewById(R.id.teamEmpLinksButton);
+        myEmpLinksBox = findViewById(R.id.myEmpLinksBox);
     }
 
     private void setupClickListeners() {
-        myEmpLinksButton.setOnClickListener(v -> {
+        myEmpLinksBox.setOnClickListener(v -> {
             Intent intent = new Intent(this, DirectorMyEmpLinksActivity.class);
-            passUserDataToIntent(intent);
-            startActivity(intent);
-        });
-
-        teamEmpLinksButton.setOnClickListener(v -> {
-            Intent intent = new Intent(this, DirectorTeamEmpLinksActivity.class);
             passUserDataToIntent(intent);
             startActivity(intent);
         });
@@ -62,7 +54,7 @@ public class DirectorEmpLinksActivity extends AppCompatActivity {
         if (toolbar != null) {
             setSupportActionBar(toolbar);
             if (getSupportActionBar() != null) {
-                getSupportActionBar().setTitle("Director Employee Links");
+                getSupportActionBar().setTitle("Director Emp Links");
                 getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             }
         }
@@ -83,8 +75,8 @@ public class DirectorEmpLinksActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        // Navigate back to Managing Director panel (SpecialPanelActivity)
-        Intent intent = new Intent(this, SpecialPanelActivity.class);
+        // Navigate back to Director panel
+        Intent intent = new Intent(this, User10002PanelActivity.class);
         passUserDataToIntent(intent);
         startActivity(intent);
         finish();
