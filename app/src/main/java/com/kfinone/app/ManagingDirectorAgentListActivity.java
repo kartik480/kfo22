@@ -65,9 +65,14 @@ public class ManagingDirectorAgentListActivity extends AppCompatActivity {
         firstName = intent.getStringExtra("FIRST_NAME");
         lastName = intent.getStringExtra("LAST_NAME");
 
+        Log.d(TAG, "ManagingDirectorAgentListActivity onCreate - User: " + username);
+
         initializeViews();
         setupClickListeners();
         loadFilterData();
+        
+        // Ensure we show empty state initially
+        Log.d(TAG, "Showing empty state initially");
         showEmptyState();
     }
 
@@ -177,9 +182,15 @@ public class ManagingDirectorAgentListActivity extends AppCompatActivity {
     }
 
     private void showEmptyState() {
+        Log.d(TAG, "showEmptyState called - hiding loading and agent list, showing empty state");
         loadingContainer.setVisibility(View.GONE);
         emptyStateContainer.setVisibility(View.VISIBLE);
         agentListContainer.setVisibility(View.GONE);
+        
+        // Log the visibility states for debugging
+        Log.d(TAG, "Loading container visibility: " + (loadingContainer.getVisibility() == View.VISIBLE ? "VISIBLE" : "HIDDEN"));
+        Log.d(TAG, "Empty state container visibility: " + (emptyStateContainer.getVisibility() == View.VISIBLE ? "VISIBLE" : "HIDDEN"));
+        Log.d(TAG, "Agent list container visibility: " + (agentListContainer.getVisibility() == View.VISIBLE ? "VISIBLE" : "HIDDEN"));
     }
 
     private void showAgentList(List<AgentData> agents) {
@@ -198,6 +209,12 @@ public class ManagingDirectorAgentListActivity extends AppCompatActivity {
     }
 
     private View createAgentRow(AgentData agent) {
+        // Debug logging to see what agent data is being processed
+        Log.d(TAG, "Creating agent row for: " + agent.fullName);
+        Log.d(TAG, "Agent data - Company: '" + agent.companyName + "', Mobile: '" + agent.mobile + 
+                   "', Type: '" + agent.agentType + "', State: '" + agent.branchState + 
+                   "', Location: '" + agent.branchLocation + "'");
+        
         // Create a simple row view for each agent
         LinearLayout row = new LinearLayout(this);
         row.setLayoutParams(new LinearLayout.LayoutParams(
@@ -208,13 +225,13 @@ public class ManagingDirectorAgentListActivity extends AppCompatActivity {
         row.setPadding(16, 12, 16, 12);
         row.setElevation(1);
 
-        // Add agent data fields
-        addField(row, agent.fullName, 2);
-        addField(row, agent.companyName, 2);
-        addField(row, agent.mobile, 1.5f);
-        addField(row, agent.agentType, 1.5f);
-        addField(row, agent.branchState, 1.5f);
-        addField(row, agent.branchLocation, 1.5f);
+        // Add agent data fields with validation
+        addField(row, agent.fullName != null ? agent.fullName : "", 2);
+        addField(row, agent.companyName != null ? agent.companyName : "", 2);
+        addField(row, agent.mobile != null ? agent.mobile : "", 1.5f);
+        addField(row, agent.agentType != null ? agent.agentType : "", 1.5f);
+        addField(row, agent.branchState != null ? agent.branchState : "", 1.5f);
+        addField(row, agent.branchLocation != null ? agent.branchLocation : "", 1.5f);
 
         // Add actions
         LinearLayout actionsLayout = new LinearLayout(this);
@@ -254,7 +271,19 @@ public class ManagingDirectorAgentListActivity extends AppCompatActivity {
         TextView field = new TextView(this);
         field.setLayoutParams(new LinearLayout.LayoutParams(
             0, LinearLayout.LayoutParams.WRAP_CONTENT, weight));
-        field.setText(text);
+        
+        // Debug logging to see what values are being passed
+        Log.d(TAG, "addField called with text: '" + text + "'");
+        
+        // Handle null or "false" values
+        if (text == null || text.equals("false") || text.equals("null") || text.trim().isEmpty()) {
+            field.setText("--");
+            Log.d(TAG, "Setting field to '--' due to null/false/empty value");
+        } else {
+            field.setText(text);
+            Log.d(TAG, "Setting field to: " + text);
+        }
+        
         field.setTextSize(12);
         field.setTextColor(android.graphics.Color.BLACK);
         field.setPadding(8, 0, 8, 0);
@@ -289,12 +318,13 @@ public class ManagingDirectorAgentListActivity extends AppCompatActivity {
 
         AgentData(String fullName, String companyName, String mobile, 
                   String agentType, String branchState, String branchLocation) {
-            this.fullName = fullName;
-            this.companyName = companyName;
-            this.mobile = mobile;
-            this.agentType = agentType;
-            this.branchState = branchState;
-            this.branchLocation = branchLocation;
+            // Ensure no "false" values are stored
+            this.fullName = (fullName != null && !fullName.equals("false")) ? fullName : "";
+            this.companyName = (companyName != null && !companyName.equals("false")) ? companyName : "";
+            this.mobile = (mobile != null && !mobile.equals("false")) ? mobile : "";
+            this.agentType = (agentType != null && !agentType.equals("false")) ? agentType : "";
+            this.branchState = (branchState != null && !branchState.equals("false")) ? branchState : "";
+            this.branchLocation = (branchLocation != null && !branchLocation.equals("false")) ? branchLocation : "";
         }
     }
 }
