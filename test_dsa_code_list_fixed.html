@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Fixed DSA Code List API</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        h2 {
+            color: #555;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 10px;
+        }
+        .test-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+            font-size: 14px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .response {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 15px;
+            margin-top: 15px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .success {
+            color: #28a745;
+            font-weight: bold;
+        }
+        .error {
+            color: #dc3545;
+            font-weight: bold;
+        }
+        .info {
+            color: #17a2b8;
+            font-weight: bold;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        .filter-section {
+            background-color: #e9ecef;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .filter-section label {
+            display: inline-block;
+            width: 120px;
+            margin-right: 10px;
+        }
+        .filter-section select, .filter-section input {
+            padding: 5px;
+            margin-right: 15px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 Test Fixed DSA Code List API</h1>
+        
+        <div class="info">
+            <p><strong>✅ FIXED:</strong> The DSA Code List API now returns actual names instead of IDs for:</p>
+            <ul>
+                <li><strong>vendor_bank</strong> - Fetched from tbl_vendor_bank.vendor_bank_name</li>
+                <li><strong>bsa_name</strong> - Fetched from tbl_bsa_name.bsa_name</li>
+                <li><strong>loan_type</strong> - Fetched from tbl_loan_type.loan_type</li>
+                <li><strong>state</strong> - Fetched from tbl_branch_state.branch_state_name</li>
+                <li><strong>location</strong> - Fetched from tbl_branch_location.branch_location</li>
+            </ul>
+        </div>
+
+        <div class="test-section">
+            <h2>1. Test GET All DSA Codes (No Filters)</h2>
+            <p>Test the API without any filters to see all DSA codes with actual names.</p>
+            <button onclick="testGetAllDsaCodes()">Test GET All DSA Codes</button>
+            <div id="getAllResponse" class="response"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>2. Test POST Filtered DSA Codes</h2>
+            <p>Test the API with filters to see filtered DSA codes with actual names.</p>
+            
+            <div class="filter-section">
+                <label>Vendor Bank:</label>
+                <select id="vendorBankFilter">
+                    <option value="">All Vendor Banks</option>
+                </select>
+                
+                <label>Loan Type:</label>
+                <select id="loanTypeFilter">
+                    <option value="">All Loan Types</option>
+                </select>
+                
+                <label>State:</label>
+                <select id="stateFilter">
+                    <option value="">All States</option>
+                </select>
+                
+                <label>Location:</label>
+                <select id="locationFilter">
+                    <option value="">All Locations</option>
+                </select>
+            </div>
+            
+            <button onclick="testFilteredDsaCodes()">Test Filtered DSA Codes</button>
+            <div id="filteredResponse" class="response"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>3. Test Results Table</h2>
+            <p>Display the filtered results in a formatted table to verify the data structure.</p>
+            <div id="resultsTable"></div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'https://emp.kfinone.com/mobile/api/';
+        
+        // Load dropdown options when page loads
+        window.onload = function() {
+            loadDropdownOptions();
+        };
+
+        async function loadDropdownOptions() {
+            try {
+                // Load vendor banks
+                const vendorBankResponse = await fetch(`${API_BASE_URL}fetch_vendor_banks.php`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: '{}'
+                });
+                const vendorBankData = await vendorBankResponse.json();
+                if (vendorBankData.success && vendorBankData.data) {
+                    const vendorBankSelect = document.getElementById('vendorBankFilter');
+                    vendorBankData.data.forEach(item => {
+                        const option = document.createElement('option');
+                        option.value = item.vendor_bank_name;
+                        option.textContent = item.vendor_bank_name;
+                        vendorBankSelect.appendChild(option);
+                    });
+                }
+
+                // Load loan types
+                const loanTypeResponse = await fetch(`${API_BASE_URL}fetch_loan_types.php`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: '{}'
+                });
+                const loanTypeData = await loanTypeResponse.json();
+                if (loanTypeData.status === 'success' && loanTypeData.data) {
+                    const loanTypeSelect = document.getElementById('loanTypeFilter');
+                    loanTypeData.data.forEach(item => {
+                        const option = document.createElement('option');
+                        option.value = item.loan_type;
+                        option.textContent = item.loan_type;
+                        loanTypeSelect.appendChild(option);
+                    });
+                }
+
+                // Load states
+                const stateResponse = await fetch(`${API_BASE_URL}get_states_for_dropdown.php`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: '{}'
+                });
+                const stateData = await stateResponse.json();
+                if (stateData.success && stateData.states) {
+                    const stateSelect = document.getElementById('stateFilter');
+                    stateData.states.forEach(state => {
+                        const option = document.createElement('option');
+                        option.value = state;
+                        option.textContent = state;
+                        stateSelect.appendChild(option);
+                    });
+                }
+
+                // Load locations
+                const locationResponse = await fetch(`${API_BASE_URL}get_branch_locations_dropdown.php`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: '{}'
+                });
+                const locationData = await locationResponse.json();
+                if (locationData.status === 'success' && locationData.data) {
+                    const locationSelect = document.getElementById('locationFilter');
+                    locationData.data.forEach(item => {
+                        const option = document.createElement('option');
+                        option.value = item.name;
+                        option.textContent = item.name;
+                        locationSelect.appendChild(option);
+                    });
+                }
+            } catch (error) {
+                console.error('Error loading dropdown options:', error);
+            }
+        }
+
+        async function testGetAllDsaCodes() {
+            const responseDiv = document.getElementById('getAllResponse');
+            responseDiv.innerHTML = '🔄 Testing GET all DSA codes...';
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}get_dsa_code_list.php`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: '{}'
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    responseDiv.innerHTML = `<span class="success">✅ SUCCESS!</span>\n\n📊 Found ${data.count} DSA codes\n\n📋 Response Data:\n${JSON.stringify(data, null, 2)}`;
+                    
+                    // Display results in table
+                    displayResultsTable(data.data, 'All DSA Codes');
+                } else {
+                    responseDiv.innerHTML = `<span class="error">❌ ERROR:</span>\n\n${data.error || 'Unknown error'}`;
+                }
+            } catch (error) {
+                responseDiv.innerHTML = `<span class="error">❌ EXCEPTION:</span>\n\n${error.message}`;
+            }
+        }
+
+        async function testFilteredDsaCodes() {
+            const responseDiv = document.getElementById('filteredResponse');
+            const vendorBank = document.getElementById('vendorBankFilter').value;
+            const loanType = document.getElementById('loanTypeFilter').value;
+            const state = document.getElementById('stateFilter').value;
+            const location = document.getElementById('locationFilter').value;
+            
+            responseDiv.innerHTML = '🔄 Testing filtered DSA codes...';
+            
+            try {
+                const requestBody = {};
+                if (vendorBank) requestBody.vendor_bank = vendorBank;
+                if (loanType) requestBody.loan_type = loanType;
+                if (state) requestBody.state = state;
+                if (location) requestBody.location = location;
+                
+                const response = await fetch(`${API_BASE_URL}get_dsa_code_list.php`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(requestBody)
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    responseDiv.innerHTML = `<span class="success">✅ SUCCESS!</span>\n\n📊 Found ${data.count} DSA codes\n\n🔍 Filters Applied:\n${JSON.stringify(requestBody, null, 2)}\n\n📋 Response Data:\n${JSON.stringify(data, null, 2)}`;
+                    
+                    // Display results in table
+                    displayResultsTable(data.data, 'Filtered DSA Codes');
+                } else {
+                    responseDiv.innerHTML = `<span class="error">❌ ERROR:</span>\n\n${data.error || 'Unknown error'}`;
+                }
+            } catch (error) {
+                responseDiv.innerHTML = `<span class="error">❌ EXCEPTION:</span>\n\n${error.message}`;
+            }
+        }
+
+        function displayResultsTable(data, title) {
+            const tableDiv = document.getElementById('resultsTable');
+            
+            if (!data || data.length === 0) {
+                tableDiv.innerHTML = '<p>No data to display</p>';
+                return;
+            }
+            
+            let tableHTML = `<h3>${title}</h3><table><thead><tr>`;
+            
+            // Create header row
+            const headers = ['Vendor Bank', 'DSA Code', 'BSA Name', 'Loan Type', 'State', 'Location'];
+            headers.forEach(header => {
+                tableHTML += `<th>${header}</th>`;
+            });
+            tableHTML += '</tr></thead><tbody>';
+            
+            // Create data rows
+            data.forEach(item => {
+                tableHTML += '<tr>';
+                tableHTML += `<td>${item.vendor_bank || 'N/A'}</td>`;
+                tableHTML += `<td>${item.dsa_code || 'N/A'}</td>`;
+                tableHTML += `<td>${item.bsa_name || 'N/A'}</td>`;
+                tableHTML += `<td>${item.loan_type || 'N/A'}</td>`;
+                tableHTML += `<td>${item.state || 'N/A'}</td>`;
+                tableHTML += `<td>${item.location || 'N/A'}</td>`;
+                tableHTML += '</tr>';
+            });
+            
+            tableHTML += '</tbody></table>';
+            tableDiv.innerHTML = tableHTML;
+        }
+    </script>
+</body>
+</html>
