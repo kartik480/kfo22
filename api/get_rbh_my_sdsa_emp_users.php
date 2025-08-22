@@ -46,66 +46,33 @@ try {
     $designationStmt->execute([$loggedInUser['designation_id']]);
     $designation = $designationStmt->fetch(PDO::FETCH_ASSOC);
     
-    // Build the main query to find SDSA users reporting to this user
-    // IMPORTANT: In tbl_sdsa_users, reportingTo column contains USER IDs, not usernames
-    $query = "SELECT 
-                sdsa.id,
-                sdsa.username,
-                sdsa.alias_name,
-                sdsa.first_name,
-                sdsa.last_name,
-                sdsa.password,
-                sdsa.Phone_number,
-                sdsa.email_id,
-                sdsa.alternative_mobile_number,
-                sdsa.company_name,
-                sdsa.branch_state_name_id,
-                sdsa.branch_location_id,
-                sdsa.bank_id,
-                sdsa.account_type_id,
-                sdsa.office_address,
-                sdsa.residential_address,
-                sdsa.aadhaar_number,
-                sdsa.pan_number,
-                sdsa.account_number,
-                sdsa.ifsc_code,
-                sdsa.rank,
-                sdsa.status,
-                sdsa.reportingTo,
-                sdsa.employee_no,
-                sdsa.department,
-                sdsa.designation,
-                sdsa.branchstate,
-                sdsa.branchloaction,
-                sdsa.bank_name,
-                sdsa.account_type,
-                sdsa.pan_img,
-                sdsa.aadhaar_img,
-                sdsa.photo_img,
-                sdsa.bankproof_img,
-                sdsa.user_id,
-                sdsa.createdBy,
-                sdsa.created_at,
-                sdsa.updated_at
-              FROM tbl_sdsa_users sdsa
+    // First, let's check what columns exist in tbl_sdsa_emp_users
+    $checkTableQuery = "DESCRIBE tbl_sdsa_emp_users";
+    $checkTableStmt = $pdo->prepare($checkTableQuery);
+    $checkTableStmt->execute();
+    $tableColumns = $checkTableStmt->fetchAll(PDO::FETCH_COLUMN);
+    
+    // Build the main query to find SDSA employee users reporting to this user
+    // IMPORTANT: In tbl_sdsa_emp_users, reportingTo column contains USER IDs, not usernames
+    $query = "SELECT * FROM tbl_sdsa_emp_users sdsa_emp
               WHERE (
                 -- Find users who are reporting to the logged-in user by USER ID
-                sdsa.reportingTo = ?
+                sdsa_emp.reportingTo = ?
                 OR
                 -- Also check if createdBy matches (user was created by logged-in user)
-                sdsa.createdBy = ?
+                sdsa_emp.createdBy = ?
               )
               AND (
-                sdsa.status = 'Active' 
-                OR sdsa.status = 'active' 
-                OR sdsa.status = 1 
-                OR sdsa.status IS NULL 
-                OR sdsa.status = ''
+                sdsa_emp.status = 'Active' 
+                OR sdsa_emp.status = 'active' 
+                OR sdsa_emp.status = 1 
+                OR sdsa_emp.status IS NULL 
+                OR sdsa_emp.status = ''
               )
-              AND sdsa.first_name IS NOT NULL 
-              AND sdsa.first_name != ''
-              AND sdsa.id != ?  -- Exclude the logged-in user themselves if they exist in sdsa_users
-              ORDER BY sdsa.first_name ASC, sdsa.last_name ASC";
+              AND sdsa_emp.first_name IS NOT NULL 
+              AND sdsa_emp.first_name != ''
+              AND sdsa_emp.id != ?  -- Exclude the logged-in user themselves if they exist in sdsa_emp_users
+              ORDER BY sdsa_emp.first_name ASC, sdsa_emp.last_name ASC";
     
     $stmt = $pdo->prepare($query);
     $stmt->execute([
@@ -116,13 +83,13 @@ try {
     
     $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
     
-    // Get debug information about the SDSA users table structure
+    // Get debug information about the SDSA employee users table structure
     $debugQuery = "SELECT 
-                    COUNT(*) as total_sdsa_users,
+                    COUNT(*) as total_sdsa_emp_users,
                     COUNT(CASE WHEN reportingTo IS NOT NULL AND reportingTo != '' THEN 1 END) as users_with_reporting_to,
                     COUNT(CASE WHEN createdBy IS NOT NULL AND createdBy != '' THEN 1 END) as users_with_created_by,
                     COUNT(CASE WHEN status = 'Active' OR status = 'active' OR status = 1 THEN 1 END) as active_users
-                  FROM tbl_sdsa_users";
+                  FROM tbl_sdsa_emp_users";
     
     $debugStmt = $pdo->prepare($debugQuery);
     $debugStmt->execute();
@@ -130,7 +97,7 @@ try {
     
     // Get sample reportingTo values to see what's in the column
     $sampleQuery = "SELECT DISTINCT reportingTo, COUNT(*) as count 
-                    FROM tbl_sdsa_users 
+                    FROM tbl_sdsa_emp_users 
                     WHERE reportingTo IS NOT NULL AND reportingTo != '' 
                     GROUP BY reportingTo 
                     LIMIT 15";
@@ -140,18 +107,18 @@ try {
     
     // Get detailed information about users reporting to the logged-in user
     $reportingRelationsQuery = "SELECT 
-                                  sdsa.id,
-                                  sdsa.username,
-                                  sdsa.first_name,
-                                  sdsa.last_name,
-                                  sdsa.reportingTo,
-                                  sdsa.status,
-                                  sdsa.company_name,
-                                  sdsa.rank,
-                                  sdsa.department,
-                                  sdsa.designation
-                                FROM tbl_sdsa_users sdsa 
-                                WHERE sdsa.reportingTo = ?";
+                                  sdsa_emp.id,
+                                  sdsa_emp.username,
+                                  sdsa_emp.first_name,
+                                  sdsa_emp.last_name,
+                                  sdsa_emp.reportingTo,
+                                  sdsa_emp.status,
+                                  sdsa_emp.company_name,
+                                  sdsa_emp.rank,
+                                  sdsa_emp.department,
+                                  sdsa_emp.designation
+                                FROM tbl_sdsa_emp_users sdsa_emp 
+                                WHERE sdsa_emp.reportingTo = ?";
     $reportingRelationsStmt = $pdo->prepare($reportingRelationsQuery);
     $reportingRelationsStmt->execute([$loggedInUser['id']]);
     $reportingRelations = $reportingRelationsStmt->fetchAll(PDO::FETCH_ASSOC);
@@ -160,7 +127,7 @@ try {
     $nonNumericReportingQuery = "SELECT 
                                    COUNT(*) as non_numeric_reporting_count,
                                    GROUP_CONCAT(DISTINCT reportingTo) as non_numeric_values
-                                 FROM tbl_sdsa_users 
+                                 FROM tbl_sdsa_emp_users 
                                  WHERE (reportingTo NOT REGEXP '^[0-9]+$' OR reportingTo IS NULL OR reportingTo = '')
                                  AND reportingTo IS NOT NULL 
                                  AND reportingTo != ''";
@@ -172,7 +139,7 @@ try {
     $numericReportingQuery = "SELECT 
                                 COUNT(*) as numeric_reporting_count,
                                 GROUP_CONCAT(DISTINCT reportingTo) as numeric_values
-                              FROM tbl_sdsa_users 
+                              FROM tbl_sdsa_emp_users 
                               WHERE reportingTo REGEXP '^[0-9]+$' 
                               AND reportingTo IS NOT NULL 
                               AND reportingTo != ''";
@@ -184,9 +151,14 @@ try {
     echo json_encode([
         'success' => true,
         'status' => 'success', // Added root-level status field for Android compatibility
-        'message' => 'SDSA users reporting to logged-in user fetched successfully from tbl_sdsa_users',
+        'message' => 'SDSA employee users reporting to logged-in user fetched successfully from tbl_sdsa_emp_users',
         'users' => $users,
         'count' => count($users),
+        'table_structure' => [
+            'table_name' => 'tbl_sdsa_emp_users',
+            'available_columns' => $tableColumns,
+            'total_columns' => count($tableColumns)
+        ],
         'debug_info' => [
             'logged_in_user' => [
                 'id' => $loggedInUser['id'],
@@ -195,19 +167,20 @@ try {
                 'designation' => $designation['designation_name'] ?? 'Unknown'
             ],
             'search_parameter' => $reportingTo,
-            'table_used' => 'tbl_sdsa_users',
+            'table_used' => 'tbl_sdsa_emp_users',
             'database_stats' => $debugInfo,
             'sample_reporting_to_values' => $sampleReportingTo,
             'reporting_relationships_found' => $reportingRelations,
             'numeric_reporting_analysis' => $numericReportingInfo,
             'non_numeric_reporting_analysis' => $nonNumericReportingInfo,
             'query_approaches_used' => [
-                'reporting_to_match' => 'sdsa.reportingTo = logged_in_user_id',
-                'created_by_match' => 'sdsa.createdBy = logged_in_user_id'
+                'reporting_to_match' => 'sdsa_emp.reportingTo = logged_in_user_id',
+                'created_by_match' => 'sdsa_emp.createdBy = logged_in_user_id'
             ],
-            'key_insight' => 'In tbl_sdsa_users, reportingTo column contains USER IDs, not usernames',
+            'key_insight' => 'In tbl_sdsa_emp_users, reportingTo column contains USER IDs, not usernames',
             'search_logic' => 'Finding users where reportingTo = current_logged_in_user_id',
-            'table_difference' => 'tbl_sdsa_users uses user IDs in reportingTo, tbl_rbh_users uses usernames'
+            'table_difference' => 'tbl_sdsa_emp_users uses user IDs in reportingTo, tbl_rbh_users uses usernames',
+            'note' => 'This API uses tbl_sdsa_emp_users table instead of tbl_sdsa_users'
         ]
     ]);
     
@@ -216,6 +189,7 @@ try {
     http_response_code(500);
     echo json_encode([
         'success' => false,
+        'status' => 'error',
         'message' => 'Database error: ' . $e->getMessage(),
         'debug_info' => [
             'error_type' => 'PDOException',
@@ -229,6 +203,7 @@ try {
     http_response_code(400);
     echo json_encode([
         'success' => false,
+        'status' => 'error',
         'message' => 'Error: ' . $e->getMessage(),
         'debug_info' => [
             'error_type' => 'Exception',
@@ -236,4 +211,4 @@ try {
         ]
     ]);
 }
-?> 
+?>

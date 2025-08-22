@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug RBH Active Users API</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .debug-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: inline-block;
+            width: 120px;
+            font-weight: bold;
+        }
+        input, select {
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            width: 200px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .response {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 15px;
+            margin-top: 15px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .success { color: #28a745; font-weight: bold; }
+        .error { color: #dc3545; font-weight: bold; }
+        .info { color: #17a2b8; font-weight: bold; }
+        .warning { color: #ffc107; font-weight: bold; }
+        .url-display {
+            background-color: #e9ecef;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: monospace;
+            margin: 10px 0;
+            word-break: break-all;
+        }
+        .copy-button {
+            background-color: #6c757d;
+            font-size: 12px;
+            padding: 5px 10px;
+        }
+        .copy-button:hover {
+            background-color: #545b62;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🐛 Debug RBH Active Users API</h1>
+        
+        <div class="debug-section">
+            <h2>🔍 API Debug Information</h2>
+            <div class="info">
+                <p><strong>Current Issue:</strong> RBH Active Emp List panel not showing users who report to the logged-in RBH user.</p>
+                <p><strong>API Endpoint:</strong> <code>get_rbh_active_users.php</code></p>
+                <p><strong>Expected Behavior:</strong> Should return users where <code>reportingTo</code> field contains the RBH's user ID/username.</p>
+            </div>
+        </div>
+
+        <div class="debug-section">
+            <h2>🧪 Test Different Parameters</h2>
+            
+            <div class="input-group">
+                <label>Reporting To:</label>
+                <input type="text" id="reportingTo" placeholder="Enter user ID or username" value="123">
+                <button onclick="testWithCurrentValue()">Test Current Value</button>
+            </div>
+            
+            <div class="input-group">
+                <label>Status:</label>
+                <select id="status">
+                    <option value="active">Active</option>
+                    <option value="inactive">Inactive</option>
+                    <option value="">All Statuses</option>
+                </select>
+            </div>
+            
+            <div class="input-group">
+                <label>Test Type:</label>
+                <select id="testType">
+                    <option value="user_id">User ID (e.g., 123)</option>
+                    <option value="username">Username (e.g., rbh_user)</option>
+                    <option value="empty">Empty reportingTo</option>
+                    <option value="invalid">Invalid Value</option>
+                </select>
+                <button onclick="runTest()">Run Test</button>
+            </div>
+        </div>
+
+        <div class="debug-section">
+            <h2>📋 Postman URLs to Test</h2>
+            
+            <div class="url-display">
+                <strong>Test with User ID:</strong><br>
+                GET https://emp.kfinone.com/mobile/api/get_rbh_active_users.php?reportingTo=123&status=active
+                <button class="copy-button" onclick="copyToClipboard('GET https://emp.kfinone.com/mobile/api/get_rbh_active_users.php?reportingTo=123&status=active')">Copy</button>
+            </div>
+            
+            <div class="url-display">
+                <strong>Test with Username:</strong><br>
+                GET https://emp.kfinone.com/mobile/api/get_rbh_active_users.php?reportingTo=rbh_username&status=active
+                <button class="copy-button" onclick="copyToClipboard('GET https://emp.kfinone.com/mobile/api/get_rbh_active_users.php?reportingTo=rbh_username&status=active')">Copy</button>
+            </div>
+            
+            <div class="url-display">
+                <strong>Test Error Case:</strong><br>
+                GET https://emp.kfinone.com/mobile/api/get_rbh_active_users.php?status=active
+                <button class="copy-button" onclick="copyToClipboard('GET https://emp.kfinone.com/mobile/api/get_rbh_active_users.php?status=active')">Copy</button>
+            </div>
+        </div>
+
+        <div class="debug-section">
+            <h2>🔍 Database Query Analysis</h2>
+            <div class="warning">
+                <p><strong>Current Query Logic:</strong></p>
+                <code>WHERE FIND_IN_SET(:reportingTo, u.reportingTo)</code>
+            </div>
+            <p><strong>Potential Issues:</strong></p>
+            <ul>
+                <li><strong>Data Format:</strong> The <code>reportingTo</code> field might not be comma-separated</li>
+                <li><strong>Field Type:</strong> Might be storing user ID instead of username or vice versa</li>
+                <li><strong>Data Consistency:</strong> Some users might not have <code>reportingTo</code> set correctly</li>
+                <li><strong>Status Filter:</strong> The status filter might be too restrictive</li>
+            </ul>
+        </div>
+
+        <div class="debug-section">
+            <h2>📊 Test Results</h2>
+            <button onclick="clearResults()">Clear Results</button>
+            <div id="testResults"></div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'https://emp.kfinone.com/mobile/api/';
+        
+        function testWithCurrentValue() {
+            const reportingTo = document.getElementById('reportingTo').value;
+            const status = document.getElementById('status').value;
+            runApiTest(reportingTo, status);
+        }
+        
+        function runTest() {
+            const testType = document.getElementById('testType').value;
+            let reportingTo = '';
+            let status = 'active';
+            
+            switch(testType) {
+                case 'user_id':
+                    reportingTo = '123';
+                    break;
+                case 'username':
+                    reportingTo = 'rbh_user';
+                    break;
+                case 'empty':
+                    reportingTo = '';
+                    break;
+                case 'invalid':
+                    reportingTo = 'invalid_value_12345';
+                    break;
+            }
+            
+            runApiTest(reportingTo, status);
+        }
+        
+        async function runApiTest(reportingTo, status) {
+            const resultsDiv = document.getElementById('testResults');
+            const testId = Date.now();
+            
+            // Add test header
+            const testHeader = document.createElement('div');
+            testHeader.innerHTML = `
+                <h3>🧪 Test ${testId} - ${new Date().toLocaleTimeString()}</h3>
+                <p><strong>Parameters:</strong> reportingTo="${reportingTo}", status="${status}"</p>
+                <p><strong>URL:</strong> ${API_BASE_URL}get_rbh_active_users.php?reportingTo=${reportingTo}&status=${status}</p>
+                <div id="result-${testId}" class="response">🔄 Testing...</div>
+            `;
+            resultsDiv.appendChild(testHeader);
+            
+            try {
+                let url = `${API_BASE_URL}get_rbh_active_users.php`;
+                if (reportingTo) {
+                    url += `?reportingTo=${encodeURIComponent(reportingTo)}`;
+                    if (status) {
+                        url += `&status=${encodeURIComponent(status)}`;
+                    }
+                } else if (status) {
+                    url += `?status=${encodeURIComponent(status)}`;
+                }
+                
+                const response = await fetch(url);
+                const responseText = await response.text();
+                
+                let resultHtml = '';
+                
+                if (response.ok) {
+                    try {
+                        const data = JSON.parse(responseText);
+                        if (data.success) {
+                            resultHtml = `<span class="success">✅ SUCCESS!</span>\n\n📊 Found ${data.count} users\n\n📋 Response:\n${JSON.stringify(data, null, 2)}`;
+                        } else {
+                            resultHtml = `<span class="error">❌ API ERROR</span>\n\n${data.message}\n\n📋 Full Response:\n${JSON.stringify(data, null, 2)}`;
+                        }
+                    } catch (e) {
+                        resultHtml = `<span class="warning">⚠️ JSON PARSE ERROR</span>\n\nResponse is not valid JSON:\n${responseText}`;
+                    }
+                } else {
+                    resultHtml = `<span class="error">❌ HTTP ERROR ${response.status}</span>\n\nResponse:\n${responseText}`;
+                }
+                
+                document.getElementById(`result-${testId}`).innerHTML = resultHtml;
+                
+            } catch (error) {
+                document.getElementById(`result-${testId}`).innerHTML = `<span class="error">❌ EXCEPTION</span>\n\n${error.message}`;
+            }
+        }
+        
+        function clearResults() {
+            document.getElementById('testResults').innerHTML = '';
+        }
+        
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                alert('Copied to clipboard!');
+            }).catch(err => {
+                console.error('Failed to copy: ', err);
+            });
+        }
+        
+        // Auto-test on page load
+        window.onload = function() {
+            // Test with empty reportingTo to see error handling
+            setTimeout(() => {
+                runApiTest('', 'active');
+            }, 1000);
+        };
+    </script>
+</body>
+</html>

@@ -40,7 +40,7 @@ public class RegionalBusinessHeadUserAdapter extends RecyclerView.Adapter<Region
     }
 
     public class UserViewHolder extends RecyclerView.ViewHolder {
-        private TextView nameText, employeeIdText, phoneText, emailText;
+        private TextView nameText, employeeIdText, phoneText, emailText, companyText, stateText, locationText, rankText;
         private ImageView dashboardIcon, settingsIcon, analyticsIcon;
 
         public UserViewHolder(@NonNull View itemView) {
@@ -51,16 +51,44 @@ public class RegionalBusinessHeadUserAdapter extends RecyclerView.Adapter<Region
             phoneText = itemView.findViewById(R.id.phoneText);
             emailText = itemView.findViewById(R.id.emailText);
             
+            // Add new text views for additional information
+            companyText = itemView.findViewById(R.id.companyText);
+            stateText = itemView.findViewById(R.id.stateText);
+            locationText = itemView.findViewById(R.id.locationText);
+            rankText = itemView.findViewById(R.id.rankText);
+            
             dashboardIcon = itemView.findViewById(R.id.dashboardIcon);
             settingsIcon = itemView.findViewById(R.id.settingsIcon);
             analyticsIcon = itemView.findViewById(R.id.analyticsIcon);
         }
 
         public void bind(RegionalBusinessHeadUser user) {
+            // Basic information
             nameText.setText("Name: " + user.getFullName());
             employeeIdText.setText("Employee ID: " + user.getEmployeeId());
-            phoneText.setText("Phone: " + user.getPhoneNumber());
-            emailText.setText("Email: " + user.getEmailId());
+            phoneText.setText("Phone: " + (user.getPhoneNumber() != null ? user.getPhoneNumber() : "N/A"));
+            emailText.setText("Email: " + (user.getEmailId() != null ? user.getEmailId() : "N/A"));
+            
+            // Additional information from new fields (handle null values safely)
+            if (companyText != null) {
+                companyText.setText("Company: " + (user.getCompanyName() != null ? user.getCompanyName() : "N/A"));
+            }
+            
+            if (stateText != null) {
+                // Since we don't have resolved state name, show the ID or "N/A"
+                String stateInfo = user.getBranchStateNameId() != null ? "ID: " + user.getBranchStateNameId() : "N/A";
+                stateText.setText("State: " + stateInfo);
+            }
+            
+            if (locationText != null) {
+                // Since we don't have resolved location name, show the ID or "N/A"
+                String locationInfo = user.getBranchLocationId() != null ? "ID: " + user.getBranchLocationId() : "N/A";
+                locationText.setText("Location: " + locationInfo);
+            }
+            
+            if (rankText != null) {
+                rankText.setText("Rank: " + (user.getRank() != null ? user.getRank() : "N/A"));
+            }
 
             // Set click listeners for manage icons
             dashboardIcon.setOnClickListener(v -> {
@@ -80,7 +108,16 @@ public class RegionalBusinessHeadUserAdapter extends RecyclerView.Adapter<Region
 
             // Set click listener for the entire item
             itemView.setOnClickListener(v -> {
-                Toast.makeText(context, "Selected: " + user.getFullName(), Toast.LENGTH_SHORT).show();
+                String userInfo = String.format("User: %s\nUsername: %s\nCompany: %s\nState ID: %s\nLocation ID: %s\nRank: %s\nReporting To: %s",
+                    user.getFullName(),
+                    user.getUsername(),
+                    user.getCompanyName() != null ? user.getCompanyName() : "N/A",
+                    user.getBranchStateNameId() != null ? user.getBranchStateNameId() : "N/A",
+                    user.getBranchLocationId() != null ? user.getBranchLocationId() : "N/A",
+                    user.getRank() != null ? user.getRank() : "N/A",
+                    user.getReportingTo() != null ? user.getReportingTo() : "N/A"
+                );
+                Toast.makeText(context, userInfo, Toast.LENGTH_LONG).show();
                 // TODO: Navigate to user details
             });
         }

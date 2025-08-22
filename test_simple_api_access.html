@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple API Access Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ccc; }
+        button { padding: 10px 20px; margin: 5px; cursor: pointer; }
+        .result { margin: 10px 0; padding: 10px; background: #f0f0f0; }
+        .success { color: green; }
+        .error { color: red; }
+    </style>
+</head>
+<body>
+    <h1>🔍 Simple API Access Test</h1>
+    
+    <div class="test-section">
+        <h3>Test 1: Check if server is accessible</h3>
+        <button onclick="testBasicAccess()">Test Basic Server Access</button>
+        <div id="result1" class="result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h3>Test 2: Check if PHP files are served</h3>
+        <button onclick="testPhpAccess()">Test PHP File Access</button>
+        <div id="result2" class="result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h3>Test 3: Check specific API endpoint</h3>
+        <button onclick="testSpecificApi()">Test RBH Active Users API</button>
+        <div id="result3" class="result"></div>
+    </div>
+
+    <script>
+        async function testBasicAccess() {
+            const result = document.getElementById('result1');
+            result.innerHTML = 'Testing...';
+            
+            try {
+                const response = await fetch('https://emp.kfinone.com/');
+                if (response.ok) {
+                    result.innerHTML = '<span class="success">✅ Server is accessible</span>';
+                } else {
+                    result.innerHTML = `<span class="error">❌ Server returned ${response.status}</span>`;
+                }
+            } catch (error) {
+                result.innerHTML = `<span class="error">❌ Error: ${error.message}</span>`;
+            }
+        }
+        
+        async function testPhpAccess() {
+            const result = document.getElementById('result2');
+            result.innerHTML = 'Testing...';
+            
+            try {
+                const response = await fetch('https://emp.kfinone.com/mobile/api/test_server.php');
+                if (response.ok) {
+                    const text = await response.text();
+                    result.innerHTML = `<span class="success">✅ PHP files are served</span><br>Response: ${text}`;
+                } else {
+                    result.innerHTML = `<span class="error">❌ PHP files not accessible: ${response.status}</span>`;
+                }
+            } catch (error) {
+                result.innerHTML = `<span class="error">❌ Error: ${error.message}</span>`;
+            }
+        }
+        
+        async function testSpecificApi() {
+            const result = document.getElementById('result3');
+            result.innerHTML = 'Testing...';
+            
+            try {
+                const response = await fetch('https://emp.kfinone.com/mobile/api/get_rbh_active_users.php?reportingTo=1&status=active');
+                if (response.ok) {
+                    const text = await response.text();
+                    result.innerHTML = `<span class="success">✅ API is accessible</span><br>Response: ${text}`;
+                } else {
+                    result.innerHTML = `<span class="error">❌ API not accessible: ${response.status}</span>`;
+                }
+            } catch (error) {
+                result.innerHTML = `<span class="error">❌ Error: ${error.message}</span>`;
+            }
+        }
+    </script>
+</body>
+</html>

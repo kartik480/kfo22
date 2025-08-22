@@ -180,6 +180,9 @@ public class RegionalBusinessHeadPanelActivity extends AppCompatActivity {
             cardAnalytics.setOnClickListener(v -> {
                 Intent intent = new Intent(this, RBHEmpMasterActivity.class);
                 intent.putExtra("USERNAME", userName);
+                intent.putExtra("USER_ID", userId);
+                intent.putExtra("FIRST_NAME", firstName);
+                intent.putExtra("LAST_NAME", lastName);
                 intent.putExtra("SOURCE_PANEL", "RBH_PANEL");
                 startActivity(intent);
             });

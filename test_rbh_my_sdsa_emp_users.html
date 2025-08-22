@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RBH My SDSA Employee Users API - Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        button {
+            background-color: #6f42c1;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-right: 10px;
+        }
+        button:hover {
+            background-color: #5a32a3;
+        }
+        .error {
+            color: #dc3545;
+            background-color: #f8d7da;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .success {
+            color: #155724;
+            background-color: #d4edda;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .info {
+            color: #0c5460;
+            background-color: #d1ecf1;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .warning {
+            color: #856404;
+            background-color: #fff3cd;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .response {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 15px;
+            margin: 15px 0;
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .user-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        .user-table th, .user-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+            font-size: 12px;
+        }
+        .user-table th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        .user-table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .debug-info {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 4px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .key-highlight {
+            background-color: #d1ecf1;
+            border: 1px solid #bee5eb;
+            border-radius: 4px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        .comparison-table th, .comparison-table td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+        .comparison-table th {
+            background-color: #e9ecef;
+            font-weight: bold;
+        }
+        .table-structure {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔍 RBH My SDSA Employee Users API - Test</h1>
+    
+    <div class="container">
+        <h2>Key Understanding: SDSA Employee Users vs Other Tables</h2>
+        <div class="key-highlight">
+            <p><strong>🚨 IMPORTANT DIFFERENCE:</strong></p>
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Table</th>
+                        <th>reportingTo Column Contains</th>
+                        <th>Search Method</th>
+                        <th>Purpose</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>tbl_rbh_users</code></td>
+                        <td><strong>USERNAMES</strong> (e.g., "admin", "john_doe")</td>
+                        <td><code>reportingTo = "admin"</code></td>
+                        <td>RBH users</td>
+                    </tr>
+                    <tr>
+                        <td><code>tbl_sdsa_users</code></td>
+                        <td><strong>USER IDs</strong> (e.g., 40, 123, 456)</td>
+                        <td><code>reportingTo = 40</code></td>
+                        <td>SDSA users</td>
+                    </tr>
+                    <tr>
+                        <td><code>tbl_sdsa_emp_users</code></td>
+                        <td><strong>USER IDs</strong> (e.g., 40, 123, 456)</td>
+                        <td><code>reportingTo = 40</code></td>
+                        <td><strong>SDSA Employee users</strong> 🆕</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>Test RBH My SDSA Employee Users API</h2>
+        <p>This API fetches SDSA <strong>employee</strong> users from <code>tbl_sdsa_emp_users</code> who are reporting to the currently logged-in user.</p>
+        
+        <div class="form-group">
+            <label for="userId">User ID or Username:</label>
+            <input type="text" id="userId" placeholder="Enter user ID or username (e.g., 40, admin)" value="40">
+        </div>
+        
+        <button onclick="testAPI()">Test SDSA Employee Users API</button>
+        <button onclick="testWithSampleIds()">Test Sample User IDs</button>
+        <button onclick="clearResults()">Clear Results</button>
+        
+        <div id="results"></div>
+    </div>
+
+    <div class="container">
+        <h2>What This API Does</h2>
+        <div class="info">
+            <p><strong>Updated Logic for SDSA Employee Users:</strong></p>
+            <ul>
+                <li><strong>Input:</strong> User ID or username from login</li>
+                <li><strong>Process:</strong> Finds logged-in user in <code>tbl_user</code></li>
+                <li><strong>Search:</strong> Looks in <code>tbl_sdsa_emp_users</code> for <code>reportingTo = user_id</code></li>
+                <li><strong>Result:</strong> Returns SDSA <strong>employee</strong> users reporting to that user ID</li>
+            </ul>
+            <p><strong>Key Difference:</strong> This API uses <code>tbl_sdsa_emp_users</code> table (SDSA employees) instead of <code>tbl_sdsa_users</code></p>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>Expected Behavior</h2>
+        <div class="warning">
+            <p><strong>If reportingTo contains user IDs:</strong> ✅ API should work correctly</p>
+            <p><strong>If reportingTo contains usernames:</strong> ❌ API will not find users</p>
+            <p><strong>Mixed data:</strong> 🔍 API will show debug info to help identify the issue</p>
+            <p><strong>Table discovery:</strong> 🔍 API will show available columns in <code>tbl_sdsa_emp_users</code></p>
+        </div>
+    </div>
+
+    <script>
+        function testAPI() {
+            const userId = document.getElementById('userId').value.trim();
+            
+            if (!userId) {
+                showError('Please enter a User ID or Username');
+                return;
+            }
+            
+            const apiUrl = `https://emp.kfinone.com/mobile/api/get_rbh_my_sdsa_emp_users.php?reportingTo=${encodeURIComponent(userId)}&status=active`;
+            
+            showInfo(`Testing SDSA Employee Users API with User ID/Username: "${userId}"`);
+            showInfo(`API URL: ${apiUrl}`);
+            
+            fetch(apiUrl)
+                .then(response => {
+                    showInfo(`HTTP Status: ${response.status} ${response.statusText}`);
+                    return response.text();
+                })
+                .then(data => {
+                    try {
+                        const jsonData = JSON.parse(data);
+                        displayResults(jsonData, userId);
+                    } catch (e) {
+                        showError(`Failed to parse JSON response: ${e.message}`);
+                        showResponse('Raw Response', data);
+                    }
+                })
+                .catch(error => {
+                    showError(`Network Error: ${error.message}`);
+                });
+        }
+        
+        function testWithSampleIds() {
+            const sampleIds = ['40', '123', '456', '789', '100'];
+            const resultsDiv = document.getElementById('results');
+            
+            resultsDiv.innerHTML = '<h3>Testing with Sample User IDs...</h3>';
+            
+            sampleIds.forEach((id, index) => {
+                setTimeout(() => {
+                    testSingleId(id);
+                }, index * 1000); // Test each ID with 1 second delay
+            });
+        }
+        
+        function testSingleId(userId) {
+            const apiUrl = `https://emp.kfinone.com/mobile/api/get_rbh_my_sdsa_emp_users.php?reportingTo=${encodeURIComponent(userId)}&status=active`;
+            
+            fetch(apiUrl)
+                .then(response => response.text())
+                .then(data => {
+                    try {
+                        const jsonData = JSON.parse(data);
+                        const resultDiv = document.createElement('div');
+                        resultDiv.className = 'container';
+                        resultDiv.innerHTML = `
+                            <h4>Test Result for User ID: "${userId}"</h4>
+                            <p><strong>Success:</strong> ${jsonData.success}</p>
+                            <p><strong>Message:</strong> ${jsonData.message}</p>
+                            <p><strong>SDSA Employee User Count:</strong> ${jsonData.count || 0}</p>
+                            ${jsonData.debug_info ? `<p><strong>Debug:</strong> ${JSON.stringify(jsonData.debug_info, null, 2)}</p>` : ''}
+                        `;
+                        document.getElementById('results').appendChild(resultDiv);
+                    } catch (e) {
+                        console.error(`Error parsing response for ${userId}:`, e);
+                    }
+                })
+                .catch(error => {
+                    console.error(`Error testing ${userId}:`, error);
+                });
+        }
+        
+        function displayResults(data, userId) {
+            const resultsDiv = document.getElementById('results');
+            
+            if (data.success) {
+                showSuccess(`✅ SDSA Employee Users API call successful! Found ${data.count || 0} SDSA employee users reporting to "${userId}"`);
+                
+                // Display table structure information
+                if (data.table_structure) {
+                    resultsDiv.innerHTML += `
+                        <h3>Table Structure Information:</h3>
+                        <div class="table-structure">
+                            <p><strong>Table Name:</strong> ${data.table_structure.table_name}</p>
+                            <p><strong>Total Columns:</strong> ${data.table_structure.total_columns}</p>
+                            <p><strong>Available Columns:</strong></p>
+                            <ul>
+                                ${data.table_structure.available_columns.map(col => `<li><code>${col}</code></li>`).join('')}
+                            </ul>
+                        </div>
+                    `;
+                }
+                
+                // Display users in a table
+                if (data.users && data.users.length > 0) {
+                    let tableHTML = '<h3>SDSA Employee Users Found:</h3><table class="user-table"><thead><tr>';
+                    const firstUser = data.users[0];
+                    Object.keys(firstUser).forEach(key => {
+                        tableHTML += `<th>${key}</th>`;
+                    });
+                    tableHTML += '</tr></thead><tbody>';
+                    
+                    data.users.forEach(user => {
+                        tableHTML += '<tr>';
+                        Object.values(user).forEach(value => {
+                            tableHTML += `<td>${value || 'N/A'}</td>`;
+                        });
+                        tableHTML += '</tr>';
+                    });
+                    
+                    tableHTML += '</tbody></table>';
+                    resultsDiv.innerHTML += tableHTML;
+                }
+                
+                // Display debug information
+                if (data.debug_info) {
+                    resultsDiv.innerHTML += `
+                        <h3>Debug Information:</h3>
+                        <div class="debug-info">
+                            <h4>Logged-in User:</h4>
+                            <p><strong>ID:</strong> ${data.debug_info.logged_in_user.id}</p>
+                            <p><strong>Username:</strong> ${data.debug_info.logged_in_user.username}</p>
+                            <p><strong>Name:</strong> ${data.debug_info.logged_in_user.name}</p>
+                            <p><strong>Designation:</strong> ${data.debug_info.logged_in_user.designation}</p>
+                            
+                            <h4>Database Statistics:</h4>
+                            <p><strong>Total SDSA Employee Users:</strong> ${data.debug_info.database_stats.total_sdsa_emp_users}</p>
+                            <p><strong>Users with reportingTo:</strong> ${data.debug_info.database_stats.users_with_reporting_to}</p>
+                            <p><strong>Users with createdBy:</strong> ${data.debug_info.database_stats.users_with_created_by}</p>
+                            <p><strong>Active Users:</strong> ${data.debug_info.database_stats.active_users}</p>
+                            
+                            <h4>Sample reportingTo Values (Check if these are user IDs or usernames):</h4>
+                            <pre>${JSON.stringify(data.debug_info.sample_reporting_to_values, null, 2)}</pre>
+                            
+                            <h4>Reporting Relationships Found:</h4>
+                            <pre>${JSON.stringify(data.debug_info.reporting_relationships_found, null, 2)}</pre>
+                            
+                            <h4>Numeric vs Non-Numeric Analysis:</h4>
+                            <p><strong>Numeric reportingTo count:</strong> ${data.debug_info.numeric_reporting_analysis.numeric_reporting_count}</p>
+                            <p><strong>Numeric values found:</strong> ${data.debug_info.numeric_reporting_analysis.numeric_values || 'None'}</p>
+                            <p><strong>Non-numeric reportingTo count:</strong> ${data.debug_info.non_numeric_reporting_analysis.non_numeric_reporting_count}</p>
+                            <p><strong>Non-numeric values found:</strong> ${data.debug_info.non_numeric_reporting_analysis.non_numeric_values || 'None'}</p>
+                            
+                            <h4>Key Insights:</h4>
+                            <p><strong>Search Logic:</strong> ${data.debug_info.search_logic}</p>
+                            <p><strong>Key Insight:</strong> ${data.debug_info.key_insight}</p>
+                            <p><strong>Table Difference:</strong> ${data.debug_info.table_difference}</p>
+                            <p><strong>Note:</strong> ${data.debug_info.note}</p>
+                        </div>
+                    `;
+                }
+                
+                // Display full response
+                showResponse('Full API Response', JSON.stringify(data, null, 2));
+                
+            } else {
+                showError(`❌ SDSA Employee Users API call failed: ${data.message}`);
+                if (data.debug_info) {
+                    resultsDiv.innerHTML += `
+                        <div class="debug-info">
+                            <h4>Debug Info:</h4>
+                            <pre>${JSON.stringify(data.debug_info, null, 2)}</pre>
+                        </div>
+                    `;
+                }
+                showResponse('Error Response', JSON.stringify(data, null, 2));
+            }
+        }
+        
+        function showSuccess(message) {
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML += `<div class="success">${message}</div>`;
+        }
+        
+        function showError(message) {
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML += `<div class="error">${message}</div>`;
+        }
+        
+        function showInfo(message) {
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML += `<div class="info">${message}</div>`;
+        }
+        
+        function showResponse(title, content) {
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML += `
+                <h4>${title}:</h4>
+                <div class="response">${content}</div>
+            `;
+        }
+        
+        function clearResults() {
+            document.getElementById('results').innerHTML = '';
+        }
+    </script>
+</body>
+</html>

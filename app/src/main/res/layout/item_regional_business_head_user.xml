@@ -45,6 +45,46 @@
                 android:textColor="@color/gray"
                 android:layout_marginBottom="4dp" />
 
+            <!-- Company -->
+            <TextView
+                android:id="@+id/companyText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Company: Company Name"
+                android:textSize="14sp"
+                android:textColor="@color/gray"
+                android:layout_marginBottom="4dp" />
+
+            <!-- State -->
+            <TextView
+                android:id="@+id/stateText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="State: State Name"
+                android:textSize="14sp"
+                android:textColor="@color/gray"
+                android:layout_marginBottom="4dp" />
+
+            <!-- Location -->
+            <TextView
+                android:id="@+id/locationText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Location: Location Name"
+                android:textSize="14sp"
+                android:textColor="@color/gray"
+                android:layout_marginBottom="4dp" />
+
+            <!-- Rank -->
+            <TextView
+                android:id="@+id/rankText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Rank: Rank Value"
+                android:textSize="14sp"
+                android:textColor="@color/gray"
+                android:layout_marginBottom="4dp" />
+
             <!-- Phone -->
             <TextView
                 android:id="@+id/phoneText"

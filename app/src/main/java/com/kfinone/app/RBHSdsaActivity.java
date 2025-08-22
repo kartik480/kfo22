@@ -2,6 +2,7 @@ package com.kfinone.app;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -39,7 +40,7 @@ public class RBHSdsaActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_rbh_emp_links);
+        setContentView(R.layout.activity_rbh_sdsa);
 
         // Get user data from intent
         Intent intent = getIntent();
@@ -72,50 +73,81 @@ public class RBHSdsaActivity extends AppCompatActivity {
         // Count displays
         mySdsaCount = findViewById(R.id.mySdsaCount);
         teamSdsaCount = findViewById(R.id.teamSdsaCount);
+
+        // Debug logging to help identify any remaining null views
+        Log.d("RBHSdsaActivity", "View initialization - backButton: " + (backButton != null ? "OK" : "NULL"));
+        Log.d("RBHSdsaActivity", "View initialization - refreshButton: " + (refreshButton != null ? "OK" : "NULL"));
+        Log.d("RBHSdsaActivity", "View initialization - addButton: " + (addButton != null ? "OK" : "NULL"));
+        Log.d("RBHSdsaActivity", "View initialization - dashboardButton: " + (dashboardButton != null ? "OK" : "NULL"));
+        Log.d("RBHSdsaActivity", "View initialization - empLinksButton: " + (empLinksButton != null ? "OK" : "NULL"));
+        Log.d("RBHSdsaActivity", "View initialization - reportsButton: " + (reportsButton != null ? "OK" : "NULL"));
+        Log.d("RBHSdsaActivity", "View initialization - settingsButton: " + (settingsButton != null ? "OK" : "NULL"));
+        Log.d("RBHSdsaActivity", "View initialization - mySdsaBox: " + (mySdsaBox != null ? "OK" : "NULL"));
+        Log.d("RBHSdsaActivity", "View initialization - teamSdsaBox: " + (teamSdsaBox != null ? "OK" : "NULL"));
+        Log.d("RBHSdsaActivity", "View initialization - mySdsaCount: " + (mySdsaCount != null ? "OK" : "NULL"));
+        Log.d("RBHSdsaActivity", "View initialization - teamSdsaCount: " + (teamSdsaCount != null ? "OK" : "NULL"));
     }
 
     private void setupClickListeners() {
-        // Top navigation
-        backButton.setOnClickListener(v -> goBack());
-        refreshButton.setOnClickListener(v -> refreshData());
-        addButton.setOnClickListener(v -> addNewSdsa());
+        // Top navigation - Add null checks
+        if (backButton != null) {
+            backButton.setOnClickListener(v -> goBack());
+        }
+        if (refreshButton != null) {
+            refreshButton.setOnClickListener(v -> refreshData());
+        }
+        if (addButton != null) {
+            addButton.setOnClickListener(v -> addNewSdsa());
+        }
 
-        // Bottom navigation
-        dashboardButton.setOnClickListener(v -> {
-            Intent intent = new Intent(this, RegionalBusinessHeadPanelActivity.class);
-            passUserDataToIntent(intent);
-            startActivity(intent);
-            finish();
-        });
+        // Bottom navigation - Add null checks
+        if (dashboardButton != null) {
+            dashboardButton.setOnClickListener(v -> {
+                Intent intent = new Intent(this, RegionalBusinessHeadPanelActivity.class);
+                passUserDataToIntent(intent);
+                startActivity(intent);
+                finish();
+            });
+        }
 
-        empLinksButton.setOnClickListener(v -> {
-            Intent intent = new Intent(this, RBHEmpLinksActivity.class);
-            passUserDataToIntent(intent);
-            startActivity(intent);
-            finish();
-        });
+        if (empLinksButton != null) {
+            empLinksButton.setOnClickListener(v -> {
+                Intent intent = new Intent(this, RBHEmpLinksActivity.class);
+                passUserDataToIntent(intent);
+                startActivity(intent);
+                finish();
+            });
+        }
 
-        reportsButton.setOnClickListener(v -> {
-            Toast.makeText(this, "Reports - Coming Soon", Toast.LENGTH_SHORT).show();
-            // TODO: Navigate to Reports activity
-        });
+        if (reportsButton != null) {
+            reportsButton.setOnClickListener(v -> {
+                Toast.makeText(this, "Reports - Coming Soon", Toast.LENGTH_SHORT).show();
+                // TODO: Navigate to Reports activity
+            });
+        }
 
-        settingsButton.setOnClickListener(v -> {
-            Toast.makeText(this, "Settings - Coming Soon", Toast.LENGTH_SHORT).show();
-            // TODO: Navigate to Settings activity
-        });
+        if (settingsButton != null) {
+            settingsButton.setOnClickListener(v -> {
+                Toast.makeText(this, "Settings - Coming Soon", Toast.LENGTH_SHORT).show();
+                // TODO: Navigate to Settings activity
+            });
+        }
 
-        // RBH SDSA box click listeners
-        mySdsaBox.setOnClickListener(v -> {
-            Intent intent = new Intent(this, RBHMySdsaActivity.class);
-            passUserDataToIntent(intent);
-            startActivity(intent);
-        });
+        // RBH SDSA box click listeners - Add null checks
+        if (mySdsaBox != null) {
+            mySdsaBox.setOnClickListener(v -> {
+                Intent intent = new Intent(this, RBHMySdsaActivity.class);
+                passUserDataToIntent(intent);
+                startActivity(intent);
+            });
+        }
 
-        teamSdsaBox.setOnClickListener(v -> {
-            Toast.makeText(this, "Team SDSA - Coming Soon", Toast.LENGTH_SHORT).show();
-            // TODO: Navigate to Team SDSA activity
-        });
+        if (teamSdsaBox != null) {
+            teamSdsaBox.setOnClickListener(v -> {
+                Toast.makeText(this, "Team SDSA - Coming Soon", Toast.LENGTH_SHORT).show();
+                // TODO: Navigate to Team SDSA activity
+            });
+        }
     }
 
     private void goBack() {
@@ -141,9 +173,13 @@ public class RBHSdsaActivity extends AppCompatActivity {
 
     private void loadRBHSdsaData() {
         // TODO: Load real RBH SDSA data from server
-        // For now, set some sample data
-        mySdsaCount.setText("My SDSA");
-        teamSdsaCount.setText("Team SDSA");
+        // For now, set some sample data with null checks
+        if (mySdsaCount != null) {
+            mySdsaCount.setText("My SDSA");
+        }
+        if (teamSdsaCount != null) {
+            teamSdsaCount.setText("Team SDSA");
+        }
     }
 
     private void passUserDataToIntent(Intent intent) {

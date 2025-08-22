@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API URL Debug - Fix 404 Error</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .url-test {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .url-display {
+            background-color: #e9ecef;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: monospace;
+            margin: 10px 0;
+            word-break: break-all;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .success { color: #28a745; font-weight: bold; }
+        .error { color: #dc3545; font-weight: bold; }
+        .warning { color: #ffc107; font-weight: bold; }
+        .response {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 15px;
+            margin-top: 15px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 API URL Debug - Fix 404 Error</h1>
+        
+        <div class="url-test">
+            <h2>🚨 Problem: Getting 404 Error</h2>
+            <p><strong>Current Issue:</strong> The API endpoint is returning a 404 (Not Found) error</p>
+            <p><strong>Possible Causes:</strong></p>
+            <ul>
+                <li>Wrong URL path structure</li>
+                <li>Server configuration issues</li>
+                <li>File permissions problems</li>
+                <li>Different domain/subdomain</li>
+            </ul>
+        </div>
+
+        <div class="url-test">
+            <h2>🧪 Test Different URL Patterns</h2>
+            <p>Let's test various URL patterns to find the correct one:</p>
+            
+            <div class="url-display">
+                <strong>Pattern 1 (Original):</strong><br>
+                https://emp.kfinone.com/mobile/api/get_rbh_active_users.php
+                <button onclick="testUrl('https://emp.kfinone.com/mobile/api/get_rbh_active_users.php', 'pattern1')">Test</button>
+            </div>
+            
+            <div class="url-display">
+                <strong>Pattern 2 (No mobile):</strong><br>
+                https://emp.kfinone.com/api/get_rbh_active_users.php
+                <button onclick="testUrl('https://emp.kfinone.com/api/get_rbh_active_users.php', 'pattern2')">Test</button>
+            </div>
+            
+            <div class="url-display">
+                <strong>Pattern 3 (Different subdomain):</strong><br>
+                https://kfinone.com/mobile/api/get_rbh_active_users.php
+                <button onclick="testUrl('https://kfinone.com/mobile/api/get_rbh_active_users.php', 'pattern3')">Test</button>
+            </div>
+            
+            <div class="url-display">
+                <strong>Pattern 4 (HTTP instead of HTTPS):</strong><br>
+                http://emp.kfinone.com/mobile/api/get_rbh_active_users.php
+                <button onclick="testUrl('http://emp.kfinone.com/mobile/api/get_rbh_active_users.php', 'pattern4')">Test</button>
+            </div>
+            
+            <div class="url-display">
+                <strong>Pattern 5 (Root level):</strong><br>
+                https://emp.kfinone.com/get_rbh_active_users.php
+                <button onclick="testUrl('https://emp.kfinone.com/get_rbh_active_users.php', 'pattern5')">Test</button>
+            </div>
+        </div>
+
+        <div class="url-test">
+            <h2>🔧 Test Working APIs First</h2>
+            <p>Let's test some APIs that might already be working to verify the server is accessible:</p>
+            
+            <div class="url-display">
+                <strong>Test DSA Code List (Known Working):</strong><br>
+                https://emp.kfinone.com/mobile/api/get_dsa_code_list.php
+                <button onclick="testUrl('https://emp.kfinone.com/mobile/api/get_dsa_code_list.php', 'dsa_test')">Test</button>
+            </div>
+            
+            <div class="url-display">
+                <strong>Test Simple API:</strong><br>
+                https://emp.kfinone.com/mobile/api/test_server.php
+                <button onclick="testUrl('https://emp.kfinone.com/mobile/api/test_server.php', 'simple_test')">Test</button>
+            </div>
+        </div>
+
+        <div class="url-test">
+            <h2>📋 Test Results</h2>
+            <button onclick="clearResults()">Clear Results</button>
+            <div id="testResults"></div>
+        </div>
+    </div>
+
+    <script>
+        async function testUrl(url, pattern) {
+            const resultsDiv = document.getElementById('testResults');
+            const testId = Date.now();
+            
+            // Add test header
+            const testHeader = document.createElement('div');
+            testHeader.innerHTML = `
+                <h3>🧪 Test ${pattern} - ${new Date().toLocaleTimeString()}</h3>
+                <p><strong>URL:</strong> ${url}</p>
+                <div id="result-${testId}" class="response">🔄 Testing...</div>
+            `;
+            resultsDiv.appendChild(testHeader);
+            
+            try {
+                const response = await fetch(url);
+                const responseText = await response.text();
+                
+                let resultHtml = '';
+                
+                if (response.ok) {
+                    try {
+                        const data = JSON.parse(responseText);
+                        resultHtml = `<span class="success">✅ SUCCESS! (HTTP ${response.status})</span>\n\n📋 Response:\n${JSON.stringify(data, null, 2)}`;
+                    } catch (e) {
+                        resultHtml = `<span class="success">✅ SUCCESS! (HTTP ${response.status})</span>\n\n📋 Response (not JSON):\n${responseText}`;
+                    }
+                } else if (response.status === 404) {
+                    resultHtml = `<span class="error">❌ 404 NOT FOUND</span>\n\nThis URL pattern is not working. The file or path doesn't exist at this location.`;
+                } else {
+                    resultHtml = `<span class="warning">⚠️ HTTP ERROR ${response.status}</span>\n\nResponse:\n${responseText}`;
+                }
+                
+                document.getElementById(`result-${testId}`).innerHTML = resultHtml;
+                
+            } catch (error) {
+                if (error.name === 'TypeError' && error.message.includes('Failed to fetch')) {
+                    document.getElementById(`result-${testId}`).innerHTML = `<span class="error">❌ NETWORK ERROR</span>\n\nFailed to fetch: ${error.message}\n\nThis could mean:\n• The domain doesn't exist\n• CORS issues\n• Server is down\n• Wrong protocol (HTTP vs HTTPS)`;
+                } else {
+                    document.getElementById(`result-${testId}`).innerHTML = `<span class="error">❌ EXCEPTION</span>\n\n${error.message}`;
+                }
+            }
+        }
+        
+        function clearResults() {
+            document.getElementById('testResults').innerHTML = '';
+        }
+        
+        // Auto-test the working DSA API first
+        window.onload = function() {
+            setTimeout(() => {
+                testUrl('https://emp.kfinone.com/mobile/api/get_dsa_code_list.php', 'auto_dsa_test');
+            }, 1000);
+        };
+    </script>
+</body>
+</html>

@@ -45,8 +45,28 @@ public class RegionalBusinessHeadActiveEmpListActivity extends AppCompatActivity
         Intent intent = getIntent();
         userName = intent.getStringExtra("USERNAME");
         userId = intent.getStringExtra("USER_ID");
+        
+        // Debug logging for user data
+        android.util.Log.d("RBHActiveEmpList", "Intent extras received:");
+        android.util.Log.d("RBHActiveEmpList", "USERNAME: " + userName);
+        android.util.Log.d("RBHActiveEmpList", "USER_ID: " + userId);
+        
         if (userName == null || userName.isEmpty()) {
             userName = "RBH"; // Default fallback
+        }
+        
+        if (userId == null || userId.isEmpty()) {
+            android.util.Log.e("RBHActiveEmpList", "ERROR: USER_ID is null or empty!");
+            
+            // Try to get user ID from username if available
+            if (userName != null && !userName.isEmpty()) {
+                android.util.Log.d("RBHActiveEmpList", "Attempting to get user ID from username: " + userName);
+                // For now, show error message
+                Toast.makeText(this, "Error: User ID not found. Please go back and try again.", Toast.LENGTH_LONG).show();
+            } else {
+                Toast.makeText(this, "Error: User ID not found. Please go back and try again.", Toast.LENGTH_LONG).show();
+            }
+            return;
         }
         
         initializeViews();
@@ -136,10 +156,20 @@ public class RegionalBusinessHeadActiveEmpListActivity extends AppCompatActivity
     private void fetchActiveUsers() {
         executorService.execute(() -> {
             try {
+                // Debug: Check if userId is available
+                if (userId == null || userId.isEmpty()) {
+                    runOnUiThread(() -> {
+                        Toast.makeText(this, "Error: User ID is null. Cannot fetch users.", Toast.LENGTH_LONG).show();
+                        android.util.Log.e("RBHActiveEmpList", "Cannot fetch users: userId is null");
+                    });
+                    return;
+                }
+                
                 // Create API request to fetch users reporting to the logged-in user
                 String apiUrl = "https://emp.kfinone.com/mobile/api/get_rbh_active_users.php?reportingTo=" + userId + "&status=active";
                 
                 android.util.Log.d("RBHActiveEmpList", "Fetching users from: " + apiUrl);
+                android.util.Log.d("RBHActiveEmpList", "Using userId: " + userId);
                 
                 String response = makeGetRequest(apiUrl);
                 
@@ -153,13 +183,50 @@ public class RegionalBusinessHeadActiveEmpListActivity extends AppCompatActivity
                                 
                                 for (int i = 0; i < usersArray.length(); i++) {
                                     JSONObject userObj = usersArray.getJSONObject(i);
+                                    
+                                    // Create user object with all fields from tbl_rbh_users (including password)
                                     RegionalBusinessHeadUser user = new RegionalBusinessHeadUser(
-                                        userObj.getString("first_name"),
-                                        userObj.getString("last_name"),
-                                        userObj.getString("username"),
-                                        userObj.getString("Phone_number"),
-                                        userObj.getString("email_id"),
-                                        userObj.getString("status")
+                                        getStringOrNull(userObj, "id"),
+                                        getStringOrNull(userObj, "username"),
+                                        getStringOrNull(userObj, "alias_name"),
+                                        getStringOrNull(userObj, "first_name"),
+                                        getStringOrNull(userObj, "last_name"),
+                                        getStringOrNull(userObj, "Phone_number"),
+                                        getStringOrNull(userObj, "email_id"),
+                                        getStringOrNull(userObj, "alternative_mobile_number"),
+                                        getStringOrNull(userObj, "company_name"),
+                                        getStringOrNull(userObj, "branch_state_name_id"),
+                                        getStringOrNull(userObj, "branch_location_id"),
+                                        getStringOrNull(userObj, "bank_id"),
+                                        getStringOrNull(userObj, "account_type_id"),
+                                        getStringOrNull(userObj, "office_address"),
+                                        getStringOrNull(userObj, "residential_address"),
+                                        getStringOrNull(userObj, "aadhaar_number"),
+                                        getStringOrNull(userObj, "pan_number"),
+                                        getStringOrNull(userObj, "account_number"),
+                                        getStringOrNull(userObj, "ifsc_code"),
+                                        getStringOrNull(userObj, "rank"),
+                                        getStringOrNull(userObj, "status"),
+                                        getStringOrNull(userObj, "reportingTo"),
+                                        getStringOrNull(userObj, "pan_img"),
+                                        getStringOrNull(userObj, "aadhaar_img"),
+                                        getStringOrNull(userObj, "photo_img"),
+                                        getStringOrNull(userObj, "bankproof_img"),
+                                        getStringOrNull(userObj, "resume_file"),
+                                        getStringOrNull(userObj, "data_icons"),
+                                        getStringOrNull(userObj, "work_icons"),
+                                        getStringOrNull(userObj, "user_id"),
+                                        getStringOrNull(userObj, "createdBy"),
+                                        getStringOrNull(userObj, "created_at"),
+                                        getStringOrNull(userObj, "updated_at"),
+                                        // No resolved fields from JOINs - set to null
+                                        null, // reporting_to_username
+                                        null, // reporting_to_first_name
+                                        null, // reporting_to_last_name
+                                        null, // state_name
+                                        null, // location_name
+                                        null, // bank_name
+                                        null  // account_type_name
                                     );
                                     userList.add(user);
                                 }
@@ -170,6 +237,12 @@ public class RegionalBusinessHeadActiveEmpListActivity extends AppCompatActivity
                                     Toast.makeText(this, "No active users found reporting to you", Toast.LENGTH_SHORT).show();
                                 } else {
                                     Toast.makeText(this, "Found " + userList.size() + " active users", Toast.LENGTH_SHORT).show();
+                                }
+                                
+                                // Log debug information if available
+                                if (jsonResponse.has("debug_info")) {
+                                    JSONObject debugInfo = jsonResponse.getJSONObject("debug_info");
+                                    android.util.Log.d("RBHActiveEmpList", "Debug Info: " + debugInfo.toString());
                                 }
                             } else {
                                 String errorMessage = jsonResponse.getString("message");
@@ -193,6 +266,18 @@ public class RegionalBusinessHeadActiveEmpListActivity extends AppCompatActivity
                 });
             }
         });
+    }
+
+    // Helper method to safely get string values from JSON
+    private String getStringOrNull(JSONObject json, String key) {
+        try {
+            if (json.has(key) && !json.isNull(key)) {
+                return json.getString(key);
+            }
+        } catch (JSONException e) {
+            android.util.Log.w("RBHActiveEmpList", "Error getting " + key + ": " + e.getMessage());
+        }
+        return null;
     }
 
     @Override

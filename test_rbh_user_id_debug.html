@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RBH Active Users API - User ID Debug</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="text"], select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-right: 10px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .error {
+            color: #dc3545;
+            background-color: #f8d7da;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .success {
+            color: #155724;
+            background-color: #d4edda;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .info {
+            color: #0c5460;
+            background-color: #d1ecf1;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .response {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 15px;
+            margin: 15px 0;
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .user-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        .user-table th, .user-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        .user-table th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        .user-table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .debug-info {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 4px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔍 RBH Active Users API - User ID Debug</h1>
+    
+    <div class="container">
+        <h2>Test API with Different User ID Parameters</h2>
+        <p>This tool helps debug the "Logged-in user not found" error by testing different user ID formats.</p>
+        
+        <div class="form-group">
+            <label for="userId">User ID or Username:</label>
+            <input type="text" id="userId" placeholder="Enter user ID or username (e.g., 123, john_doe)" value="">
+        </div>
+        
+        <div class="form-group">
+            <label for="status">Status:</label>
+            <select id="status">
+                <option value="active">Active</option>
+                <option value="inactive">Inactive</option>
+                <option value="">All</option>
+            </select>
+        </div>
+        
+        <button onclick="testAPI()">Test API</button>
+        <button onclick="testWithSampleIds()">Test with Sample IDs</button>
+        <button onclick="clearResults()">Clear Results</button>
+        
+        <div id="results"></div>
+    </div>
+
+    <div class="container">
+        <h2>Common User ID Formats to Test</h2>
+        <div class="info">
+            <strong>Try these formats:</strong>
+            <ul>
+                <li><strong>Numeric ID:</strong> 123, 456, 789</li>
+                <li><strong>Username:</strong> john_doe, admin, user123</li>
+                <li><strong>String ID:</strong> "123", "user_456"</li>
+                <li><strong>Empty/Null:</strong> (leave blank to test null handling)</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>Debug Information</h2>
+        <div class="debug-info">
+            <p><strong>Current Issue:</strong> The Android app is getting "Logged-in user not found with ID/username: null"</p>
+            <p><strong>Root Cause:</strong> The USER_ID extra is not being passed correctly through the activity chain</p>
+            <p><strong>Fix Applied:</strong> Updated RegionalBusinessHeadPanelActivity to pass USER_ID when launching RBHEmpMasterActivity</p>
+            <p><strong>API Endpoint:</strong> https://emp.kfinone.com/mobile/api/get_rbh_active_users.php</p>
+        </div>
+    </div>
+
+    <script>
+        function testAPI() {
+            const userId = document.getElementById('userId').value.trim();
+            const status = document.getElementById('status').value;
+            
+            if (!userId) {
+                showError('Please enter a User ID or Username');
+                return;
+            }
+            
+            const apiUrl = `https://emp.kfinone.com/mobile/api/get_rbh_active_users.php?reportingTo=${encodeURIComponent(userId)}&status=${encodeURIComponent(status)}`;
+            
+            showInfo(`Testing API with User ID: "${userId}" and Status: "${status}"`);
+            showInfo(`API URL: ${apiUrl}`);
+            
+            fetch(apiUrl)
+                .then(response => {
+                    showInfo(`HTTP Status: ${response.status} ${response.statusText}`);
+                    return response.text();
+                })
+                .then(data => {
+                    try {
+                        const jsonData = JSON.parse(data);
+                        displayResults(jsonData, userId);
+                    } catch (e) {
+                        showError(`Failed to parse JSON response: ${e.message}`);
+                        showResponse('Raw Response', data);
+                    }
+                })
+                .catch(error => {
+                    showError(`Network Error: ${error.message}`);
+                });
+        }
+        
+        function testWithSampleIds() {
+            const sampleIds = ['123', '456', '789', 'admin', 'user123', 'test_user'];
+            const resultsDiv = document.getElementById('results');
+            
+            resultsDiv.innerHTML = '<h3>Testing with Sample IDs...</h3>';
+            
+            sampleIds.forEach((id, index) => {
+                setTimeout(() => {
+                    testSingleId(id);
+                }, index * 1000); // Test each ID with 1 second delay
+            });
+        }
+        
+        function testSingleId(userId) {
+            const apiUrl = `https://emp.kfinone.com/mobile/api/get_rbh_active_users.php?reportingTo=${encodeURIComponent(userId)}&status=active`;
+            
+            fetch(apiUrl)
+                .then(response => response.text())
+                .then(data => {
+                    try {
+                        const jsonData = JSON.parse(data);
+                        const resultDiv = document.createElement('div');
+                        resultDiv.className = 'container';
+                        resultDiv.innerHTML = `
+                            <h4>Test Result for User ID: "${userId}"</h4>
+                            <p><strong>Success:</strong> ${jsonData.success}</p>
+                            <p><strong>Message:</strong> ${jsonData.message}</p>
+                            <p><strong>User Count:</strong> ${jsonData.count || 0}</p>
+                            ${jsonData.debug_info ? `<p><strong>Debug:</strong> ${JSON.stringify(jsonData.debug_info, null, 2)}</p>` : ''}
+                        `;
+                        document.getElementById('results').appendChild(resultDiv);
+                    } catch (e) {
+                        console.error(`Error parsing response for ${userId}:`, e);
+                    }
+                })
+                .catch(error => {
+                    console.error(`Error testing ${userId}:`, error);
+                });
+        }
+        
+        function displayResults(data, userId) {
+            const resultsDiv = document.getElementById('results');
+            
+            if (data.success) {
+                showSuccess(`✅ API call successful! Found ${data.count || 0} users reporting to "${userId}"`);
+                
+                // Display users in a table
+                if (data.users && data.users.length > 0) {
+                    let tableHTML = '<h3>Users Found:</h3><table class="user-table"><thead><tr>';
+                    const firstUser = data.users[0];
+                    Object.keys(firstUser).forEach(key => {
+                        tableHTML += `<th>${key}</th>`;
+                    });
+                    tableHTML += '</tr></thead><tbody>';
+                    
+                    data.users.forEach(user => {
+                        tableHTML += '<tr>';
+                        Object.values(user).forEach(value => {
+                            tableHTML += `<td>${value || 'N/A'}</td>`;
+                        });
+                        tableHTML += '</tr>';
+                    });
+                    
+                    tableHTML += '</tbody></table>';
+                    resultsDiv.innerHTML += tableHTML;
+                }
+                
+                // Display debug information
+                if (data.debug_info) {
+                    resultsDiv.innerHTML += `
+                        <h3>Debug Information:</h3>
+                        <div class="debug-info">
+                            <pre>${JSON.stringify(data.debug_info, null, 2)}</pre>
+                        </div>
+                    `;
+                }
+                
+                // Display full response
+                showResponse('Full API Response', JSON.stringify(data, null, 2));
+                
+            } else {
+                showError(`❌ API call failed: ${data.message}`);
+                if (data.debug_info) {
+                    resultsDiv.innerHTML += `
+                        <div class="debug-info">
+                            <h4>Debug Info:</h4>
+                            <pre>${JSON.stringify(data.debug_info, null, 2)}</pre>
+                        </div>
+                    `;
+                }
+                showResponse('Error Response', JSON.stringify(data, null, 2));
+            }
+        }
+        
+        function showSuccess(message) {
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML += `<div class="success">${message}</div>`;
+        }
+        
+        function showError(message) {
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML += `<div class="error">${message}</div>`;
+        }
+        
+        function showInfo(message) {
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML += `<div class="info">${message}</div>`;
+        }
+        
+        function showResponse(title, content) {
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML += `
+                <h4>${title}:</h4>
+                <div class="response">${content}</div>
+            `;
+        }
+        
+        function clearResults() {
+            document.getElementById('results').innerHTML = '';
+        }
+        
+        // Auto-fill with a sample user ID for testing
+        document.getElementById('userId').value = '123';
+    </script>
+</body>
+</html>
