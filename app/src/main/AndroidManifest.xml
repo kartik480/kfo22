@@ -1041,6 +1041,12 @@
             android:parentActivityName=".RegionalBusinessHeadPanelActivity"
             android:theme="@style/FullscreenTheme" />
         <activity
+            android:name=".RegionalBusinessHeadWorkLinksActivity"
+            android:exported="false"
+            android:label="RBH Work Links"
+            android:parentActivityName=".RegionalBusinessHeadPanelActivity"
+            android:theme="@style/FullscreenTheme" />
+        <activity
             android:name=".RegionalBusinessHeadActiveEmpListActivity"
             android:exported="false"
             android:label="RBH Active Employee List"

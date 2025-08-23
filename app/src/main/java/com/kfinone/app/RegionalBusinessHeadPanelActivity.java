@@ -192,8 +192,14 @@ public class RegionalBusinessHeadPanelActivity extends AppCompatActivity {
         
         if (cardReports != null) {
             cardReports.setOnClickListener(v -> {
-                Toast.makeText(this, "Work Links - Coming Soon!", Toast.LENGTH_SHORT).show();
-                // TODO: Implement Work Links functionality
+                // Navigate to RBH Work Links Panel
+                android.util.Log.d("RBHPanel", "Work Links Card clicked! Navigating to RegionalBusinessHeadWorkLinksActivity");
+                Intent intent = new Intent(this, RegionalBusinessHeadWorkLinksActivity.class);
+                intent.putExtra("USERNAME", userName);
+                intent.putExtra("USER_ID", userId);
+                intent.putExtra("FIRST_NAME", firstName);
+                intent.putExtra("LAST_NAME", lastName);
+                startActivity(intent);
             });
         }
         
