@@ -1,5 +1,5 @@
 <?php
-// RBH Manage Icons API - Fixed version
+// Regional Business Head Data Icons API
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: POST, GET, OPTIONS');
@@ -78,13 +78,13 @@ try {
         throw new Exception("Table 'tbl_user' does not exist");
     }
     
-    $table_check = $pdo->query("SHOW TABLES LIKE 'tbl_manage_icon'");
+    $table_check = $pdo->query("SHOW TABLES LIKE 'tbl_data_icon'");
     if ($table_check->rowCount() == 0) {
-        throw new Exception("Table 'tbl_manage_icon' does not exist");
+        throw new Exception("Table 'tbl_data_icon' does not exist");
     }
     
     // Fetch user data
-    $userQuery = "SELECT manage_icons FROM tbl_user WHERE id = ?";
+    $userQuery = "SELECT data_icons FROM tbl_user WHERE id = ?";
     $userStmt = $pdo->prepare($userQuery);
     $userStmt->execute([$userId]);
     $userData = $userStmt->fetch(PDO::FETCH_ASSOC);
@@ -106,15 +106,15 @@ try {
         exit();
     }
     
-    $manageIcons = $userData['manage_icons'];
-    if (empty($manageIcons)) {
+    $dataIcons = $userData['data_icons'];
+    if (empty($dataIcons)) {
         echo json_encode([
             'status' => 'success',
-            'message' => 'No manage icons assigned to this user',
+            'message' => 'No data icons assigned to this user',
             'data' => [],
             'debug_info' => [
                 'user_id' => $userId,
-                'manage_icons' => $manageIcons,
+                'data_icons' => $dataIcons,
                 'tables_exist' => true,
                 'database_connected' => true,
                 'input_received' => $input,
@@ -124,25 +124,25 @@ try {
         exit();
     }
     
-    // Parse manage_icons - Handle both comma-separated and JSON array formats
-    $iconIds = [];
-    
-    // Check if manage_icons is a JSON array
-    if (strpos($manageIcons, '[') === 0 && strpos($manageIcons, ']') === strlen($manageIcons) - 1) {
-        // Parse as JSON array
-        $jsonArray = json_decode($manageIcons, true);
-        if (json_last_error() === JSON_ERROR_NONE && is_array($jsonArray)) {
-            $iconIds = $jsonArray;
-        } else {
-            throw new Exception("Failed to parse JSON array from manage_icons: " . json_last_error_msg());
-        }
-    } else {
-        // Parse as comma-separated string
-        $iconIds = explode(',', $manageIcons);
-        $iconIds = array_map('trim', $iconIds);
-    }
-    
-    $iconIds = array_filter($iconIds);
+               // Parse data_icons - Handle both comma-separated and JSON array formats
+           $iconIds = [];
+           
+           // Check if data_icons is a JSON array
+           if (strpos($dataIcons, '[') === 0 && strpos($dataIcons, ']') === strlen($dataIcons) - 1) {
+               // Parse as JSON array
+               $jsonArray = json_decode($dataIcons, true);
+               if (json_last_error() === JSON_ERROR_NONE && is_array($jsonArray)) {
+                   $iconIds = $jsonArray;
+               } else {
+                   throw new Exception("Failed to parse JSON array from data_icons: " . json_last_error_msg());
+               }
+           } else {
+               // Parse as comma-separated string
+               $iconIds = explode(',', $dataIcons);
+               $iconIds = array_map('trim', $iconIds);
+           }
+           
+           $iconIds = array_filter($iconIds);
     
     if (empty($iconIds)) {
         echo json_encode([
@@ -151,7 +151,7 @@ try {
             'data' => [],
             'debug_info' => [
                 'user_id' => $userId,
-                'manage_icons' => $manageIcons,
+                'data_icons' => $dataIcons,
                 'parsed_ids' => $iconIds,
                 'input_received' => $input,
                 'debug_input' => $debug_input
@@ -160,35 +160,34 @@ try {
         exit();
     }
     
-    // Debug: Log the parsed icon IDs
-    error_log("Parsed icon IDs: " . json_encode($iconIds));
-    
-    // Fetch icons from tbl_manage_icon
-    $placeholders = str_repeat('?,', count($iconIds) - 1) . '?';
-    $iconQuery = "SELECT id, icon_name, icon_url, icon_image, icon_description, status 
-                  FROM tbl_manage_icon 
-                  WHERE id IN ($placeholders) 
-                  AND (status = 'Active' OR status = 'active' OR status = 1 OR status IS NULL OR status = '')
-                  ORDER BY icon_name ASC";
-    
-    error_log("SQL Query: " . $iconQuery);
-    error_log("Icon IDs for query: " . json_encode($iconIds));
-    
-    $iconStmt = $pdo->prepare($iconQuery);
-    $iconStmt->execute($iconIds);
-    $icons = $iconStmt->fetchAll(PDO::FETCH_ASSOC);
-    
-    error_log("Icons found: " . count($icons));
+               // Debug: Log the parsed icon IDs
+           error_log("Parsed icon IDs: " . json_encode($iconIds));
+           
+           // Fetch icons from tbl_data_icon
+           $placeholders = str_repeat('?,', count($iconIds) - 1) . '?';
+           $iconQuery = "SELECT id, icon_name, icon_url, icon_image, icon_description 
+                         FROM tbl_data_icon 
+                         WHERE id IN ($placeholders) 
+                         ORDER BY icon_name ASC";
+           
+           error_log("SQL Query: " . $iconQuery);
+           error_log("Icon IDs for query: " . json_encode($iconIds));
+           
+           $iconStmt = $pdo->prepare($iconQuery);
+           $iconStmt->execute($iconIds);
+           $icons = $iconStmt->fetchAll(PDO::FETCH_ASSOC);
+           
+           error_log("Icons found: " . count($icons));
     
     // Success response
     echo json_encode([
         'status' => 'success',
-        'message' => 'Manage icons fetched successfully',
+        'message' => 'Data icons fetched successfully',
         'data' => $icons,
         'debug_info' => [
             'user_id' => $userId,
             'username' => $username,
-            'manage_icons' => $manageIcons,
+            'data_icons' => $dataIcons,
             'icon_ids' => $iconIds,
             'icons_found' => count($icons),
             'tables_exist' => true,

@@ -179,8 +179,14 @@ public class RegionalBusinessHeadPanelActivity extends AppCompatActivity {
         
         if (cardTeam != null) {
             cardTeam.setOnClickListener(v -> {
-                Toast.makeText(this, "Data Analytics - Coming Soon!", Toast.LENGTH_SHORT).show();
-                // TODO: Implement Data Analytics functionality
+                // Navigate to RBH Data Links Panel
+                android.util.Log.d("RBHPanel", "Data Links Card clicked! Navigating to RegionalBusinessHeadDataLinksActivity");
+                Intent intent = new Intent(this, RegionalBusinessHeadDataLinksActivity.class);
+                intent.putExtra("USERNAME", userName);
+                intent.putExtra("USER_ID", userId);
+                intent.putExtra("FIRST_NAME", firstName);
+                intent.putExtra("LAST_NAME", lastName);
+                startActivity(intent);
             });
         }
         
