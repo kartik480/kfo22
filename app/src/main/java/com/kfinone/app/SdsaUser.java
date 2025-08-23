@@ -36,6 +36,11 @@ public class SdsaUser {
     private String updatedAt;
     private String fullName;
     private String displayName;
+    private String password;
+    private String panImg;
+    private String aadhaarImg;
+    private String photoImg;
+    private String bankproofImg;
 
     public SdsaUser(String id, String username, String aliasName, String firstName, String lastName,
                     String phoneNumber, String emailId, String alternativeMobileNumber, String companyName,
@@ -44,7 +49,8 @@ public class SdsaUser {
                     String accountNumber, String ifscCode, String rank, String status, String reportingTo,
                     String employeeNo, String department, String designation, String branchstate,
                     String branchloaction, String bankName, String accountType, String userId,
-                    String createdBy, String createdAt, String updatedAt, String fullName, String displayName) {
+                    String createdBy, String createdAt, String updatedAt, String fullName, String displayName,
+                    String password, String panImg, String aadhaarImg, String photoImg, String bankproofImg) {
         this.id = id;
         this.username = username;
         this.aliasName = aliasName;
@@ -80,6 +86,11 @@ public class SdsaUser {
         this.updatedAt = updatedAt;
         this.fullName = fullName;
         this.displayName = displayName;
+        this.password = password;
+        this.panImg = panImg;
+        this.aadhaarImg = aadhaarImg;
+        this.photoImg = photoImg;
+        this.bankproofImg = bankproofImg;
     }
 
     // Getters
@@ -118,6 +129,11 @@ public class SdsaUser {
     public String getUpdatedAt() { return updatedAt; }
     public String getFullName() { return fullName; }
     public String getDisplayName() { return displayName; }
+    public String getPassword() { return password; }
+    public String getPanImg() { return panImg; }
+    public String getAadhaarImg() { return aadhaarImg; }
+    public String getPhotoImg() { return photoImg; }
+    public String getBankproofImg() { return bankproofImg; }
 
     // Setters
     public void setId(String id) { this.id = id; }
@@ -155,4 +171,9 @@ public class SdsaUser {
     public void setUpdatedAt(String updatedAt) { this.updatedAt = updatedAt; }
     public void setFullName(String fullName) { this.fullName = fullName; }
     public void setDisplayName(String displayName) { this.displayName = displayName; }
+    public void setPassword(String password) { this.password = password; }
+    public void setPanImg(String panImg) { this.panImg = panImg; }
+    public void setAadhaarImg(String aadhaarImg) { this.aadhaarImg = aadhaarImg; }
+    public void setPhotoImg(String photoImg) { this.photoImg = photoImg; }
+    public void setBankproofImg(String bankproofImg) { this.bankproofImg = bankproofImg; }
 } 

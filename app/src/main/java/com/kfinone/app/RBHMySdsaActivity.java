@@ -271,7 +271,12 @@ public class RBHMySdsaActivity extends AppCompatActivity {
                                         userObj.optString("created_at"),
                                         userObj.optString("updated_at"),
                                         userObj.optString("fullName"),
-                                        userObj.optString("displayName")
+                                        userObj.optString("displayName"),
+                                        userObj.optString("password"),
+                                        userObj.optString("pan_img"),
+                                        userObj.optString("aadhaar_img"),
+                                        userObj.optString("photo_img"),
+                                        userObj.optString("bankproof_img")
                                     );
                                     sdsaUserList.add(user);
                                 }
