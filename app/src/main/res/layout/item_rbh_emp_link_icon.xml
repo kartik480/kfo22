@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="4dp"
+    app:cardBackgroundColor="@color/white">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:gravity="center">
+
+        <!-- Icon Image -->
+        <ImageView
+            android:id="@+id/iconImageView"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:src="@drawable/ic_settings"
+            android:background="@drawable/blue_gradient_icon_background"
+            android:padding="16dp"
+            android:layout_marginBottom="12dp"
+            android:scaleType="centerInside" />
+
+        <!-- Icon Name -->
+        <TextView
+            android:id="@+id/iconNameText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Icon Name"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:gravity="center"
+            android:layout_marginBottom="8dp"
+            android:maxLines="2"
+            android:ellipsize="end" />
+
+        <!-- Icon Description -->
+        <TextView
+            android:id="@+id/iconDescriptionText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Icon Description"
+            android:textSize="14sp"
+            android:textColor="@color/gray"
+            android:gravity="center"
+            android:maxLines="3"
+            android:ellipsize="end" />
+
+        <!-- Click Indicator -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Tap to open"
+            android:textSize="12sp"
+            android:textColor="@color/blue_500"
+            android:layout_marginTop="8dp"
+            android:drawableStart="@drawable/ic_arrow_forward"
+            android:drawablePadding="4dp" />
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

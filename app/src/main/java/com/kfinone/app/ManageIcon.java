@@ -18,52 +18,30 @@ public class ManageIcon {
     }
 
     // Getters
-    public int getId() {
-        return id;
-    }
-
-    public String getIconName() {
-        return iconName;
-    }
-
-    public String getIconUrl() {
-        return iconUrl;
-    }
-
-    public String getIconImage() {
-        return iconImage;
-    }
-
-    public String getIconDescription() {
-        return iconDescription;
-    }
+    public int getId() { return id; }
+    public String getIconName() { return iconName; }
+    public String getIconUrl() { return iconUrl; }
+    public String getIconImage() { return iconImage; }
+    public String getIconDescription() { return iconDescription; }
+    public String getStatus() { return status; }
 
     // Setters
-    public void setId(int id) {
-        this.id = id;
-    }
+    public void setId(int id) { this.id = id; }
+    public void setIconName(String iconName) { this.iconName = iconName; }
+    public void setIconUrl(String iconUrl) { this.iconUrl = iconUrl; }
+    public void setIconImage(String iconImage) { this.iconImage = iconImage; }
+    public void setIconDescription(String iconDescription) { this.iconDescription = iconDescription; }
+    public void setStatus(String status) { this.status = status; }
 
-    public void setIconName(String iconName) {
-        this.iconName = iconName;
-    }
-
-    public void setIconUrl(String iconUrl) {
-        this.iconUrl = iconUrl;
-    }
-
-    public void setIconImage(String iconImage) {
-        this.iconImage = iconImage;
-    }
-
-    public void setIconDescription(String iconDescription) {
-        this.iconDescription = iconDescription;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
+    @Override
+    public String toString() {
+        return "ManageIcon{" +
+                "id=" + id +
+                ", iconName='" + iconName + '\'' +
+                ", iconUrl='" + iconUrl + '\'' +
+                ", iconImage='" + iconImage + '\'' +
+                ", iconDescription='" + iconDescription + '\'' +
+                ", status='" + status + '\'' +
+                '}';
     }
 } 

@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test RBH Manage Icons API</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="text"], input[type="number"] {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .response {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 15px;
+            margin-top: 20px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .error {
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+        .success {
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+        }
+        .info {
+            background-color: #d1ecf1;
+            border-color: #bee5eb;
+            color: #0c5460;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧪 Test RBH Manage Icons API</h1>
+    
+    <div class="container">
+        <h2>API Endpoint: <code>get_rbh_manage_icons.php</code></h2>
+        <p>This API fetches manage icons for RBH users based on their <code>manage_icons</code> column in <code>tbl_user</code>.</p>
+        
+        <div class="form-group">
+            <label for="userId">User ID:</label>
+            <input type="number" id="userId" placeholder="Enter user ID" value="40">
+        </div>
+        
+        <div class="form-group">
+            <label for="username">Username:</label>
+            <input type="text" id="username" placeholder="Enter username" value="test_user">
+        </div>
+        
+        <button onclick="testAPI()">🚀 Test API</button>
+        
+        <div id="response" class="response" style="display: none;"></div>
+    </div>
+
+    <div class="container">
+        <h2>📋 API Documentation</h2>
+        <h3>Endpoint:</h3>
+        <p><code>POST /api/get_rbh_manage_icons.php</code></p>
+        
+        <h3>Request Body:</h3>
+        <pre>{
+    "user_id": "40",
+    "username": "test_user"
+}</pre>
+        
+        <h3>Response Format:</h3>
+        <pre>{
+    "status": "success",
+    "message": "Manage icons fetched successfully",
+    "data": [
+        {
+            "id": "1",
+            "icon_name": "Dashboard",
+            "icon_url": "https://example.com/dashboard",
+            "icon_image": "dashboard.png",
+            "icon_description": "Access main dashboard",
+            "status": "Active"
+        }
+    ],
+    "debug_info": { ... }
+}</pre>
+        
+        <h3>Database Tables Used:</h3>
+        <ul>
+            <li><strong>tbl_user</strong> - Contains <code>manage_icons</code> column with comma-separated icon IDs</li>
+            <li><strong>tbl_manage_icon</strong> - Contains icon details (name, URL, image, description, status)</li>
+        </ul>
+        
+        <h3>How It Works:</h3>
+        <ol>
+            <li>API receives user_id and username</li>
+            <li>Fetches <code>manage_icons</code> from <code>tbl_user</code> for the given user</li>
+            <li>Parses comma-separated icon IDs</li>
+            <li>Fetches icon details from <code>tbl_manage_icon</code> using those IDs</li>
+            <li>Returns only active icons with full details</li>
+        </ol>
+    </div>
+
+    <div class="container">
+        <h2>🔍 Expected Database Structure</h2>
+        
+        <h3>tbl_user table:</h3>
+        <pre>id | username | manage_icons | ... other columns
+1  | user1    | 1,2,3        | ...
+2  | user2    | 2,4,5        | ...
+3  | user3    | 1,3,6        | ...</pre>
+        
+        <h3>tbl_manage_icon table:</h3>
+        <pre>id | icon_name    | icon_url                    | icon_image    | icon_description        | status
+1  | Dashboard    | https://example.com/dash      | dashboard.png | Access main dashboard   | Active
+2  | Reports      | https://example.com/reports   | reports.png   | View reports            | Active
+3  | Settings     | https://example.com/settings  | settings.png  | Manage settings         | Active
+4  | Users        | https://example.com/users     | users.png     | Manage users            | Active
+5  | Analytics    | https://example.com/analytics | analytics.png | View analytics          | Active
+6  | Documents    | https://example.com/docs      | docs.png      | Access documents        | Active</pre>
+    </div>
+
+    <script>
+        async function testAPI() {
+            const userId = document.getElementById('userId').value;
+            const username = document.getElementById('username').value;
+            const responseDiv = document.getElementById('response');
+            
+            if (!userId) {
+                alert('Please enter a User ID');
+                return;
+            }
+            
+            const requestBody = {
+                user_id: userId,
+                username: username
+            };
+            
+            try {
+                responseDiv.style.display = 'block';
+                responseDiv.className = 'response info';
+                responseDiv.textContent = '🔄 Testing API... Please wait...';
+                
+                const response = await fetch('api/get_rbh_manage_icons.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(requestBody)
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    responseDiv.className = 'response success';
+                    responseDiv.textContent = '✅ API Response:\n\n' + JSON.stringify(data, null, 2);
+                } else {
+                    responseDiv.className = 'response error';
+                    responseDiv.textContent = '❌ API Error:\n\n' + JSON.stringify(data, null, 2);
+                }
+                
+            } catch (error) {
+                responseDiv.className = 'response error';
+                responseDiv.textContent = '❌ Network Error:\n\n' + error.message;
+            }
+        }
+        
+        // Test with sample data on page load
+        window.onload = function() {
+            // Auto-fill with sample data for testing
+            document.getElementById('userId').value = '40';
+            document.getElementById('username').value = 'test_user';
+        };
+    </script>
+</body>
+</html>

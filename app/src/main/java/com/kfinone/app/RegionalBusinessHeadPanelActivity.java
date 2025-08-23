@@ -23,7 +23,7 @@ public class RegionalBusinessHeadPanelActivity extends AppCompatActivity {
     // Action card views
     private View cardTotalEmp, cardTotalSdsa, cardTotalPartner, cardTotalAgent, cardTeam, cardReports, cardAnalytics, cardStrategy, 
                  cardPerformance, cardGrowth, cardInnovation, cardPartnerships, 
-                 cardMarketAnalysis, cardCompliance, cardDocumentCheckList, cardInsurance;
+                 cardMarketAnalysis, cardCompliance, cardDocumentCheckList, cardInsurance, cardPortfolio;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,6 +71,7 @@ public class RegionalBusinessHeadPanelActivity extends AppCompatActivity {
         cardCompliance = findViewById(R.id.cardCompliance);
         cardDocumentCheckList = findViewById(R.id.cardDocumentCheckList);
         cardInsurance = findViewById(R.id.cardInsurance);
+        cardPortfolio = findViewById(R.id.cardPortfolio);
         
         notificationIcon = findViewById(R.id.notificationIcon);
         profileIcon = findViewById(R.id.profileIcon);
@@ -94,6 +95,7 @@ public class RegionalBusinessHeadPanelActivity extends AppCompatActivity {
         android.util.Log.d("RBHPanel", "cardCompliance: " + (cardCompliance != null ? "FOUND" : "NULL"));
         android.util.Log.d("RBHPanel", "cardDocumentCheckList: " + (cardDocumentCheckList != null ? "FOUND" : "NULL"));
         android.util.Log.d("RBHPanel", "cardInsurance: " + (cardInsurance != null ? "FOUND" : "NULL"));
+        android.util.Log.d("RBHPanel", "cardPortfolio: " + (cardPortfolio != null ? "FOUND" : "NULL"));
     }
 
     private void setupClickListeners() {
@@ -158,6 +160,19 @@ public class RegionalBusinessHeadPanelActivity extends AppCompatActivity {
                 Intent intent = new Intent(this, RBHMyAgentListActivity.class);
                 intent.putExtra("USERNAME", userName);
                 intent.putExtra("USER_ID", userId);
+                startActivity(intent);
+            });
+        }
+        
+        if (cardPortfolio != null) {
+            cardPortfolio.setOnClickListener(v -> {
+                // Navigate to RBH Emp Links Panel
+                android.util.Log.d("RBHPanel", "Emp Links Card clicked! Navigating to RBHEmpLinksActivity");
+                Intent intent = new Intent(this, RBHEmpLinksActivity.class);
+                intent.putExtra("USERNAME", userName);
+                intent.putExtra("USER_ID", userId);
+                intent.putExtra("FIRST_NAME", firstName);
+                intent.putExtra("LAST_NAME", lastName);
                 startActivity(intent);
             });
         }
