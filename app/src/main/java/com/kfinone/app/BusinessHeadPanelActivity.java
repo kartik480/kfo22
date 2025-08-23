@@ -246,8 +246,12 @@ public class BusinessHeadPanelActivity extends AppCompatActivity {
         
         // Work Links
         cardReportsInsights.setOnClickListener(v -> {
-            Toast.makeText(this, "Work Links - Coming Soon!", Toast.LENGTH_SHORT).show();
-            // TODO: Implement Work Links functionality
+            Intent intent = new Intent(BusinessHeadPanelActivity.this, BusinessHeadWorkLinksActivity.class);
+            if (userId != null) intent.putExtra("USER_ID", userId);
+            if (username != null) intent.putExtra("USERNAME", username);
+            if (firstName != null) intent.putExtra("FIRST_NAME", firstName);
+            if (lastName != null) intent.putExtra("LAST_NAME", lastName);
+            startActivity(intent);
         });
         
         // Performance Tracking (Emp Master)
