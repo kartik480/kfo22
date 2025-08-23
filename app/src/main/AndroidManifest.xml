@@ -859,6 +859,12 @@
                       android:theme="@style/FullscreenTheme" />
                       
                   <activity
+                      android:name=".BusinessHeadMySdsaUsersActivity"
+                      android:exported="false"
+                      android:label="Business Head My SDSA Users"
+                      android:theme="@style/FullscreenTheme" />
+                      
+                  <activity
                       android:name=".BusinessHeadMySdsaActivity"
                       android:exported="false"
                       android:label="Business Head My SDSA"

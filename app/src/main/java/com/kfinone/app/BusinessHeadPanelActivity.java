@@ -3,6 +3,8 @@ package com.kfinone.app;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -24,12 +26,17 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
+import com.android.volley.DefaultRetryPolicy;
 
 public class BusinessHeadPanelActivity extends AppCompatActivity {
     private static final String TAG = "BusinessHeadPanel";
@@ -75,14 +82,16 @@ public class BusinessHeadPanelActivity extends AppCompatActivity {
     private LinearLayout cardBudgetManagement;
     
     private ExecutorService executor = Executors.newSingleThreadExecutor();
+    private RequestQueue requestQueue;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        
         setContentView(R.layout.activity_business_head_panel);
         
-        // Check for app updates
-        checkForAppUpdates();
+        // Initialize Volley queue early for better performance
+        requestQueue = Volley.newRequestQueue(this);
         
         // Get user data from intent
         Intent intent = getIntent();
@@ -102,11 +111,21 @@ public class BusinessHeadPanelActivity extends AppCompatActivity {
         
         // Set initial values to 0
         setInitialStats();
-        loadBusinessHeadData();
+        
+        // Load data asynchronously to prevent ANR
+        new Handler(Looper.getMainLooper()).postDelayed(() -> {
+            loadBusinessHeadData();
+        }, 100); // Small delay to ensure UI is ready
+        
         updateWelcomeText();
         
         // Setup stat card click listeners
         setupStatCardClickListeners();
+        
+        // Check for app updates with delay to prevent blocking UI
+        new Handler(Looper.getMainLooper()).postDelayed(() -> {
+            checkForAppUpdates();
+        }, 500);
     }
     
     private void initializeViews() {
@@ -265,9 +284,15 @@ public class BusinessHeadPanelActivity extends AppCompatActivity {
             startActivity(intent);
         });
         
-        // Strategic Planning
+        // Strategic Planning (My SDSA Users)
         cardStrategicPlanning.setOnClickListener(v -> {
-            showToast("Strategic Planning - Coming Soon!");
+            Intent intent = new Intent(BusinessHeadPanelActivity.this, BusinessHeadMySdsaUsersActivity.class);
+            // Pass user data
+            if (userId != null) intent.putExtra("USER_ID", userId);
+            if (username != null) intent.putExtra("USERNAME", username);
+            if (firstName != null) intent.putExtra("FIRST_NAME", firstName);
+            if (lastName != null) intent.putExtra("LAST_NAME", lastName);
+            startActivity(intent);
         });
         
         // Resource Management (Partner)
@@ -385,69 +410,70 @@ public class BusinessHeadPanelActivity extends AppCompatActivity {
     }
     
     private void loadBusinessHeadData() {
-        executor.execute(() -> {
-            try {
-                String url = BASE_URL + "get_business_head_users.php";
-                URL apiUrl = new URL(url);
-                HttpURLConnection connection = (HttpURLConnection) apiUrl.openConnection();
-                connection.setRequestMethod("GET");
-                connection.setConnectTimeout(10000);
-                connection.setReadTimeout(10000);
-                
-                int responseCode = connection.getResponseCode();
-                
-                if (responseCode == HttpURLConnection.HTTP_OK) {
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-                    StringBuilder response = new StringBuilder();
-                    String line;
-                    while ((line = reader.readLine()) != null) {
-                        response.append(line);
-                    }
-                    reader.close();
-                    
-                    JSONObject jsonResponse = new JSONObject(response.toString());
-                    
-                    if (jsonResponse.getString("status").equals("success")) {
-                        // Check if statistics field exists
-                        if (jsonResponse.has("statistics")) {
-                            JSONObject statistics = jsonResponse.getJSONObject("statistics");
-                            
-                            final int totalBusinessHeads = statistics.optInt("total_business_head_users", 0);
-                            final int activeBusinessHeads = statistics.optInt("active_business_head_users", 0);
-                            final int totalTeamMembers = statistics.optInt("total_team_members", 0);
-                            final int activeTeamMembers = statistics.optInt("active_team_members", 0);
-                            final int totalSdsaUsers = statistics.optInt("total_sdsa_users", 0);
-                            final int totalPartnerUsers = statistics.optInt("total_partner_users", 0);
-                            final int totalAgentUsers = statistics.optInt("total_agent_users", 0);
-                            
-                            runOnUiThread(() -> {
+        // Use Volley for better performance instead of HttpURLConnection
+        String url = BASE_URL + "get_business_head_users.php";
+        
+        JsonObjectRequest jsonRequest = new JsonObjectRequest(
+            Request.Method.GET,
+            url,
+            null,
+            new Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject jsonResponse) {
+                    try {
+                        if (jsonResponse.getString("status").equals("success")) {
+                            // Check if statistics field exists
+                            if (jsonResponse.has("statistics")) {
+                                JSONObject statistics = jsonResponse.getJSONObject("statistics");
+                                
+                                final int totalBusinessHeads = statistics.optInt("total_business_head_users", 0);
+                                final int activeBusinessHeads = statistics.optInt("active_business_head_users", 0);
+                                final int totalTeamMembers = statistics.optInt("total_team_members", 0);
+                                final int activeTeamMembers = statistics.optInt("active_team_members", 0);
+                                final int totalSdsaUsers = statistics.optInt("total_sdsa_users", 0);
+                                final int totalPartnerUsers = statistics.optInt("total_partner_users", 0);
+                                final int totalAgentUsers = statistics.optInt("total_agent_users", 0);
+                                
                                 updateStatsWithRealData(totalTeamMembers, totalSdsaUsers, totalPartnerUsers, 0, totalAgentUsers);
-                            });
-                        } else {
-                            // If no statistics, use default values
-                            runOnUiThread(() -> {
+                            } else {
+                                // If no statistics, use default values
                                 updateStats(0, 0, 0, 0);
                                 Log.w(TAG, "No statistics field found in API response");
-                            });
-                        }
-                    } else {
-                        runOnUiThread(() -> {
+                            }
+                        } else {
                             showError("Failed to load data: " + jsonResponse.optString("message", "Unknown error"));
-                        });
+                        }
+                    } catch (JSONException e) {
+                        Log.e(TAG, "Error parsing JSON response", e);
+                        showError("Error parsing response: " + e.getMessage());
                     }
-                } else {
-                    runOnUiThread(() -> {
-                        showError("Server error: " + responseCode);
-                    });
                 }
-                
-            } catch (Exception e) {
-                Log.e(TAG, "Error loading business head data", e);
-                runOnUiThread(() -> {
-                    showError("Network error: " + e.getMessage());
-                });
+            },
+            new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Log.e(TAG, "Volley error loading business head data", error);
+                    String errorMessage = "Network error: " + error.getMessage();
+                    if (error.networkResponse != null) {
+                        errorMessage += " (Status: " + error.networkResponse.statusCode + ")";
+                    }
+                    showError(errorMessage);
+                }
             }
-        });
+        );
+
+        // Add timeout and retry policy for better performance
+        jsonRequest.setRetryPolicy(new DefaultRetryPolicy(
+            10000, // 10 seconds timeout
+            1,      // 1 retry
+            1.0f    // No backoff multiplier
+        ));
+
+        // Add to Volley queue
+        if (requestQueue == null) {
+            requestQueue = Volley.newRequestQueue(this);
+        }
+        requestQueue.add(jsonRequest);
     }
     
     private void updateStats(int totalBusinessHeads, int activeBusinessHeads, int totalTeamMembers, int activeTeamMembers) {
@@ -559,7 +585,44 @@ public class BusinessHeadPanelActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        executor.shutdown();
+        
+        // Clean up resources to prevent memory leaks
+        if (executor != null && !executor.isShutdown()) {
+            executor.shutdown();
+            try {
+                if (!executor.awaitTermination(800, TimeUnit.MILLISECONDS)) {
+                    executor.shutdownNow();
+                }
+            } catch (InterruptedException e) {
+                executor.shutdownNow();
+            }
+        }
+        
+        if (requestQueue != null) {
+            requestQueue.cancelAll("BusinessHeadPanelActivity");
+        }
+        
+        // Clear references to prevent memory leaks
+        requestQueue = null;
+        executor = null;
+    }
+    
+    @Override
+    protected void onPause() {
+        super.onPause();
+        // Cancel ongoing network requests when activity is paused
+        if (requestQueue != null) {
+            requestQueue.cancelAll("BusinessHeadPanelActivity");
+        }
+    }
+    
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Reinitialize Volley queue if needed
+        if (requestQueue == null) {
+            requestQueue = Volley.newRequestQueue(this);
+        }
     }
     
     @Override

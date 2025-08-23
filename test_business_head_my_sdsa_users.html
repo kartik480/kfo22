@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Business Head My SDSA Users API</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f4f7f6;
+            color: #333;
+        }
+        .container {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .response {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            font-family: monospace;
+            font-size: 12px;
+        }
+        .success {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        .info {
+            background-color: #d1ecf1;
+            border: 1px solid #bee5eb;
+            color: #0c5460;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Test Business Head My SDSA Users API</h1>
+        <p>This page tests the <code>get_business_head_my_sdsa_users.php</code> API endpoint.</p>
+        
+        <div class="form-group">
+            <label for="userId">User ID:</label>
+            <input type="text" id="userId" placeholder="Enter user ID (e.g., 41, 40, 32)">
+        </div>
+        
+        <div class="form-group">
+            <label for="username">Username:</label>
+            <input type="text" id="username" placeholder="Enter username (e.g., krajeshk, 94000)">
+        </div>
+        
+        <div class="form-group">
+            <button onclick="testWithUserId()">Test with User ID</button>
+            <button onclick="testWithUsername()">Test with Username</button>
+            <button onclick="clearResponse()">Clear Response</button>
+        </div>
+        
+        <div id="response" class="response info" style="display: none;">
+            Response will appear here...
+        </div>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'https://emp.kfinone.com/mobile/api';
+        
+        function showResponse(content, type = 'info') {
+            const responseDiv = document.getElementById('response');
+            responseDiv.textContent = content;
+            responseDiv.className = `response ${type}`;
+            responseDiv.style.display = 'block';
+        }
+        
+        function clearResponse() {
+            document.getElementById('response').style.display = 'none';
+        }
+        
+        function testWithUserId() {
+            const userId = document.getElementById('userId').value.trim();
+            if (!userId) {
+                showResponse('Please enter a User ID', 'error');
+                return;
+            }
+            
+            showResponse('Testing with User ID: ' + userId + '\n\nMaking API call...', 'info');
+            
+            const requestBody = {
+                user_id: userId
+            };
+            
+            fetch(`${API_BASE_URL}/get_business_head_my_sdsa_users.php`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(requestBody)
+            })
+            .then(response => {
+                showResponse(`Response Status: ${response.status} ${response.statusText}\n\nFetching response body...`, 'info');
+                return response.text();
+            })
+            .then(data => {
+                try {
+                    const jsonData = JSON.parse(data);
+                    showResponse(`✅ Success!\n\nResponse:\n${JSON.stringify(jsonData, null, 2)}`, 'success');
+                } catch (e) {
+                    showResponse(`⚠️ Response received but not valid JSON:\n\n${data}`, 'error');
+                }
+            })
+            .catch(error => {
+                showResponse(`❌ Error: ${error.message}`, 'error');
+            });
+        }
+        
+        function testWithUsername() {
+            const username = document.getElementById('username').value.trim();
+            if (!username) {
+                showResponse('Please enter a Username', 'error');
+                return;
+            }
+            
+            showResponse('Testing with Username: ' + username + '\n\nMaking API call...', 'info');
+            
+            const requestBody = {
+                username: username
+            };
+            
+            fetch(`${API_BASE_URL}/get_business_head_my_sdsa_users.php`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(requestBody)
+            })
+            .then(response => {
+                showResponse(`Response Status: ${response.status} ${response.statusText}\n\nFetching response body...`, 'info');
+                return response.text();
+            })
+            .then(data => {
+                try {
+                    const jsonData = JSON.parse(data);
+                    showResponse(`✅ Success!\n\nResponse:\n${JSON.stringify(jsonData, null, 2)}`, 'success');
+                } catch (e) {
+                    showResponse(`⚠️ Response received but not valid JSON:\n\n${data}`, 'error');
+                }
+            })
+            .catch(error => {
+                showResponse(`❌ Error: ${error.message}`, 'error');
+            });
+        }
+        
+        // Pre-fill with some test values
+        document.getElementById('userId').value = '41';
+        document.getElementById('username').value = '94000';
+    </script>
+</body>
+</html>

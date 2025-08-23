@@ -2,6 +2,8 @@ package com.kfinone.app;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
@@ -11,17 +13,18 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.card.MaterialCardView;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
+import com.android.volley.DefaultRetryPolicy;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
 
 public class BHPayoutTeamActivity extends AppCompatActivity {
     private static final String TAG = "BHPayoutTeamActivity";
@@ -34,7 +37,7 @@ public class BHPayoutTeamActivity extends AppCompatActivity {
     
     private List<PayoutType> payoutTypes = new ArrayList<>();
     private PayoutTypeAdapter payoutTypeAdapter;
-    private ExecutorService executor = Executors.newSingleThreadExecutor();
+    private RequestQueue requestQueue;
     
     // User data
     private String userName;
@@ -45,6 +48,9 @@ public class BHPayoutTeamActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bh_payout_team);
+        
+        // Initialize Volley queue early for better performance
+        requestQueue = Volley.newRequestQueue(this);
         
         // Get user data from intent
         Intent intent = getIntent();
@@ -75,14 +81,34 @@ public class BHPayoutTeamActivity extends AppCompatActivity {
         initializeViews();
         setupClickListeners();
         updateWelcomeMessage();
+        
+        // Load data immediately with optimized Volley
         loadPayoutTypes();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (executor != null && !executor.isShutdown()) {
-            executor.shutdown();
+        if (requestQueue != null) {
+            requestQueue.cancelAll("BHPayoutTeamActivity");
+        }
+    }
+    
+    @Override
+    protected void onPause() {
+        super.onPause();
+        // Cancel ongoing network requests when activity is paused
+        if (requestQueue != null) {
+            requestQueue.cancelAll("BHPayoutTeamActivity");
+        }
+    }
+    
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Reinitialize Volley queue if needed
+        if (requestQueue == null) {
+            requestQueue = Volley.newRequestQueue(this);
         }
     }
 
@@ -123,66 +149,86 @@ public class BHPayoutTeamActivity extends AppCompatActivity {
     }
     
     private void loadPayoutTypes() {
-        executor.execute(() -> {
-            try {
-                String url = BASE_URL + "get_cbo_payout_team.php?designation=" + userDesignation + "&user_id=" + userId;
-                Log.d(TAG, "Fetching payout types from: " + url);
-                
-                OkHttpClient client = new OkHttpClient();
-                Request request = new Request.Builder()
-                    .url(url)
-                    .get()
-                    .build();
-                
-                Response response = client.newCall(request).execute();
-                String responseBody = response.body().string();
-                Log.d(TAG, "API Response: " + responseBody);
-                
-                JSONObject jsonResponse = new JSONObject(responseBody);
-                String status = jsonResponse.getString("status");
-                
-                if ("success".equals(status)) {
-                    JSONArray dataArray = jsonResponse.getJSONArray("data");
-                    List<PayoutType> newPayoutTypes = new ArrayList<>();
-                    
-                    for (int i = 0; i < dataArray.length(); i++) {
-                        JSONObject payoutType = dataArray.getJSONObject(i);
-                        int id = payoutType.getInt("id");
-                        String name = payoutType.getString("payout_name");
-                        newPayoutTypes.add(new PayoutType(id, name));
-                    }
-                    
-                    runOnUiThread(() -> {
-                        payoutTypes.clear();
-                        payoutTypes.addAll(newPayoutTypes);
-                        payoutTypeAdapter.notifyDataSetChanged();
+        // Use the simple working endpoint temporarily
+        String url = BASE_URL + "get_business_head_payout_types_simple_working.php";
+        Log.d(TAG, "Fetching payout types from: " + url);
+        
+        // Simple GET request - no body needed for now
+        JsonObjectRequest jsonRequest = new JsonObjectRequest(
+            Request.Method.GET,
+            url,
+            null,
+            new Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject response) {
+                    Log.d(TAG, "API Response: " + response.toString());
+                    try {
+                        String status = response.getString("status");
                         
-                        if (payoutTypes.isEmpty()) {
+                        if ("success".equals(status)) {
+                            JSONArray dataArray = response.getJSONArray("data");
+                            List<PayoutType> newPayoutTypes = new ArrayList<>();
+                            
+                            for (int i = 0; i < dataArray.length(); i++) {
+                                JSONObject payoutType = dataArray.getJSONObject(i);
+                                int id = payoutType.getInt("id");
+                                String name = payoutType.getString("payout_name");
+                                newPayoutTypes.add(new PayoutType(id, name));
+                            }
+                            
+                            // Update UI on main thread
+                            payoutTypes.clear();
+                            payoutTypes.addAll(newPayoutTypes);
+                            payoutTypeAdapter.notifyDataSetChanged();
+                            
+                            if (payoutTypes.isEmpty()) {
+                                noDataCard.setVisibility(View.VISIBLE);
+                                payoutTypesRecyclerView.setVisibility(View.GONE);
+                            } else {
+                                noDataCard.setVisibility(View.GONE);
+                                payoutTypesRecyclerView.setVisibility(View.VISIBLE);
+                            }
+                            
+                        } else {
+                            String message = response.getString("message");
+                            Toast.makeText(BHPayoutTeamActivity.this, "Error: " + message, Toast.LENGTH_LONG).show();
                             noDataCard.setVisibility(View.VISIBLE);
                             payoutTypesRecyclerView.setVisibility(View.GONE);
-                        } else {
-                            noDataCard.setVisibility(View.GONE);
-                            payoutTypesRecyclerView.setVisibility(View.VISIBLE);
                         }
-                    });
-                    
-                } else {
-                    String message = jsonResponse.getString("message");
-                    runOnUiThread(() -> {
-                        Toast.makeText(this, "Error: " + message, Toast.LENGTH_LONG).show();
+                    } catch (JSONException e) {
+                        Log.e(TAG, "Error parsing JSON response", e);
+                        Toast.makeText(BHPayoutTeamActivity.this, "Error parsing data: " + e.getMessage(), Toast.LENGTH_LONG).show();
                         noDataCard.setVisibility(View.VISIBLE);
                         payoutTypesRecyclerView.setVisibility(View.GONE);
-                    });
+                    }
                 }
-                
-            } catch (IOException | JSONException e) {
-                Log.e(TAG, "Error loading payout types", e);
-                runOnUiThread(() -> {
-                    Toast.makeText(this, "Network error: " + e.getMessage(), Toast.LENGTH_LONG).show();
+            },
+            new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Log.e(TAG, "Volley Error loading payout types", error);
+                    String errorMessage = "Network error: " + error.getMessage();
+                    if (error.networkResponse != null) {
+                        errorMessage += " (Status: " + error.networkResponse.statusCode + ")";
+                    }
+                    Toast.makeText(BHPayoutTeamActivity.this, errorMessage, Toast.LENGTH_LONG).show();
                     noDataCard.setVisibility(View.VISIBLE);
                     payoutTypesRecyclerView.setVisibility(View.GONE);
-                });
+                }
             }
-        });
+        );
+        
+        // Add aggressive timeout and retry policy for maximum speed
+        jsonRequest.setRetryPolicy(new DefaultRetryPolicy(
+            5000,  // 5 seconds timeout - much faster!
+            0,      // No retries - fail fast
+            1.0f    // No backoff multiplier
+        ));
+        
+        // Add to Volley queue
+        if (requestQueue != null) {
+            requestQueue.add(jsonRequest);
+        }
     }
 }
+

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Simple Payout Endpoint</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
+        .container { background-color: #ffffff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        button { background-color: #007bff; color: white; padding: 10px 15px; border: none; border-radius: 4px; cursor: pointer; margin: 10px 0; }
+        .response { margin-top: 20px; padding: 15px; border-radius: 8px; white-space: pre-wrap; font-family: monospace; font-size: 12px; }
+        .success { background-color: #d4edda; border: 1px solid #c3e6cb; color: #155724; }
+        .error { background-color: #f8d7da; border: 1px solid #f5c6cb; color: #721c24; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Test Simple Payout Endpoint</h1>
+        <p>Testing: <code>get_business_head_payout_types_simple_working.php</code></p>
+        
+        <button onclick="testEndpoint()">Test Simple Endpoint</button>
+        
+        <div id="response" class="response" style="display: none;">
+            Response will appear here...
+        </div>
+    </div>
+
+    <script>
+        function testEndpoint() {
+            const responseDiv = document.getElementById('response');
+            responseDiv.textContent = 'Testing endpoint...';
+            responseDiv.className = 'response';
+            responseDiv.style.display = 'block';
+            
+            fetch('https://emp.kfinone.com/mobile/api/get_business_head_payout_types_simple_working.php', {
+                method: 'GET'
+            })
+            .then(response => {
+                responseDiv.textContent = `Status: ${response.status} ${response.statusText}\n\nFetching response...`;
+                return response.text();
+            })
+            .then(data => {
+                try {
+                    const jsonData = JSON.parse(data);
+                    responseDiv.textContent = `✅ Success!\n\nResponse:\n${JSON.stringify(jsonData, null, 2)}`;
+                    responseDiv.className = 'response success';
+                } catch (e) {
+                    responseDiv.textContent = `⚠️ Response received but not valid JSON:\n\n${data}`;
+                    responseDiv.className = 'response error';
+                }
+            })
+            .catch(error => {
+                responseDiv.textContent = `❌ Error: ${error.message}`;
+                responseDiv.className = 'response error';
+            });
+        }
+    </script>
+</body>
+</html>
