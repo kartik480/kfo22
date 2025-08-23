@@ -7,7 +7,7 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            max-width: 1200px;
+            max-width: 800px;
             margin: 0 auto;
             padding: 20px;
             background-color: #f5f5f5;
@@ -16,7 +16,7 @@
             background: white;
             padding: 20px;
             border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
         .form-group {
             margin-bottom: 15px;
@@ -28,10 +28,10 @@
         }
         input[type="text"] {
             width: 100%;
-            padding: 10px;
+            padding: 8px;
             border: 1px solid #ddd;
             border-radius: 4px;
-            font-size: 14px;
+            box-sizing: border-box;
         }
         button {
             background-color: #007bff;
@@ -40,20 +40,18 @@
             border: none;
             border-radius: 4px;
             cursor: pointer;
-            font-size: 14px;
+            margin-right: 10px;
         }
         button:hover {
             background-color: #0056b3;
         }
-        .result {
+        .response {
             margin-top: 20px;
             padding: 15px;
             border-radius: 4px;
             white-space: pre-wrap;
             font-family: monospace;
             font-size: 12px;
-            max-height: 500px;
-            overflow-y: auto;
         }
         .success {
             background-color: #d4edda;
@@ -65,180 +63,130 @@
             border: 1px solid #f5c6cb;
             color: #721c24;
         }
-        .loading {
-            background-color: #fff3cd;
-            border: 1px solid #ffeaa7;
-            color: #856404;
-        }
-        .stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-            margin: 20px 0;
-        }
-        .stat-card {
-            background: #f8f9fa;
-            padding: 15px;
-            border-radius: 6px;
-            text-align: center;
-            border-left: 4px solid #007bff;
-        }
-        .stat-number {
-            font-size: 24px;
-            font-weight: bold;
-            color: #007bff;
-        }
-        .stat-label {
-            font-size: 12px;
-            color: #6c757d;
-            margin-top: 5px;
-        }
-        .user-list {
-            margin-top: 20px;
-        }
-        .user-item {
-            background: #f8f9fa;
-            padding: 10px;
-            margin-bottom: 10px;
-            border-radius: 4px;
-            border-left: 3px solid #28a745;
-        }
-        .user-name {
-            font-weight: bold;
-            color: #333;
-        }
-        .user-details {
-            font-size: 12px;
-            color: #666;
-            margin-top: 5px;
+        .info {
+            background-color: #d1ecf1;
+            border: 1px solid #bee5eb;
+            color: #0c5460;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Test Business Head Active Employee List API</h1>
-        <p>This API fetches all users who are reporting to a particular Business Head designated user.</p>
+        <h1>Test Business Head Employee List API</h1>
+        <p>This page tests the <code>get_business_head_active_emp_list.php</code> API endpoint.</p>
         
         <div class="form-group">
-            <label for="username">Business Head Username:</label>
-            <input type="text" id="username" placeholder="Enter Business Head username" value="">
+            <label for="userId">User ID:</label>
+            <input type="text" id="userId" placeholder="Enter user ID (e.g., 1, 40, 32)">
         </div>
         
-        <button onclick="testAPI()">Fetch Active Employee List</button>
+        <div class="form-group">
+            <label for="username">Username:</label>
+            <input type="text" id="username" placeholder="Enter username (e.g., krajeshk, 93000)">
+        </div>
         
-        <div id="result" class="result" style="display: none;"></div>
+        <div class="form-group">
+            <button onclick="testWithUserId()">Test with User ID</button>
+            <button onclick="testWithUsername()">Test with Username</button>
+            <button onclick="clearResponse()">Clear Response</button>
+        </div>
         
-        <div id="stats" class="stats" style="display: none;"></div>
-        
-        <div id="userList" class="user-list" style="display: none;"></div>
+        <div id="response" class="response info" style="display: none;">
+            Response will appear here...
+        </div>
     </div>
 
     <script>
-        async function testAPI() {
-            const username = document.getElementById('username').value.trim();
-            const resultDiv = document.getElementById('result');
-            const statsDiv = document.getElementById('stats');
-            const userListDiv = document.getElementById('userList');
-            
-            if (!username) {
-                alert('Please enter a Business Head username');
+        const API_BASE_URL = 'https://emp.kfinone.com/mobile/api';
+        
+        function showResponse(content, type = 'info') {
+            const responseDiv = document.getElementById('response');
+            responseDiv.textContent = content;
+            responseDiv.className = `response ${type}`;
+            responseDiv.style.display = 'block';
+        }
+        
+        function clearResponse() {
+            document.getElementById('response').style.display = 'none';
+        }
+        
+        function testWithUserId() {
+            const userId = document.getElementById('userId').value.trim();
+            if (!userId) {
+                showResponse('Please enter a User ID', 'error');
                 return;
             }
             
-            // Show loading
-            resultDiv.style.display = 'block';
-            resultDiv.className = 'result loading';
-            resultDiv.textContent = 'Loading...';
-            statsDiv.style.display = 'none';
-            userListDiv.style.display = 'none';
+            showResponse('Testing with User ID: ' + userId + '\n\nMaking API call...', 'info');
             
-            try {
-                const response = await fetch(`api/get_business_head_active_emp_list.php?username=${encodeURIComponent(username)}`);
-                const data = await response.json();
-                
-                // Display raw JSON result
-                resultDiv.className = data.success ? 'result success' : 'result error';
-                resultDiv.textContent = JSON.stringify(data, null, 2);
-                
-                if (data.success) {
-                    // Display statistics
-                    displayStats(data.statistics, data.business_head_info);
-                    
-                    // Display user list
-                    displayUserList(data.reporting_users);
+            const requestBody = {
+                user_id: userId
+            };
+            
+            fetch(`${API_BASE_URL}/get_business_head_active_emp_list.php`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(requestBody)
+            })
+            .then(response => {
+                showResponse(`Response Status: ${response.status} ${response.statusText}\n\nFetching response body...`, 'info');
+                return response.text();
+            })
+            .then(data => {
+                try {
+                    const jsonData = JSON.parse(data);
+                    showResponse(`✅ Success!\n\nResponse:\n${JSON.stringify(jsonData, null, 2)}`, 'success');
+                } catch (e) {
+                    showResponse(`⚠️ Response received but not valid JSON:\n\n${data}`, 'error');
                 }
-                
-            } catch (error) {
-                resultDiv.className = 'result error';
-                resultDiv.textContent = `Error: ${error.message}`;
-            }
+            })
+            .catch(error => {
+                showResponse(`❌ Error: ${error.message}`, 'error');
+            });
         }
         
-        function displayStats(statistics, businessHeadInfo) {
-            const statsDiv = document.getElementById('stats');
-            statsDiv.style.display = 'block';
-            
-            statsDiv.innerHTML = `
-                <div class="stat-card">
-                    <div class="stat-number">${businessHeadInfo.full_name}</div>
-                    <div class="stat-label">Business Head</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number">${statistics.total_users}</div>
-                    <div class="stat-label">Total Users</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number">${statistics.active_users}</div>
-                    <div class="stat-label">Active Users</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number">${statistics.sdsa_count}</div>
-                    <div class="stat-label">SDSA Users</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number">${statistics.partner_count}</div>
-                    <div class="stat-label">Partner Users</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number">${statistics.agent_count}</div>
-                    <div class="stat-label">Agent Users</div>
-                </div>
-            `;
-        }
-        
-        function displayUserList(users) {
-            const userListDiv = document.getElementById('userList');
-            userListDiv.style.display = 'block';
-            
-            if (users.length === 0) {
-                userListDiv.innerHTML = '<p>No users found reporting to this Business Head.</p>';
+        function testWithUsername() {
+            const username = document.getElementById('username').value.trim();
+            if (!username) {
+                showResponse('Please enter a Username', 'error');
                 return;
             }
             
-            let html = '<h3>Users Reporting to Business Head:</h3>';
-            users.forEach(user => {
-                html += `
-                    <div class="user-item">
-                        <div class="user-name">${user.fullName}</div>
-                        <div class="user-details">
-                            <strong>Username:</strong> ${user.username} | 
-                            <strong>Designation:</strong> ${user.designation_name} | 
-                            <strong>Email:</strong> ${user.email_id || 'N/A'} | 
-                            <strong>Mobile:</strong> ${user.mobile || 'N/A'} | 
-                            <strong>Employee No:</strong> ${user.employee_no || 'N/A'}
-                        </div>
-                    </div>
-                `;
-            });
+            showResponse('Testing with Username: ' + username + '\n\nMaking API call...', 'info');
             
-            userListDiv.innerHTML = html;
+            const requestBody = {
+                username: username
+            };
+            
+            fetch(`${API_BASE_URL}/get_business_head_active_emp_list.php`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(requestBody)
+            })
+            .then(response => {
+                showResponse(`Response Status: ${response.status} ${response.statusText}\n\nFetching response body...`, 'info');
+                return response.text();
+            })
+            .then(data => {
+                try {
+                    const jsonData = JSON.parse(data);
+                    showResponse(`✅ Success!\n\nResponse:\n${JSON.stringify(jsonData, null, 2)}`, 'success');
+                } catch (e) {
+                    showResponse(`⚠️ Response received but not valid JSON:\n\n${data}`, 'error');
+                }
+            })
+            .catch(error => {
+                showResponse(`❌ Error: ${error.message}`, 'error');
+            });
         }
         
-        // Auto-fill with a sample username for testing
-        document.addEventListener('DOMContentLoaded', function() {
-            // You can set a default username here for testing
-            // document.getElementById('username').value = 'sample_bh_username';
-        });
+        // Pre-fill with some test values
+        document.getElementById('userId').value = '1';
+        document.getElementById('username').value = 'krajeshk';
     </script>
 </body>
 </html> 

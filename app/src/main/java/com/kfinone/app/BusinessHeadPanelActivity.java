@@ -254,9 +254,9 @@ public class BusinessHeadPanelActivity extends AppCompatActivity {
             startActivity(intent);
         });
         
-        // Performance Tracking (Emp Master)
+        // Performance Tracking (Active Employee List)
         cardPerformanceTracking.setOnClickListener(v -> {
-            Intent intent = new Intent(BusinessHeadPanelActivity.this, BusinessHeadEmpMasterActivity.class);
+            Intent intent = new Intent(BusinessHeadPanelActivity.this, BusinessHeadActiveEmpListActivity.class);
             // Pass user data
             if (userId != null) intent.putExtra("USER_ID", userId);
             if (username != null) intent.putExtra("USERNAME", username);

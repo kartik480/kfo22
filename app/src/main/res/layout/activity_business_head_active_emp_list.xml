@@ -1,106 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/white"
-    android:padding="20dp">
+    android:background="#F5F5F5">
 
-    <!-- Header -->
+    <!-- Top Navigation Bar -->
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/colorPrimary"
+        android:elevation="4dp"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+
+    <!-- Main Content -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:layout_marginBottom="20dp">
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="16dp">
 
-        <ImageView
-            android:id="@+id/backButton"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:src="@drawable/ic_arrow_back"
-            android:background="@drawable/circle_background_white_alpha"
-            android:padding="12dp"
-            android:clickable="true"
-            android:focusable="true"
-            android:foreground="?attr/selectableItemBackgroundBorderless" />
-
+        <!-- Title -->
         <TextView
             android:id="@+id/titleText"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Active Employee List"
-            android:textSize="20sp"
+            android:text="Employee List"
+            android:textSize="24sp"
             android:textStyle="bold"
-            android:textColor="@color/black"
-            android:gravity="center" />
+            android:textColor="#2C3E50"
+            android:gravity="center"
+            android:layout_marginBottom="24dp" />
 
-    </LinearLayout>
+        <!-- Progress Bar -->
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:visibility="gone" />
 
-    <!-- Employee Count -->
-    <TextView
-        android:id="@+id/employeeCountText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Total Employees: 0"
-        android:textSize="16sp"
-        android:textColor="@color/gray"
-        android:gravity="center"
-        android:layout_marginBottom="16dp" />
-
-    <!-- RecyclerView for Employee List -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/employeeRecyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:scrollbars="vertical"
-        android:clipToPadding="false"
-        android:paddingBottom="16dp" />
-
-    <!-- Loading Progress Bar -->
-    <ProgressBar
-        android:id="@+id/loadingProgressBar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:visibility="gone" />
-
-    <!-- Empty State -->
-    <LinearLayout
-        android:id="@+id/emptyStateLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:gravity="center"
-        android:visibility="gone"
-        android:padding="32dp">
-
-        <ImageView
-            android:layout_width="64dp"
-            android:layout_height="64dp"
-            android:src="@drawable/ic_people"
-            android:background="@drawable/gradient_icon_background"
+        <!-- Error Text -->
+        <TextView
+            android:id="@+id/errorText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Error message will appear here"
+            android:textSize="16sp"
+            android:textColor="#E74C3C"
+            android:gravity="center"
             android:padding="16dp"
-            android:layout_marginBottom="16dp" />
+            android:background="#FADBD8"
+            android:visibility="gone" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="No Active Employees Found"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:textColor="@color/black"
-            android:layout_marginBottom="8dp" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="There are no active employees reporting to DUBEY SATYA SAI"
-            android:textSize="14sp"
-            android:textColor="@color/gray"
-            android:gravity="center" />
+        <!-- Users RecyclerView -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/usersRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp" />
 
     </LinearLayout>
 
