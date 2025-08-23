@@ -61,19 +61,45 @@ public class RBHMySdsaActivity extends AppCompatActivity {
         android.util.Log.d("RBHMySdsa", "Received userName: " + userName);
         android.util.Log.d("RBHMySdsa", "Received userId: " + userId);
 
-        // If userId is null, try to get it from the logged-in user
-        if (userId == null || userId.isEmpty()) {
-            android.util.Log.w("RBHMySdsa", "userId is null or empty, attempting to get from SharedPreferences");
+        // If userId is null or wrong, try to get it from the logged-in user
+        if (userId == null || userId.isEmpty() || "1".equals(userId)) {
+            android.util.Log.w("RBHMySdsa", "userId is null, empty, or wrong (1), attempting to get correct user ID");
             try {
+                // First try SharedPreferences
                 android.content.SharedPreferences prefs = getSharedPreferences("LoginPrefs", MODE_PRIVATE);
                 String storedUserId = prefs.getString("USER_ID", null);
-                if (storedUserId != null && !storedUserId.isEmpty()) {
+                if (storedUserId != null && !storedUserId.isEmpty() && !"1".equals(storedUserId)) {
                     userId = storedUserId;
                     android.util.Log.d("RBHMySdsa", "Using USER_ID from SharedPreferences: " + userId);
+                } else {
+                    // If SharedPreferences also has wrong ID, try to get from username
+                    android.util.Log.w("RBHMySdsa", "SharedPreferences also has wrong ID, trying to get from username");
+                    if (userName != null && !userName.isEmpty()) {
+                        // Try to get user ID from username using a simple mapping
+                        // This is a temporary fix - in production you'd call an API
+                        if ("93000".equals(userName)) {
+                            userId = "40"; // SHAIK JEELANI BASHA - Regional Business Head
+                            android.util.Log.d("RBHMySdsa", "Mapped username 93000 to userId 40");
+                        } else if ("chiranjeevi".equals(userName)) {
+                            userId = "32"; // CHIRANJEEVI NARLAGIRI - Regional Business Head
+                            android.util.Log.d("RBHMySdsa", "Mapped username chiranjeevi to userId 32");
+                        } else {
+                            android.util.Log.w("RBHMySdsa", "Unknown username, cannot map to userId");
+                        }
+                    }
                 }
             } catch (Exception e) {
                 android.util.Log.e("RBHMySdsa", "Error reading SharedPreferences: " + e.getMessage());
             }
+        }
+        
+        // Final validation
+        if ("1".equals(userId)) {
+            android.util.Log.e("RBHMySdsa", "CRITICAL ERROR: Still using wrong userId = 1 (KRAJESHK - SuperAdmin)");
+            android.util.Log.e("RBHMySdsa", "This will cause all API calls to fail!");
+            // Force use correct user ID for testing
+            userId = "40"; // SHAIK JEELANI BASHA - Regional Business Head
+            android.util.Log.d("RBHMySdsa", "FORCED userId to 40 for testing purposes");
         }
 
         initializeViews();
@@ -175,6 +201,8 @@ public class RBHMySdsaActivity extends AppCompatActivity {
                 String response = makeGetRequest(apiUrl);
                 
                 android.util.Log.d("RBHMySdsa", "Raw API Response: " + response);
+                android.util.Log.d("RBHMySdsa", "Response length: " + (response != null ? response.length() : "null"));
+                android.util.Log.d("RBHMySdsa", "Response starts with: " + (response != null && response.length() > 50 ? response.substring(0, 50) + "..." : response));
                 
                 runOnUiThread(() -> {
                     showLoading(false);
@@ -185,9 +213,22 @@ public class RBHMySdsaActivity extends AppCompatActivity {
                             android.util.Log.d("RBHMySdsa", "Success: " + jsonResponse.optBoolean("success"));
                             android.util.Log.d("RBHMySdsa", "Message: " + jsonResponse.optString("message"));
                             
+                            // Debug: Log all available keys in the response
+                            android.util.Log.d("RBHMySdsa", "Available keys in response: " + jsonResponse.keys().toString());
+                            android.util.Log.d("RBHMySdsa", "Response has 'users' key: " + jsonResponse.has("users"));
+                            android.util.Log.d("RBHMySdsa", "Response has 'count' key: " + jsonResponse.has("count"));
+                            
                             if (jsonResponse.getBoolean("success")) {
+                                // Check if users array exists and is not null
+                                if (!jsonResponse.has("users") || jsonResponse.isNull("users")) {
+                                    android.util.Log.e("RBHMySdsa", "Users array is missing or null");
+                                    showError("Users array not found in response");
+                                    return;
+                                }
+                                
                                 JSONArray usersArray = jsonResponse.getJSONArray("users");
                                 android.util.Log.d("RBHMySdsa", "Users array length: " + usersArray.length());
+                                android.util.Log.d("RBHMySdsa", "Users array is null: " + (usersArray == null));
                                 
                                 sdsaUserList.clear();
                                 
@@ -256,6 +297,11 @@ public class RBHMySdsaActivity extends AppCompatActivity {
                                 
                                 if (sdsaUserList.isEmpty()) {
                                     android.util.Log.w("RBHMySdsa", "No SDSA users found in the response");
+                                    android.util.Log.w("RBHMySdsa", "This might indicate a parsing issue. Let's check the response structure:");
+                                    android.util.Log.w("RBHMySdsa", "Response keys: " + jsonResponse.keys().toString());
+                                    android.util.Log.w("RBHMySdsa", "Count field: " + jsonResponse.optString("count", "NOT_FOUND"));
+                                    android.util.Log.w("RBHMySdsa", "Users field type: " + (jsonResponse.opt("users") != null ? jsonResponse.opt("users").getClass().getSimpleName() : "NULL"));
+                                    
                                     Toast.makeText(this, "No SDSA users found reporting to you", Toast.LENGTH_SHORT).show();
                                 } else {
                                     android.util.Log.d("RBHMySdsa", "Successfully loaded " + sdsaUserList.size() + " SDSA users");

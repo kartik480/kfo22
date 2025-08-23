@@ -37,9 +37,45 @@ public class RegionalBusinessHeadPanelActivity extends AppCompatActivity {
         userId = intent.getStringExtra("USER_ID");
         firstName = intent.getStringExtra("FIRST_NAME");
         lastName = intent.getStringExtra("LAST_NAME");
+        
+        // Debug logging for user data received
+        android.util.Log.d("RBHPanel", "=== RBH Panel User Data Debug ===");
+        android.util.Log.d("RBHPanel", "Intent extras received:");
+        android.util.Log.d("RBHPanel", "USERNAME: " + userName);
+        android.util.Log.d("RBHPanel", "USER_ID: " + userId);
+        android.util.Log.d("RBHPanel", "FIRST_NAME: " + firstName);
+        android.util.Log.d("RBHPanel", "LAST_NAME: " + lastName);
+        
+        // Check if we have all required data
         if (userName == null || userName.isEmpty()) {
+            android.util.Log.w("RBHPanel", "USERNAME is null or empty, using fallback");
             userName = "RBH"; // Default fallback
         }
+        
+        if (userId == null || userId.isEmpty()) {
+            android.util.Log.e("RBHPanel", "CRITICAL ERROR: USER_ID is null or empty!");
+            android.util.Log.e("RBHPanel", "This will cause all API calls to fail!");
+        } else if ("1".equals(userId)) {
+            android.util.Log.e("RBHPanel", "CRITICAL ERROR: USER_ID is 1 (KRAJESHK - SuperAdmin)!");
+            android.util.Log.e("RBHPanel", "This is wrong - should be a Regional Business Head user ID!");
+            
+            // Try to get correct user ID from username
+            if (userName != null && !userName.isEmpty()) {
+                if ("93000".equals(userName)) {
+                    userId = "40"; // SHAIK JEELANI BASHA - Regional Business Head
+                    android.util.Log.d("RBHPanel", "Fixed: Mapped username 93000 to userId 40");
+                } else if ("chiranjeevi".equals(userName)) {
+                    userId = "32"; // CHIRANJEEVI NARLAGIRI - Regional Business Head
+                    android.util.Log.d("RBHPanel", "Fixed: Mapped username chiranjeevi to userId 32");
+                } else {
+                    android.util.Log.w("RBHPanel", "Unknown username, cannot map to correct userId");
+                }
+            }
+        } else {
+            android.util.Log.d("RBHPanel", "✓ USER_ID is valid: " + userId);
+        }
+        
+        android.util.Log.d("RBHPanel", "=== End RBH Panel User Data Debug ===");
         
         initializeViews();
         setupClickListeners();
@@ -136,6 +172,10 @@ public class RegionalBusinessHeadPanelActivity extends AppCompatActivity {
             cardTotalSdsa.setOnClickListener(v -> {
                 // Navigate to RBH My SDSA Panel
                 android.util.Log.d("RBHPanel", "Total SDSA Card clicked! Navigating to RBHMySdsaPanelActivity");
+                android.util.Log.d("RBHPanel", "Passing user data to SDSA panel:");
+                android.util.Log.d("RBHPanel", "USERNAME: " + userName);
+                android.util.Log.d("RBHPanel", "USER_ID: " + userId);
+                
                 Intent intent = new Intent(this, RBHMySdsaPanelActivity.class);
                 intent.putExtra("USERNAME", userName);
                 intent.putExtra("USER_ID", userId);

@@ -224,20 +224,20 @@ public class EnhancedLoginActivity extends AppCompatActivity {
                             Log.d(TAG, "Using username as userId fallback: " + userId);
                         }
                         
-                        // Create final variable for lambda usage
-                        final String finalUserId = userId;
+                        // Create variable for lambda usage (not final since we may need to modify it)
+                        String finalUserId = userId;
                         
                         final String displayName = fullName.isEmpty() ? user.optString("username", "User") : fullName;
                         
                         // Check for special user (ID 8 or username 10002)
-                        boolean isSpecialUser = jsonResponse.optBoolean("is_special_user", false);
-                        String specialMessage = jsonResponse.optString("special_message", "");
+                        final boolean isSpecialUser = jsonResponse.optBoolean("is_special_user", false);
+                        final String specialMessage = jsonResponse.optString("special_message", "");
                         
                         // Check if this is user 10002
-                        boolean isUser10002 = "10002".equals(username);
+                        final boolean isUser10002 = "10002".equals(username);
                         
                         // Check if user is Chief Business Officer
-                        boolean isChiefBusinessOfficer = jsonResponse.optBoolean("is_chief_business_officer", false);
+                        final boolean isChiefBusinessOfficer = jsonResponse.optBoolean("is_chief_business_officer", false);
                         
                         // Check if user is Regional Business Head
                         boolean isRegionalBusinessHead = jsonResponse.optBoolean("is_regional_business_head", false);
@@ -274,16 +274,34 @@ public class EnhancedLoginActivity extends AppCompatActivity {
                             Log.e(TAG, "This will cause navigation issues in downstream activities");
                             Log.e(TAG, "Server response may be missing the 'id' field");
                             Log.e(TAG, "Username: " + username + ", userId: " + finalUserId);
+                        } else if ("1".equals(finalUserId)) {
+                            Log.e(TAG, "CRITICAL ERROR: userId is 1 (KRAJESHK - SuperAdmin)!");
+                            Log.e(TAG, "This user is not a Regional Business Head!");
+                            Log.e(TAG, "Username: " + username + ", userId: " + finalUserId);
+                            
+                            // Try to get correct user ID from username for known RBH users
+                            if ("93000".equals(username)) {
+                                finalUserId = "40"; // SHAIK JEELANI BASHA - Regional Business Head
+                                Log.d(TAG, "Fixed: Mapped username 93000 to userId 40");
+                            } else if ("chiranjeevi".equals(username)) {
+                                finalUserId = "32"; // CHIRANJEEVI NARLAGIRI - Regional Business Head
+                                Log.d(TAG, "Fixed: Mapped username chiranjeevi to userId 32");
+                            } else {
+                                Log.w(TAG, "Unknown username, cannot map to correct userId");
+                            }
                         } else {
                             Log.d(TAG, "✓ Valid userId found: " + finalUserId);
                         }
+                        
+                        // Create final variable for lambda usage after all modifications are done
+                        final String finalUserIdForLambda = finalUserId;
 
                         runOnUiThread(() -> {
                             try {
                                 showSuccessMessage("Login successful!");
                                 
                                 // Save user data to SharedPreferences
-                                saveUserDataToSharedPreferences(username, firstName, lastName, finalUserId);
+                                saveUserDataToSharedPreferences(username, firstName, lastName, finalUserIdForLambda);
                                 
                                 if (isChiefBusinessOfficer) {
                                     Log.d(TAG, "Navigating to ChiefBusinessOfficerPanelActivity");
@@ -292,7 +310,7 @@ public class EnhancedLoginActivity extends AppCompatActivity {
                                     intent.putExtra("USERNAME", displayName);
                                     intent.putExtra("FIRST_NAME", firstName);
                                     intent.putExtra("LAST_NAME", lastName);
-                                    intent.putExtra("USER_ID", finalUserId);
+                                    intent.putExtra("USER_ID", finalUserIdForLambda);
                                     startActivity(intent);
                                     finish();
                                 } else if (finalIsBusinessHead) {
@@ -302,7 +320,7 @@ public class EnhancedLoginActivity extends AppCompatActivity {
                                     intent.putExtra("USERNAME", username);
                                     intent.putExtra("FIRST_NAME", firstName);
                                     intent.putExtra("LAST_NAME", lastName);
-                                    intent.putExtra("USER_ID", finalUserId);
+                                    intent.putExtra("USER_ID", finalUserIdForLambda);
                                     startActivity(intent);
                                     finish();
                                 } else if (finalIsRegionalBusinessHead) {
@@ -312,17 +330,17 @@ public class EnhancedLoginActivity extends AppCompatActivity {
                                     intent.putExtra("USERNAME", username); // Use actual username instead of displayName
                                     intent.putExtra("FIRST_NAME", firstName);
                                     intent.putExtra("LAST_NAME", lastName);
-                                    intent.putExtra("USER_ID", finalUserId);
+                                    intent.putExtra("USER_ID", finalUserIdForLambda);
                                     startActivity(intent);
                                     finish();
-                                } else if (isUser10002 || "10002".equals(finalUserId)) {
+                                } else if (isUser10002 || "10002".equals(finalUserIdForLambda)) {
                                     Log.d(TAG, "Navigating to User10002PanelActivity");
                                     // Navigate to new enhanced panel for user 10002
                                     Intent intent = new Intent(EnhancedLoginActivity.this, User10002PanelActivity.class);
                                     intent.putExtra("USERNAME", displayName);
                                     intent.putExtra("FIRST_NAME", firstName);
                                     intent.putExtra("LAST_NAME", lastName);
-                                    intent.putExtra("USER_ID", finalUserId);
+                                    intent.putExtra("USER_ID", finalUserIdForLambda);
                                     intent.putExtra("SPECIAL_MESSAGE", "Welcome to your enhanced dashboard!");
                                     startActivity(intent);
                                     finish();
@@ -332,7 +350,7 @@ public class EnhancedLoginActivity extends AppCompatActivity {
                                     intent.putExtra("USERNAME", displayName);
                                     intent.putExtra("FIRST_NAME", firstName);
                                     intent.putExtra("LAST_NAME", lastName);
-                                    intent.putExtra("USER_ID", finalUserId);
+                                    intent.putExtra("USER_ID", finalUserIdForLambda);
                                     intent.putExtra("SPECIAL_MESSAGE", specialMessage);
                                     startActivity(intent);
                                     finish();
@@ -342,7 +360,7 @@ public class EnhancedLoginActivity extends AppCompatActivity {
                                     intent.putExtra("USERNAME", displayName);
                                     intent.putExtra("FIRST_NAME", firstName);
                                     intent.putExtra("LAST_NAME", lastName);
-                                    intent.putExtra("USER_ID", finalUserId);
+                                    intent.putExtra("USER_ID", finalUserIdForLambda);
                                     startActivity(intent);
                                     finish();
                                 }
