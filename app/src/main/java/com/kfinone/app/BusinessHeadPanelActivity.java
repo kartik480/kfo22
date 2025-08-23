@@ -224,14 +224,24 @@ public class BusinessHeadPanelActivity extends AppCompatActivity {
     private void setupCardClickListeners() {
         // Emp Links
         cardTeamManagement.setOnClickListener(v -> {
-            Toast.makeText(this, "Employee Management - Coming Soon!", Toast.LENGTH_SHORT).show();
-            // TODO: Implement Employee Management functionality
+            Intent intent = new Intent(BusinessHeadPanelActivity.this, BusinessHeadEmpLinksActivity.class);
+            // Pass user data
+            if (userId != null) intent.putExtra("USER_ID", userId);
+            if (username != null) intent.putExtra("USERNAME", username);
+            if (firstName != null) intent.putExtra("FIRST_NAME", firstName);
+            if (lastName != null) intent.putExtra("LAST_NAME", lastName);
+            startActivity(intent);
         });
         
         // Data Links
         cardBusinessAnalytics.setOnClickListener(v -> {
-            Toast.makeText(this, "Data Analytics - Coming Soon!", Toast.LENGTH_SHORT).show();
-            // TODO: Implement Data Analytics functionality
+            Intent intent = new Intent(BusinessHeadPanelActivity.this, BusinessHeadDataLinksActivity.class);
+            // Pass user data
+            if (userId != null) intent.putExtra("USER_ID", userId);
+            if (username != null) intent.putExtra("USERNAME", username);
+            if (firstName != null) intent.putExtra("FIRST_NAME", firstName);
+            if (lastName != null) intent.putExtra("LAST_NAME", lastName);
+            startActivity(intent);
         });
         
         // Work Links

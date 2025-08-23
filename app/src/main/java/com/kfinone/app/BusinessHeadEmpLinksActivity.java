@@ -23,15 +23,15 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BusinessHeadDataLinksActivity extends AppCompatActivity {
-    private static final String TAG = "BusinessHeadDataLinks";
+public class BusinessHeadEmpLinksActivity extends AppCompatActivity {
+    private static final String TAG = "BusinessHeadEmpLinks";
     private static final String API_BASE_URL = "https://emp.kfinone.com/mobile/api";
 
     private TextView titleText, errorText;
     private ProgressBar progressBar;
     private RecyclerView iconsRecyclerView;
-    private BusinessHeadDataLinksAdapter adapter;
-    private List<BusinessHeadDataIcon> iconList = new ArrayList<>();
+    private BusinessHeadEmpLinksAdapter adapter;
+    private List<BusinessHeadManageIcon> iconList = new ArrayList<>();
     private RequestQueue requestQueue;
     private String userId;
     private String userName;
@@ -43,16 +43,16 @@ public class BusinessHeadDataLinksActivity extends AppCompatActivity {
             WindowManager.LayoutParams.FLAG_FULLSCREEN,
             WindowManager.LayoutParams.FLAG_FULLSCREEN
         );
-        setContentView(R.layout.activity_business_head_data_links);
+        setContentView(R.layout.activity_business_head_emp_links);
         
         // Get user data from intent
         userName = getIntent().getStringExtra("USERNAME");
         userId = getIntent().getStringExtra("USER_ID");
-
+        
         // Debug logging
         Log.d(TAG, "Received userName: " + userName);
         Log.d(TAG, "Received userId: " + userId);
-
+        
         if (userName == null || userName.isEmpty()) {
             userName = "Business Head";
         }
@@ -61,7 +61,7 @@ public class BusinessHeadDataLinksActivity extends AppCompatActivity {
         setupToolbar();
         setupRecyclerView();
         setupVolley();
-        loadDataIcons();
+        loadManageIcons();
     }
 
     private void initializeViews() {
@@ -78,12 +78,12 @@ public class BusinessHeadDataLinksActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setTitle("Data Links");
+            getSupportActionBar().setTitle("Emp Links");
         }
     }
 
     private void setupRecyclerView() {
-        adapter = new BusinessHeadDataLinksAdapter(this, iconList);
+        adapter = new BusinessHeadEmpLinksAdapter(this, iconList);
         iconsRecyclerView.setLayoutManager(new GridLayoutManager(this, 2));
         iconsRecyclerView.setAdapter(adapter);
     }
@@ -92,7 +92,7 @@ public class BusinessHeadDataLinksActivity extends AppCompatActivity {
         requestQueue = Volley.newRequestQueue(this);
     }
 
-    private void loadDataIcons() {
+    private void loadManageIcons() {
         showLoading(true);
         hideError();
         
@@ -113,7 +113,7 @@ public class BusinessHeadDataLinksActivity extends AppCompatActivity {
             return;
         }
 
-        String url = API_BASE_URL + "/get_business_head_data_icons.php";
+        String url = API_BASE_URL + "/get_business_head_manage_icons.php";
         Log.d(TAG, "Making API call to: " + url);
         Log.d(TAG, "Request body: " + requestBody.toString());
 
@@ -125,7 +125,7 @@ public class BusinessHeadDataLinksActivity extends AppCompatActivity {
                 @Override
                 public void onResponse(JSONObject response) {
                     Log.d(TAG, "API Response: " + response.toString());
-                    parseDataIconsResponse(response);
+                    parseManageIconsResponse(response);
                 }
             },
             new Response.ErrorListener() {
@@ -144,7 +144,7 @@ public class BusinessHeadDataLinksActivity extends AppCompatActivity {
         requestQueue.add(jsonRequest);
     }
 
-    private void parseDataIconsResponse(JSONObject response) {
+    private void parseManageIconsResponse(JSONObject response) {
         try {
             String status = response.getString("status");
             
@@ -154,12 +154,13 @@ public class BusinessHeadDataLinksActivity extends AppCompatActivity {
                 
                 for (int i = 0; i < data.length(); i++) {
                     JSONObject iconObj = data.getJSONObject(i);
-                    BusinessHeadDataIcon icon = new BusinessHeadDataIcon(
+                    BusinessHeadManageIcon icon = new BusinessHeadManageIcon(
                         iconObj.optString("id"),
                         iconObj.optString("icon_name"),
                         iconObj.optString("icon_url"),
                         iconObj.optString("icon_image"),
-                        iconObj.optString("icon_description")
+                        iconObj.optString("icon_description"),
+                        iconObj.optString("status")
                     );
                     iconList.add(icon);
                 }
@@ -168,7 +169,7 @@ public class BusinessHeadDataLinksActivity extends AppCompatActivity {
                 showLoading(false);
                 
                 if (iconList.isEmpty()) {
-                    showError("No data icons found for this user");
+                    showError("No manage icons found for this user");
                 } else {
                     Toast.makeText(this, "Found " + iconList.size() + " icons", Toast.LENGTH_SHORT).show();
                 }
@@ -211,4 +212,4 @@ public class BusinessHeadDataLinksActivity extends AppCompatActivity {
         super.onBackPressed();
         finish();
     }
-} 
+}

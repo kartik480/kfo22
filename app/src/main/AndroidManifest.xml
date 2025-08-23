@@ -900,6 +900,12 @@
                       android:label="Business Head My Agent"
                       android:theme="@style/FullscreenTheme" />
                       
+                  <activity
+                      android:name=".BusinessHeadEmpLinksActivity"
+                      android:exported="false"
+                      android:label="Business Head Emp Links"
+                      android:theme="@style/FullscreenTheme" />
+                      
                   <!-- Business Head Portfolio Activities -->
                   <activity
                       android:name=".BusinessHeadPortfolioActivity"
