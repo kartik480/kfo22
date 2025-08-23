@@ -13,7 +13,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.json.JSONException;
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -93,19 +95,106 @@ public class RBHMyAgentListActivity extends AppCompatActivity {
     }
 
     private void setupSpinners() {
-        // Agent Type options
+        // Load dropdown options from API
+        loadDropdownOptions();
+    }
+    
+    private void loadDropdownOptions() {
+        executor.execute(() -> {
+            try {
+                String urlString = API_BASE_URL + "/get_rbh_agent_list_dropdowns.php";
+                String response = makeGetRequest(urlString);
+                
+                if (response != null && !response.isEmpty()) {
+                    try {
+                        JSONObject jsonResponse = new JSONObject(response);
+                        if (jsonResponse.getString("status").equals("success")) {
+                            JSONObject data = jsonResponse.getJSONObject("data");
+                            
+                            runOnUiThread(() -> {
+                                try {
+                                    // Setup Agent Type Spinner
+                                    if (data.has("agent_types")) {
+                                        JSONArray agentTypesArray = data.getJSONArray("agent_types");
+                                        String[] agentTypes = new String[agentTypesArray.length()];
+                                        for (int i = 0; i < agentTypesArray.length(); i++) {
+                                            agentTypes[i] = agentTypesArray.getString(i);
+                                        }
+                                        ArrayAdapter<String> agentTypeAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, agentTypes);
+                                        agentTypeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                                        spinnerAgentType.setAdapter(agentTypeAdapter);
+                                    }
+                                    
+                                    // Setup Branch State Spinner
+                                    if (data.has("branch_states")) {
+                                        JSONArray branchStatesArray = data.getJSONArray("branch_states");
+                                        String[] branchStates = new String[branchStatesArray.length()];
+                                        for (int i = 0; i < branchStatesArray.length(); i++) {
+                                            JSONObject stateObj = branchStatesArray.getJSONObject(i);
+                                            branchStates[i] = stateObj.getString("branch_state_name");
+                                        }
+                                        ArrayAdapter<String> branchStateAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, branchStates);
+                                        branchStateAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                                        spinnerBranchState.setAdapter(branchStateAdapter);
+                                    }
+                                    
+                                    // Setup Branch Location Spinner
+                                    if (data.has("branch_locations")) {
+                                        JSONArray branchLocationsArray = data.getJSONArray("branch_locations");
+                                        String[] branchLocations = new String[branchLocationsArray.length()];
+                                        for (int i = 0; i < branchLocationsArray.length(); i++) {
+                                            JSONObject locationObj = branchLocationsArray.getJSONObject(i);
+                                            branchLocations[i] = locationObj.getString("branch_location");
+                                        }
+                                        ArrayAdapter<String> branchLocationAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, branchLocations);
+                                        branchLocationAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                                        spinnerBranchLocation.setAdapter(branchLocationAdapter);
+                                    }
+                                    
+                                    Log.d(TAG, "Dropdowns loaded successfully from API");
+                                    
+                                } catch (Exception e) {
+                                    Log.e(TAG, "Error setting up dropdowns: " + e.getMessage());
+                                    setupFallbackDropdowns();
+                                }
+                            });
+                            
+                        } else {
+                            Log.e(TAG, "API returned error: " + jsonResponse.optString("message", "Unknown error"));
+                            runOnUiThread(this::setupFallbackDropdowns);
+                        }
+                    } catch (JSONException e) {
+                        Log.e(TAG, "JSON parse error: " + e.getMessage());
+                        runOnUiThread(this::setupFallbackDropdowns);
+                    }
+                } else {
+                    Log.e(TAG, "No response from dropdown API");
+                    runOnUiThread(this::setupFallbackDropdowns);
+                }
+                
+            } catch (Exception e) {
+                Log.e(TAG, "Error loading dropdown options: " + e.getMessage());
+                runOnUiThread(this::setupFallbackDropdowns);
+            }
+        });
+    }
+    
+    private void setupFallbackDropdowns() {
+        Log.w(TAG, "Setting up fallback dropdowns");
+        
+        // Agent Type options (fallback)
         String[] agentTypes = {"All Agent Types", "Individual Agent", "Corporate Agent", "Broker"};
         ArrayAdapter<String> agentTypeAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, agentTypes);
         agentTypeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerAgentType.setAdapter(agentTypeAdapter);
 
-        // Branch State options
+        // Branch State options (fallback)
         String[] branchStates = {"All States", "Maharashtra", "Delhi", "Karnataka", "Tamil Nadu", "Gujarat"};
         ArrayAdapter<String> branchStateAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, branchStates);
         branchStateAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerBranchState.setAdapter(branchStateAdapter);
 
-        // Branch Location options
+        // Branch Location options (fallback)
         String[] branchLocations = {"All Locations", "Mumbai", "Pune", "Nagpur", "Thane", "Nashik"};
         ArrayAdapter<String> branchLocationAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, branchLocations);
         branchLocationAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -380,6 +469,42 @@ public class RBHMyAgentListActivity extends AppCompatActivity {
     public void onBackPressed() {
         super.onBackPressed();
         finish();
+    }
+
+    private String makeGetRequest(String urlString) throws IOException {
+        URL url = new URL(urlString);
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestMethod("GET");
+        connection.setConnectTimeout(10000);
+        connection.setReadTimeout(10000);
+        
+        try {
+            int responseCode = connection.getResponseCode();
+            if (responseCode == HttpURLConnection.HTTP_OK) {
+                BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                StringBuilder response = new StringBuilder();
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    response.append(line);
+                }
+                reader.close();
+                return response.toString();
+            } else {
+                BufferedReader errorReader = new BufferedReader(new InputStreamReader(connection.getErrorStream()));
+                StringBuilder errorResponse = new StringBuilder();
+                String line;
+                while ((line = errorReader.readLine()) != null) {
+                    errorResponse.append(line);
+                }
+                errorReader.close();
+                
+                String errorMessage = "HTTP Error " + responseCode + ": " + errorResponse.toString();
+                Log.e(TAG, errorMessage);
+                return null;
+            }
+        } finally {
+            connection.disconnect();
+        }
     }
 
     @Override
