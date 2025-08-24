@@ -105,7 +105,7 @@ public class RBHPayoutTeamActivity extends AppCompatActivity {
     
     private void updateWelcomeMessage() {
         welcomeText.setText("Welcome, " + userName + " (" + userDesignation + ")");
-        titleText.setText("My Payout Types");
+        titleText.setText("My Assigned Payout Types");
     }
     
     private void goBack() {
@@ -125,8 +125,9 @@ public class RBHPayoutTeamActivity extends AppCompatActivity {
     private void loadPayoutTypes() {
         executor.execute(() -> {
             try {
-                String url = BASE_URL + "get_cbo_payout_team.php?designation=" + userDesignation + "&user_id=" + userId;
-                Log.d(TAG, "Fetching payout types from: " + url);
+                // Use the new endpoint that fetches payout types from tbl_payout_type using user's payout_icons
+                String url = BASE_URL + "get_user_payout_types_details.php?user_id=" + userId;
+                Log.d(TAG, "Fetching payout types details for user " + userId + " from: " + url);
                 
                 OkHttpClient client = new OkHttpClient();
                 Request request = new Request.Builder()
@@ -145,10 +146,19 @@ public class RBHPayoutTeamActivity extends AppCompatActivity {
                     JSONArray dataArray = jsonResponse.getJSONArray("data");
                     List<PayoutType> newPayoutTypes = new ArrayList<>();
                     
+                    // Log additional response details for debugging
+                    if (jsonResponse.has("payout_icons_count")) {
+                        Log.d(TAG, "User has " + jsonResponse.getInt("payout_icons_count") + " payout icons assigned");
+                    }
+                    if (jsonResponse.has("count")) {
+                        Log.d(TAG, "Found " + jsonResponse.getInt("count") + " payout types in tbl_payout_type");
+                    }
+                    
                     for (int i = 0; i < dataArray.length(); i++) {
                         JSONObject payoutType = dataArray.getJSONObject(i);
                         int id = payoutType.getInt("id");
                         String name = payoutType.getString("payout_name");
+                        Log.d(TAG, "Payout Type: ID=" + id + ", Name=" + name);
                         newPayoutTypes.add(new PayoutType(id, name));
                     }
                     
@@ -160,9 +170,11 @@ public class RBHPayoutTeamActivity extends AppCompatActivity {
                         if (payoutTypes.isEmpty()) {
                             noDataCard.setVisibility(View.VISIBLE);
                             payoutTypesRecyclerView.setVisibility(View.GONE);
+                            Log.d(TAG, "No payout types found for user " + userId + " - checking if user has payout_icons assigned");
                         } else {
                             noDataCard.setVisibility(View.GONE);
                             payoutTypesRecyclerView.setVisibility(View.VISIBLE);
+                            Log.d(TAG, "Successfully loaded " + payoutTypes.size() + " payout types from tbl_payout_type for user " + userId);
                         }
                     });
                     
@@ -172,6 +184,16 @@ public class RBHPayoutTeamActivity extends AppCompatActivity {
                         Toast.makeText(this, "Error: " + message, Toast.LENGTH_LONG).show();
                         noDataCard.setVisibility(View.VISIBLE);
                         payoutTypesRecyclerView.setVisibility(View.GONE);
+                        Log.e(TAG, "API returned error: " + message);
+                        
+                        // Log additional error details if available
+                        if (jsonResponse.has("payout_icons_count")) {
+                            try {
+                                Log.e(TAG, "User has " + jsonResponse.getInt("payout_icons_count") + " payout icons but API returned error");
+                            } catch (JSONException e) {
+                                Log.e(TAG, "Error parsing payout_icons_count from error response");
+                            }
+                        }
                     });
                 }
                 
