@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RBH API Upload Check</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-right: 10px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .response {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 15px;
+            margin-top: 20px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+        .success {
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+        .info {
+            background-color: #d1ecf1;
+            border-color: #bee5eb;
+            color: #0c5460;
+        }
+        .warning {
+            background-color: #fff3cd;
+            border-color: #ffeaa7;
+            color: #856404;
+        }
+        .upload-steps {
+            background: #e7f3ff;
+            border: 1px solid #b3d9ff;
+            border-radius: 4px;
+            padding: 15px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 RBH API Upload Check</h1>
+        <p>Diagnosing the 404 error for get_rbh_employee_users.php</p>
+        
+        <button onclick="checkAPIExists()">🔍 Check if API exists</button>
+        <button onclick="testAPI()">🚀 Test API (if exists)</button>
+        <button onclick="clearResults()">🗑️ Clear</button>
+        
+        <div id="response" class="response" style="display: none;"></div>
+    </div>
+
+    <div class="container">
+        <h2>📋 Issue Analysis</h2>
+        <div class="warning">
+            <strong>Problem:</strong> 404 Error - API file not found on server<br>
+            <strong>Error:</strong> "Unexpected response code 404 for https://emp.kfinone.com/mobile/api/get_rbh_employee_users.php"<br>
+            <strong>Cause:</strong> The get_rbh_employee_users.php file is not uploaded to the server yet
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>📤 Upload Steps Required</h2>
+        <div class="upload-steps">
+            <strong>To fix the 404 error, you need to upload the API file to the server:</strong><br><br>
+            
+            <strong>1. File to Upload:</strong><br>
+            • <strong>Source:</strong> `api/get_rbh_employee_users.php` (exists locally)<br>
+            • <strong>Destination:</strong> `https://emp.kfinone.com/mobile/api/get_rbh_employee_users.php`<br><br>
+            
+            <strong>2. Upload Methods:</strong><br>
+            • <strong>FTP/SFTP:</strong> Upload to server's mobile/api/ directory<br>
+            • <strong>cPanel File Manager:</strong> Navigate to mobile/api/ and upload<br>
+            • <strong>SSH:</strong> Use scp or rsync commands<br><br>
+            
+            <strong>3. File Permissions:</strong><br>
+            • Set to 644 (readable by web server)<br>
+            • Ensure PHP execution is enabled<br><br>
+            
+            <strong>4. Verification:</strong><br>
+            • Use the "Check if API exists" button above<br>
+            • Should return 200 OK instead of 404 Not Found
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>🔧 Alternative Solutions</h2>
+        <div class="upload-steps">
+            <strong>If you can't upload immediately:</strong><br><br>
+            
+            <strong>Option 1: Use Existing API</strong><br>
+            • Modify the app to use an existing API like `get_rbh_active_emp_list.php`<br>
+            • Update the URL in `RBHEmployeeUsersActivity.java`<br><br>
+            
+            <strong>Option 2: Test with Local Server</strong><br>
+            • Set up local PHP server for testing<br>
+            • Change API URL to localhost for development<br><br>
+            
+            <strong>Option 3: Use CBO API Temporarily</strong><br>
+            • Point to `get_cbo_active_emp_list.php` for testing<br>
+            • Verify the functionality works before uploading RBH API
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>📱 Current App Status</h2>
+        <div class="info">
+            <strong>App Status:</strong> ✅ Ready and functional<br>
+            <strong>Build Status:</strong> ✅ Successful<br>
+            <strong>Activity Declaration:</strong> ✅ Added to AndroidManifest.xml<br>
+            <strong>Navigation:</strong> ✅ Employee button works<br>
+            <strong>UI Components:</strong> ✅ All layouts created<br>
+            <strong>Backend API:</strong> ❌ File not uploaded to server (404 error)<br><br>
+            
+            <strong>Next Step:</strong> Upload get_rbh_employee_users.php to the server
+        </div>
+    </div>
+
+    <script>
+        async function checkAPIExists() {
+            showResponse('🔍 Checking if get_rbh_employee_users.php exists on server...', 'info');
+            
+            try {
+                const url = 'https://emp.kfinone.com/mobile/api/get_rbh_employee_users.php';
+                const response = await fetch(url, {
+                    method: 'HEAD' // Just check if file exists, don't download content
+                });
+                
+                if (response.ok) {
+                    showResponse(`✅ SUCCESS: API file exists on server!\nStatus: ${response.status} ${response.statusText}\nURL: ${url}`, 'success');
+                } else {
+                    showResponse(`❌ ERROR: API file not found on server\nStatus: ${response.status} ${response.statusText}\nURL: ${url}\n\nThis confirms the 404 error - the file needs to be uploaded.`, 'error');
+                }
+            } catch (error) {
+                showResponse(`❌ ERROR: ${error.message}\n\nThis suggests the file is not accessible on the server.`, 'error');
+            }
+        }
+        
+        async function testAPI() {
+            showResponse('🚀 Testing RBH Employee Users API...', 'info');
+            
+            try {
+                const url = 'https://emp.kfinone.com/mobile/api/get_rbh_employee_users.php';
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ user_id: "45" })
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    showResponse(`✅ API Test Successful!\nStatus: ${response.status}\nResponse: ${JSON.stringify(data, null, 2)}`, 'success');
+                } else {
+                    showResponse(`❌ API Test Failed\nStatus: ${response.status} ${response.statusText}\n\nThis means the file exists but there might be a PHP error.`, 'error');
+                }
+            } catch (error) {
+                showResponse(`❌ API Test Error: ${error.message}`, 'error');
+            }
+        }
+        
+        function clearResults() {
+            document.getElementById('response').style.display = 'none';
+        }
+        
+        function showResponse(message, type) {
+            const responseDiv = document.getElementById('response');
+            responseDiv.textContent = message;
+            responseDiv.className = `response ${type}`;
+            responseDiv.style.display = 'block';
+        }
+    </script>
+</body>
+</html>

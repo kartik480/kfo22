@@ -260,7 +260,7 @@ public class RegionalBusinessHeadPanelActivity extends AppCompatActivity {
         
         if (cardStrategy != null) {
             cardStrategy.setOnClickListener(v -> {
-                Intent intent = new Intent(this, RegionalBusinessHeadActiveEmpListActivity.class);
+                Intent intent = new Intent(this, RBHEmployeeUsersActivity.class);
                 intent.putExtra("USERNAME", userName);
                 intent.putExtra("USER_ID", userId);
                 intent.putExtra("FIRST_NAME", firstName);

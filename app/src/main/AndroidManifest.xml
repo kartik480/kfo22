@@ -1065,16 +1065,16 @@
             android:parentActivityName=".RBHEmpMasterActivity"
             android:theme="@style/FullscreenTheme" />
         <activity
+            android:name=".RBHEmployeeUsersActivity"
+            android:exported="false"
+            android:label="RBH Employee Users"
+            android:parentActivityName=".RegionalBusinessHeadPanelActivity"
+            android:theme="@style/FullscreenTheme" />
+        <activity
             android:name=".RBHInactiveEmpListActivity"
             android:exported="false"
             android:label="RBH Inactive Employee List"
             android:parentActivityName=".RBHEmpMasterActivity"
-            android:theme="@style/FullscreenTheme" />
-        <activity
-            android:name=".RBHActiveEmpListActivity"
-            android:exported="false"
-            android:label="RBH Active Employee List"
-            android:parentActivityName=".RegionalBusinessHeadPanelActivity"
             android:theme="@style/FullscreenTheme" />
           <activity
               android:name=".RBHMySdsaPanelActivity"

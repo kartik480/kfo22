@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Existing RBH API</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-right: 10px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .response {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 15px;
+            margin-top: 20px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+        .success {
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+        .info {
+            background-color: #d1ecf1;
+            border-color: #bee5eb;
+            color: #0c5460;
+        }
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .stat-card {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        .stat-number {
+            font-size: 24px;
+            font-weight: bold;
+            color: #007bff;
+        }
+        .stat-label {
+            font-size: 14px;
+            color: #666;
+            margin-top: 5px;
+        }
+        .user-list {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        .user-item {
+            background: white;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 4px solid #28a745;
+        }
+        .user-name {
+            font-weight: bold;
+            color: #28a745;
+            font-size: 16px;
+        }
+        .user-details {
+            color: #666;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+        .fix-info {
+            background: #e7f3ff;
+            border: 1px solid #b3d9ff;
+            border-radius: 4px;
+            padding: 15px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 Test Existing RBH API</h1>
+        <p>Testing the existing get_rbh_active_emp_list.php API that we're now using</p>
+        
+        <button onclick="testExistingAPI()">🚀 Test Existing RBH API</button>
+        <button onclick="clearResults()">🗑️ Clear</button>
+        
+        <div class="stats" id="stats" style="display: none;">
+            <div class="stat-card">
+                <div class="stat-number" id="totalEmployees">0</div>
+                <div class="stat-label">Total Employees</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="activeEmployees">0</div>
+                <div class="stat-label">Active Employees</div>
+            </div>
+        </div>
+        
+        <div class="user-list" id="userList" style="display: none;">
+            <h3>👥 RBH Employee List (from existing API)</h3>
+            <div id="userItems"></div>
+        </div>
+        
+        <div id="response" class="response" style="display: none;"></div>
+    </div>
+
+    <div class="container">
+        <h2>📋 What Was Fixed</h2>
+        <div class="fix-info">
+            <strong>Previous Issue:</strong> 500 Internal Server Error<br>
+            <strong>Root Cause:</strong> Wrong request format<br>
+            <strong>Problem:</strong> App was sending POST with user_id/username, but API expected GET with reportingTo<br><br>
+            
+            <strong>Solution Applied:</strong><br>
+            ✅ <strong>Changed from POST to GET request</strong><br>
+            ✅ <strong>Added reportingTo parameter to URL</strong><br>
+            ✅ <strong>Removed request body</strong><br>
+            ✅ <strong>Using existing working API</strong><br><br>
+            
+            <strong>New Request Format:</strong><br>
+            <code>GET https://emp.kfinone.com/mobile/api/get_rbh_active_emp_list.php?reportingTo=USERNAME</code>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>🔍 API Compatibility</h2>
+        <div class="fix-info">
+            <strong>Existing API Requirements:</strong><br>
+            • <strong>Method:</strong> GET (not POST)<br>
+            • <strong>Parameter:</strong> reportingTo (in URL query string)<br>
+            • <strong>Response Format:</strong> Same structure as our new API<br>
+            • <strong>Data Fields:</strong> Compatible with our app<br><br>
+            
+            <strong>Why This Works:</strong><br>
+            • The existing API already has the same response structure<br>
+            • It fetches employees reporting to a specific user<br>
+            • It provides the same data fields we need<br>
+            • It's already tested and working on the server
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>📱 Current App Status</h2>
+        <div class="fix-info">
+            <strong>App Status:</strong> ✅ Fixed and ready for testing<br>
+            <strong>Build Status:</strong> ✅ Successful<br>
+            <strong>API Compatibility:</strong> ✅ Fixed request format<br>
+            <strong>Error Resolution:</strong> ✅ 500 error should be fixed<br><br>
+            
+            <strong>Next Steps:</strong><br>
+            1️⃣ <strong>Test the app</strong> - Employee button should now work<br>
+            2️⃣ <strong>Verify data loading</strong> - Should see employee list<br>
+            3️⃣ <strong>Check navigation</strong> - All buttons should work<br>
+            4️⃣ <strong>Upload new API later</strong> - When you have server access
+        </div>
+    </div>
+
+    <script>
+        async function testExistingAPI() {
+            showResponse('🔄 Testing existing RBH API with correct GET format...', 'info');
+            
+            try {
+                // Use the same format as the app now uses
+                const url = 'https://emp.kfinone.com/mobile/api/get_rbh_active_emp_list.php?reportingTo=90000';
+                const response = await fetch(url, {
+                    method: 'GET' // No body needed for GET
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    showResponse(`✅ API Test Successful!\nStatus: ${response.status}\nResponse: ${JSON.stringify(data, null, 2)}`, 'success');
+                    updateStats(data);
+                    updateUserList(data);
+                    document.getElementById('stats').style.display = 'grid';
+                    document.getElementById('userList').style.display = 'block';
+                } else {
+                    showResponse(`❌ API Test Failed\nStatus: ${response.status} ${response.statusText}`, 'error');
+                    document.getElementById('stats').style.display = 'none';
+                    document.getElementById('userList').style.display = 'none';
+                }
+            } catch (error) {
+                showResponse(`❌ API Test Error: ${error.message}`, 'error');
+                document.getElementById('stats').style.display = 'none';
+                document.getElementById('userList').style.display = 'none';
+            }
+        }
+        
+        function clearResults() {
+            document.getElementById('response').style.display = 'none';
+            document.getElementById('stats').style.display = 'none';
+            document.getElementById('userList').style.display = 'none';
+        }
+        
+        function showResponse(message, type) {
+            const responseDiv = document.getElementById('response');
+            responseDiv.textContent = message;
+            responseDiv.className = `response ${type}`;
+            responseDiv.style.display = 'block';
+        }
+        
+        function updateStats(data) {
+            if (data.counts) {
+                document.getElementById('totalEmployees').textContent = data.counts.total_team_members || 0;
+                document.getElementById('activeEmployees').textContent = data.counts.active_members || 0;
+            }
+        }
+        
+        function updateUserList(data) {
+            const userItemsDiv = document.getElementById('userItems');
+            userItemsDiv.innerHTML = '';
+            
+            if (data.data && data.data.team_members) {
+                data.data.team_members.forEach((user, index) => {
+                    const userDiv = document.createElement('div');
+                    userDiv.className = 'user-item';
+                    
+                    // Get the best available name
+                    const firstName = user.first_name || '';
+                    const lastName = user.last_name || '';
+                    const username = user.username || '';
+                    const fullName = user.full_name || '';
+                    
+                    let displayName = '';
+                    if (fullName && fullName.trim()) {
+                        displayName = fullName.trim();
+                    } else if (firstName && lastName) {
+                        displayName = firstName + ' ' + lastName;
+                    } else if (firstName) {
+                        displayName = firstName;
+                    } else if (lastName) {
+                        displayName = lastName;
+                    } else if (username) {
+                        displayName = username;
+                    } else {
+                        displayName = 'User ID: ' + (user.id || 'N/A');
+                    }
+                    
+                    userDiv.innerHTML = `
+                        <div class="user-name">${displayName}</div>
+                        <div class="user-details">
+                            <strong>ID:</strong> ${user.id || 'N/A'} | 
+                            <strong>Username:</strong> ${user.username || 'N/A'} | 
+                            <strong>Email:</strong> ${user.email_id || 'N/A'} | 
+                            <strong>Phone:</strong> ${user.Phone_number || 'N/A'} | 
+                            <strong>Status:</strong> ${user.status || 'N/A'} | 
+                            <strong>Rank:</strong> ${user.rank || 'N/A'}
+                        </div>
+                    `;
+                    
+                    userItemsDiv.appendChild(userDiv);
+                });
+            }
+        }
+    </script>
+</body>
+</html>
