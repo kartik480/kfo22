@@ -10,7 +10,7 @@ import com.google.android.material.card.MaterialCardView;
 
 public class BHPayoutPanelActivity extends AppCompatActivity {
     private MaterialCardView branchFullPayoutBox, servicePartnerPayoutBox, leadBaseAgentPayoutBox, 
-                           connectorReferralPayoutBox, interBranchPayoutBox, rbhPayoutBox, payoutTeamBox;
+                           connectorReferralPayoutBox, interBranchPayoutBox, rbhPayoutBox;
     private ImageButton backButton;
     private String userName;
     private String userId;
@@ -50,7 +50,6 @@ public class BHPayoutPanelActivity extends AppCompatActivity {
         connectorReferralPayoutBox = findViewById(R.id.connectorReferralPayoutBox);
         interBranchPayoutBox = findViewById(R.id.interBranchPayoutBox);
         rbhPayoutBox = findViewById(R.id.rbhPayoutBox);
-        payoutTeamBox = findViewById(R.id.payoutTeamBox);
         backButton = findViewById(R.id.backButton);
     }
 
@@ -110,14 +109,7 @@ public class BHPayoutPanelActivity extends AppCompatActivity {
             startActivity(intent);
         });
         
-        // Payout Team
-        payoutTeamBox.setOnClickListener(v -> {
-            Intent intent = new Intent(this, BHPayoutTeamActivity.class);
-            intent.putExtra("USERNAME", userName);
-            intent.putExtra("USER_ID", userId);
-            intent.putExtra("USER_DESIGNATION", "BH");
-            startActivity(intent);
-        });
+
     }
     
     private void goBack() {
