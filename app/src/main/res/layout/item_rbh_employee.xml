@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="#FFFFFF"
+    android:padding="16dp"
+    android:layout_marginBottom="8dp"
+    android:elevation="1dp">
+
+    <!-- Employee Name -->
+    <TextView
+        android:id="@+id/employeeName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Employee Name"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:textColor="#2C3E50"
+        android:layout_marginBottom="4dp" />
+
+    <!-- Employee Username -->
+    <TextView
+        android:id="@+id/employeeUsername"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Username: N/A"
+        android:textSize="14sp"
+        android:textColor="#34495E"
+        android:layout_marginBottom="4dp" />
+
+    <!-- Employee Status -->
+    <TextView
+        android:id="@+id/employeeStatus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Active"
+        android:textSize="12sp"
+        android:textColor="#27AE60"
+        android:padding="4dp"
+        android:background="#E8F5E8"
+        android:layout_marginBottom="4dp" />
+
+    <!-- Employee Phone -->
+    <TextView
+        android:id="@+id/employeePhone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Phone: N/A"
+        android:textSize="14sp"
+        android:textColor="#34495E"
+        android:layout_marginBottom="4dp" />
+
+    <!-- Employee Email -->
+    <TextView
+        android:id="@+id/employeeEmail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Email: N/A"
+        android:textSize="14sp"
+        android:textColor="#34495E"
+        android:layout_marginBottom="4dp" />
+
+    <!-- Employee Company -->
+    <TextView
+        android:id="@+id/employeeCompany"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Company: N/A"
+        android:textSize="14sp"
+        android:textColor="#34495E"
+        android:layout_marginBottom="4dp" />
+
+    <!-- Employee Rank -->
+    <TextView
+        android:id="@+id/employeeRank"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Rank: N/A"
+        android:textSize="14sp"
+        android:textColor="#34495E"
+        android:layout_marginBottom="4dp" />
+
+    <!-- Employee Address -->
+    <TextView
+        android:id="@+id/employeeAddress"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Address: N/A"
+        android:textSize="14sp"
+        android:textColor="#34495E"
+        android:layout_marginBottom="4dp" />
+
+    <!-- Employee Created Date -->
+    <TextView
+        android:id="@+id/employeeCreatedDate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Created: N/A"
+        android:textSize="12sp"
+        android:textColor="#7F8C8D" />
+
+</LinearLayout>

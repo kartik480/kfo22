@@ -27,7 +27,7 @@ public class BusinessHeadActiveEmpListActivity extends AppCompatActivity {
     private static final String TAG = "BusinessHeadActiveEmpList";
     private static final String API_BASE_URL = "https://emp.kfinone.com/mobile/api";
 
-    private TextView titleText, errorText;
+    private TextView titleText, errorText, employeeCount;
     private ProgressBar progressBar;
     private RecyclerView usersRecyclerView;
     private BusinessHeadActiveEmpListAdapter adapter;
@@ -67,8 +67,12 @@ public class BusinessHeadActiveEmpListActivity extends AppCompatActivity {
         progressBar = findViewById(R.id.progressBar);
         errorText = findViewById(R.id.errorText);
         usersRecyclerView = findViewById(R.id.usersRecyclerView);
+        employeeCount = findViewById(R.id.employeeCount);
 
-        titleText.setText("Employee List");
+        titleText.setText("Business Head Active Employee List");
+        if (employeeCount != null) {
+            employeeCount.setText("Total Employees: 0");
+        }
     }
 
     private void setupToolbar() {
@@ -146,52 +150,78 @@ public class BusinessHeadActiveEmpListActivity extends AppCompatActivity {
             String status = response.getString("status");
 
             if ("success".equals(status)) {
-                JSONArray users = response.getJSONArray("users");
+                JSONObject data = response.getJSONObject("data");
+                JSONArray teamMembers = data.getJSONArray("team_members");
+                
+                Log.d(TAG, "Team members count: " + teamMembers.length());
+                
                 userList.clear();
 
-                for (int i = 0; i < users.length(); i++) {
-                    JSONObject userObj = users.getJSONObject(i);
+                for (int i = 0; i < teamMembers.length(); i++) {
+                    JSONObject userObj = teamMembers.getJSONObject(i);
+                    
+                    // Use first_name and last_name columns directly
+                    String firstName = userObj.optString("first_name", "");
+                    String lastName = userObj.optString("last_name", "");
+                    String phoneNumber = userObj.optString("Phone_number", "");
+                    String email = userObj.optString("email_id", "");
+                    String company = userObj.optString("company_name", "");
+                    String userStatus = userObj.optString("status", "");
+                    String reportingTo = userObj.optString("reportingTo", "");
+                    String aliasName = userObj.optString("alias_name", "");
+                    String rank = userObj.optString("rank", "");
+                    
+                    // Log the user data for debugging
+                    Log.d(TAG, "Processing user: " + firstName + " " + lastName + " (reportingTo: " + reportingTo + ")");
+                    Log.d(TAG, "Name fields - first_name: '" + firstName + "', last_name: '" + lastName + "', alias_name: '" + aliasName + "'");
+                    
                     BusinessHeadUser user = new BusinessHeadUser(
-                        userObj.optString("id"),
-                        userObj.optString("username"),
-                        userObj.optString("alias_name"),
-                        userObj.optString("first_name"),
-                        userObj.optString("last_name"),
-                        userObj.optString("password"),
-                        userObj.optString("Phone_number"),
-                        userObj.optString("email_id"),
-                        userObj.optString("alternative_mobile_number"),
-                        userObj.optString("company_name"),
-                        userObj.optString("branch_state_name_id"),
-                        userObj.optString("branch_location_id"),
-                        userObj.optString("bank_id"),
-                        userObj.optString("account_type_id"),
-                        userObj.optString("office_address"),
-                        userObj.optString("residential_address"),
-                        userObj.optString("aadhaar_number"),
-                        userObj.optString("pan_number"),
-                        userObj.optString("account_number"),
-                        userObj.optString("ifsc_code"),
-                        userObj.optString("rank"),
-                        userObj.optString("status"),
-                        userObj.optString("reportingTo"),
-                        userObj.optString("pan_img"),
-                        userObj.optString("aadhaar_img"),
-                        userObj.optString("photo_img"),
-                        userObj.optString("bankproof_img"),
-                        userObj.optString("resume_file"),
-                        userObj.optString("data_icons"),
-                        userObj.optString("work_icons"),
-                        userObj.optString("user_id"),
-                        userObj.optString("createdBy"),
-                        userObj.optString("created_at"),
-                        userObj.optString("updated_at")
+                        userObj.optString("id", ""),
+                        userObj.optString("username", ""),
+                        aliasName,
+                        firstName,
+                        lastName,
+                        userObj.optString("password", ""),
+                        phoneNumber,
+                        email,
+                        userObj.optString("alternative_mobile_number", ""),
+                        company,
+                        userObj.optString("branch_state_name_id", ""),
+                        userObj.optString("branch_location_id", ""),
+                        userObj.optString("bank_id", ""),
+                        userObj.optString("account_type_id", ""),
+                        userObj.optString("office_address", ""),
+                        userObj.optString("residential_address", ""),
+                        userObj.optString("aadhaar_number", ""),
+                        userObj.optString("pan_number", ""),
+                        userObj.optString("account_number", ""),
+                        userObj.optString("ifsc_code", ""),
+                        rank,
+                        userStatus,
+                        reportingTo,
+                        userObj.optString("pan_img", ""),
+                        userObj.optString("aadhaar_img", ""),
+                        userObj.optString("photo_img", ""),
+                        userObj.optString("bankproof_img", ""),
+                        userObj.optString("resume_file", ""),
+                        userObj.optString("data_icons", ""),
+                        userObj.optString("work_icons", ""),
+                        userObj.optString("user_id", ""),
+                        userObj.optString("createdBy", ""),
+                        userObj.optString("created_at", ""),
+                        userObj.optString("updated_at", "")
                     );
                     userList.add(user);
+                    Log.d(TAG, "Added employee: " + firstName + " " + lastName + " (ID: " + user.getId() + ")");
                 }
 
                 adapter.notifyDataSetChanged();
                 showLoading(false);
+
+                // Update employee count
+                if (employeeCount != null) {
+                    employeeCount.setText("Total Employees: " + userList.size());
+                }
 
                 if (userList.isEmpty()) {
                     showError("No employees found for this user");

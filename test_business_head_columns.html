@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Business Head Active Emp List - API Test</title>
+    <title>Business Head API - Column Structure Test</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            max-width: 1200px;
+            max-width: 1000px;
             margin: 0 auto;
             padding: 20px;
             background-color: #f5f5f5;
@@ -18,21 +18,6 @@
             border-radius: 8px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
             margin-bottom: 20px;
-        }
-        .form-group {
-            margin-bottom: 15px;
-        }
-        label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-        }
-        input[type="text"] {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 14px;
         }
         button {
             background-color: #007bff;
@@ -97,26 +82,22 @@
             color: #666;
             margin-top: 5px;
         }
+        .column-info {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 15px;
+            margin: 20px 0;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>🎯 Business Head Active Emp List - API Test</h1>
-        <p>Testing the Business Head Active Employee List API functionality</p>
+        <h1>🔧 Business Head API - Column Structure Test</h1>
+        <p>Testing the Business Head API with correct column handling and reportingTo focus</p>
         
-        <div class="form-group">
-            <label for="userId">User ID:</label>
-            <input type="text" id="userId" placeholder="Enter Business Head user ID (e.g., 1, 2, 3)" value="1">
-        </div>
-        
-        <div class="form-group">
-            <label for="username">Username:</label>
-            <input type="text" id="username" placeholder="Enter Business Head username (e.g., admin, bh_user)" value="admin">
-        </div>
-        
-        <button onclick="testWithUserId()">🚀 Test with User ID</button>
-        <button onclick="testWithUsername()">🚀 Test with Username</button>
-        <button onclick="clearResults()">🗑️ Clear Results</button>
+        <button onclick="testAPI()">🚀 Test API</button>
+        <button onclick="clearResults()">🗑️ Clear</button>
         
         <div class="stats" id="stats" style="display: none;">
             <div class="stat-card">
@@ -133,38 +114,36 @@
     </div>
 
     <div class="container">
-        <h2>📋 Implementation Status</h2>
-        <div class="info">
-            <strong>✅ Completed:</strong><br>
-            • API endpoint: get_business_head_active_emp_list.php<br>
-            • Android Activity: BusinessHeadActiveEmpListActivity<br>
-            • Android Adapter: BusinessHeadActiveEmpListAdapter<br>
-            • Layout files: activity_business_head_active_emp_list.xml, item_business_head_user.xml<br>
-            • Navigation integration in BusinessHeadPanelActivity<br>
-            • Response format matches CBO implementation
-        </div>
+        <h2>📋 What Was Fixed</h2>
+        <ul>
+            <li>✅ <strong>Column Structure:</strong> Dynamic column detection and mapping</li>
+            <li>✅ <strong>reportingTo Focus:</strong> API now focuses on reportingTo column to fetch users</li>
+            <li>✅ <strong>Fallback Logic:</strong> Uses available columns instead of hardcoded ones</li>
+            <li>✅ <strong>Error Handling:</strong> Better handling of missing columns</li>
+        </ul>
     </div>
 
     <div class="container">
-        <h2>🔧 Test Scenarios</h2>
-        <ol>
-            <li><strong>User ID Test:</strong> Test with existing Business Head user ID</li>
-            <li><strong>Username Test:</strong> Test with existing Business Head username</li>
-            <li><strong>Response Format:</strong> Verify JSON structure matches CBO implementation</li>
-            <li><strong>Data Integrity:</strong> Check that employee data is properly returned</li>
-            <li><strong>Statistics:</strong> Verify count calculations are accurate</li>
-        </ol>
+        <h2>🔍 Column Mapping Strategy</h2>
+        <div class="column-info">
+            <strong>Expected Columns:</strong><br>
+            • id → id<br>
+            • username → username<br>
+            • first_name → firstName (or available name column)<br>
+            • last_name → lastName (or available name column)<br>
+            • Phone_number → mobile<br>
+            • email_id → email_id<br>
+            • company_name → company_name<br>
+            • status → status<br>
+            • reportingTo → reportingTo (key column for filtering)<br>
+            <br>
+            <strong>Key Focus:</strong> The API now dynamically detects available columns and maps them correctly, focusing on the reportingTo column to fetch users reporting to the Business Head.
+        </div>
     </div>
 
     <script>
-        async function testWithUserId() {
-            const userId = document.getElementById('userId').value.trim();
-            if (!userId) {
-                showResponse('Please enter a user ID', 'error');
-                return;
-            }
-            
-            showResponse('🔄 Testing Business Head Active Emp List API with User ID...', 'info');
+        async function testAPI() {
+            showResponse('🔄 Testing Business Head API with column structure fix...', 'info');
             
             try {
                 const url = 'https://emp.kfinone.com/mobile/api/get_business_head_active_emp_list.php';
@@ -173,7 +152,7 @@
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({ user_id: userId })
+                    body: JSON.stringify({ user_id: "45" })
                 });
                 
                 const data = await response.json();
@@ -182,41 +161,13 @@
                     showResponse(JSON.stringify(data, null, 2), 'success');
                     updateStats(data);
                     document.getElementById('stats').style.display = 'grid';
-                } else {
-                    showResponse(JSON.stringify(data, null, 2), 'error');
-                    document.getElementById('stats').style.display = 'none';
-                }
-            } catch (error) {
-                showResponse(`❌ Error: ${error.message}`, 'error');
-                document.getElementById('stats').style.display = 'none';
-            }
-        }
-        
-        async function testWithUsername() {
-            const username = document.getElementById('username').value.trim();
-            if (!username) {
-                showResponse('Please enter a username', 'error');
-                return;
-            }
-            
-            showResponse('🔄 Testing Business Head Active Emp List API with Username...', 'info');
-            
-            try {
-                const url = 'https://emp.kfinone.com/mobile/api/get_business_head_active_emp_list.php';
-                const response = await fetch(url, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ username: username })
-                });
-                
-                const data = await response.json();
-                
-                if (data.status === 'success') {
-                    showResponse(JSON.stringify(data, null, 2), 'success');
-                    updateStats(data);
-                    document.getElementById('stats').style.display = 'grid';
+                    
+                    // Show column information
+                    if (data.data && data.data.team_members && data.data.team_members.length > 0) {
+                        const firstUser = data.data.team_members[0];
+                        const columns = Object.keys(firstUser);
+                        showResponse(JSON.stringify(data, null, 2) + '\n\n📊 Available Columns: ' + columns.join(', '), 'success');
+                    }
                 } else {
                     showResponse(JSON.stringify(data, null, 2), 'error');
                     document.getElementById('stats').style.display = 'none';
@@ -247,4 +198,4 @@
         }
     </script>
 </body>
-</html> 
+</html>

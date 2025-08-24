@@ -160,10 +160,13 @@ public class RegionalBusinessHeadPanelActivity extends AppCompatActivity {
         if (cardTotalEmp != null) {
             cardTotalEmp.setOnClickListener(v -> {
                 // Navigate to RBH Active Emp List
-                android.util.Log.d("RBHPanel", "Total Emp Card clicked! Navigating to RBHActiveEmpListActivity");
-                Intent intent = new Intent(this, RBHActiveEmpListActivity.class);
+                android.util.Log.d("RBHPanel", "Total Emp Card clicked! Navigating to RegionalBusinessHeadActiveEmpListActivity");
+                Intent intent = new Intent(this, RegionalBusinessHeadActiveEmpListActivity.class);
                 intent.putExtra("USERNAME", userName);
                 intent.putExtra("USER_ID", userId);
+                intent.putExtra("FIRST_NAME", firstName);
+                intent.putExtra("LAST_NAME", lastName);
+                intent.putExtra("SOURCE_PANEL", "RBH_PANEL");
                 startActivity(intent);
             });
         }
@@ -257,9 +260,12 @@ public class RegionalBusinessHeadPanelActivity extends AppCompatActivity {
         
         if (cardStrategy != null) {
             cardStrategy.setOnClickListener(v -> {
-                Intent intent = new Intent(this, RBHActiveEmpListActivity.class);
+                Intent intent = new Intent(this, RegionalBusinessHeadActiveEmpListActivity.class);
                 intent.putExtra("USERNAME", userName);
-                intent.putExtra("USER_ID", getUserIdFromUsername(userName));
+                intent.putExtra("USER_ID", userId);
+                intent.putExtra("FIRST_NAME", firstName);
+                intent.putExtra("LAST_NAME", lastName);
+                intent.putExtra("SOURCE_PANEL", "RBH_PANEL");
                 startActivity(intent);
             });
         }

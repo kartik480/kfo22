@@ -28,12 +28,23 @@
             android:id="@+id/titleText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Employee List"
+            android:text="Business Head Active Employee List"
             android:textSize="24sp"
             android:textStyle="bold"
             android:textColor="#2C3E50"
             android:gravity="center"
-            android:layout_marginBottom="24dp" />
+            android:layout_marginBottom="16dp" />
+
+        <!-- Employee Count -->
+        <TextView
+            android:id="@+id/employeeCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Total Employees: 0"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="#2C3E50"
+            android:layout_marginBottom="16dp" />
 
         <!-- Progress Bar -->
         <ProgressBar

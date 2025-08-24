@@ -52,7 +52,7 @@ public class SuperAdminRBHActivity extends AppCompatActivity {
         activeEmpListCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(SuperAdminRBHActivity.this, CBOActiveEmpListActivity.class);
+                Intent intent = new Intent(SuperAdminRBHActivity.this, RegionalBusinessHeadActiveEmpListActivity.class);
                 // Pass user data
                 if (firstName != null) intent.putExtra("FIRST_NAME", firstName);
                 if (lastName != null) intent.putExtra("LAST_NAME", lastName);

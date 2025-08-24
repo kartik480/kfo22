@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Business Head Active Emp List - API Test</title>
+    <title>RBH Active Emp List API Test</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -42,7 +42,6 @@
             border-radius: 4px;
             cursor: pointer;
             font-size: 14px;
-            margin-right: 10px;
         }
         button:hover {
             background-color: #0056b3;
@@ -101,22 +100,15 @@
 </head>
 <body>
     <div class="container">
-        <h1>🎯 Business Head Active Emp List - API Test</h1>
-        <p>Testing the Business Head Active Employee List API functionality</p>
+        <h1>🔍 RBH Active Emp List API Test</h1>
+        <p>Test the Regional Business Head Active Employee List API functionality</p>
         
         <div class="form-group">
-            <label for="userId">User ID:</label>
-            <input type="text" id="userId" placeholder="Enter Business Head user ID (e.g., 1, 2, 3)" value="1">
+            <label for="reportingTo">Reporting To (Username):</label>
+            <input type="text" id="reportingTo" placeholder="Enter username (e.g., admin, rbh_user)" value="admin">
         </div>
         
-        <div class="form-group">
-            <label for="username">Username:</label>
-            <input type="text" id="username" placeholder="Enter Business Head username (e.g., admin, bh_user)" value="admin">
-        </div>
-        
-        <button onclick="testWithUserId()">🚀 Test with User ID</button>
-        <button onclick="testWithUsername()">🚀 Test with Username</button>
-        <button onclick="clearResults()">🗑️ Clear Results</button>
+        <button onclick="testAPI()">🚀 Test RBH Active Emp List API</button>
         
         <div class="stats" id="stats" style="display: none;">
             <div class="stat-card">
@@ -127,109 +119,68 @@
                 <div class="stat-number" id="activeEmployees">0</div>
                 <div class="stat-label">Active Employees</div>
             </div>
+            <div class="stat-card">
+                <div class="stat-number" id="totalTeamMembers">0</div>
+                <div class="stat-label">Team Members</div>
+            </div>
         </div>
         
         <div id="response" class="response" style="display: none;"></div>
     </div>
 
     <div class="container">
-        <h2>📋 Implementation Status</h2>
+        <h2>📋 API Information</h2>
         <div class="info">
-            <strong>✅ Completed:</strong><br>
-            • API endpoint: get_business_head_active_emp_list.php<br>
-            • Android Activity: BusinessHeadActiveEmpListActivity<br>
-            • Android Adapter: BusinessHeadActiveEmpListAdapter<br>
-            • Layout files: activity_business_head_active_emp_list.xml, item_business_head_user.xml<br>
-            • Navigation integration in BusinessHeadPanelActivity<br>
-            • Response format matches CBO implementation
+            <strong>Endpoint:</strong> GET /api/get_rbh_active_emp_list.php<br>
+            <strong>Parameter:</strong> reportingTo (username)<br>
+            <strong>Purpose:</strong> Fetch active employees reporting to a specific RBH user<br>
+            <strong>Table:</strong> tbl_rbh_users<br>
+            <strong>Response Format:</strong> JSON with manager, team_members, and statistics
         </div>
     </div>
 
     <div class="container">
-        <h2>🔧 Test Scenarios</h2>
+        <h2>🔧 How It Works</h2>
         <ol>
-            <li><strong>User ID Test:</strong> Test with existing Business Head user ID</li>
-            <li><strong>Username Test:</strong> Test with existing Business Head username</li>
-            <li><strong>Response Format:</strong> Verify JSON structure matches CBO implementation</li>
-            <li><strong>Data Integrity:</strong> Check that employee data is properly returned</li>
-            <li><strong>Statistics:</strong> Verify count calculations are accurate</li>
+            <li>API receives a username in the <code>reportingTo</code> parameter</li>
+            <li>Finds the manager (RBH user) in <code>tbl_rbh_users</code> where <code>username = reportingTo</code></li>
+            <li>Fetches all team members where <code>reportingTo = manager_username</code></li>
+            <li>Returns structured response with manager details, team members, and statistics</li>
+            <li>Uses the same response format as CBO API for consistency</li>
         </ol>
     </div>
 
     <script>
-        async function testWithUserId() {
-            const userId = document.getElementById('userId').value.trim();
-            if (!userId) {
-                showResponse('Please enter a user ID', 'error');
-                return;
-            }
+        async function testAPI() {
+            const reportingTo = document.getElementById('reportingTo').value.trim();
+            const responseDiv = document.getElementById('response');
+            const statsDiv = document.getElementById('stats');
             
-            showResponse('🔄 Testing Business Head Active Emp List API with User ID...', 'info');
-            
-            try {
-                const url = 'https://emp.kfinone.com/mobile/api/get_business_head_active_emp_list.php';
-                const response = await fetch(url, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ user_id: userId })
-                });
-                
-                const data = await response.json();
-                
-                if (data.status === 'success') {
-                    showResponse(JSON.stringify(data, null, 2), 'success');
-                    updateStats(data);
-                    document.getElementById('stats').style.display = 'grid';
-                } else {
-                    showResponse(JSON.stringify(data, null, 2), 'error');
-                    document.getElementById('stats').style.display = 'none';
-                }
-            } catch (error) {
-                showResponse(`❌ Error: ${error.message}`, 'error');
-                document.getElementById('stats').style.display = 'none';
-            }
-        }
-        
-        async function testWithUsername() {
-            const username = document.getElementById('username').value.trim();
-            if (!username) {
+            if (!reportingTo) {
                 showResponse('Please enter a username', 'error');
                 return;
             }
             
-            showResponse('🔄 Testing Business Head Active Emp List API with Username...', 'info');
+            showResponse('🔄 Testing API...', 'info');
             
             try {
-                const url = 'https://emp.kfinone.com/mobile/api/get_business_head_active_emp_list.php';
-                const response = await fetch(url, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ username: username })
-                });
+                const url = `https://emp.kfinone.com/mobile/api/get_rbh_active_emp_list.php?reportingTo=${encodeURIComponent(reportingTo)}`;
                 
+                const response = await fetch(url);
                 const data = await response.json();
                 
                 if (data.status === 'success') {
                     showResponse(JSON.stringify(data, null, 2), 'success');
                     updateStats(data);
-                    document.getElementById('stats').style.display = 'grid';
+                    statsDiv.style.display = 'grid';
                 } else {
                     showResponse(JSON.stringify(data, null, 2), 'error');
-                    document.getElementById('stats').style.display = 'none';
+                    statsDiv.style.display = 'none';
                 }
             } catch (error) {
                 showResponse(`❌ Error: ${error.message}`, 'error');
-                document.getElementById('stats').style.display = 'none';
+                statsDiv.style.display = 'none';
             }
-        }
-        
-        function clearResults() {
-            document.getElementById('response').style.display = 'none';
-            document.getElementById('stats').style.display = 'none';
         }
         
         function showResponse(message, type) {
@@ -243,8 +194,16 @@
             if (data.counts) {
                 document.getElementById('totalEmployees').textContent = data.counts.total_team_members || 0;
                 document.getElementById('activeEmployees').textContent = data.counts.active_members || 0;
+                document.getElementById('totalTeamMembers').textContent = data.counts.total_team_members || 0;
             }
         }
+        
+        // Auto-test on page load
+        window.onload = function() {
+            setTimeout(() => {
+                testAPI();
+            }, 1000);
+        };
     </script>
 </body>
-</html> 
+</html>

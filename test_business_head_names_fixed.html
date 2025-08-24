@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Business Head API - Names Fixed Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-right: 10px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .response {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 15px;
+            margin-top: 20px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+        .success {
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+        .info {
+            background-color: #d1ecf1;
+            border-color: #bee5eb;
+            color: #0c5460;
+        }
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .stat-card {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        .stat-number {
+            font-size: 24px;
+            font-weight: bold;
+            color: #007bff;
+        }
+        .stat-label {
+            font-size: 14px;
+            color: #666;
+            margin-top: 5px;
+        }
+        .user-list {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        .user-item {
+            background: white;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 4px solid #007bff;
+        }
+        .user-name {
+            font-weight: bold;
+            color: #007bff;
+            font-size: 16px;
+        }
+        .user-details {
+            color: #666;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 Business Head API - Names Fixed Test</h1>
+        <p>Testing that actual names are displayed and view button shows complete information</p>
+        
+        <button onclick="testAPI()">🚀 Test API</button>
+        <button onclick="clearResults()">🗑️ Clear</button>
+        
+        <div class="stats" id="stats" style="display: none;">
+            <div class="stat-card">
+                <div class="stat-number" id="totalEmployees">0</div>
+                <div class="stat-label">Total Employees</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="activeEmployees">0</div>
+                <div class="stat-label">Active Employees</div>
+            </div>
+        </div>
+        
+        <div class="user-list" id="userList" style="display: none;">
+            <h3>👥 Employee List (Names Fixed)</h3>
+            <div id="userItems"></div>
+        </div>
+        
+        <div id="response" class="response" style="display: none;"></div>
+    </div>
+
+    <div class="container">
+        <h2>📋 What Was Fixed</h2>
+        <ul>
+            <li>✅ <strong>Name Display:</strong> Fixed "Unknown User" issue - now shows actual names</li>
+            <li>✅ <strong>Column Mapping:</strong> Better handling of firstName, lastName, and aliasName</li>
+            <li>✅ <strong>View Button:</strong> Now shows complete, organized user information</li>
+            <li>✅ <strong>Fallback Logic:</strong> Uses username if no name available</li>
+            <li>✅ <strong>Complete Data:</strong> API fetches all available user information</li>
+        </ul>
+    </div>
+
+    <div class="container">
+        <h2>🔍 Name Display Priority</h2>
+        <div class="user-list">
+            <strong>Name Display Logic:</strong><br>
+            1️⃣ <strong>firstName + lastName</strong> (if both available)<br>
+            2️⃣ <strong>firstName</strong> (if only first name available)<br>
+            3️⃣ <strong>lastName</strong> (if only last name available)<br>
+            4️⃣ <strong>aliasName</strong> (if alias available)<br>
+            5️⃣ <strong>username</strong> (if no names available)<br>
+            6️⃣ <strong>User ID</strong> (as last resort)<br>
+            <br>
+            <strong>Result:</strong> No more "Unknown User" - always shows meaningful identification!
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>👁️ View Button Features</h2>
+        <div class="user-list">
+            <strong>Complete Information Display:</strong><br>
+            📋 <strong>Basic Information:</strong> ID, Username, Names, Alias<br>
+            📞 <strong>Contact Information:</strong> Phone, Email, Alternative Mobile<br>
+            🏢 <strong>Company & Location:</strong> Company, Branch State, Location<br>
+            🏦 <strong>Banking Information:</strong> Bank, Account Type, Account Number, IFSC<br>
+            📍 <strong>Addresses:</strong> Office and Residential Addresses<br>
+            🆔 <strong>Identity Documents:</strong> Aadhaar, PAN Numbers<br>
+            📊 <strong>Status & Hierarchy:</strong> Rank, Status, Reporting To<br>
+            📁 <strong>Files & Images:</strong> PAN, Aadhaar, Photo, Bank Proof, Resume<br>
+            🔧 <strong>Additional Info:</strong> Data Icons, Work Icons, Creation Details<br>
+            <br>
+            <strong>Plus:</strong> Copy to clipboard functionality and organized sections!
+        </div>
+    </div>
+
+    <script>
+        async function testAPI() {
+            showResponse('🔄 Testing Business Head API with names fixed...', 'info');
+            
+            try {
+                const url = 'https://emp.kfinone.com/mobile/api/get_business_head_active_emp_list.php';
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ user_id: "45" })
+                });
+                
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    showResponse(JSON.stringify(data, null, 2), 'success');
+                    updateStats(data);
+                    updateUserList(data);
+                    document.getElementById('stats').style.display = 'grid';
+                    document.getElementById('userList').style.display = 'block';
+                } else {
+                    showResponse(JSON.stringify(data, null, 2), 'error');
+                    document.getElementById('stats').style.display = 'none';
+                    document.getElementById('userList').style.display = 'none';
+                }
+            } catch (error) {
+                showResponse(`❌ Error: ${error.message}`, 'error');
+                document.getElementById('stats').style.display = 'none';
+                document.getElementById('userList').style.display = 'none';
+            }
+        }
+        
+        function clearResults() {
+            document.getElementById('response').style.display = 'none';
+            document.getElementById('stats').style.display = 'none';
+            document.getElementById('userList').style.display = 'none';
+        }
+        
+        function showResponse(message, type) {
+            const responseDiv = document.getElementById('response');
+            responseDiv.textContent = message;
+            responseDiv.className = `response ${type}`;
+            responseDiv.style.display = 'block';
+        }
+        
+        function updateStats(data) {
+            if (data.counts) {
+                document.getElementById('totalEmployees').textContent = data.counts.total_team_members || 0;
+                document.getElementById('activeEmployees').textContent = data.counts.active_members || 0;
+            }
+        }
+        
+        function updateUserList(data) {
+            const userItemsDiv = document.getElementById('userItems');
+            userItemsDiv.innerHTML = '';
+            
+            if (data.data && data.data.team_members) {
+                data.data.team_members.forEach((user, index) => {
+                    const userDiv = document.createElement('div');
+                    userDiv.className = 'user-item';
+                    
+                    // Get the best available name
+                    const firstName = user.first_name || user.firstName || '';
+                    const lastName = user.last_name || user.lastName || '';
+                    const aliasName = user.alias_name || '';
+                    const username = user.username || '';
+                    
+                    let displayName = '';
+                    if (firstName && lastName) {
+                        displayName = firstName + ' ' + lastName;
+                    } else if (firstName) {
+                        displayName = firstName;
+                    } else if (lastName) {
+                        displayName = lastName;
+                    } else if (aliasName) {
+                        displayName = aliasName;
+                    } else if (username) {
+                        displayName = username;
+                    } else {
+                        displayName = 'User ID: ' + (user.id || 'N/A');
+                    }
+                    
+                    userDiv.innerHTML = `
+                        <div class="user-name">${displayName}</div>
+                        <div class="user-details">
+                            <strong>ID:</strong> ${user.id || 'N/A'} | 
+                            <strong>Username:</strong> ${user.username || 'N/A'} | 
+                            <strong>Email:</strong> ${user.email_id || 'N/A'} | 
+                            <strong>Phone:</strong> ${user.Phone_number || user.mobile || 'N/A'} | 
+                            <strong>Status:</strong> ${user.status || 'N/A'}
+                        </div>
+                    `;
+                    
+                    userItemsDiv.appendChild(userDiv);
+                });
+            }
+        }
+    </script>
+</body>
+</html>

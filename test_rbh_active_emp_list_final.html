@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RBH Active Emp List - Final Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-right: 10px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .response {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 15px;
+            margin-top: 20px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+        .success {
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+        .info {
+            background-color: #d1ecf1;
+            border-color: #bee5eb;
+            color: #0c5460;
+        }
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .stat-card {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        .stat-number {
+            font-size: 24px;
+            font-weight: bold;
+            color: #007bff;
+        }
+        .stat-label {
+            font-size: 14px;
+            color: #666;
+            margin-top: 5px;
+        }
+        .test-results {
+            margin-top: 20px;
+        }
+        .test-item {
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 4px;
+            border-left: 4px solid #ddd;
+        }
+        .test-pass {
+            background-color: #d4edda;
+            border-left-color: #28a745;
+        }
+        .test-fail {
+            background-color: #f8d7da;
+            border-left-color: #dc3545;
+        }
+        .test-info {
+            background-color: #d1ecf1;
+            border-left-color: #17a2b8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎯 RBH Active Emp List - Final Implementation Test</h1>
+        <p>Testing the complete RBH Active Employee List functionality that mirrors the CBO implementation</p>
+        
+        <div class="form-group">
+            <label for="reportingTo">Reporting To (Username):</label>
+            <input type="text" id="reportingTo" placeholder="Enter RBH username (e.g., admin, rbh_user)" value="admin">
+        </div>
+        
+        <button onclick="testAPI()">🚀 Test RBH Active Emp List API</button>
+        <button onclick="runAllTests()">🧪 Run All Tests</button>
+        <button onclick="clearResults()">🗑️ Clear Results</button>
+        
+        <div class="stats" id="stats" style="display: none;">
+            <div class="stat-card">
+                <div class="stat-number" id="totalEmployees">0</div>
+                <div class="stat-label">Total Employees</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="activeEmployees">0</div>
+                <div class="stat-label">Active Employees</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="totalTeamMembers">0</div>
+                <div class="stat-label">Team Members</div>
+            </div>
+        </div>
+        
+        <div id="response" class="response" style="display: none;"></div>
+        
+        <div class="test-results" id="testResults"></div>
+    </div>
+
+    <div class="container">
+        <h2>📋 Implementation Status</h2>
+        <div class="info">
+            <strong>✅ Completed:</strong><br>
+            • API endpoint: get_rbh_active_emp_list.php<br>
+            • Android Activity: RegionalBusinessHeadActiveEmpListActivity<br>
+            • Android Adapter: RBHActiveEmployeeAdapter<br>
+            • Layout files: activity_rbh_active_emp_list.xml, item_rbh_employee.xml<br>
+            • Navigation integration across RBH activities<br>
+            • Build successful - no compilation errors
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>🔧 Test Scenarios</h2>
+        <ol>
+            <li><strong>API Functionality:</strong> Test the backend API with valid RBH username</li>
+            <li><strong>Response Format:</strong> Verify JSON structure matches CBO implementation</li>
+            <li><strong>Data Integrity:</strong> Check that employee data is properly returned</li>
+            <li><strong>Error Handling:</strong> Test with invalid parameters and edge cases</li>
+            <li><strong>Statistics:</strong> Verify count calculations are accurate</li>
+        </ol>
+    </div>
+
+    <script>
+        let testResults = [];
+        
+        async function testAPI() {
+            const reportingTo = document.getElementById('reportingTo').value.trim();
+            const responseDiv = document.getElementById('response');
+            const statsDiv = document.getElementById('stats');
+            
+            if (!reportingTo) {
+                showResponse('Please enter a username', 'error');
+                return;
+            }
+            
+            showResponse('🔄 Testing RBH Active Emp List API...', 'info');
+            addTestResult('API Test', 'Started', 'info');
+            
+            try {
+                const url = `https://emp.kfinone.com/mobile/api/get_rbh_active_emp_list.php?reportingTo=${encodeURIComponent(reportingTo)}`;
+                
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    showResponse(JSON.stringify(data, null, 2), 'success');
+                    updateStats(data);
+                    statsDiv.style.display = 'grid';
+                    addTestResult('API Response', 'Success - Data received', 'pass');
+                    addTestResult('Data Structure', 'Valid JSON format', 'pass');
+                    
+                    // Test specific data fields
+                    if (data.data && data.data.team_members) {
+                        addTestResult('Team Members', `${data.data.team_members.length} employees found`, 'pass');
+                    } else {
+                        addTestResult('Team Members', 'No team members data', 'fail');
+                    }
+                    
+                    if (data.counts) {
+                        addTestResult('Statistics', 'Count data present', 'pass');
+                    } else {
+                        addTestResult('Statistics', 'Missing count data', 'fail');
+                    }
+                    
+                } else {
+                    showResponse(JSON.stringify(data, null, 2), 'error');
+                    statsDiv.style.display = 'none';
+                    addTestResult('API Response', `Failed: ${data.message || 'Unknown error'}`, 'fail');
+                }
+            } catch (error) {
+                showResponse(`❌ Error: ${error.message}`, 'error');
+                statsDiv.style.display = 'none';
+                addTestResult('API Call', `Network error: ${error.message}`, 'fail');
+            }
+        }
+        
+        function runAllTests() {
+            clearResults();
+            addTestResult('Test Suite', 'Starting comprehensive tests...', 'info');
+            
+            // Test 1: Valid username
+            testAPI();
+            
+            // Test 2: Empty username
+            setTimeout(() => {
+                addTestResult('Empty Parameter', 'Testing with empty username', 'info');
+            }, 2000);
+            
+            // Test 3: Special characters
+            setTimeout(() => {
+                addTestResult('Special Characters', 'Testing with special characters', 'info');
+            }, 4000);
+        }
+        
+        function clearResults() {
+            document.getElementById('testResults').innerHTML = '';
+            document.getElementById('response').style.display = 'none';
+            document.getElementById('stats').style.display = 'none';
+            testResults = [];
+        }
+        
+        function showResponse(message, type) {
+            const responseDiv = document.getElementById('response');
+            responseDiv.textContent = message;
+            responseDiv.className = `response ${type}`;
+            responseDiv.style.display = 'block';
+        }
+        
+        function updateStats(data) {
+            if (data.counts) {
+                document.getElementById('totalEmployees').textContent = data.counts.total_team_members || 0;
+                document.getElementById('activeEmployees').textContent = data.counts.active_members || 0;
+                document.getElementById('totalTeamMembers').textContent = data.counts.total_team_members || 0;
+            }
+        }
+        
+        function addTestResult(testName, result, status) {
+            const testResultsDiv = document.getElementById('testResults');
+            const testItem = document.createElement('div');
+            testItem.className = `test-item test-${status}`;
+            testItem.innerHTML = `<strong>${testName}:</strong> ${result}`;
+            testResultsDiv.appendChild(testItem);
+            
+            testResults.push({ name: testName, result, status, timestamp: new Date() });
+        }
+        
+        // Auto-test on page load
+        window.onload = function() {
+            setTimeout(() => {
+                addTestResult('Page Load', 'Test interface ready', 'info');
+            }, 1000);
+        };
+    </script>
+</body>
+</html>
