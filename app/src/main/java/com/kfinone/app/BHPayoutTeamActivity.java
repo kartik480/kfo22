@@ -131,7 +131,7 @@ public class BHPayoutTeamActivity extends AppCompatActivity {
     
     private void updateWelcomeMessage() {
         welcomeText.setText("Welcome, " + userName + " (" + userDesignation + ")");
-        titleText.setText("My Payout Types");
+        titleText.setText("My Assigned Payout Types");
     }
     
     private void goBack() {
@@ -149,11 +149,11 @@ public class BHPayoutTeamActivity extends AppCompatActivity {
     }
     
     private void loadPayoutTypes() {
-        // Use the simple working endpoint temporarily
-        String url = BASE_URL + "get_business_head_payout_types_simple_working.php";
-        Log.d(TAG, "Fetching payout types from: " + url);
+        // Use the new endpoint that fetches payout types from tbl_payout_type using user's payout_icons
+        String url = BASE_URL + "get_user_payout_types_details.php?user_id=" + userId;
+        Log.d(TAG, "Fetching payout types details for user " + userId + " from: " + url);
         
-        // Simple GET request - no body needed for now
+        // Simple GET request with user_id parameter
         JsonObjectRequest jsonRequest = new JsonObjectRequest(
             Request.Method.GET,
             url,
@@ -169,10 +169,19 @@ public class BHPayoutTeamActivity extends AppCompatActivity {
                             JSONArray dataArray = response.getJSONArray("data");
                             List<PayoutType> newPayoutTypes = new ArrayList<>();
                             
+                            // Log additional response details for debugging
+                            if (response.has("payout_icons_count")) {
+                                Log.d(TAG, "User has " + response.getInt("payout_icons_count") + " payout icons assigned");
+                            }
+                            if (response.has("count")) {
+                                Log.d(TAG, "Found " + response.getInt("count") + " payout types in tbl_payout_type");
+                            }
+                            
                             for (int i = 0; i < dataArray.length(); i++) {
                                 JSONObject payoutType = dataArray.getJSONObject(i);
                                 int id = payoutType.getInt("id");
                                 String name = payoutType.getString("payout_name");
+                                Log.d(TAG, "Payout Type: ID=" + id + ", Name=" + name);
                                 newPayoutTypes.add(new PayoutType(id, name));
                             }
                             
@@ -184,9 +193,11 @@ public class BHPayoutTeamActivity extends AppCompatActivity {
                             if (payoutTypes.isEmpty()) {
                                 noDataCard.setVisibility(View.VISIBLE);
                                 payoutTypesRecyclerView.setVisibility(View.GONE);
+                                Log.d(TAG, "No payout types found for user " + userId + " - checking if user has payout_icons assigned");
                             } else {
                                 noDataCard.setVisibility(View.GONE);
                                 payoutTypesRecyclerView.setVisibility(View.VISIBLE);
+                                Log.d(TAG, "Successfully loaded " + payoutTypes.size() + " payout types from tbl_payout_type for user " + userId);
                             }
                             
                         } else {
@@ -194,6 +205,12 @@ public class BHPayoutTeamActivity extends AppCompatActivity {
                             Toast.makeText(BHPayoutTeamActivity.this, "Error: " + message, Toast.LENGTH_LONG).show();
                             noDataCard.setVisibility(View.VISIBLE);
                             payoutTypesRecyclerView.setVisibility(View.GONE);
+                            Log.e(TAG, "API returned error: " + message);
+                            
+                            // Log additional error details if available
+                            if (response.has("payout_icons_count")) {
+                                Log.e(TAG, "User has " + response.getInt("payout_icons_count") + " payout icons but API returned error");
+                            }
                         }
                     } catch (JSONException e) {
                         Log.e(TAG, "Error parsing JSON response", e);
@@ -206,7 +223,7 @@ public class BHPayoutTeamActivity extends AppCompatActivity {
             new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    Log.e(TAG, "Volley Error loading payout types", error);
+                    Log.e(TAG, "Volley Error loading payout types for user " + userId, error);
                     String errorMessage = "Network error: " + error.getMessage();
                     if (error.networkResponse != null) {
                         errorMessage += " (Status: " + error.networkResponse.statusCode + ")";

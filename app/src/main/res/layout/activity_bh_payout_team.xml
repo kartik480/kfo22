@@ -29,7 +29,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="My Payout Types"
+            android:text="My Assigned Payout Types"
             android:textSize="20sp"
             android:textStyle="bold"
             android:textColor="@color/black"
@@ -87,7 +87,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="No Payout Types Found"
+                android:text="No Assigned Payout Types Found"
                 android:textSize="18sp"
                 android:textStyle="bold"
                 android:textColor="@color/gray"
@@ -96,7 +96,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="You don't have any payout types assigned yet"
+                android:text="You don't have any payout types assigned to your account yet"
                 android:textSize="14sp"
                 android:textColor="@color/gray"
                 android:gravity="center"

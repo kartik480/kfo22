@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test User Payout Types Details</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .container { max-width: 900px; margin: 0 auto; }
+        .form-group { margin: 15px 0; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; }
+        input[type="text"] { width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; }
+        button { background: #007bff; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; margin-right: 10px; }
+        button:hover { background: #0056b3; }
+        .result { margin-top: 20px; padding: 15px; background: #f8f9fa; border-radius: 4px; }
+        .error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        pre { background: #f1f1f1; padding: 10px; border-radius: 4px; overflow-x: auto; }
+        .highlight { background: #fff3cd; padding: 10px; border-radius: 4px; border: 1px solid #ffeaa7; margin: 10px 0; }
+        .payout-table { width: 100%; border-collapse: collapse; margin: 15px 0; }
+        .payout-table th, .payout-table td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        .payout-table th { background-color: #f2f2f2; font-weight: bold; }
+        .payout-table tr:nth-child(even) { background-color: #f9f9f9; }
+        .summary-box { background: #e7f3ff; padding: 15px; border-radius: 4px; border: 1px solid #b3d9ff; margin: 15px 0; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎯 Test User Payout Types Details</h1>
+        <p>This tool fetches payout type details from <code>tbl_payout_type</code> using the IDs from user's <code>payout_icons</code>.</p>
+        
+        <div class="form-group">
+            <label for="userId">User ID:</label>
+            <input type="text" id="userId" placeholder="Enter user ID (e.g., 45)" value="45">
+        </div>
+        
+        <button onclick="getUserPayoutTypes()">🎯 Get Payout Types Details</button>
+        <button onclick="getRawPayoutIcons()">📋 Get Raw Payout Icons</button>
+        
+        <div id="result" class="result" style="display: none;"></div>
+    </div>
+
+    <script>
+        async function getUserPayoutTypes() {
+            const userId = document.getElementById('userId').value.trim();
+            const resultDiv = document.getElementById('result');
+            
+            if (!userId) {
+                showResult('Please enter a valid User ID', 'error');
+                return;
+            }
+            
+            const url = `https://emp.kfinone.com/mobile/api/get_user_payout_types_details.php?user_id=${userId}`;
+            
+            try {
+                showResult('🎯 Fetching payout types details...', 'success');
+                
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    let resultHtml = `
+                        <h3>✅ User Payout Types Retrieved Successfully</h3>
+                        
+                        <div class="summary-box">
+                            <h4>📊 Summary</h4>
+                            <p><strong>User ID:</strong> ${data.user_id}</p>
+                            <p><strong>Payout Icons Count:</strong> ${data.payout_icons_count}</p>
+                            <p><strong>Payout Types Found:</strong> ${data.count}</p>
+                            <p><strong>Raw payout_icons:</strong> ${data.payout_icons_raw}</p>
+                        </div>
+                    `;
+                    
+                    if (data.count > 0) {
+                        resultHtml += `
+                            <div class="highlight">
+                                <h4>📋 Payout Types Details (from tbl_payout_type)</h4>
+                                <table class="payout-table">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Payout Name</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                        `;
+                        
+                        data.data.forEach(payout => {
+                            resultHtml += `
+                                <tr>
+                                    <td>${payout.id}</td>
+                                    <td>${payout.payout_name}</td>
+                                </tr>
+                            `;
+                        });
+                        
+                        resultHtml += `
+                                    </tbody>
+                                </table>
+                            </div>
+                        `;
+                    } else {
+                        resultHtml += `
+                            <div class="highlight">
+                                <h4>⚠️ No Payout Types Found</h4>
+                                <p>User has ${data.payout_icons_count} payout icons assigned, but no matching payout types found in tbl_payout_type.</p>
+                            </div>
+                        `;
+                    }
+                    
+                    resultHtml += `
+                        <div class="highlight">
+                            <h4>🔍 Query Used</h4>
+                            <pre>${data.query_used}</pre>
+                        </div>
+                        
+                        <div class="highlight">
+                            <h4>📤 Full API Response</h4>
+                            <pre>${JSON.stringify(data, null, 2)}</pre>
+                        </div>
+                    `;
+                    
+                    showResult(resultHtml, 'success');
+                } else {
+                    showResult(`
+                        <h3>❌ Failed to Get Payout Types</h3>
+                        <p><strong>Error:</strong> ${data.message}</p>
+                        <p><strong>Status:</strong> ${data.status}</p>
+                        
+                        <h4>Full API Response:</h4>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `, 'error');
+                }
+                
+            } catch (error) {
+                showResult(`
+                    <h3>❌ Error Getting Payout Types</h3>
+                    <p><strong>Error:</strong> ${error.message}</p>
+                    <p><strong>URL:</strong> ${url}</p>
+                `, 'error');
+            }
+        }
+        
+        async function getRawPayoutIcons() {
+            const userId = document.getElementById('userId').value.trim();
+            const resultDiv = document.getElementById('result');
+            
+            if (!userId) {
+                showResult('Please enter a valid User ID', 'error');
+                return;
+            }
+            
+            const url = `https://emp.kfinone.com/mobile/api/get_user_payout_icons_raw.php?user_id=${userId}`;
+            
+            try {
+                showResult('📋 Fetching raw payout icons...', 'success');
+                
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    let resultHtml = `
+                        <h3>📋 Raw Payout Icons Data</h3>
+                        
+                        <div class="highlight">
+                            <h4>📊 Summary</h4>
+                            <p><strong>User ID:</strong> ${data.data.user_id}</p>
+                            <p><strong>Payout Icons Count:</strong> ${data.data.payout_icons_count}</p>
+                            <p><strong>JSON Valid:</strong> ${data.data.is_json_valid ? '✅ Yes' : '❌ No'}</p>
+                        </div>
+                        
+                        <div class="highlight">
+                            <h4>📋 Raw Data from Database</h4>
+                            <p><strong>payout_icons Column Value:</strong></p>
+                            <pre>${data.data.payout_icons_raw}</pre>
+                        </div>
+                        
+                        <div class="highlight">
+                            <h4>🔍 Parsed Data</h4>
+                            <p><strong>Parsed Array:</strong></p>
+                            <pre>${JSON.stringify(data.data.payout_icons_parsed, null, 2)}</pre>
+                        </div>
+                    `;
+                    
+                    showResult(resultHtml, 'success');
+                } else {
+                    showResult(`
+                        <h3>❌ Failed to Get Raw Payout Icons</h3>
+                        <p><strong>Error:</strong> ${data.message}</p>
+                        <p><strong>Status:</strong> ${data.status}</p>
+                    `, 'error');
+                }
+                
+            } catch (error) {
+                showResult(`
+                    <h3>❌ Error Getting Raw Payout Icons</h3>
+                    <p><strong>Error:</strong> ${error.message}</p>
+                `, 'error');
+            }
+        }
+        
+        function showResult(message, type) {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = message;
+            resultDiv.className = `result ${type}`;
+            resultDiv.style.display = 'block';
+        }
+    </script>
+</body>
+</html>

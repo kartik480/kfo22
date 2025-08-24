@@ -1,0 +1,248 @@
+{
+	"info": {
+		"_postman_id": "business-head-payout-types-collection",
+		"name": "Business Head Payout Types API Testing",
+		"description": "Comprehensive testing collection for Business Head payout types API endpoints",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Get User Payout Types - Valid User",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "https://emp.kfinone.com/mobile/api/get_business_head_payout_types_from_user.php?user_id=45",
+					"protocol": "https",
+					"host": [
+						"emp",
+						"kfinone",
+						"com"
+					],
+					"path": [
+						"mobile",
+						"api",
+						"get_business_head_payout_types_from_user.php"
+					],
+					"query": [
+						{
+							"key": "user_id",
+							"value": "45"
+						}
+					]
+				},
+				"description": "Test with user ID 45 who has 6 payout icons assigned"
+			},
+			"response": []
+		},
+		{
+			"name": "Get User Payout Types - Different User",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "https://emp.kfinone.com/mobile/api/get_business_head_payout_types_from_user.php?user_id=10001",
+					"protocol": "https",
+					"host": [
+						"emp",
+						"kfinone",
+						"com"
+					],
+					"path": [
+						"mobile",
+						"api",
+						"get_business_head_payout_types_from_user.php"
+					],
+					"query": [
+						{
+							"key": "user_id",
+							"value": "10001"
+						}
+					]
+				},
+				"description": "Test with a different user ID to compare results"
+			},
+			"response": []
+		},
+		{
+			"name": "Get User Payout Types - Invalid User",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "https://emp.kfinone.com/mobile/api/get_business_head_payout_types_from_user.php?user_id=99999",
+					"protocol": "https",
+					"host": [
+						"emp",
+						"kfinone",
+						"com"
+					],
+					"path": [
+						"mobile",
+						"api",
+						"get_business_head_payout_types_from_user.php"
+					],
+					"query": [
+						{
+							"key": "user_id",
+							"value": "99999"
+						}
+					]
+				},
+				"description": "Test with non-existent user ID to test error handling"
+			},
+			"response": []
+		},
+		{
+			"name": "Get User Payout Types - Missing User ID",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "https://emp.kfinone.com/mobile/api/get_business_head_payout_types_from_user.php",
+					"protocol": "https",
+					"host": [
+						"emp",
+						"kfinone",
+						"com"
+					],
+					"path": [
+						"mobile",
+						"api",
+						"get_business_head_payout_types_from_user.php"
+					]
+				},
+				"description": "Test without user_id parameter to test validation"
+			},
+			"response": []
+		},
+		{
+			"name": "Get User Payout Types - User with No Payout Icons",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "https://emp.kfinone.com/mobile/api/get_business_head_payout_types_from_user.php?user_id=10002",
+					"protocol": "https",
+					"host": [
+						"emp",
+						"kfinone",
+						"com"
+					],
+					"path": [
+						"mobile",
+						"api",
+						"get_business_head_payout_types_from_user.php"
+					],
+					"query": [
+						{
+							"key": "user_id",
+							"value": "10002"
+						}
+					]
+				},
+				"description": "Test with user who has no payout icons assigned"
+			},
+			"response": []
+		},
+		{
+			"name": "Debug - Check All Payout Types",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "https://emp.kfinone.com/mobile/api/fetch_payout_types.php",
+					"protocol": "https",
+					"host": [
+						"emp",
+						"kfinone",
+						"com"
+					],
+					"path": [
+						"mobile",
+						"api",
+						"fetch_payout_types.php"
+					]
+				},
+				"description": "Debug endpoint to see all available payout types in the system"
+			},
+			"response": []
+		},
+		{
+			"name": "Debug - Check User Data",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "https://emp.kfinone.com/mobile/api/debug_user_payout_icons.php?user_id=45",
+					"protocol": "https",
+					"host": [
+						"emp",
+						"kfinone",
+						"com"
+					],
+					"path": [
+						"mobile",
+						"api",
+						"debug_user_payout_icons.php"
+					],
+					"query": [
+						{
+							"key": "user_id",
+							"value": "45"
+						}
+					]
+				},
+				"description": "Debug endpoint to see exactly what's in user's payout_icons column"
+			},
+			"response": []
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "https://emp.kfinone.com/mobile/api",
+			"type": "string"
+		},
+		{
+			"key": "test_user_id",
+			"value": "45",
+			"type": "string"
+		}
+	]
+}

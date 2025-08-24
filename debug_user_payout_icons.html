@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug User Payout Icons</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .container { max-width: 1000px; margin: 0 auto; }
+        .form-group { margin: 15px 0; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; }
+        input[type="text"] { width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; }
+        button { background: #dc3545; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; margin: 5px; }
+        button:hover { background: #c82333; }
+        .result { margin-top: 20px; padding: 15px; background: #f8f9fa; border-radius: 4px; }
+        .error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        pre { background: #f1f1f1; padding: 10px; border-radius: 4px; overflow-x: auto; }
+        .debug-section { margin: 20px 0; padding: 15px; background: #e9ecef; border-radius: 4px; }
+        .debug-title { font-weight: bold; color: #495057; margin-bottom: 10px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 Debug User Payout Icons</h1>
+        <p>This tool will help diagnose issues with user payout icons and payout types.</p>
+        
+        <div class="form-group">
+            <label for="userId">User ID:</label>
+            <input type="text" id="userId" placeholder="Enter user ID (e.g., 45)" value="45">
+        </div>
+        
+        <button onclick="debugUser()">🔍 Debug User</button>
+        <button onclick="testMainAPI()">📡 Test Main API</button>
+        <button onclick="checkAllPayoutTypes()">📋 Check All Payout Types</button>
+        
+        <div id="result" class="result" style="display: none;"></div>
+    </div>
+
+    <script>
+        async function debugUser() {
+            const userId = document.getElementById('userId').value.trim();
+            const resultDiv = document.getElementById('result');
+            
+            if (!userId) {
+                showResult('Please enter a valid User ID', 'error');
+                return;
+            }
+            
+            const url = `https://emp.kfinone.com/mobile/api/debug_user_payout_icons.php?user_id=${userId}`;
+            
+            try {
+                showResult('🔍 Debugging user...', 'success');
+                
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    let debugHtml = `
+                        <h3>✅ Debug Complete for User ${userId}</h3>
+                        <p><strong>Message:</strong> ${data.message}</p>
+                        <p><strong>Active Payout Types:</strong> ${data.count}</p>
+                        
+                        <div class="debug-section">
+                            <div class="debug-title">📊 Summary</div>
+                            <p><strong>User ID:</strong> ${data.debug_info.user_id}</p>
+                            <p><strong>Payout Icons Raw:</strong> ${data.debug_info.payout_icons_raw}</p>
+                            <p><strong>Payout Icons Count:</strong> ${data.debug_info.payout_icons_count}</p>
+                            <p><strong>Active Count:</strong> ${data.debug_info.active_count}</p>
+                            <p><strong>Inactive Count:</strong> ${data.debug_info.inactive_count}</p>
+                            <p><strong>Not Found Count:</strong> ${data.debug_info.not_found_count}</p>
+                        </div>
+                        
+                        <div class="debug-section">
+                            <div class="debug-title">🔍 Payout Type Details</div>
+                            <pre>${JSON.stringify(data.debug_info.payout_type_details, null, 2)}</pre>
+                        </div>
+                        
+                        <div class="debug-section">
+                            <div class="debug-title">📋 All Payout Types in System</div>
+                            <p><strong>Total:</strong> ${data.debug_info.total_payout_types_in_system}</p>
+                            <pre>${JSON.stringify(data.debug_info.all_payout_types_in_system, null, 2)}</pre>
+                        </div>
+                        
+                        <div class="debug-section">
+                            <div class="debug-title">📤 Full API Response</div>
+                            <pre>${JSON.stringify(data, null, 2)}</pre>
+                        </div>
+                    `;
+                    
+                    showResult(debugHtml, 'success');
+                } else {
+                    showResult(`
+                        <h3>❌ Debug Failed</h3>
+                        <p><strong>Error:</strong> ${data.message}</p>
+                        <p><strong>Status:</strong> ${data.status}</p>
+                        
+                        <h4>Full API Response:</h4>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `, 'error');
+                }
+                
+            } catch (error) {
+                showResult(`
+                    <h3>❌ Debug Error</h3>
+                    <p><strong>Error:</strong> ${error.message}</p>
+                    <p><strong>URL:</strong> ${url}</p>
+                `, 'error');
+            }
+        }
+        
+        async function testMainAPI() {
+            const userId = document.getElementById('userId').value.trim();
+            const resultDiv = document.getElementById('result');
+            
+            if (!userId) {
+                showResult('Please enter a valid User ID', 'error');
+                return;
+            }
+            
+            const url = `https://emp.kfinone.com/mobile/api/get_business_head_payout_types_from_user.php?user_id=${userId}`;
+            
+            try {
+                showResult('📡 Testing main API...', 'success');
+                
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    showResult(`
+                        <h3>✅ Main API Test Successful</h3>
+                        <p><strong>Message:</strong> ${data.message}</p>
+                        <p><strong>User ID:</strong> ${data.user_id}</p>
+                        <p><strong>Payout Types Count:</strong> ${data.count}</p>
+                        <p><strong>Payout Icons Count:</strong> ${data.payout_icons_count || 'N/A'}</p>
+                        
+                        <h4>Payout Types Data:</h4>
+                        <pre>${JSON.stringify(data.data, null, 2)}</pre>
+                        
+                        <h4>Full API Response:</h4>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `, 'success');
+                } else {
+                    showResult(`
+                        <h3>❌ Main API Test Failed</h3>
+                        <p><strong>Error:</strong> ${data.message}</p>
+                        <p><strong>Status:</strong> ${data.status}</p>
+                        
+                        <h4>Full API Response:</h4>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `, 'error');
+                }
+                
+            } catch (error) {
+                showResult(`
+                    <h3>❌ Main API Test Error</h3>
+                    <p><strong>Error:</strong> ${error.message}</p>
+                    <p><strong>URL:</strong> ${url}</p>
+                `, 'error');
+            }
+        }
+        
+        async function checkAllPayoutTypes() {
+            const url = `https://emp.kfinone.com/mobile/api/fetch_payout_types.php`;
+            
+            try {
+                showResult('📋 Checking all payout types...', 'success');
+                
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    showResult(`
+                        <h3>✅ All Payout Types Retrieved</h3>
+                        <p><strong>Message:</strong> ${data.message}</p>
+                        <p><strong>Total Count:</strong> ${data.count}</p>
+                        
+                        <h4>All Payout Types:</h4>
+                        <pre>${JSON.stringify(data.data, null, 2)}</pre>
+                        
+                        <h4>Full API Response:</h4>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `, 'success');
+                } else {
+                    showResult(`
+                        <h3>❌ Failed to Get All Payout Types</h3>
+                        <p><strong>Error:</strong> ${data.message}</p>
+                        <p><strong>Status:</strong> ${data.status}</p>
+                        
+                        <h4>Full API Response:</h4>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `, 'error');
+                }
+                
+            } catch (error) {
+                showResult(`
+                    <h3>❌ Error Getting All Payout Types</h3>
+                    <p><strong>Error:</strong> ${error.message}</p>
+                    <p><strong>URL:</strong> ${url}</p>
+                `, 'error');
+            }
+        }
+        
+        function showResult(message, type) {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = message;
+            resultDiv.className = `result ${type}`;
+            resultDiv.style.display = 'block';
+        }
+    </script>
+</body>
+</html>
