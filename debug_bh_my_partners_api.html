@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug BH My Partners API</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .error-box {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            border-radius: 4px;
+            padding: 15px;
+            margin: 20px 0;
+            color: #721c24;
+        }
+        .success-box {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            border-radius: 4px;
+            padding: 15px;
+            margin: 20px 0;
+            color: #155724;
+        }
+        .warning-box {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 4px;
+            padding: 15px;
+            margin: 20px 0;
+            color: #856404;
+        }
+        .info-box {
+            background: #d1ecf1;
+            border: 1px solid #bee5eb;
+            border-radius: 4px;
+            padding: 15px;
+            margin: 20px 0;
+            color: #0c5460;
+        }
+        .code-block {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 4px;
+            padding: 15px;
+            font-family: monospace;
+            font-size: 12px;
+            overflow-x: auto;
+            margin: 15px 0;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .danger-button {
+            background-color: #dc3545;
+        }
+        .danger-button:hover {
+            background-color: #c82333;
+        }
+        .response {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 15px;
+            margin-top: 20px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+        .input-group {
+            margin: 15px 0;
+        }
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .input-group input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .step {
+            background: #e7f3ff;
+            border: 1px solid #b3d9ff;
+            border-radius: 4px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .step-number {
+            background: #007bff;
+            color: white;
+            border-radius: 50%;
+            width: 25px;
+            height: 25px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 Debug BH My Partners API</h1>
+        <p><strong>Problem:</strong> Column 'user_id' not found in tbl_partner_users table</p>
+        
+        <div class="error-box">
+            <strong>Error Details:</strong><br>
+            • <strong>Error:</strong> SQLSTATE[42S22]: Column not found: 1054 Unknown column 'user_id'<br>
+            • <strong>Table:</strong> tbl_partner_users<br>
+            • <strong>Issue:</strong> The API is trying to select a column that doesn't exist<br>
+            • <strong>Solution:</strong> Focus on createdBy column which contains username numbers
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>🔍 Root Cause Analysis</h2>
+        
+        <div class="step">
+            <span class="step-number">1</span>
+            <strong>Wrong Column Reference</strong><br>
+            The API was trying to select 'user_id' column which doesn't exist in tbl_partner_users
+        </div>
+        
+        <div class="step">
+            <span class="step-number">2</span>
+            <strong>Correct Column</strong><br>
+            Use 'createdBy' column which contains username numbers of users who created the partners
+        </div>
+        
+        <div class="step">
+            <span class="step-number">3</span>
+            <strong>Data Flow</strong><br>
+            • App sends user_id → API gets username from tbl_user → API queries tbl_partner_users WHERE createdBy = username
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>🧪 Test the Fixed API</h2>
+        
+        <div class="input-group">
+            <label for="userId">User ID to Test:</label>
+            <input type="text" id="userId" value="45" placeholder="Enter user ID (e.g., 45)">
+        </div>
+        
+        <button onclick="testFixedAPI()">🚀 Test Fixed API</button>
+        <button onclick="testSimpleAPI()">🧪 Test Simple Debug API</button>
+        <button onclick="clearResults()">🗑️ Clear</button>
+        
+        <div id="response" class="response" style="display: none;"></div>
+    </div>
+
+    <div class="container">
+        <h2>📋 What Was Fixed</h2>
+        
+        <div class="success-box">
+            <strong>✅ API Fixed Successfully!</strong><br>
+            • <strong>Removed:</strong> References to non-existent 'user_id' column<br>
+            • <strong>Added:</strong> Dynamic column detection for tbl_partner_users<br>
+            • <strong>Fixed:</strong> Query to use 'createdBy' column correctly<br>
+            • <strong>Added:</strong> Debug logging for troubleshooting
+        </div>
+        
+        <p><strong>Key Changes Made:</strong></p>
+        <ol>
+            <li><strong>Dynamic Column Detection:</strong> API now checks what columns actually exist in tbl_partner_users</li>
+            <li><strong>Removed user_id:</strong> No more references to the non-existent column</li>
+            <li><strong>Focus on createdBy:</strong> Uses the correct column that contains username numbers</li>
+            <li><strong>Fallback Handling:</strong> Gracefully handles missing columns</li>
+            <li><strong>Debug Logging:</strong> Added error_log statements for troubleshooting</li>
+        </ol>
+    </div>
+
+    <div class="container">
+        <h2>🔧 How It Works Now</h2>
+        
+        <div class="info-box">
+            <strong>Step-by-Step Process:</strong><br>
+            1️⃣ <strong>Receive Request:</strong> API gets user_id from app<br>
+            2️⃣ <strong>Get Username:</strong> Query tbl_user to get username for the user_id<br>
+            3️⃣ <strong>Check Table:</strong> Verify tbl_partner_users exists<br>
+            4️⃣ <strong>Detect Columns:</strong> Dynamically check what columns are available<br>
+            5️⃣ <strong>Build Query:</strong> Create SELECT statement with only existing columns<br>
+            6️⃣ <strong>Execute Query:</strong> WHERE createdBy = username<br>
+            7️⃣ <strong>Return Results:</strong> Send partner list back to app
+        </div>
+        
+        <div class="code-block">
+// Example of the fixed query:
+SELECT id, username, first_name, last_name, Phone_number, email_id, 
+       company_name, status, rank, employee_no, department, designation,
+       branchstate, branchloaction, bank_name, account_type, created_at, createdBy
+FROM tbl_partner_users 
+WHERE createdBy = 'actual_username_number'
+ORDER BY first_name ASC, last_name ASC
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>📱 Postman Testing URLs</h2>
+        
+        <div class="warning-box">
+            <strong>Test the Fixed API:</strong><br>
+            <strong>URL:</strong> https://emp.kfinone.com/mobile/api/get_business_head_my_partners.php<br>
+            <strong>Method:</strong> POST<br>
+            <strong>Body:</strong> {"user_id": "45"}
+        </div>
+        
+        <div class="warning-box">
+            <strong>Test the Simple Debug API:</strong><br>
+            <strong>URL:</strong> https://emp.kfinone.com/mobile/api/test_bh_my_partners_simple.php<br>
+            <strong>Method:</strong> POST<br>
+            <strong>Body:</strong> {"user_id": "45"}
+        </div>
+        
+        <p><strong>Expected Response Format:</strong></p>
+        <div class="code-block">
+{
+  "status": "success",
+  "message": "Business Head My Partners List fetched successfully",
+  "data": {
+    "manager": {...},
+    "partner_users": [...],
+    "statistics": {...}
+  },
+  "counts": {...}
+}
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>🚀 Next Steps</h2>
+        
+        <div class="step">
+            <span class="step-number">1</span>
+            <strong>Upload Fixed API</strong><br>
+            Upload the updated get_business_head_my_partners.php to your server
+        </div>
+        
+        <div class="step">
+            <span class="step-number">2</span>
+            <strong>Test with Postman</strong><br>
+            Use the Postman URLs above to test the API
+        </div>
+        
+        <div class="step">
+            <span class="step-number">3</span>
+            <strong>Update App</strong><br>
+            Once API works, update your app to use the original API again
+        </div>
+        
+        <div class="step">
+            <span class="step-number">4</span>
+            <strong>Verify Data</strong><br>
+            Check that partners are displayed correctly in the app
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>📁 Files to Upload</h2>
+        
+        <div class="code-block">
+1. get_business_head_my_partners.php (Fixed version)
+   - Removed user_id column references
+   - Added dynamic column detection
+   - Fixed createdBy column usage
+   
+2. test_bh_my_partners_simple.php (Debug version)
+   - Simple test to verify database structure
+   - Shows available columns
+   - Counts partners for a user
+        </div>
+    </div>
+
+    <script>
+        async function testFixedAPI() {
+            const userId = document.getElementById('userId').value;
+            if (!userId) {
+                showResponse('❌ Please enter a User ID', 'error');
+                return;
+            }
+            
+            showResponse(`🔄 Testing Fixed BH My Partners API with user_id: ${userId}...`, 'info');
+            
+            try {
+                const url = 'https://emp.kfinone.com/mobile/api/get_business_head_my_partners.php';
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ user_id: userId })
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    showResponse(`✅ Fixed API Test Successful!\nStatus: ${response.status}\nResponse: ${JSON.stringify(data, null, 2)}`, 'success');
+                } else {
+                    const errorText = await response.text();
+                    showResponse(`❌ Fixed API Test Failed\nStatus: ${response.status} ${response.statusText}\nError: ${errorText}`, 'error');
+                }
+            } catch (error) {
+                showResponse(`❌ Fixed API Test Error: ${error.message}`, 'error');
+            }
+        }
+        
+        async function testSimpleAPI() {
+            const userId = document.getElementById('userId').value;
+            if (!userId) {
+                showResponse('❌ Please enter a User ID', 'error');
+                return;
+            }
+            
+            showResponse(`🔄 Testing Simple Debug API with user_id: ${userId}...`, 'info');
+            
+            try {
+                const url = 'https://emp.kfinone.com/mobile/api/test_bh_my_partners_simple.php';
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ user_id: userId })
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    showResponse(`✅ Simple API Test Successful!\nStatus: ${response.status}\nResponse: ${JSON.stringify(data, null, 2)}`, 'success');
+                } else {
+                    const errorText = await response.text();
+                    showResponse(`❌ Simple API Test Failed\nStatus: ${response.status} ${response.statusText}\nError: ${errorText}`, 'error');
+                }
+            } catch (error) {
+                showResponse(`❌ Simple API Test Error: ${error.message}`, 'error');
+            }
+        }
+        
+        function clearResults() {
+            document.getElementById('response').style.display = 'none';
+        }
+        
+        function showResponse(message, type) {
+            const responseDiv = document.getElementById('response');
+            responseDiv.textContent = message;
+            responseDiv.className = `response ${type}`;
+            responseDiv.style.display = 'block';
+        }
+    </script>
+</body>
+</html>

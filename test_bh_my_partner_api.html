@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test BH My Partner API</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-right: 10px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .response {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 15px;
+            margin-top: 20px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+        .success {
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+        .info {
+            background-color: #d1ecf1;
+            border-color: #bee5eb;
+            color: #0c5460;
+        }
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .stat-card {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        .stat-number {
+            font-size: 24px;
+            font-weight: bold;
+            color: #007bff;
+        }
+        .stat-label {
+            font-size: 14px;
+            color: #666;
+            margin-top: 5px;
+        }
+        .partner-list {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        .partner-item {
+            background: white;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 4px solid #28a745;
+        }
+        .partner-name {
+            font-weight: bold;
+            color: #28a745;
+            font-size: 16px;
+        }
+        .partner-details {
+            color: #666;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+        .fix-info {
+            background: #e7f3ff;
+            border: 1px solid #b3d9ff;
+            border-radius: 4px;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        .input-group {
+            margin: 15px 0;
+        }
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .input-group input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 Test BH My Partner API</h1>
+        <p>Testing the get_business_head_my_partners.php API that fetches partners created by the logged-in user</p>
+        
+        <div class="input-group">
+            <label for="userId">User ID to Test:</label>
+            <input type="text" id="userId" value="45" placeholder="Enter user ID (e.g., 45)">
+        </div>
+        
+        <button onclick="testBHMyPartnerAPI()">🚀 Test BH My Partner API</button>
+        <button onclick="clearResults()">🗑️ Clear</button>
+        
+        <div class="stats" id="stats" style="display: none;">
+            <div class="stat-card">
+                <div class="stat-number" id="totalPartners">0</div>
+                <div class="stat-label">Total Partners</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="activePartners">0</div>
+                <div class="stat-label">Active Partners</div>
+            </div>
+        </div>
+        
+        <div class="partner-list" id="partnerList" style="display: none;">
+            <h3>👥 Business Head My Partners (from tbl_partner_users)</h3>
+            <div id="partnerItems"></div>
+        </div>
+        
+        <div id="response" class="response" style="display: none;"></div>
+    </div>
+
+    <div class="container">
+        <h2>📋 What This API Does</h2>
+        <div class="fix-info">
+            <strong>Purpose:</strong> Fetch partners created by the currently logged-in Business Head user<br>
+            <strong>Table Used:</strong> tbl_partner_users (primary) with fallback to tbl_user<br>
+            <strong>Filter:</strong> WHERE createdBy = logged_in_username<br>
+            <strong>Data:</strong> All partner details including personal, company, bank, and status info<br><br>
+            
+            <strong>Key Features:</strong><br>
+            ✅ <strong>Fetches partners created by specific user</strong><br>
+            ✅ <strong>Uses tbl_partner_users table</strong><br>
+            ✅ <strong>Fallback to tbl_user if partner table doesn't exist</strong><br>
+            ✅ <strong>Returns comprehensive partner information</strong><br>
+            ✅ <strong>Includes statistics and counts</strong>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>🔍 API Details</h2>
+        <div class="fix-info">
+            <strong>API Endpoint:</strong> get_business_head_my_partners.php<br>
+            <strong>Method:</strong> POST<br>
+            <strong>Parameters:</strong> user_id, username<br>
+            <strong>Response Format:</strong> JSON with partner_users array<br><br>
+            
+            <strong>Data Fields Returned:</strong><br>
+            • <strong>Personal:</strong> id, username, first_name, last_name, Phone_number, email_id<br>
+            • <strong>Company:</strong> company_name, employee_no, department, designation<br>
+            • <strong>Location:</strong> branchstate, branchloaction<br>
+            • <strong>Bank:</strong> bank_name, account_type, account_number, ifsc_code<br>
+            • <strong>Status:</strong> status, rank, created_at, createdBy<br>
+            • <strong>Documents:</strong> pan_img, aadhaar_img, photo_img, bankproof_img
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>📱 Current App Status</h2>
+        <div class="fix-info">
+            <strong>App Status:</strong> ✅ Ready for testing<br>
+            <strong>Build Status:</strong> ✅ Successful<br>
+            <strong>API Created:</strong> ✅ get_business_head_my_partners.php<br>
+            <strong>Activity Created:</strong> ✅ BusinessHeadMyPartnerActivity<br>
+            <strong>Adapter Created:</strong> ✅ BusinessHeadPartnerAdapter<br>
+            <strong>Layouts Created:</strong> ✅ All XML layouts ready<br><br>
+            
+            <strong>Next Steps:</strong><br>
+            1️⃣ <strong>Upload API to server</strong> - get_business_head_my_partners.php<br>
+            2️⃣ <strong>Test the app</strong> - Navigate to BH Panel → BH My Partner<br>
+            3️⃣ <strong>Verify data loading</strong> - Should show partners created by user<br>
+            4️⃣ <strong>Check all fields</strong> - Should display comprehensive partner info
+        </div>
+    </div>
+
+    <script>
+        async function testBHMyPartnerAPI() {
+            const userId = document.getElementById('userId').value;
+            if (!userId) {
+                showResponse('❌ Please enter a User ID', 'error');
+                return;
+            }
+            
+            showResponse(`🔄 Testing BH My Partner API with user_id: ${userId}...`, 'info');
+            
+            try {
+                const url = 'https://emp.kfinone.com/mobile/api/get_business_head_my_partners.php';
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ user_id: userId })
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    showResponse(`✅ API Test Successful!\nStatus: ${response.status}\nResponse: ${JSON.stringify(data, null, 2)}`, 'success');
+                    updateStats(data);
+                    updatePartnerList(data);
+                    document.getElementById('stats').style.display = 'grid';
+                    document.getElementById('partnerList').style.display = 'block';
+                } else {
+                    showResponse(`❌ API Test Failed\nStatus: ${response.status} ${response.statusText}`, 'error');
+                    document.getElementById('stats').style.display = 'none';
+                    document.getElementById('partnerList').style.display = 'none';
+                }
+            } catch (error) {
+                showResponse(`❌ API Test Error: ${error.message}`, 'error');
+                document.getElementById('stats').style.display = 'none';
+                document.getElementById('partnerList').style.display = 'none';
+            }
+        }
+        
+        function clearResults() {
+            document.getElementById('response').style.display = 'none';
+            document.getElementById('stats').style.display = 'none';
+            document.getElementById('partnerList').style.display = 'none';
+        }
+        
+        function showResponse(message, type) {
+            const responseDiv = document.getElementById('response');
+            responseDiv.textContent = message;
+            responseDiv.className = `response ${type}`;
+            responseDiv.style.display = 'block';
+        }
+        
+        function updateStats(data) {
+            if (data.counts) {
+                document.getElementById('totalPartners').textContent = data.counts.total_partners || 0;
+                document.getElementById('activePartners').textContent = data.counts.active_partners || 0;
+            }
+        }
+        
+        function updatePartnerList(data) {
+            const partnerItemsDiv = document.getElementById('partnerItems');
+            partnerItemsDiv.innerHTML = '';
+            
+            if (data.data && data.data.partner_users) {
+                data.data.partner_users.forEach((partner, index) => {
+                    const partnerDiv = document.createElement('div');
+                    partnerDiv.className = 'partner-item';
+                    
+                    // Get the best available name
+                    const firstName = partner.first_name || '';
+                    const lastName = partner.last_name || '';
+                    const username = partner.username || '';
+                    
+                    let displayName = '';
+                    if (firstName && lastName) {
+                        displayName = firstName + ' ' + lastName;
+                    } else if (firstName) {
+                        displayName = firstName;
+                    } else if (lastName) {
+                        displayName = lastName;
+                    } else if (username) {
+                        displayName = username;
+                    } else {
+                        displayName = 'Partner ID: ' + (partner.id || 'N/A');
+                    }
+                    
+                    partnerDiv.innerHTML = `
+                        <div class="partner-name">${displayName}</div>
+                        <div class="partner-details">
+                            <strong>ID:</strong> ${partner.id || 'N/A'} | 
+                            <strong>Username:</strong> ${partner.username || 'N/A'} | 
+                            <strong>Email:</strong> ${partner.email_id || 'N/A'} | 
+                            <strong>Phone:</strong> ${partner.Phone_number || 'N/A'} | 
+                            <strong>Company:</strong> ${partner.company_name || 'N/A'} | 
+                            <strong>Status:</strong> ${partner.status || 'N/A'} | 
+                            <strong>Rank:</strong> ${partner.rank || 'N/A'} | 
+                            <strong>Employee No:</strong> ${partner.employee_no || 'N/A'} | 
+                            <strong>Department:</strong> ${partner.department || 'N/A'} | 
+                            <strong>Designation:</strong> ${partner.designation || 'N/A'} | 
+                            <strong>Branch State:</strong> ${partner.branchstate || 'N/A'} | 
+                            <strong>Branch Location:</strong> ${partner.branchloaction || 'N/A'} | 
+                            <strong>Bank Name:</strong> ${partner.bank_name || 'N/A'} | 
+                            <strong>Account Type:</strong> ${partner.account_type || 'N/A'} | 
+                            <strong>Created:</strong> ${partner.created_at || 'N/A'} | 
+                            <strong>Created By:</strong> ${partner.createdBy || 'N/A'}
+                        </div>
+                    `;
+                    
+                    partnerItemsDiv.appendChild(partnerDiv);
+                });
+            }
+        }
+    </script>
+</body>
+</html>

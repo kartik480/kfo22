@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="4dp"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="2dp"
+    app:cardBackgroundColor="@color/white">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- Partner Name -->
+        <TextView
+            android:id="@+id/nameText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Partner Name"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="@color/colorPrimary"
+            android:layout_marginBottom="8dp" />
+
+        <!-- Username -->
+        <TextView
+            android:id="@+id/usernameText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Username: N/A"
+            android:textSize="14sp"
+            android:textColor="@color/text_secondary"
+            android:layout_marginBottom="4dp" />
+
+        <!-- Email -->
+        <TextView
+            android:id="@+id/emailText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Email: N/A"
+            android:textSize="14sp"
+            android:textColor="@color/text_secondary"
+            android:layout_marginBottom="4dp" />
+
+        <!-- Phone -->
+        <TextView
+            android:id="@+id/phoneText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Phone: N/A"
+            android:textSize="14sp"
+            android:textColor="@color/text_secondary"
+            android:layout_marginBottom="4dp" />
+
+        <!-- Company -->
+        <TextView
+            android:id="@+id/companyText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Company: N/A"
+            android:textSize="14sp"
+            android:textColor="@color/text_secondary"
+            android:layout_marginBottom="4dp" />
+
+        <!-- Status and Rank Row -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="4dp">
+
+            <!-- Status -->
+            <TextView
+                android:id="@+id/statusText"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Status: N/A"
+                android:textSize="14sp"
+                android:textColor="@color/text_secondary" />
+
+            <!-- Rank -->
+            <TextView
+                android:id="@+id/rankText"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Rank: N/A"
+                android:textSize="14sp"
+                android:textColor="@color/text_secondary"
+                android:gravity="end" />
+
+        </LinearLayout>
+
+        <!-- Employee No and Department Row -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="4dp">
+
+            <!-- Employee No -->
+            <TextView
+                android:id="@+id/employeeNoText"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Employee No: N/A"
+                android:textSize="14sp"
+                android:textColor="@color/text_secondary" />
+
+            <!-- Department -->
+            <TextView
+                android:id="@+id/departmentText"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Department: N/A"
+                android:textSize="14sp"
+                android:textColor="@color/text_secondary"
+                android:gravity="end" />
+
+        </LinearLayout>
+
+        <!-- Designation and Branch State Row -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="4dp">
+
+            <!-- Designation -->
+            <TextView
+                android:id="@+id/designationText"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Designation: N/A"
+                android:textSize="14sp"
+                android:textColor="@color/text_secondary" />
+
+            <!-- Branch State -->
+            <TextView
+                android:id="@+id/branchStateText"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Branch State: N/A"
+                android:textSize="14sp"
+                android:textColor="@color/text_secondary"
+                android:gravity="end" />
+
+        </LinearLayout>
+
+        <!-- Branch Location and Bank Name Row -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="4dp">
+
+            <!-- Branch Location -->
+            <TextView
+                android:id="@+id/branchLocationText"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Branch Location: N/A"
+                android:textSize="14sp"
+                android:textColor="@color/text_secondary" />
+
+            <!-- Bank Name -->
+            <TextView
+                android:id="@+id/bankNameText"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Bank Name: N/A"
+                android:textSize="14sp"
+                android:textColor="@color/text_secondary"
+                android:gravity="end" />
+
+        </LinearLayout>
+
+        <!-- Account Type and Created At Row -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="4dp">
+
+            <!-- Account Type -->
+            <TextView
+                android:id="@+id/accountTypeText"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Account Type: N/A"
+                android:textSize="14sp"
+                android:textColor="@color/text_secondary" />
+
+            <!-- Created At -->
+            <TextView
+                android:id="@+id/createdAtText"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Created: N/A"
+                android:textSize="14sp"
+                android:textColor="@color/text_secondary"
+                android:gravity="end" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

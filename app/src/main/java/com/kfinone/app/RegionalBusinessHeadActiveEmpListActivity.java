@@ -57,7 +57,7 @@ public class RegionalBusinessHeadActiveEmpListActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_rbh_active_emp_list);
-
+        
         // Get user data from intent
         Intent intent = getIntent();
         userName = intent.getStringExtra("USERNAME");
@@ -89,7 +89,7 @@ public class RegionalBusinessHeadActiveEmpListActivity extends AppCompatActivity
         }
         
         Log.d("RBHActiveEmpList", "Final userName to use: " + userName);
-
+        
         initializeViews();
         setupClickListeners();
         initializeData();
@@ -101,7 +101,7 @@ public class RegionalBusinessHeadActiveEmpListActivity extends AppCompatActivity
         backButton = findViewById(R.id.backButton);
         refreshButton = findViewById(R.id.refreshButton);
         addButton = findViewById(R.id.addButton);
-
+        
         // Bottom navigation
         dashboardButton = findViewById(R.id.dashboardButton);
         empLinksButton = findViewById(R.id.empLinksButton);
@@ -123,17 +123,17 @@ public class RegionalBusinessHeadActiveEmpListActivity extends AppCompatActivity
 
         // Bottom navigation
         dashboardButton.setOnClickListener(v -> {
-            Intent intent = new Intent(this, RegionalBusinessHeadPanelActivity.class);
+                Intent intent = new Intent(this, RegionalBusinessHeadPanelActivity.class);
             passUserDataToIntent(intent);
-            startActivity(intent);
-            finish();
+                startActivity(intent);
+                finish();
         });
 
         empLinksButton.setOnClickListener(v -> {
             Intent intent = new Intent(this, RBHEmpLinksActivity.class);
             passUserDataToIntent(intent);
-            startActivity(intent);
-            finish();
+                startActivity(intent);
+                finish();
         });
 
         reportsButton.setOnClickListener(v -> {
@@ -161,8 +161,8 @@ public class RegionalBusinessHeadActiveEmpListActivity extends AppCompatActivity
         }
         
         passUserDataToIntent(intent);
-        startActivity(intent);
-        finish();
+                startActivity(intent);
+                finish();
     }
 
     private void refreshData() {
@@ -188,9 +188,9 @@ public class RegionalBusinessHeadActiveEmpListActivity extends AppCompatActivity
         if (userName == null || userName.isEmpty()) {
             Log.e("RBHActiveEmpList", "Username is null or empty");
             showError("Username not available");
-            return;
-        }
-
+                    return;
+                }
+                
         showLoading(true);
         hideError();
 
@@ -254,13 +254,13 @@ public class RegionalBusinessHeadActiveEmpListActivity extends AppCompatActivity
                                 // Show success message
                                 Toast.makeText(RegionalBusinessHeadActiveEmpListActivity.this, 
                                     "Found " + count + " employee(s)", Toast.LENGTH_SHORT).show();
-                            }
-                        } else {
+                                }
+                            } else {
                             String message = response.optString("message", "Unknown error occurred");
                             Log.e("RBHActiveEmpList", "API Error: " + message);
                             showError(message);
-                        }
-                    } catch (JSONException e) {
+                            }
+                        } catch (JSONException e) {
                         Log.e("RBHActiveEmpList", "JSON Parse Error: " + e.getMessage());
                         showError("Error parsing response: " + e.getMessage());
                     }
