@@ -285,6 +285,9 @@ public class EnhancedLoginActivity extends AppCompatActivity {
                         // Check if user is Business Head
                         boolean isBusinessHead = jsonResponse.optBoolean("is_business_head", false);
                         
+                        // Check if user is Marketing Head
+                        boolean isMarketingHead = jsonResponse.optBoolean("is_marketing_head", false);
+                        
                         // Fallback: Check designation directly if API flag is not present
                         if (!isRegionalBusinessHead && user.has("designation_name")) {
                             String designation = user.getString("designation_name");
@@ -296,15 +299,22 @@ public class EnhancedLoginActivity extends AppCompatActivity {
                             isBusinessHead = "Business Head".equals(designation);
                         }
                         
+                        if (!isMarketingHead && user.has("designation_name")) {
+                            String designation = user.getString("designation_name");
+                            isMarketingHead = "Marketing Head".equals(designation);
+                        }
+                        
                         // Make final for lambda
                         final boolean finalIsRegionalBusinessHead = isRegionalBusinessHead;
                         final boolean finalIsBusinessHead = isBusinessHead;
+                        final boolean finalIsMarketingHead = isMarketingHead;
                         
                         Log.d(TAG, "Username: " + username + ", isUser10002: " + isUser10002);
                         Log.d(TAG, "User ID from server: " + userId);
                         Log.d(TAG, "Is Chief Business Officer: " + isChiefBusinessOfficer);
                         Log.d(TAG, "Is Regional Business Head: " + isRegionalBusinessHead);
                         Log.d(TAG, "Is Business Head: " + isBusinessHead);
+                        Log.d(TAG, "Is Marketing Head: " + isMarketingHead);
                         Log.d(TAG, "Designation: " + user.optString("designation_name", "N/A"));
                         Log.d(TAG, "Full response: " + responseBody);
                         
@@ -357,6 +367,16 @@ public class EnhancedLoginActivity extends AppCompatActivity {
                                     Log.d(TAG, "Navigating to BusinessHeadPanelActivity");
                                     // Navigate to Business Head panel
                                     Intent intent = new Intent(EnhancedLoginActivity.this, BusinessHeadPanelActivity.class);
+                                    intent.putExtra("USERNAME", username);
+                                    intent.putExtra("FIRST_NAME", firstName);
+                                    intent.putExtra("LAST_NAME", lastName);
+                                    intent.putExtra("USER_ID", finalUserIdForLambda);
+                                    startActivity(intent);
+                                    finish();
+                                } else if (finalIsMarketingHead) {
+                                    Log.d(TAG, "Navigating to MarketingHeadPanelActivity");
+                                    // Navigate to Marketing Head panel
+                                    Intent intent = new Intent(EnhancedLoginActivity.this, MarketingHeadPanelActivity.class);
                                     intent.putExtra("USERNAME", username);
                                     intent.putExtra("FIRST_NAME", firstName);
                                     intent.putExtra("LAST_NAME", lastName);

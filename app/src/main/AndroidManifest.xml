@@ -804,6 +804,13 @@
                       android:label="Business Head Dashboard"
                       android:theme="@style/FullscreenTheme" />
                       
+                  <!-- Marketing Head Activities -->
+                  <activity
+                      android:name=".MarketingHeadPanelActivity"
+                      android:exported="false"
+                      android:label="Marketing Head Dashboard"
+                      android:theme="@style/FullscreenTheme" />
+                      
                   <activity
                       android:name=".MyAccountPanelActivity"
                       android:exported="false"

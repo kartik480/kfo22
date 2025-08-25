@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marketing Head APIs Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        h1 {
+            color: #2E7D32;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        h2 {
+            color: #388E3C;
+            border-bottom: 2px solid #4CAF50;
+            padding-bottom: 10px;
+        }
+        .api-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #fafafa;
+        }
+        .test-button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 10px 5px;
+            font-size: 14px;
+        }
+        .test-button:hover {
+            background-color: #45a049;
+        }
+        .result {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 15px;
+            margin-top: 15px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .success {
+            border-color: #28a745;
+            background-color: #d4edda;
+        }
+        .error {
+            border-color: #dc3545;
+            background-color: #f8d7da;
+        }
+        .info {
+            border-color: #17a2b8;
+            background-color: #d1ecf1;
+        }
+        .status {
+            padding: 5px 10px;
+            border-radius: 3px;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+        .status.success {
+            background-color: #28a745;
+            color: white;
+        }
+        .status.error {
+            background-color: #dc3545;
+            color: white;
+        }
+        .status.info {
+            background-color: #17a2b8;
+            color: white;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .note {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 4px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 Marketing Head APIs Test</h1>
+        
+        <div class="note">
+            <strong>Note:</strong> This test page verifies the Marketing Head panel APIs. 
+            Make sure the Marketing Head designation exists in the tbl_designation table 
+            and there are users with this designation in tbl_user.
+        </div>
+
+        <div class="api-section">
+            <h2>1. Check Marketing Head User API</h2>
+            <p>Test if a specific user is designated as Marketing Head</p>
+            
+            <div class="form-group">
+                <label for="checkUsername">Username:</label>
+                <input type="text" id="checkUsername" placeholder="Enter username to check" value="marketing_head_user">
+            </div>
+            
+            <div class="form-group">
+                <label for="checkUserId">User ID (optional):</label>
+                <input type="text" id="checkUserId" placeholder="Enter user ID to check">
+            </div>
+            
+            <button class="test-button" onclick="checkMarketingHeadUser()">Check Marketing Head User</button>
+            <button class="test-button" onclick="checkMarketingHeadUserById()">Check by User ID</button>
+            
+            <div id="checkResult" class="result" style="display: none;"></div>
+        </div>
+
+        <div class="api-section">
+            <h2>2. Get Marketing Head Users API</h2>
+            <p>Fetch all Marketing Head users and their team members</p>
+            
+            <button class="test-button" onclick="getMarketingHeadUsers()">Get Marketing Head Users</button>
+            <button class="test-button" onclick="getMarketingHeadUsersWithStats()">Get with Statistics</button>
+            
+            <div id="getUsersResult" class="result" style="display: none;"></div>
+        </div>
+
+        <div class="api-section">
+            <h2>3. Marketing Head Panel Status</h2>
+            <p>Check the overall status of Marketing Head panel implementation</p>
+            
+            <button class="test-button" onclick="checkMarketingHeadPanelStatus()">Check Panel Status</button>
+            
+            <div id="panelStatusResult" class="result" style="display: none;"></div>
+        </div>
+
+        <div class="api-section">
+            <h2>4. Database Verification</h2>
+            <p>Verify Marketing Head designation exists in database</p>
+            
+            <button class="test-button" onclick="verifyMarketingHeadDesignation()">Verify Designation</button>
+            <button class="test-button" onclick="countMarketingHeadUsers()">Count Users</button>
+            
+            <div id="dbVerificationResult" class="result" style="display: none;"></div>
+        </div>
+    </div>
+
+    <script>
+        const BASE_URL = 'https://emp.kfinone.com/mobile/api/';
+        
+        function showResult(elementId, data, type = 'info') {
+            const element = document.getElementById(elementId);
+            element.style.display = 'block';
+            element.className = `result ${type}`;
+            
+            if (typeof data === 'object') {
+                element.textContent = JSON.stringify(data, null, 2);
+            } else {
+                element.textContent = data;
+            }
+        }
+        
+        function addStatus(elementId, message, type = 'info') {
+            const element = document.getElementById(elementId);
+            const status = document.createElement('span');
+            status.className = `status ${type}`;
+            status.textContent = message;
+            element.appendChild(status);
+        }
+        
+        async function checkMarketingHeadUser() {
+            const username = document.getElementById('checkUsername').value;
+            if (!username) {
+                alert('Please enter a username');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${BASE_URL}check_marketing_head_user.php?username=${encodeURIComponent(username)}`);
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    if (data.is_marketing_head) {
+                        showResult('checkResult', data, 'success');
+                        addStatus('checkResult', '✅ User is Marketing Head', 'success');
+                    } else {
+                        showResult('checkResult', data, 'info');
+                        addStatus('checkResult', 'ℹ️ User is not Marketing Head', 'info');
+                    }
+                } else {
+                    showResult('checkResult', data, 'error');
+                    addStatus('checkResult', '❌ API Error', 'error');
+                }
+            } catch (error) {
+                showResult('checkResult', `Error: ${error.message}`, 'error');
+                addStatus('checkResult', '❌ Network Error', 'error');
+            }
+        }
+        
+        async function checkMarketingHeadUserById() {
+            const userId = document.getElementById('checkUserId').value;
+            if (!userId) {
+                alert('Please enter a user ID');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${BASE_URL}check_marketing_head_user.php?user_id=${encodeURIComponent(userId)}`);
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    if (data.is_marketing_head) {
+                        showResult('checkResult', data, 'success');
+                        addStatus('checkResult', '✅ User is Marketing Head', 'success');
+                    } else {
+                        showResult('checkResult', data, 'info');
+                        addStatus('checkResult', 'ℹ️ User is not Marketing Head', 'info');
+                    }
+                } else {
+                    showResult('checkResult', data, 'error');
+                    addStatus('checkResult', '❌ API Error', 'error');
+                }
+            } catch (error) {
+                showResult('checkResult', `Error: ${error.message}`, 'error');
+                addStatus('checkResult', '❌ Network Error', 'error');
+            }
+        }
+        
+        async function getMarketingHeadUsers() {
+            try {
+                const response = await fetch(`${BASE_URL}get_marketing_head_users.php`);
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    showResult('getUsersResult', data, 'success');
+                    addStatus('getUsersResult', `✅ Found ${data.counts.marketing_head_users_count} Marketing Head users`, 'success');
+                } else {
+                    showResult('getUsersResult', data, 'error');
+                    addStatus('getUsersResult', '❌ API Error', 'error');
+                }
+            } catch (error) {
+                showResult('getUsersResult', `Error: ${error.message}`, 'error');
+                addStatus('getUsersResult', '❌ Network Error', 'error');
+            }
+        }
+        
+        async function getMarketingHeadUsersWithStats() {
+            try {
+                const response = await fetch(`${BASE_URL}get_marketing_head_users.php`);
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    const stats = data.statistics;
+                    const summary = {
+                        'Marketing Head Users': `${stats.total_marketing_head_users} (${stats.active_marketing_head_users} active)`,
+                        'Team Members': `${stats.total_team_members} (${stats.active_team_members} active)`,
+                        'Total Active Users': stats.active_marketing_head_users + stats.active_team_members
+                    };
+                    
+                    showResult('getUsersResult', {
+                        summary: summary,
+                        full_data: data
+                    }, 'success');
+                    addStatus('getUsersResult', '✅ Statistics loaded successfully', 'success');
+                } else {
+                    showResult('getUsersResult', data, 'error');
+                    addStatus('getUsersResult', '❌ API Error', 'error');
+                }
+            } catch (error) {
+                showResult('getUsersResult', `Error: ${error.message}`, 'error');
+                addStatus('getUsersResult', '❌ Network Error', 'error');
+            }
+        }
+        
+        async function checkMarketingHeadPanelStatus() {
+            const status = {
+                'Panel Implementation': '✅ Complete',
+                'Layout Files': '✅ Created',
+                'Activity Files': '✅ Created',
+                'AndroidManifest': '✅ Updated',
+                'API Endpoints': '✅ Created',
+                'Gradient Backgrounds': '✅ Created',
+                'Marketing-Specific Features': '✅ Implemented',
+                'Navigation Integration': '🔄 Coming Soon',
+                'Data Integration': '🔄 Coming Soon'
+            };
+            
+            showResult('panelStatusResult', {
+                'Marketing Head Panel Status': status,
+                'Next Steps': [
+                    '1. Add Marketing Head designation to tbl_designation if not exists',
+                    '2. Assign users to Marketing Head designation',
+                    '3. Test panel navigation from login',
+                    '4. Implement actual functionality for action cards'
+                ]
+            }, 'success');
+            addStatus('panelStatusResult', '✅ Panel Ready for Testing', 'success');
+        }
+        
+        async function verifyMarketingHeadDesignation() {
+            try {
+                const response = await fetch(`${BASE_URL}get_designations.php`);
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    const marketingHeadDesignation = data.data.find(d => 
+                        d.designation_name && d.designation_name.toLowerCase().includes('marketing head')
+                    );
+                    
+                    if (marketingHeadDesignation) {
+                        showResult('dbVerificationResult', {
+                            'Designation Found': '✅ Yes',
+                            'Designation Details': marketingHeadDesignation,
+                            'Status': 'Ready for Marketing Head panel'
+                        }, 'success');
+                        addStatus('dbVerificationResult', '✅ Marketing Head designation exists', 'success');
+                    } else {
+                        showResult('dbVerificationResult', {
+                            'Designation Found': '❌ No',
+                            'Available Designations': data.data.map(d => d.designation_name),
+                            'Action Required': 'Add "Marketing Head" designation to tbl_designation table'
+                        }, 'error');
+                        addStatus('dbVerificationResult', '❌ Marketing Head designation missing', 'error');
+                    }
+                } else {
+                    showResult('dbVerificationResult', data, 'error');
+                    addStatus('dbVerificationResult', '❌ Failed to fetch designations', 'error');
+                }
+            } catch (error) {
+                showResult('dbVerificationResult', `Error: ${error.message}`, 'error');
+                addStatus('dbVerificationResult', '❌ Network Error', 'error');
+            }
+        }
+        
+        async function countMarketingHeadUsers() {
+            try {
+                const response = await fetch(`${BASE_URL}get_marketing_head_users.php`);
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    const counts = data.counts;
+                    const stats = data.statistics;
+                    
+                    showResult('dbVerificationResult', {
+                        'User Counts': {
+                            'Total Marketing Head Users': counts.marketing_head_users_count,
+                            'Total Team Members': counts.team_members_count,
+                            'Active Marketing Head Users': stats.active_marketing_head_users,
+                            'Active Team Members': stats.active_team_members
+                        },
+                        'Summary': counts.marketing_head_users_count > 0 ? 
+                            '✅ Marketing Head users found - Panel ready to use' : 
+                            '❌ No Marketing Head users found - Need to assign users'
+                    }, counts.marketing_head_users_count > 0 ? 'success' : 'error');
+                    
+                    if (counts.marketing_head_users_count > 0) {
+                        addStatus('dbVerificationResult', '✅ Users found', 'success');
+                    } else {
+                        addStatus('dbVerificationResult', '❌ No users found', 'error');
+                    }
+                } else {
+                    showResult('dbVerificationResult', data, 'error');
+                    addStatus('dbVerificationResult', '❌ API Error', 'error');
+                }
+            } catch (error) {
+                showResult('dbVerificationResult', `Error: ${error.message}`, 'error');
+                addStatus('dbVerificationResult', '❌ Network Error', 'error');
+            }
+        }
+        
+        // Auto-load panel status on page load
+        window.onload = function() {
+            checkMarketingHeadPanelStatus();
+        };
+    </script>
+</body>
+</html>

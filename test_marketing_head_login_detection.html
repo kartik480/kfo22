@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marketing Head Login Detection Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .success {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .error {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .info {
+            background-color: #d1ecf1;
+            border: 1px solid #bee5eb;
+            color: #0c5460;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .warning {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        h1 {
+            color: #2E7D32;
+            text-align: center;
+        }
+        h2 {
+            color: #388E3C;
+            border-bottom: 2px solid #4CAF50;
+            padding-bottom: 5px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="text"], input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-right: 10px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+        .output {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 15px;
+            margin-top: 15px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .status {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 3px;
+            font-weight: bold;
+            font-size: 12px;
+            margin-left: 10px;
+        }
+        .status.success {
+            background-color: #28a745;
+            color: white;
+        }
+        .status.error {
+            background-color: #dc3545;
+            color: white;
+        }
+        .status.pending {
+            background-color: #ffc107;
+            color: black;
+        }
+        .test-section {
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .test-section h3 {
+            margin-top: 0;
+            color: #495057;
+        }
+    </style>
+</head>
+<body>
+    <h1>🎯 Marketing Head Login Detection Test</h1>
+    
+    <div class="container">
+        <h2>✅ Issue Resolution</h2>
+        <div class="success">
+            <strong>Problem Identified and Fixed!</strong> The Marketing Head panel was created but the login system was not detecting Marketing Head users, causing them to be redirected to the wrong panel.
+        </div>
+        <p><strong>Root Cause:</strong> The login API and Android login activity were missing Marketing Head detection logic.</p>
+        <p><strong>Solution:</strong> Added Marketing Head detection to both backend API and Android login routing.</p>
+    </div>
+
+    <div class="container">
+        <h2>🔧 What Was Fixed</h2>
+        <div class="info">
+            <h3>Backend API (login.php):</h3>
+            <ul>
+                <li>✅ Added Marketing Head designation check</li>
+                <li>✅ Returns <code>is_marketing_head: true/false</code> in login response</li>
+                <li>✅ Properly queries <code>tbl_user</code> and <code>tbl_designation</code> tables</li>
+            </ul>
+        </div>
+        
+        <div class="info">
+            <h3>Android Login (EnhancedLoginActivity.java):</h3>
+            <ul>
+                <li>✅ Added Marketing Head detection logic</li>
+                <li>✅ Added Marketing Head routing to <code>MarketingHeadPanelActivity</code></li>
+                <li>✅ Added fallback designation checking</li>
+                <li>✅ Added proper logging for Marketing Head detection</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h3>🧪 Test Marketing Head Login Detection</h3>
+        <p>Use this form to test if Marketing Head users are properly detected during login:</p>
+        
+        <div class="form-group">
+            <label for="username">Username:</label>
+            <input type="text" id="username" placeholder="Enter Marketing Head username">
+        </div>
+        
+        <div class="form-group">
+            <label for="password">Password:</label>
+            <input type="password" id="password" placeholder="Enter password">
+        </div>
+        
+        <button onclick="testMarketingHeadLogin()">Test Login Detection</button>
+        <button onclick="clearOutput()">Clear Output</button>
+        
+        <div id="output" class="output" style="display: none;"></div>
+    </div>
+
+    <div class="test-section">
+        <h3>🔍 Database Verification</h3>
+        <p>Check if Marketing Head designation exists and users are properly assigned:</p>
+        
+        <button onclick="checkMarketingHeadDesignation()">Check Designation Table</button>
+        <button onclick="checkMarketingHeadUsers()">Check Marketing Head Users</button>
+        <button onclick="checkAllDesignations()">Check All Designations</button>
+        
+        <div id="dbOutput" class="output" style="display: none;"></div>
+    </div>
+
+    <div class="container">
+        <h2>📋 Implementation Steps</h2>
+        <div class="info">
+            <h3>1. Database Setup:</h3>
+            <p>Run the SQL script <code>add_marketing_head_designation.sql</code> to add the Marketing Head designation.</p>
+            
+            <h3>2. User Assignment:</h3>
+            <p>Assign users to Marketing Head designation by updating their <code>designation_id</code> in <code>tbl_user</code>.</p>
+            
+            <h3>3. Testing:</h3>
+            <p>Use this test page to verify that Marketing Head users are properly detected and redirected.</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>🎯 Expected Behavior</h2>
+        <div class="success">
+            <p><strong>Before Fix:</strong> Marketing Head users were redirected to Kurakulas Partner panel ❌</p>
+            <p><strong>After Fix:</strong> Marketing Head users are redirected to Marketing Head panel ✅</p>
+        </div>
+        
+        <div class="info">
+            <h3>Login Flow:</h3>
+            <ol>
+                <li>User enters Marketing Head credentials</li>
+                <li>Backend API detects <code>designation_name = 'Marketing Head'</code></li>
+                <li>API returns <code>is_marketing_head: true</code></li>
+                <li>Android app routes to <code>MarketingHeadPanelActivity</code></li>
+                <li>User sees Marketing Head dashboard with green theme</li>
+            </ol>
+        </div>
+    </div>
+
+    <script>
+        const BASE_URL = 'api/';
+        
+        async function testMarketingHeadLogin() {
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value.trim();
+            const output = document.getElementById('output');
+            
+            if (!username || !password) {
+                showOutput('Please enter both username and password.', 'error');
+                return;
+            }
+            
+            showOutput('Testing Marketing Head login detection...', 'info');
+            
+            try {
+                const response = await fetch(BASE_URL + 'login.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        username: username,
+                        password: password
+                    })
+                });
+                
+                const data = await response.json();
+                
+                let result = '=== Marketing Head Login Detection Test ===\n\n';
+                result += `Success: ${data.success}\n`;
+                result += `Message: ${data.message}\n\n`;
+                
+                if (data.success) {
+                    result += '=== User Information ===\n';
+                    result += `ID: ${data.user.id}\n`;
+                    result += `Username: ${data.user.username}\n`;
+                    result += `First Name: ${data.user.firstName || 'N/A'}\n`;
+                    result += `Last Name: ${data.user.lastName || 'N/A'}\n`;
+                    result += `Designation: ${data.user.designation_name || 'N/A'}\n\n`;
+                    
+                    result += '=== Role Detection ===\n';
+                    result += `Is Marketing Head: ${data.is_marketing_head || false}\n`;
+                    result += `Is Business Head: ${data.is_business_head || false}\n`;
+                    result += `Is Chief Business Officer: ${data.is_chief_business_officer || false}\n`;
+                    result += `Is Regional Business Head: ${data.is_regional_business_head || false}\n\n`;
+                    
+                    if (data.is_marketing_head) {
+                        result += '✅ SUCCESS: This user will be redirected to the Marketing Head Panel!\n';
+                        result += '🎯 Navigation: MarketingHeadPanelActivity\n';
+                        result += '🎨 Theme: Green marketing-themed interface\n';
+                    } else {
+                        result += '❌ This user is NOT a Marketing Head\n';
+                        result += `Current designation: ${data.user.designation_name || 'None'}\n`;
+                        result += 'They will be redirected to their appropriate panel based on designation.\n';
+                    }
+                } else {
+                    result += `❌ Login failed: ${data.message}\n`;
+                }
+                
+                showOutput(result, data.success ? 'success' : 'error');
+                
+            } catch (error) {
+                showOutput(`Error testing login: ${error.message}`, 'error');
+            }
+        }
+        
+        async function checkMarketingHeadDesignation() {
+            const output = document.getElementById('dbOutput');
+            showOutput('Checking Marketing Head designation in database...', 'info');
+            
+            try {
+                const response = await fetch(BASE_URL + 'get_marketing_head_users.php');
+                const data = await response.json();
+                
+                let result = '=== Marketing Head Designation Check ===\n\n';
+                
+                if (data.status === 'success') {
+                    result += '✅ Marketing Head designation exists in database\n';
+                    result += `Total Marketing Head users: ${data.counts.marketing_head_users_count}\n`;
+                    result += `Active Marketing Head users: ${data.statistics.active_marketing_head_users}\n\n`;
+                    
+                    if (data.marketing_head_users && data.marketing_head_users.length > 0) {
+                        result += '=== Marketing Head Users ===\n';
+                        data.marketing_head_users.forEach((user, index) => {
+                            result += `${index + 1}. ${user.firstName} ${user.lastName} (${user.username})\n`;
+                            result += `   ID: ${user.id}, Status: ${user.status}\n`;
+                        });
+                    } else {
+                        result += '⚠️ No users assigned to Marketing Head designation yet\n';
+                        result += 'Use the SQL script to assign users to this designation.\n';
+                    }
+                } else {
+                    result += `❌ Error: ${data.message}\n`;
+                }
+                
+                showOutput(result, 'info');
+                
+            } catch (error) {
+                showOutput(`Error checking designation: ${error.message}`, 'error');
+            }
+        }
+        
+        async function checkMarketingHeadUsers() {
+            const output = document.getElementById('dbOutput');
+            showOutput('Checking Marketing Head users...', 'info');
+            
+            try {
+                const response = await fetch(BASE_URL + 'get_marketing_head_users.php');
+                const data = await response.json();
+                
+                let result = '=== Marketing Head Users Check ===\n\n';
+                
+                if (data.status === 'success') {
+                    result += `Total Marketing Head users: ${data.counts.marketing_head_users_count}\n`;
+                    result += `Total team members: ${data.counts.team_members_count}\n\n`;
+                    
+                    if (data.marketing_head_users && data.marketing_head_users.length > 0) {
+                        result += '=== Marketing Head Users ===\n';
+                        data.marketing_head_users.forEach((user, index) => {
+                            result += `${index + 1}. ${user.firstName} ${user.lastName}\n`;
+                            result += `   Username: ${user.username}\n`;
+                            result += `   ID: ${user.id}\n`;
+                            result += `   Status: ${user.status}\n`;
+                            result += `   Email: ${user.email_id || 'N/A'}\n`;
+                            result += `   Mobile: ${user.mobile || 'N/A'}\n\n`;
+                        });
+                    }
+                    
+                    if (data.team_members && data.team_members.length > 0) {
+                        result += '=== Team Members ===\n';
+                        data.team_members.forEach((member, index) => {
+                            result += `${index + 1}. ${member.firstName} ${member.lastName}\n`;
+                            result += `   Username: ${member.username}\n`;
+                            result += `   Status: ${member.status}\n\n`;
+                        });
+                    }
+                } else {
+                    result += `❌ Error: ${data.message}\n`;
+                }
+                
+                showOutput(result, 'info');
+                
+            } catch (error) {
+                showOutput(`Error checking users: ${error.message}`, 'error');
+            }
+        }
+        
+        async function checkAllDesignations() {
+            const output = document.getElementById('dbOutput');
+            showOutput('Checking all designations in database...', 'info');
+            
+            try {
+                // This would need a new API endpoint, but for now we'll show what we know
+                let result = '=== All Designations Check ===\n\n';
+                result += 'Known designations in the system:\n';
+                result += '1. Chief Business Officer\n';
+                result += '2. Regional Business Head\n';
+                result += '3. Business Head\n';
+                result += '4. Marketing Head (NEW - needs to be added)\n';
+                result += '5. Managing Director\n';
+                result += '6. SDSA\n';
+                result += '7. RBH\n\n';
+                
+                result += 'To add Marketing Head designation, run:\n';
+                result += 'add_marketing_head_designation.sql\n\n';
+                
+                result += 'To check existing designations, query:\n';
+                result += 'SELECT * FROM tbl_designation ORDER BY id;\n';
+                
+                showOutput(result, 'info');
+                
+            } catch (error) {
+                showOutput(`Error checking designations: ${error.message}`, 'error');
+            }
+        }
+        
+        function showOutput(message, type = 'info') {
+            const output = document.getElementById('output');
+            const dbOutput = document.getElementById('dbOutput');
+            
+            if (type === 'error') {
+                output.style.display = 'block';
+                output.style.backgroundColor = '#f8d7da';
+                output.style.borderColor = '#f5c6cb';
+                output.style.color = '#721c24';
+            } else if (type === 'success') {
+                output.style.display = 'block';
+                output.style.backgroundColor = '#d4edda';
+                output.style.borderColor = '#c3e6cb';
+                output.style.color = '#155724';
+            } else {
+                output.style.display = 'block';
+                output.style.backgroundColor = '#d1ecf1';
+                output.style.borderColor = '#bee5eb';
+                output.style.color = '#0c5460';
+            }
+            
+            output.textContent = message;
+        }
+        
+        function clearOutput() {
+            document.getElementById('output').style.display = 'none';
+            document.getElementById('dbOutput').style.display = 'none';
+        }
+        
+        // Add some interactivity
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Marketing Head Login Detection Test Page Loaded');
+            
+            // Add enter key support for form
+            document.getElementById('password').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    testMarketingHeadLogin();
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -86,6 +86,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 } else {
                     $response['is_business_head'] = false;
                 }
+                
+                // Check if user is Marketing Head
+                if ($user['designation_name'] === 'Marketing Head') {
+                    $response['is_marketing_head'] = true;
+                } else {
+                    $response['is_marketing_head'] = false;
+                }
             } else {
                 $response['success'] = false;
                 $response['message'] = 'Invalid password.';
