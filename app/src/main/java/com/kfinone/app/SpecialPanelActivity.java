@@ -245,15 +245,7 @@ public class SpecialPanelActivity extends AppCompatActivity implements Navigatio
             startActivity(intent);
         });
 
-        findViewById(R.id.addInsuranceBox).setOnClickListener(v -> {
-            // Show coming soon overlay
-            comingSoonOverlay.setVisibility(View.VISIBLE);
-            
-            // Hide overlay after 2 seconds
-            comingSoonOverlay.postDelayed(() -> {
-                comingSoonOverlay.setVisibility(View.GONE);
-            }, 2000);
-        });
+
 
         findViewById(R.id.documentCheckListBox).setOnClickListener(v -> {
             Intent intent = new Intent(this, DocCheckListActivity.class);

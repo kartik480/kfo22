@@ -12,7 +12,6 @@ public class PortfolioPanelActivity extends AppCompatActivity {
 
     private MaterialCardView addPortfolioBox;
     private MaterialCardView myPortfolioBox;
-    private MaterialCardView portfolioTeamBox;
     private TextView backButton;
     private View refreshButton;
     private View addButton;
@@ -34,7 +33,6 @@ public class PortfolioPanelActivity extends AppCompatActivity {
     private void initializeViews() {
         addPortfolioBox = findViewById(R.id.addPortfolioBox);
         myPortfolioBox = findViewById(R.id.myPortfolioBox);
-        portfolioTeamBox = findViewById(R.id.portfolioTeamBox);
         backButton = findViewById(R.id.backButton);
         refreshButton = findViewById(R.id.refreshButton);
         addButton = findViewById(R.id.addButton);
@@ -83,10 +81,7 @@ public class PortfolioPanelActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
-        portfolioTeamBox.setOnClickListener(v -> {
-            Intent intent = new Intent(this, PortfolioTeamActivity.class);
-            startActivity(intent);
-        });
+
     }
 
     private void goBack() {
