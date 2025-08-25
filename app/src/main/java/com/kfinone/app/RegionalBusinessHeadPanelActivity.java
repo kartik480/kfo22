@@ -639,6 +639,13 @@ public class RegionalBusinessHeadPanelActivity extends AppCompatActivity {
         showLogoutConfirmation();
     }
     
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Restore user data and welcome message when returning to this activity
+        updateWelcomeMessage();
+    }
+    
     private String getUserIdFromUsername(String username) {
         // This is a simplified implementation
         // In a real app, you would fetch this from SharedPreferences or a local database

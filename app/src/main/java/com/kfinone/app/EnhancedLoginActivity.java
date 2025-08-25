@@ -2,6 +2,8 @@ package com.kfinone.app;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
@@ -31,16 +33,22 @@ public class EnhancedLoginActivity extends AppCompatActivity {
     private ImageView logoImage;
     
     private ExecutorService executor = Executors.newSingleThreadExecutor();
+    private Handler mainHandler = new Handler(Looper.getMainLooper());
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_enhanced_login);
 
+        // Initialize views first
         initializeViews();
-        setupAnimations();
+        
+        // Setup click listeners immediately for responsiveness
         setupClickListeners();
         setupInputValidation();
+        
+        // Defer animations to prevent blocking the main thread
+        mainHandler.postDelayed(this::setupAnimations, 100);
     }
 
     private void initializeViews() {
@@ -53,88 +61,120 @@ public class EnhancedLoginActivity extends AppCompatActivity {
     }
 
     private void setupAnimations() {
-        // Load animations
-        Animation fadeIn = AnimationUtils.loadAnimation(this, android.R.anim.fade_in);
-        
-        // Apply animations
-        logoImage.startAnimation(fadeIn);
-        
-        // Simple fade in animation for the bottom section
-        Animation bottomFadeIn = AnimationUtils.loadAnimation(this, android.R.anim.fade_in);
-        bottomFadeIn.setDuration(1000);
-        findViewById(R.id.bottomSection).startAnimation(bottomFadeIn);
+        try {
+            // Load animations in background to prevent blocking
+            executor.execute(() -> {
+                try {
+                    // Load animations
+                    Animation fadeIn = AnimationUtils.loadAnimation(this, android.R.anim.fade_in);
+                    Animation bottomFadeIn = AnimationUtils.loadAnimation(this, android.R.anim.fade_in);
+                    bottomFadeIn.setDuration(800); // Reduced duration
+                    
+                    // Apply animations on main thread
+                    mainHandler.post(() -> {
+                        try {
+                            if (logoImage != null) {
+                                logoImage.startAnimation(fadeIn);
+                            }
+                            
+                            View bottomSection = findViewById(R.id.bottomSection);
+                            if (bottomSection != null) {
+                                bottomSection.startAnimation(bottomFadeIn);
+                            }
+                        } catch (Exception e) {
+                            Log.e(TAG, "Error applying animations: " + e.getMessage());
+                        }
+                    });
+                } catch (Exception e) {
+                    Log.e(TAG, "Error loading animations: " + e.getMessage());
+                }
+            });
+        } catch (Exception e) {
+            Log.e(TAG, "Error in setupAnimations: " + e.getMessage());
+        }
     }
 
     private void setupClickListeners() {
-        loginButton.setOnClickListener(v -> {
-            String username = usernameEditText.getText().toString().trim();
-            String password = passwordEditText.getText().toString().trim();
-            
-            if (validateInputs(username, password)) {
-                performLogin(username, password);
-            }
-        });
+        if (loginButton != null) {
+            loginButton.setOnClickListener(v -> {
+                String username = usernameEditText.getText().toString().trim();
+                String password = passwordEditText.getText().toString().trim();
+                
+                if (validateInputs(username, password)) {
+                    performLogin(username, password);
+                }
+            });
+        }
 
         // Add text change listeners for real-time validation
-        usernameEditText.addTextChangedListener(new android.text.TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+        if (usernameEditText != null) {
+            usernameEditText.addTextChangedListener(new android.text.TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                // Clear any previous errors
-                if (s.length() > 0) {
-                    usernameEditText.setError(null);
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    // Clear any previous errors
+                    if (s.length() > 0) {
+                        usernameEditText.setError(null);
+                    }
                 }
-            }
 
-            @Override
-            public void afterTextChanged(android.text.Editable s) {}
-        });
+                @Override
+                public void afterTextChanged(android.text.Editable s) {}
+            });
+        }
 
-        passwordEditText.addTextChangedListener(new android.text.TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+        if (passwordEditText != null) {
+            passwordEditText.addTextChangedListener(new android.text.TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                // Clear any previous errors
-                if (s.length() > 0) {
-                    passwordEditText.setError(null);
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    // Clear any previous errors
+                    if (s.length() > 0) {
+                        passwordEditText.setError(null);
+                    }
                 }
-            }
 
-            @Override
-            public void afterTextChanged(android.text.Editable s) {}
-        });
+                @Override
+                public void afterTextChanged(android.text.Editable s) {}
+            });
+        }
     }
 
     private void setupInputValidation() {
         // Set up input types
-        usernameEditText.setInputType(android.text.InputType.TYPE_CLASS_TEXT);
-        passwordEditText.setInputType(android.text.InputType.TYPE_CLASS_TEXT | android.text.InputType.TYPE_TEXT_VARIATION_PASSWORD);
+        if (usernameEditText != null) {
+            usernameEditText.setInputType(android.text.InputType.TYPE_CLASS_TEXT);
+        }
+        if (passwordEditText != null) {
+            passwordEditText.setInputType(android.text.InputType.TYPE_CLASS_TEXT | android.text.InputType.TYPE_TEXT_VARIATION_PASSWORD);
+        }
     }
 
     private boolean validateInputs(String username, String password) {
         boolean isValid = true;
         
-        // The original code had usernameLayout and passwordLayout which are not defined.
-        // Assuming they are meant to be TextInputLayouts or similar.
-        // For now, we'll just check if the EditTexts are empty.
-        if (username.isEmpty()) {
-            usernameEditText.setError("Please enter username");
-            isValid = false;
-        } else if (username.length() < 3) {
-            usernameEditText.setError("Username must be at least 3 characters");
-            isValid = false;
+        if (usernameEditText != null) {
+            if (username.isEmpty()) {
+                usernameEditText.setError("Please enter username");
+                isValid = false;
+            } else if (username.length() < 3) {
+                usernameEditText.setError("Username must be at least 3 characters");
+                isValid = false;
+            }
         }
         
-        if (password.isEmpty()) {
-            passwordEditText.setError("Please enter password");
-            isValid = false;
-        } else if (password.length() < 6) {
-            passwordEditText.setError("Password must be at least 6 characters");
-            isValid = false;
+        if (passwordEditText != null) {
+            if (password.isEmpty()) {
+                passwordEditText.setError("Please enter password");
+                isValid = false;
+            } else if (password.length() < 6) {
+                passwordEditText.setError("Password must be at least 6 characters");
+                isValid = false;
+            }
         }
         
         return isValid;
@@ -164,8 +204,8 @@ public class EnhancedLoginActivity extends AppCompatActivity {
                 connection.setRequestProperty("Content-Type", "application/json");
                 connection.setRequestProperty("Content-Length", String.valueOf(postData.length));
                 connection.setDoOutput(true);
-                connection.setConnectTimeout(15000);
-                connection.setReadTimeout(15000);
+                connection.setConnectTimeout(10000); // Reduced timeout
+                connection.setReadTimeout(10000); // Reduced timeout
 
                 // Send data
                 java.io.OutputStream os = connection.getOutputStream();
@@ -296,7 +336,7 @@ public class EnhancedLoginActivity extends AppCompatActivity {
                         // Create final variable for lambda usage after all modifications are done
                         final String finalUserIdForLambda = finalUserId;
 
-                        runOnUiThread(() -> {
+                        mainHandler.post(() -> {
                             try {
                                 showSuccessMessage("Login successful!");
                                 
@@ -372,14 +412,14 @@ public class EnhancedLoginActivity extends AppCompatActivity {
                     } else {
                         String error = jsonResponse.optString("message", "Login failed");
                         Log.e(TAG, "Login failed: " + error);
-                        runOnUiThread(() -> {
+                        mainHandler.post(() -> {
                             showErrorMessage("Login failed: " + error);
                             setLoadingState(false);
                         });
                     }
                 } else {
                     Log.e(TAG, "HTTP Error: " + responseCode);
-                    runOnUiThread(() -> {
+                    mainHandler.post(() -> {
                         showErrorMessage("Server error: " + responseCode);
                         setLoadingState(false);
                     });
@@ -388,7 +428,7 @@ public class EnhancedLoginActivity extends AppCompatActivity {
                 
             } catch (Exception e) {
                 Log.e(TAG, "Exception during login: " + e.getMessage());
-                runOnUiThread(() -> {
+                mainHandler.post(() -> {
                     showErrorMessage("Network error: Please check your connection");
                     setLoadingState(false);
                 });
@@ -397,29 +437,57 @@ public class EnhancedLoginActivity extends AppCompatActivity {
     }
 
     private void setLoadingState(boolean isLoading) {
-        runOnUiThread(() -> {
-            if (isLoading) {
-                loginButton.setEnabled(false);
-                loginButton.setText("Logging in...");
-                progressBar.setVisibility(View.VISIBLE);
-                usernameEditText.setEnabled(false);
-                passwordEditText.setEnabled(false);
-            } else {
-                loginButton.setEnabled(true);
-                loginButton.setText("Login");
-                progressBar.setVisibility(View.GONE);
-                usernameEditText.setEnabled(true);
-                passwordEditText.setEnabled(true);
+        mainHandler.post(() -> {
+            try {
+                if (isLoading) {
+                    if (loginButton != null) {
+                        loginButton.setEnabled(false);
+                        loginButton.setText("Logging in...");
+                    }
+                    if (progressBar != null) {
+                        progressBar.setVisibility(View.VISIBLE);
+                    }
+                    if (usernameEditText != null) {
+                        usernameEditText.setEnabled(false);
+                    }
+                    if (passwordEditText != null) {
+                        passwordEditText.setEnabled(false);
+                    }
+                } else {
+                    if (loginButton != null) {
+                        loginButton.setEnabled(true);
+                        loginButton.setText("Login");
+                    }
+                    if (progressBar != null) {
+                        progressBar.setVisibility(View.GONE);
+                    }
+                    if (usernameEditText != null) {
+                        usernameEditText.setEnabled(true);
+                    }
+                    if (passwordEditText != null) {
+                        passwordEditText.setEnabled(true);
+                    }
+                }
+            } catch (Exception e) {
+                Log.e(TAG, "Error in setLoadingState: " + e.getMessage());
             }
         });
     }
 
     private void showSuccessMessage(String message) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+        try {
+            Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+        } catch (Exception e) {
+            Log.e(TAG, "Error showing success message: " + e.getMessage());
+        }
     }
 
     private void showErrorMessage(String message) {
-        Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+        try {
+            Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+        } catch (Exception e) {
+            Log.e(TAG, "Error showing error message: " + e.getMessage());
+        }
     }
     
     private void saveUserDataToSharedPreferences(String username, String firstName, String lastName, String userId) {
@@ -442,15 +510,19 @@ public class EnhancedLoginActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (executor != null && !executor.isShutdown()) {
-            executor.shutdown();
-            try {
-                if (!executor.awaitTermination(1, TimeUnit.SECONDS)) {
+        try {
+            if (executor != null && !executor.isShutdown()) {
+                executor.shutdown();
+                try {
+                    if (!executor.awaitTermination(1, TimeUnit.SECONDS)) {
+                        executor.shutdownNow();
+                    }
+                } catch (InterruptedException e) {
                     executor.shutdownNow();
                 }
-            } catch (InterruptedException e) {
-                executor.shutdownNow();
             }
+        } catch (Exception e) {
+            Log.e(TAG, "Error in onDestroy: " + e.getMessage());
         }
     }
 } 

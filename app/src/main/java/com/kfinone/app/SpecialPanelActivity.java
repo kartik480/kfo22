@@ -560,4 +560,11 @@ public class SpecialPanelActivity extends AppCompatActivity implements Navigatio
             super.onBackPressed();
         }
     }
+    
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Restore user data and welcome message when returning to this activity
+        updateWelcomeMessage();
+    }
 } 

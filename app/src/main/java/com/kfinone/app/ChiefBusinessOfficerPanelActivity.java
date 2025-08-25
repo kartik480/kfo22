@@ -804,6 +804,13 @@ public class ChiefBusinessOfficerPanelActivity extends AppCompatActivity {
         showLogoutConfirmation();
     }
     
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Restore user data and welcome message when returning to this activity
+        updateWelcomeMessage();
+    }
+    
     // Test method to debug API calls
     private void testApiWithHardcodedUserId() {
         Log.d("CBOPanel", "=== Testing API with hardcoded userId ===");

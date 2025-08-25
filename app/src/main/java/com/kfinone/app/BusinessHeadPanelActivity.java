@@ -321,22 +321,14 @@ public class BusinessHeadPanelActivity extends AppCompatActivity {
         // Business Growth (Agent)
         cardBusinessGrowth.setOnClickListener(v -> {
             Intent intent = new Intent(BusinessHeadPanelActivity.this, BusinessHeadAgentActivity.class);
-            // Pass user data
-            if (userId != null) intent.putExtra("USER_ID", userId);
-            if (username != null) intent.putExtra("USERNAME", username);
-            if (firstName != null) intent.putExtra("FIRST_NAME", firstName);
-            if (lastName != null) intent.putExtra("LAST_NAME", lastName);
+            passUserDataToIntent(intent);
             startActivity(intent);
         });
         
         // Innovation Hub (Payout)
         cardInnovationHub.setOnClickListener(v -> {
             Intent intent = new Intent(BusinessHeadPanelActivity.this, BHPayoutPanelActivity.class);
-            // Pass user data
-            if (userId != null) intent.putExtra("USER_ID", userId);
-            if (username != null) intent.putExtra("USERNAME", username);
-            if (firstName != null) intent.putExtra("FIRST_NAME", firstName);
-            if (lastName != null) intent.putExtra("LAST_NAME", lastName);
+            passUserDataToIntent(intent);
             intent.putExtra("SOURCE_PANEL", "BUSINESS_HEAD_PANEL");
             startActivity(intent);
         });
@@ -344,22 +336,14 @@ public class BusinessHeadPanelActivity extends AppCompatActivity {
         // Partnerships (Bankers List)
         cardPartnerships.setOnClickListener(v -> {
             Intent intent = new Intent(BusinessHeadPanelActivity.this, BusinessHeadBankersListActivity.class);
-            // Pass user data
-            if (userId != null) intent.putExtra("USER_ID", userId);
-            if (username != null) intent.putExtra("USERNAME", username);
-            if (firstName != null) intent.putExtra("FIRST_NAME", firstName);
-            if (lastName != null) intent.putExtra("LAST_NAME", lastName);
+            passUserDataToIntent(intent);
             startActivity(intent);
         });
         
         // Market Analysis (Portfolio)
         cardMarketAnalysis.setOnClickListener(v -> {
             Intent intent = new Intent(BusinessHeadPanelActivity.this, BusinessHeadPortfolioActivity.class);
-            // Pass user data
-            if (userId != null) intent.putExtra("USER_ID", userId);
-            if (username != null) intent.putExtra("USERNAME", username);
-            if (firstName != null) intent.putExtra("FIRST_NAME", firstName);
-            if (lastName != null) intent.putExtra("LAST_NAME", lastName);
+            passUserDataToIntent(intent);
             startActivity(intent);
         });
         
@@ -371,35 +355,21 @@ public class BusinessHeadPanelActivity extends AppCompatActivity {
         // Compliance (Document Check List)
         cardCompliance.setOnClickListener(v -> {
             Intent intent = new Intent(BusinessHeadPanelActivity.this, BusinessHeadDocumentCheckListActivity.class);
-            // Pass user data
-            if (userId != null) intent.putExtra("USER_ID", userId);
-            if (username != null) intent.putExtra("USERNAME", username);
-            if (firstName != null) intent.putExtra("FIRST_NAME", firstName);
-            if (lastName != null) intent.putExtra("LAST_NAME", lastName);
+            passUserDataToIntent(intent);
             startActivity(intent);
         });
         
         // Budget Management (Policy)
         cardBudgetManagement.setOnClickListener(v -> {
             Intent intent = new Intent(BusinessHeadPanelActivity.this, BusinessHeadPolicyActivity.class);
-            // Pass user data
-            if (userId != null) intent.putExtra("USER_ID", userId);
-            if (username != null) intent.putExtra("USERNAME", username);
-            if (firstName != null) intent.putExtra("FIRST_NAME", firstName);
-            if (lastName != null) intent.putExtra("LAST_NAME", lastName);
+            passUserDataToIntent(intent);
             startActivity(intent);
         });
-        
 
-
-        // SDSA
-        cardStrategicPlanning.setOnClickListener(v -> {
+        // SDSA Card - Navigate to Business Head SDSA Panel
+        cardTotalSDSA.setOnClickListener(v -> {
             Intent intent = new Intent(BusinessHeadPanelActivity.this, BusinessHeadSdsaActivity.class);
-            // Pass user data
-            if (userId != null) intent.putExtra("USER_ID", userId);
-            if (username != null) intent.putExtra("USERNAME", username);
-            if (firstName != null) intent.putExtra("FIRST_NAME", firstName);
-            if (lastName != null) intent.putExtra("LAST_NAME", lastName);
+            passUserDataToIntent(intent);
             startActivity(intent);
         });
     }
@@ -645,6 +615,9 @@ public class BusinessHeadPanelActivity extends AppCompatActivity {
         if (requestQueue == null) {
             requestQueue = Volley.newRequestQueue(this);
         }
+        
+        // Restore user data and welcome message when returning to this activity
+        updateWelcomeText();
     }
     
     @Override

@@ -100,10 +100,8 @@ public class BusinessHeadPortfolioActivity extends AppCompatActivity {
     }
 
     private void goBack() {
-        // Go back to Business Head panel
-        Intent intent = new Intent(this, BusinessHeadPanelActivity.class);
-        passUserDataToIntent(intent);
-        startActivity(intent);
+        // Simply finish this activity to return to the previous one
+        // This preserves the user data in the BusinessHeadPanelActivity
         finish();
     }
 
