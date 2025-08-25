@@ -399,7 +399,7 @@ public class RegionalBusinessHeadPanelActivity extends AppCompatActivity {
 
     private void updateStats() {
         // Fetch real statistics from APIs
-        fetchEmployeeCount();
+        fetchEmployeeCount(); // Fetches total Employee Users who report to this RBH
         fetchSdsaCount();
         fetchPartnerCount();
         fetchAgentCount();
@@ -413,7 +413,8 @@ public class RegionalBusinessHeadPanelActivity extends AppCompatActivity {
         
         new Thread(() -> {
             try {
-                String urlString = "https://emp.kfinone.com/mobile/api/get_rbh_active_emp_list.php?user_id=" + userId;
+                // Use the get_rbh_reporting_users.php API to get total Employee Users count
+                String urlString = "https://emp.kfinone.com/mobile/api/get_rbh_reporting_users.php?user_id=" + userId;
                 URL url = new URL(urlString);
                 
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -433,15 +434,25 @@ public class RegionalBusinessHeadPanelActivity extends AppCompatActivity {
                     in.close();
                     
                     String responseString = response.toString();
-                    android.util.Log.d("RBHPanel", "Employee API Response: " + responseString);
+                    android.util.Log.d("RBHPanel", "Employee Users API Response: " + responseString);
                     
                     JSONObject json = new JSONObject(responseString);
                     if (json.getString("status").equals("success")) {
-                        int totalCount = json.getInt("total_employees");
-                        runOnUiThread(() -> {
-                            totalEmpCount.setText(String.valueOf(totalCount));
-                            android.util.Log.d("RBHPanel", "Employee count updated: " + totalCount);
-                        });
+                        JSONObject stats = json.optJSONObject("statistics");
+                        if (stats != null) {
+                            int totalCount = stats.optInt("total_reporting_users", 0);
+                            runOnUiThread(() -> {
+                                totalEmpCount.setText(String.valueOf(totalCount));
+                                android.util.Log.d("RBHPanel", "Employee Users count updated: " + totalCount);
+                            });
+                        } else {
+                            // Fallback: count the data array length
+                            int totalCount = json.optJSONArray("data").length();
+                            runOnUiThread(() -> {
+                                totalEmpCount.setText(String.valueOf(totalCount));
+                                android.util.Log.d("RBHPanel", "Employee Users count updated (fallback): " + totalCount);
+                            });
+                        }
                     } else {
                         runOnUiThread(() -> totalEmpCount.setText("0"));
                     }
@@ -449,7 +460,7 @@ public class RegionalBusinessHeadPanelActivity extends AppCompatActivity {
                     runOnUiThread(() -> totalEmpCount.setText("0"));
                 }
             } catch (Exception e) {
-                android.util.Log.e("RBHPanel", "Error fetching employee count: " + e.getMessage());
+                android.util.Log.e("RBHPanel", "Error fetching Employee Users count: " + e.getMessage());
                 runOnUiThread(() -> totalEmpCount.setText("0"));
             }
         }).start();
