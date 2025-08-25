@@ -40,7 +40,7 @@ import com.android.volley.DefaultRetryPolicy;
 
 public class BusinessHeadPanelActivity extends AppCompatActivity {
     private static final String TAG = "BusinessHeadPanel";
-    private static final String BASE_URL = "https://emp.kfinone.com/mobile/api/";
+    private static final String BASE_URL = "https://p3plzcpnl508816.prod.phx3.secureserver.net/mobile/api/";
     
     private String username;
     private String firstName;
@@ -84,6 +84,10 @@ public class BusinessHeadPanelActivity extends AppCompatActivity {
     private ExecutorService executor = Executors.newSingleThreadExecutor();
     private RequestQueue requestQueue;
     
+    // ANR Prevention: Global timeout handler
+    private Handler timeoutHandler = new Handler(Looper.getMainLooper());
+    private static final int NETWORK_TIMEOUT_MS = 8000; // 8 seconds max
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -116,6 +120,20 @@ public class BusinessHeadPanelActivity extends AppCompatActivity {
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
             loadBusinessHeadData();
         }, 100); // Small delay to ensure UI is ready
+        
+        // ANR Prevention: Set global timeout for all network operations
+        timeoutHandler.postDelayed(() -> {
+            if (totalEmpCount.getText().equals("0") && 
+                totalSDSACount.getText().equals("0") && 
+                totalPartnerCount.getText().equals("0") && 
+                totalPortfolioCount.getText().equals("0") && 
+                totalAgentCount.getText().equals("0")) {
+                
+                Log.w(TAG, "Network timeout detected - setting fallback values");
+                setInitialStats();
+                showToast("Network timeout - using cached data");
+            }
+        }, NETWORK_TIMEOUT_MS);
         
         updateWelcomeText();
         
@@ -454,10 +472,10 @@ public class BusinessHeadPanelActivity extends AppCompatActivity {
             }
         );
 
-        // Add timeout and retry policy for better performance
+        // Add aggressive timeout and retry policy to prevent ANR
         jsonRequest.setRetryPolicy(new DefaultRetryPolicy(
-            10000, // 10 seconds timeout
-            1,      // 1 retry
+            5000,  // 5 seconds timeout (reduced from 10s)
+            0,      // No retries (prevents hanging)
             1.0f    // No backoff multiplier
         ));
 
@@ -469,6 +487,9 @@ public class BusinessHeadPanelActivity extends AppCompatActivity {
         
         // Also fetch partner count specifically
         fetchPartnerCount();
+        
+        // Fetch agent count specifically
+        fetchAgentCount();
     }
     
     private void fetchPartnerCount() {
@@ -533,10 +554,79 @@ public class BusinessHeadPanelActivity extends AppCompatActivity {
             }
         );
 
-        // Add timeout and retry policy
+        // Add aggressive timeout and retry policy to prevent ANR
         jsonRequest.setRetryPolicy(new DefaultRetryPolicy(
-            10000, // 10 seconds timeout
-            1,      // 1 retry
+            5000,  // 5 seconds timeout (reduced from 10s)
+            0,      // No retries (prevents hanging)
+            1.0f    // No backoff multiplier
+        ));
+
+        // Add to Volley queue
+        if (requestQueue == null) {
+            requestQueue = Volley.newRequestQueue(this);
+        }
+        requestQueue.add(jsonRequest);
+    }
+    
+    private void fetchAgentCount() {
+        if (username == null || username.isEmpty()) {
+            totalAgentCount.setText("0");
+            return;
+        }
+        
+        String url = BASE_URL + "get_business_head_agent_count.php";
+        
+        // Create request body with username
+        JSONObject requestBody = new JSONObject();
+        try {
+            requestBody.put("username", username);
+        } catch (JSONException e) {
+            Log.e(TAG, "Error creating request body: " + e.getMessage());
+            return;
+        }
+        
+        JsonObjectRequest jsonRequest = new JsonObjectRequest(
+            Request.Method.POST,
+            url,
+            requestBody,
+            new Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject jsonResponse) {
+                    try {
+                        if (jsonResponse.getString("status").equals("success")) {
+                            // Get agent count from data
+                            if (jsonResponse.has("data")) {
+                                JSONObject data = jsonResponse.getJSONObject("data");
+                                int totalCount = data.optInt("total_agents", 0);
+                                totalAgentCount.setText(String.valueOf(totalCount));
+                                Log.d(TAG, "Agent count updated: " + totalCount);
+                            } else {
+                                Log.w(TAG, "No data field found in agent count response");
+                                totalAgentCount.setText("0");
+                            }
+                        } else {
+                            Log.w(TAG, "Failed to fetch agent count: " + jsonResponse.optString("message", "Unknown error"));
+                            totalAgentCount.setText("0");
+                        }
+                    } catch (JSONException e) {
+                        Log.e(TAG, "Error parsing agent count response", e);
+                        totalAgentCount.setText("0");
+                    }
+                }
+            },
+            new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Log.e(TAG, "Error fetching agent count", error);
+                    totalAgentCount.setText("0");
+                }
+            }
+        );
+
+        // Add aggressive timeout and retry policy to prevent ANR
+        jsonRequest.setRetryPolicy(new DefaultRetryPolicy(
+            5000,  // 5 seconds timeout (reduced from 10s)
+            0,      // No retries (prevents hanging)
             1.0f    // No backoff multiplier
         ));
 
@@ -629,6 +719,12 @@ public class BusinessHeadPanelActivity extends AppCompatActivity {
     
     private void showError(String message) {
         Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+        
+        // ANR Prevention: Set fallback values on network errors
+        if (message.contains("Network error") || message.contains("timeout")) {
+            Log.w(TAG, "Network error detected - setting fallback values");
+            setInitialStats();
+        }
     }
     
     private void showToast(String message) {
@@ -657,6 +753,11 @@ public class BusinessHeadPanelActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         
+        // ANR Prevention: Cancel all pending operations
+        if (timeoutHandler != null) {
+            timeoutHandler.removeCallbacksAndMessages(null);
+        }
+        
         // Clean up resources to prevent memory leaks
         if (executor != null && !executor.isShutdown()) {
             executor.shutdown();
@@ -676,6 +777,7 @@ public class BusinessHeadPanelActivity extends AppCompatActivity {
         // Clear references to prevent memory leaks
         requestQueue = null;
         executor = null;
+        timeoutHandler = null;
     }
     
     @Override
