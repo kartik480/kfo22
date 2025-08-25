@@ -163,6 +163,10 @@ public class RBHEmployeeUsersActivity extends AppCompatActivity {
     private void initializeData() {
         employeeList = new ArrayList<>();
         employeeAdapter = new RBHEmployeeAdapter(this, employeeList);
+        
+        // Pass user data to adapter for navigation
+        employeeAdapter.setUserData(userId, userName, firstName, lastName);
+        
         employeeListView.setAdapter(employeeAdapter);
         requestQueue = Volley.newRequestQueue(this);
     }

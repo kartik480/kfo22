@@ -1,10 +1,12 @@
 package com.kfinone.app;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.TextView;
 import java.util.List;
 import java.util.Map;
@@ -13,11 +15,20 @@ public class RBHEmployeeAdapter extends BaseAdapter {
     private Context context;
     private List<Map<String, Object>> employeeList;
     private LayoutInflater inflater;
+    private String userId, userName, firstName, lastName;
 
     public RBHEmployeeAdapter(Context context, List<Map<String, Object>> employeeList) {
         this.context = context;
         this.employeeList = employeeList;
         this.inflater = LayoutInflater.from(context);
+    }
+
+    // Method to set user data for navigation
+    public void setUserData(String userId, String userName, String firstName, String lastName) {
+        this.userId = userId;
+        this.userName = userName;
+        this.firstName = firstName;
+        this.lastName = lastName;
     }
 
     @Override
@@ -50,6 +61,7 @@ public class RBHEmployeeAdapter extends BaseAdapter {
             holder.companyText = convertView.findViewById(R.id.companyText);
             holder.statusText = convertView.findViewById(R.id.statusText);
             holder.rankText = convertView.findViewById(R.id.rankText);
+            holder.viewButton = convertView.findViewById(R.id.viewButton);
             
             convertView.setTag(holder);
         } else {
@@ -101,6 +113,21 @@ public class RBHEmployeeAdapter extends BaseAdapter {
             holder.rankText.setText("Designation: " + designation + " | Rank: " + (rank != null ? rank : "N/A"));
         }
         
+        // Set up view button click listener
+        holder.viewButton.setOnClickListener(v -> {
+            Intent intent = new Intent(context, RBHEmployeeDetailActivity.class);
+            intent.putExtra("EMPLOYEE_DATA", (java.io.Serializable) employee);
+            intent.putExtra("SOURCE_PANEL", "RBH_EMPLOYEE_USERS");
+            
+            // Pass user data for navigation
+            if (userId != null) intent.putExtra("USER_ID", userId);
+            if (userName != null) intent.putExtra("USERNAME", userName);
+            if (firstName != null) intent.putExtra("FIRST_NAME", firstName);
+            if (lastName != null) intent.putExtra("LAST_NAME", lastName);
+            
+            context.startActivity(intent);
+        });
+        
         return convertView;
     }
     
@@ -111,5 +138,6 @@ public class RBHEmployeeAdapter extends BaseAdapter {
     
     static class ViewHolder {
         TextView nameText, usernameText, emailText, phoneText, companyText, statusText, rankText;
+        Button viewButton;
     }
 }

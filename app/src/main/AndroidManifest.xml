@@ -1078,6 +1078,12 @@
             android:parentActivityName=".RegionalBusinessHeadPanelActivity"
             android:theme="@style/FullscreenTheme" />
         <activity
+            android:name=".RBHEmployeeDetailActivity"
+            android:exported="false"
+            android:label="RBH Employee Details"
+            android:parentActivityName=".RBHEmployeeUsersActivity"
+            android:theme="@style/FullscreenTheme" />
+        <activity
             android:name=".RBHInactiveEmpListActivity"
             android:exported="false"
             android:label="RBH Inactive Employee List"
