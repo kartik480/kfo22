@@ -400,7 +400,7 @@ public class RegionalBusinessHeadPanelActivity extends AppCompatActivity {
     private void updateStats() {
         // Fetch real statistics from APIs
         fetchEmployeeCount(); // Fetches total Employee Users who report to this RBH
-        fetchSdsaCount();
+        fetchSdsaCount(); // Fetches total SDSA Users who report to this RBH
         fetchPartnerCount();
         fetchAgentCount();
     }
@@ -498,12 +498,19 @@ public class RegionalBusinessHeadPanelActivity extends AppCompatActivity {
                     
                     JSONObject json = new JSONObject(responseString);
                     if (json.getString("status").equals("success")) {
-                        JSONObject stats = json.optJSONObject("statistics");
-                        if (stats != null) {
-                            int totalCount = stats.optInt("total_users", 0);
+                        // Try to get count from the 'count' field first
+                        if (json.has("count")) {
+                            int totalCount = json.getInt("count");
                             runOnUiThread(() -> {
                                 totalSdsaCount.setText(String.valueOf(totalCount));
-                                android.util.Log.d("RBHPanel", "SDSA count updated: " + totalCount);
+                                android.util.Log.d("RBHPanel", "SDSA count updated from 'count' field: " + totalCount);
+                            });
+                        } else if (json.has("users")) {
+                            // Fallback: count the users array length
+                            int totalCount = json.getJSONArray("users").length();
+                            runOnUiThread(() -> {
+                                totalSdsaCount.setText(String.valueOf(totalCount));
+                                android.util.Log.d("RBHPanel", "SDSA count updated from users array length: " + totalCount);
                             });
                         } else {
                             runOnUiThread(() -> totalSdsaCount.setText("0"));
