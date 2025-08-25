@@ -368,112 +368,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:columnCount="2"
-                android:rowCount="8"
+                android:rowCount="4"
                 android:alignmentMode="alignMargins"
                 android:useDefaultMargins="true">
 
-                <!-- Card 1: Campaign Management -->
+                <!-- Card 1: Emp Master -->
                 <LinearLayout
-                    android:id="@+id/cardCampaignManagement"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_columnWeight="1"
-                    android:orientation="vertical"
-                    android:background="@drawable/action_card_background"
-                    android:padding="16dp"
-                    android:gravity="center"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:foreground="?attr/selectableItemBackground">
-
-                    <ImageView
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"
-                        android:src="@drawable/ic_management"
-                        android:background="@drawable/blue_gradient_icon_background"
-                        android:padding="12dp"
-                        android:contentDescription="Campaign Management" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Campaign Management"
-                        android:textSize="14sp"
-                        android:textStyle="bold"
-                        android:textColor="@color/black"
-                        android:layout_marginTop="8dp"
-                        android:gravity="center" />
-                </LinearLayout>
-
-                <!-- Card 2: Brand Strategy -->
-                <LinearLayout
-                    android:id="@+id/cardBrandStrategy"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_columnWeight="1"
-                    android:orientation="vertical"
-                    android:background="@drawable/action_card_background"
-                    android:padding="16dp"
-                    android:gravity="center"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:foreground="?attr/selectableItemBackground">
-
-                    <ImageView
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"
-                        android:src="@drawable/ic_strategy"
-                        android:background="@drawable/blue_gradient_icon_background"
-                        android:padding="12dp"
-                        android:contentDescription="Brand Strategy" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Brand Strategy"
-                        android:textSize="14sp"
-                        android:textStyle="bold"
-                        android:textColor="@color/black"
-                        android:layout_marginTop="8dp"
-                        android:gravity="center" />
-                </LinearLayout>
-
-                <!-- Card 3: Market Research -->
-                <LinearLayout
-                    android:id="@+id/cardMarketResearch"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_columnWeight="1"
-                    android:orientation="vertical"
-                    android:background="@drawable/action_card_background"
-                    android:padding="16dp"
-                    android:gravity="center"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:foreground="?attr/selectableItemBackground">
-
-                    <ImageView
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"
-                        android:src="@drawable/ic_analytics"
-                        android:background="@drawable/blue_gradient_icon_background"
-                        android:padding="12dp"
-                        android:contentDescription="Market Research" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Market Research"
-                        android:textSize="14sp"
-                        android:textStyle="bold"
-                        android:textColor="@color/black"
-                        android:layout_marginTop="8dp"
-                        android:gravity="center" />
-                </LinearLayout>
-
-                <!-- Card 4: Lead Management -->
-                <LinearLayout
-                    android:id="@+id/cardLeadManagement"
+                    android:id="@+id/cardEmpMaster"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_columnWeight="1"
@@ -491,12 +392,12 @@
                         android:src="@drawable/ic_people"
                         android:background="@drawable/blue_gradient_icon_background"
                         android:padding="12dp"
-                        android:contentDescription="Lead Management" />
+                        android:contentDescription="Emp Master" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Lead Management"
+                        android:text="Emp Master"
                         android:textSize="14sp"
                         android:textStyle="bold"
                         android:textColor="@color/black"
@@ -504,9 +405,9 @@
                         android:gravity="center" />
                 </LinearLayout>
 
-                <!-- Card 5: Digital Marketing -->
+                <!-- Card 2: Location Master -->
                 <LinearLayout
-                    android:id="@+id/cardDigitalMarketing"
+                    android:id="@+id/cardLocationMaster"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_columnWeight="1"
@@ -521,15 +422,15 @@
                     <ImageView
                         android:layout_width="48dp"
                         android:layout_height="48dp"
-                        android:src="@drawable/ic_chart"
+                        android:src="@drawable/ic_location"
                         android:background="@drawable/blue_gradient_icon_background"
                         android:padding="12dp"
-                        android:contentDescription="Digital Marketing" />
+                        android:contentDescription="Location Master" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Digital Marketing"
+                        android:text="Location Master"
                         android:textSize="14sp"
                         android:textStyle="bold"
                         android:textColor="@color/black"
@@ -537,108 +438,9 @@
                         android:gravity="center" />
                 </LinearLayout>
 
-                <!-- Card 6: Content Strategy -->
+                <!-- Card 3: SDSA Master -->
                 <LinearLayout
-                    android:id="@+id/cardContentStrategy"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_columnWeight="1"
-                    android:orientation="vertical"
-                    android:background="@drawable/action_card_background"
-                    android:padding="16dp"
-                    android:gravity="center"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:foreground="?attr/selectableItemBackground">
-
-                    <ImageView
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"
-                        android:src="@drawable/ic_document"
-                        android:background="@drawable/blue_gradient_icon_background"
-                        android:padding="12dp"
-                        android:contentDescription="Content Strategy" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Content Strategy"
-                        android:textSize="14sp"
-                        android:textStyle="bold"
-                        android:textColor="@color/black"
-                        android:layout_marginTop="8dp"
-                        android:gravity="center" />
-                </LinearLayout>
-
-                <!-- Card 7: Performance Analytics -->
-                <LinearLayout
-                    android:id="@+id/cardPerformanceAnalytics"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_columnWeight="1"
-                    android:orientation="vertical"
-                    android:background="@drawable/action_card_background"
-                    android:padding="16dp"
-                    android:gravity="center"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:foreground="?attr/selectableItemBackground">
-
-                    <ImageView
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"
-                        android:src="@drawable/ic_performance"
-                        android:background="@drawable/blue_gradient_icon_background"
-                        android:padding="12dp"
-                        android:contentDescription="Performance Analytics" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Performance Analytics"
-                        android:textSize="14sp"
-                        android:textStyle="bold"
-                        android:textColor="@color/black"
-                        android:layout_marginTop="8dp"
-                        android:gravity="center" />
-                </LinearLayout>
-
-                <!-- Card 8: Customer Insights -->
-                <LinearLayout
-                    android:id="@+id/cardCustomerInsights"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_columnWeight="1"
-                    android:orientation="vertical"
-                    android:background="@drawable/action_card_background"
-                    android:padding="16dp"
-                    android:gravity="center"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:foreground="?attr/selectableItemBackground">
-
-                    <ImageView
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"
-                        android:src="@drawable/ic_analytics"
-                        android:background="@drawable/blue_gradient_icon_background"
-                        android:padding="12dp"
-                        android:contentDescription="Customer Insights" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Customer Insights"
-                        android:textSize="14sp"
-                        android:textStyle="bold"
-                        android:textColor="@color/black"
-                        android:layout_marginTop="8dp"
-                        android:gravity="center" />
-                </LinearLayout>
-
-                <!-- Card 9: Social Media -->
-                <LinearLayout
-                    android:id="@+id/cardSocialMedia"
+                    android:id="@+id/cardSDSAMaster"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_columnWeight="1"
@@ -656,12 +458,12 @@
                         android:src="@drawable/ic_people"
                         android:background="@drawable/blue_gradient_icon_background"
                         android:padding="12dp"
-                        android:contentDescription="Social Media" />
+                        android:contentDescription="SDSA Master" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Social Media"
+                        android:text="SDSA Master"
                         android:textSize="14sp"
                         android:textStyle="bold"
                         android:textColor="@color/black"
@@ -669,9 +471,9 @@
                         android:gravity="center" />
                 </LinearLayout>
 
-                <!-- Card 10: ROI Tracking -->
+                <!-- Card 4: Emp Links -->
                 <LinearLayout
-                    android:id="@+id/cardROITracking"
+                    android:id="@+id/cardEmpLinks"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_columnWeight="1"
@@ -686,15 +488,15 @@
                     <ImageView
                         android:layout_width="48dp"
                         android:layout_height="48dp"
-                        android:src="@drawable/ic_chart"
+                        android:src="@drawable/ic_link"
                         android:background="@drawable/blue_gradient_icon_background"
                         android:padding="12dp"
-                        android:contentDescription="ROI Tracking" />
+                        android:contentDescription="Emp Links" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="ROI Tracking"
+                        android:text="Emp Links"
                         android:textSize="14sp"
                         android:textStyle="bold"
                         android:textColor="@color/black"
@@ -702,9 +504,9 @@
                         android:gravity="center" />
                 </LinearLayout>
 
-                <!-- Card 11: Competitor Analysis -->
+                <!-- Card 5: Data Links -->
                 <LinearLayout
-                    android:id="@+id/cardCompetitorAnalysis"
+                    android:id="@+id/cardDataLinks"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_columnWeight="1"
@@ -719,15 +521,15 @@
                     <ImageView
                         android:layout_width="48dp"
                         android:layout_height="48dp"
-                        android:src="@drawable/ic_market_analysis"
+                        android:src="@drawable/ic_data"
                         android:background="@drawable/blue_gradient_icon_background"
                         android:padding="12dp"
-                        android:contentDescription="Competitor Analysis" />
+                        android:contentDescription="Data Links" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Competitor Analysis"
+                        android:text="Data Links"
                         android:textSize="14sp"
                         android:textStyle="bold"
                         android:textColor="@color/black"
@@ -735,9 +537,9 @@
                         android:gravity="center" />
                 </LinearLayout>
 
-                <!-- Card 12: Marketing Budget -->
+                <!-- Card 6: Work Links -->
                 <LinearLayout
-                    android:id="@+id/cardMarketingBudget"
+                    android:id="@+id/cardWorkLinks"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_columnWeight="1"
@@ -752,21 +554,89 @@
                     <ImageView
                         android:layout_width="48dp"
                         android:layout_height="48dp"
-                        android:src="@drawable/ic_budget"
+                        android:src="@drawable/ic_work"
                         android:background="@drawable/blue_gradient_icon_background"
                         android:padding="12dp"
-                        android:contentDescription="Marketing Budget" />
+                        android:contentDescription="Work Links" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Marketing Budget"
+                        android:text="Work Links"
                         android:textSize="14sp"
                         android:textStyle="bold"
                         android:textColor="@color/black"
                         android:layout_marginTop="8dp"
                         android:gravity="center" />
                 </LinearLayout>
+
+                <!-- Card 7: DSA Codes -->
+                <LinearLayout
+                    android:id="@+id/cardDSACodes"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1"
+                    android:orientation="vertical"
+                    android:background="@drawable/action_card_background"
+                    android:padding="16dp"
+                    android:gravity="center"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?attr/selectableItemBackground">
+
+                    <ImageView
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:src="@drawable/ic_code"
+                        android:background="@drawable/blue_gradient_icon_background"
+                        android:padding="12dp"
+                        android:contentDescription="DSA Codes" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="DSA Codes"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/black"
+                        android:layout_marginTop="8dp"
+                        android:gravity="center" />
+                </LinearLayout>
+
+                <!-- Card 8: Banker -->
+                <LinearLayout
+                    android:id="@+id/cardBanker"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1"
+                    android:orientation="vertical"
+                    android:background="@drawable/action_card_background"
+                    android:padding="16dp"
+                    android:gravity="center"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?attr/selectableItemBackground">
+
+                    <ImageView
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:src="@drawable/ic_bank"
+                        android:background="@drawable/blue_gradient_icon_background"
+                        android:padding="12dp"
+                        android:contentDescription="Banker" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Banker"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/black"
+                        android:layout_marginTop="8dp"
+                        android:gravity="center" />
+                </LinearLayout>
+
+
 
             </GridLayout>
 

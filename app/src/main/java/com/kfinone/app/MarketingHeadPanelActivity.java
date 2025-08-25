@@ -67,18 +67,14 @@ public class MarketingHeadPanelActivity extends AppCompatActivity {
     private View profileIcon;
     
     // Action Card Views
-    private LinearLayout cardCampaignManagement;
-    private LinearLayout cardBrandStrategy;
-    private LinearLayout cardMarketResearch;
-    private LinearLayout cardLeadManagement;
-    private LinearLayout cardDigitalMarketing;
-    private LinearLayout cardContentStrategy;
-    private LinearLayout cardPerformanceAnalytics;
-    private LinearLayout cardCustomerInsights;
-    private LinearLayout cardSocialMedia;
-    private LinearLayout cardROITracking;
-    private LinearLayout cardCompetitorAnalysis;
-    private LinearLayout cardMarketingBudget;
+    private LinearLayout cardEmpMaster;
+    private LinearLayout cardLocationMaster;
+    private LinearLayout cardSDSAMaster;
+    private LinearLayout cardEmpLinks;
+    private LinearLayout cardDataLinks;
+    private LinearLayout cardWorkLinks;
+    private LinearLayout cardDSACodes;
+    private LinearLayout cardBanker;
     
     private ExecutorService executor = Executors.newSingleThreadExecutor();
     private RequestQueue requestQueue;
@@ -149,18 +145,14 @@ public class MarketingHeadPanelActivity extends AppCompatActivity {
         profileIcon = findViewById(R.id.profileIcon);
         
         // Action Card Views
-        cardCampaignManagement = findViewById(R.id.cardCampaignManagement);
-        cardBrandStrategy = findViewById(R.id.cardBrandStrategy);
-        cardMarketResearch = findViewById(R.id.cardMarketResearch);
-        cardLeadManagement = findViewById(R.id.cardLeadManagement);
-        cardDigitalMarketing = findViewById(R.id.cardDigitalMarketing);
-        cardContentStrategy = findViewById(R.id.cardContentStrategy);
-        cardPerformanceAnalytics = findViewById(R.id.cardPerformanceAnalytics);
-        cardCustomerInsights = findViewById(R.id.cardCustomerInsights);
-        cardSocialMedia = findViewById(R.id.cardSocialMedia);
-        cardROITracking = findViewById(R.id.cardROITracking);
-        cardCompetitorAnalysis = findViewById(R.id.cardCompetitorAnalysis);
-        cardMarketingBudget = findViewById(R.id.cardMarketingBudget);
+        cardEmpMaster = findViewById(R.id.cardEmpMaster);
+        cardLocationMaster = findViewById(R.id.cardLocationMaster);
+        cardSDSAMaster = findViewById(R.id.cardSDSAMaster);
+        cardEmpLinks = findViewById(R.id.cardEmpLinks);
+        cardDataLinks = findViewById(R.id.cardDataLinks);
+        cardWorkLinks = findViewById(R.id.cardWorkLinks);
+        cardDSACodes = findViewById(R.id.cardDSACodes);
+        cardBanker = findViewById(R.id.cardBanker);
     }
     
     private void setupHeaderClickListeners() {
@@ -249,76 +241,52 @@ public class MarketingHeadPanelActivity extends AppCompatActivity {
     }
     
     private void setupCardClickListeners() {
-        // Campaign Management
-        cardCampaignManagement.setOnClickListener(v -> {
-            showToast("Campaign Management - Coming Soon!");
-            // TODO: Launch Campaign Management Activity
+        // Emp Master
+        cardEmpMaster.setOnClickListener(v -> {
+            showToast("Emp Master - Coming Soon!");
+            // TODO: Launch Emp Master Activity
         });
         
-        // Brand Strategy
-        cardBrandStrategy.setOnClickListener(v -> {
-            showToast("Brand Strategy - Coming Soon!");
-            // TODO: Launch Brand Strategy Activity
+        // Location Master
+        cardLocationMaster.setOnClickListener(v -> {
+            showToast("Location Master - Coming Soon!");
+            // TODO: Launch Location Master Activity
         });
         
-        // Market Research
-        cardMarketResearch.setOnClickListener(v -> {
-            showToast("Market Research - Coming Soon!");
-            // TODO: Launch Market Research Activity
+        // SDSA Master
+        cardSDSAMaster.setOnClickListener(v -> {
+            showToast("SDSA Master - Coming Soon!");
+            // TODO: Launch SDSA Master Activity
         });
         
-        // Lead Management
-        cardLeadManagement.setOnClickListener(v -> {
-            showToast("Lead Management - Coming Soon!");
-            // TODO: Launch Lead Management Activity
+        // Emp Links
+        cardEmpLinks.setOnClickListener(v -> {
+            showToast("Emp Links - Coming Soon!");
+            // TODO: Launch Emp Links Activity
         });
         
-        // Digital Marketing
-        cardDigitalMarketing.setOnClickListener(v -> {
-            showToast("Digital Marketing - Coming Soon!");
-            // TODO: Launch Digital Marketing Activity
+        // Data Links
+        cardDataLinks.setOnClickListener(v -> {
+            showToast("Data Links - Coming Soon!");
+            // TODO: Launch Data Links Activity
         });
         
-        // Content Strategy
-        cardContentStrategy.setOnClickListener(v -> {
-            showToast("Content Strategy - Coming Soon!");
-            // TODO: Launch Content Strategy Activity
+        // Work Links
+        cardWorkLinks.setOnClickListener(v -> {
+            showToast("Work Links - Coming Soon!");
+            // TODO: Launch Work Links Activity
         });
         
-        // Performance Analytics
-        cardPerformanceAnalytics.setOnClickListener(v -> {
-            showToast("Performance Analytics - Coming Soon!");
-            // TODO: Launch Performance Analytics Activity
+        // DSA Codes
+        cardDSACodes.setOnClickListener(v -> {
+            showToast("DSA Codes - Coming Soon!");
+            // TODO: Launch DSA Codes Activity
         });
         
-        // Customer Insights
-        cardCustomerInsights.setOnClickListener(v -> {
-            showToast("Customer Insights - Coming Soon!");
-            // TODO: Launch Customer Insights Activity
-        });
-        
-        // Social Media
-        cardSocialMedia.setOnClickListener(v -> {
-            showToast("Social Media - Coming Soon!");
-            // TODO: Launch Social Media Activity
-        });
-        
-        // ROI Tracking
-        cardROITracking.setOnClickListener(v -> {
-            showToast("ROI Tracking - Coming Soon!");
-            // TODO: Launch ROI Tracking Activity
-        });
-        
-        // Competitor Analysis
-        cardCompetitorAnalysis.setOnClickListener(v -> {
-            showToast("Competitor Analysis - Coming Soon!");
-            // TODO: Launch Competitor Analysis Activity
-        });
-        
-        // Marketing Budget
-        cardMarketingBudget.setOnClickListener(v -> {
-            showToast("Marketing Budget - Coming Soon!");
-            // TODO: Launch Marketing Budget Activity
+        // Banker
+        cardBanker.setOnClickListener(v -> {
+            showToast("Banker - Coming Soon!");
+            // TODO: Launch Banker Activity
         });
     }
     
