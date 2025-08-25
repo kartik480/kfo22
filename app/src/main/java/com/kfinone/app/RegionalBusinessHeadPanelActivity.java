@@ -162,10 +162,7 @@ public class RegionalBusinessHeadPanelActivity extends AppCompatActivity {
                 // Navigate to RBH Active Emp List
                 android.util.Log.d("RBHPanel", "Total Emp Card clicked! Navigating to RegionalBusinessHeadActiveEmpListActivity");
                 Intent intent = new Intent(this, RegionalBusinessHeadActiveEmpListActivity.class);
-                intent.putExtra("USERNAME", userName);
-                intent.putExtra("USER_ID", userId);
-                intent.putExtra("FIRST_NAME", firstName);
-                intent.putExtra("LAST_NAME", lastName);
+                passUserDataToIntent(intent);
                 intent.putExtra("SOURCE_PANEL", "RBH_PANEL");
                 startActivity(intent);
             });
@@ -180,8 +177,7 @@ public class RegionalBusinessHeadPanelActivity extends AppCompatActivity {
                 android.util.Log.d("RBHPanel", "USER_ID: " + userId);
                 
                 Intent intent = new Intent(this, RBHMySdsaPanelActivity.class);
-                intent.putExtra("USERNAME", userName);
-                intent.putExtra("USER_ID", userId);
+                passUserDataToIntent(intent);
                 startActivity(intent);
             });
         }
@@ -191,7 +187,7 @@ public class RegionalBusinessHeadPanelActivity extends AppCompatActivity {
                 // Navigate to RBH My Partner Panel
                 android.util.Log.d("RBHPanel", "Total Partner Card clicked! Navigating to RegionalBusinessHeadMyPartnerPanelActivity");
                 Intent intent = new Intent(this, RegionalBusinessHeadMyPartnerPanelActivity.class);
-                intent.putExtra("USERNAME", userName);
+                passUserDataToIntent(intent);
                 startActivity(intent);
             });
         }
@@ -201,8 +197,7 @@ public class RegionalBusinessHeadPanelActivity extends AppCompatActivity {
                 // Navigate to RBH My Agent List
                 android.util.Log.d("RBHPanel", "Total Agent Card clicked! Navigating to RBHMyAgentListActivity");
                 Intent intent = new Intent(this, RBHMyAgentListActivity.class);
-                intent.putExtra("USERNAME", userName);
-                intent.putExtra("USER_ID", userId);
+                passUserDataToIntent(intent);
                 startActivity(intent);
             });
         }
@@ -212,10 +207,7 @@ public class RegionalBusinessHeadPanelActivity extends AppCompatActivity {
                 // Navigate to RBH Emp Links Panel
                 android.util.Log.d("RBHPanel", "Emp Links Card clicked! Navigating to RBHEmpLinksActivity");
                 Intent intent = new Intent(this, RBHEmpLinksActivity.class);
-                intent.putExtra("USERNAME", userName);
-                intent.putExtra("USER_ID", userId);
-                intent.putExtra("FIRST_NAME", firstName);
-                intent.putExtra("LAST_NAME", lastName);
+                passUserDataToIntent(intent);
                 startActivity(intent);
             });
         }
@@ -225,10 +217,7 @@ public class RegionalBusinessHeadPanelActivity extends AppCompatActivity {
                 // Navigate to RBH Data Links Panel
                 android.util.Log.d("RBHPanel", "Data Links Card clicked! Navigating to RegionalBusinessHeadDataLinksActivity");
                 Intent intent = new Intent(this, RegionalBusinessHeadDataLinksActivity.class);
-                intent.putExtra("USERNAME", userName);
-                intent.putExtra("USER_ID", userId);
-                intent.putExtra("FIRST_NAME", firstName);
-                intent.putExtra("LAST_NAME", lastName);
+                passUserDataToIntent(intent);
                 startActivity(intent);
             });
         }
@@ -238,10 +227,7 @@ public class RegionalBusinessHeadPanelActivity extends AppCompatActivity {
                 // Navigate to RBH Work Links Panel
                 android.util.Log.d("RBHPanel", "Work Links Card clicked! Navigating to RegionalBusinessHeadWorkLinksActivity");
                 Intent intent = new Intent(this, RegionalBusinessHeadWorkLinksActivity.class);
-                intent.putExtra("USERNAME", userName);
-                intent.putExtra("USER_ID", userId);
-                intent.putExtra("FIRST_NAME", firstName);
-                intent.putExtra("LAST_NAME", lastName);
+                passUserDataToIntent(intent);
                 startActivity(intent);
             });
         }
@@ -249,10 +235,7 @@ public class RegionalBusinessHeadPanelActivity extends AppCompatActivity {
         if (cardAnalytics != null) {
             cardAnalytics.setOnClickListener(v -> {
                 Intent intent = new Intent(this, RBHEmpMasterActivity.class);
-                intent.putExtra("USERNAME", userName);
-                intent.putExtra("USER_ID", userId);
-                intent.putExtra("FIRST_NAME", firstName);
-                intent.putExtra("LAST_NAME", lastName);
+                passUserDataToIntent(intent);
                 intent.putExtra("SOURCE_PANEL", "RBH_PANEL");
                 startActivity(intent);
             });
@@ -261,10 +244,7 @@ public class RegionalBusinessHeadPanelActivity extends AppCompatActivity {
         if (cardStrategy != null) {
             cardStrategy.setOnClickListener(v -> {
                 Intent intent = new Intent(this, RBHEmployeeUsersActivity.class);
-                intent.putExtra("USERNAME", userName);
-                intent.putExtra("USER_ID", userId);
-                intent.putExtra("FIRST_NAME", firstName);
-                intent.putExtra("LAST_NAME", lastName);
+                passUserDataToIntent(intent);
                 intent.putExtra("SOURCE_PANEL", "RBH_PANEL");
                 startActivity(intent);
             });
@@ -273,8 +253,7 @@ public class RegionalBusinessHeadPanelActivity extends AppCompatActivity {
         if (cardPerformance != null) {
             cardPerformance.setOnClickListener(v -> {
                 Intent intent = new Intent(this, RBHMySdsaPanelActivity.class);
-                intent.putExtra("USERNAME", userName);
-                intent.putExtra("USER_ID", userId);
+                passUserDataToIntent(intent);
                 startActivity(intent);
             });
         }
@@ -282,7 +261,7 @@ public class RegionalBusinessHeadPanelActivity extends AppCompatActivity {
         if (cardGrowth != null) {
             cardGrowth.setOnClickListener(v -> {
                 Intent intent = new Intent(this, RegionalBusinessHeadMyPartnerPanelActivity.class);
-                intent.putExtra("USERNAME", userName);
+                passUserDataToIntent(intent);
                 startActivity(intent);
             });
         }
@@ -290,8 +269,7 @@ public class RegionalBusinessHeadPanelActivity extends AppCompatActivity {
         if (cardInnovation != null) {
             cardInnovation.setOnClickListener(v -> {
                 Intent intent = new Intent(this, RBHMyAgentPanelActivity.class);
-                intent.putExtra("USERNAME", userName);
-                intent.putExtra("USER_ID", userId); // Pass the actual user ID
+                passUserDataToIntent(intent);
                 startActivity(intent);
             });
         }
@@ -299,16 +277,15 @@ public class RegionalBusinessHeadPanelActivity extends AppCompatActivity {
         if (cardPartnerships != null) {
             cardPartnerships.setOnClickListener(v -> {
                 Intent intent = new Intent(this, RBHPayoutPanelActivity.class);
-                intent.putExtra("USERNAME", userName);
-                intent.putExtra("USER_ID", userId);
+                passUserDataToIntent(intent);
                 startActivity(intent);
             });
         }
         
         if (cardMarketAnalysis != null) {
             cardMarketAnalysis.setOnClickListener(v -> {
-                Intent intent = new Intent(this, DsaCodeListActivity.class);
-                intent.putExtra("USERNAME", userName);
+                Intent intent = new Intent(this, BankerListActivity.class);
+                passUserDataToIntent(intent);
                 intent.putExtra("SOURCE_PANEL", "RBH_PANEL");
                 startActivity(intent);
             });
@@ -317,7 +294,7 @@ public class RegionalBusinessHeadPanelActivity extends AppCompatActivity {
         if (cardCompliance != null) {
             cardCompliance.setOnClickListener(v -> {
                 Intent intent = new Intent(this, RBHPortfolioPanelActivity.class);
-                intent.putExtra("USERNAME", userName);
+                passUserDataToIntent(intent);
                 startActivity(intent);
             });
         }
@@ -326,10 +303,7 @@ public class RegionalBusinessHeadPanelActivity extends AppCompatActivity {
             cardDocumentCheckList.setOnClickListener(v -> {
                 android.util.Log.d("RBHPanel", "Document Check List Card clicked! Navigating to RBHDocumentCheckListActivity");
                 Intent intent = new Intent(this, RBHDocumentCheckListActivity.class);
-                intent.putExtra("USERNAME", userName);
-                intent.putExtra("USER_ID", userId);
-                intent.putExtra("FIRST_NAME", firstName);
-                intent.putExtra("LAST_NAME", lastName);
+                passUserDataToIntent(intent);
                 startActivity(intent);
             });
         }
@@ -338,10 +312,7 @@ public class RegionalBusinessHeadPanelActivity extends AppCompatActivity {
             cardInsurance.setOnClickListener(v -> {
                 android.util.Log.d("RBHPanel", "Insurance Card clicked! Navigating to RBHInsurancePanelActivity");
                 Intent intent = new Intent(this, RBHInsurancePanelActivity.class);
-                intent.putExtra("USERNAME", userName);
-                intent.putExtra("USER_ID", userId);
-                intent.putExtra("FIRST_NAME", firstName);
-                intent.putExtra("LAST_NAME", lastName);
+                passUserDataToIntent(intent);
                 intent.putExtra("SOURCE_PANEL", "RBH_PANEL");
                 startActivity(intent);
             });
@@ -358,6 +329,14 @@ public class RegionalBusinessHeadPanelActivity extends AppCompatActivity {
         } else {
             welcomeText.setText("Welcome back, RBH");
         }
+    }
+    
+    private void passUserDataToIntent(Intent intent) {
+        // Get current user data and pass it to the new activity
+        if (userId != null) intent.putExtra("USER_ID", userId);
+        if (firstName != null) intent.putExtra("FIRST_NAME", firstName);
+        if (lastName != null) intent.putExtra("LAST_NAME", lastName);
+        if (userName != null) intent.putExtra("USERNAME", userName);
     }
 
     private void showMenuOptions() {

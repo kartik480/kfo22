@@ -244,65 +244,42 @@ public class BusinessHeadPanelActivity extends AppCompatActivity {
         // Emp Links
         cardTeamManagement.setOnClickListener(v -> {
             Intent intent = new Intent(BusinessHeadPanelActivity.this, BusinessHeadEmpLinksActivity.class);
-            // Pass user data
-            if (userId != null) intent.putExtra("USER_ID", userId);
-            if (username != null) intent.putExtra("USERNAME", username);
-            if (firstName != null) intent.putExtra("FIRST_NAME", firstName);
-            if (lastName != null) intent.putExtra("LAST_NAME", lastName);
+            passUserDataToIntent(intent);
             startActivity(intent);
         });
         
         // Data Links
         cardBusinessAnalytics.setOnClickListener(v -> {
             Intent intent = new Intent(BusinessHeadPanelActivity.this, BusinessHeadDataLinksActivity.class);
-            // Pass user data
-            if (userId != null) intent.putExtra("USER_ID", userId);
-            if (username != null) intent.putExtra("USERNAME", username);
-            if (firstName != null) intent.putExtra("FIRST_NAME", firstName);
-            if (lastName != null) intent.putExtra("LAST_NAME", lastName);
+            passUserDataToIntent(intent);
             startActivity(intent);
         });
         
         // Work Links
         cardReportsInsights.setOnClickListener(v -> {
             Intent intent = new Intent(BusinessHeadPanelActivity.this, BusinessHeadWorkLinksActivity.class);
-            if (userId != null) intent.putExtra("USER_ID", userId);
-            if (username != null) intent.putExtra("USERNAME", username);
-            if (firstName != null) intent.putExtra("FIRST_NAME", firstName);
-            if (lastName != null) intent.putExtra("LAST_NAME", lastName);
+            passUserDataToIntent(intent);
             startActivity(intent);
         });
         
         // Performance Tracking (Active Employee List)
         cardPerformanceTracking.setOnClickListener(v -> {
             Intent intent = new Intent(BusinessHeadPanelActivity.this, BusinessHeadActiveEmpListActivity.class);
-            // Pass user data
-            if (userId != null) intent.putExtra("USER_ID", userId);
-            if (username != null) intent.putExtra("USERNAME", username);
-            if (firstName != null) intent.putExtra("FIRST_NAME", firstName);
-            if (lastName != null) intent.putExtra("LAST_NAME", lastName);
+            passUserDataToIntent(intent);
             startActivity(intent);
         });
         
         // Strategic Planning (My SDSA Users)
         cardStrategicPlanning.setOnClickListener(v -> {
             Intent intent = new Intent(BusinessHeadPanelActivity.this, BusinessHeadMySdsaUsersActivity.class);
-            // Pass user data
-            if (userId != null) intent.putExtra("USER_ID", userId);
-            if (username != null) intent.putExtra("USERNAME", username);
-            if (firstName != null) intent.putExtra("FIRST_NAME", firstName);
-            if (lastName != null) intent.putExtra("LAST_NAME", lastName);
+            passUserDataToIntent(intent);
             startActivity(intent);
         });
         
         // Resource Management (Partner)
         cardResourceManagement.setOnClickListener(v -> {
             Intent intent = new Intent(BusinessHeadPanelActivity.this, BusinessHeadPartnerActivity.class);
-            // Pass user data
-            if (userId != null) intent.putExtra("USER_ID", userId);
-            if (username != null) intent.putExtra("USERNAME", username);
-            if (firstName != null) intent.putExtra("FIRST_NAME", firstName);
-            if (lastName != null) intent.putExtra("LAST_NAME", lastName);
+            passUserDataToIntent(intent);
             startActivity(intent);
         });
         
@@ -402,11 +379,21 @@ public class BusinessHeadPanelActivity extends AppCompatActivity {
     }
     
     private void updateWelcomeText() {
-        if (firstName != null && !firstName.isEmpty()) {
+        if (firstName != null && lastName != null && !firstName.isEmpty() && !lastName.isEmpty()) {
+            welcomeText.setText("Welcome back, " + firstName + " " + lastName);
+        } else if (firstName != null && !firstName.isEmpty()) {
             welcomeText.setText("Welcome back, " + firstName);
         } else {
             welcomeText.setText("Welcome back, Business Head");
         }
+    }
+    
+    private void passUserDataToIntent(Intent intent) {
+        // Get current user data and pass it to the new activity
+        if (userId != null) intent.putExtra("USER_ID", userId);
+        if (firstName != null) intent.putExtra("FIRST_NAME", firstName);
+        if (lastName != null) intent.putExtra("LAST_NAME", lastName);
+        if (username != null) intent.putExtra("USERNAME", username);
     }
     
     private void loadBusinessHeadData() {

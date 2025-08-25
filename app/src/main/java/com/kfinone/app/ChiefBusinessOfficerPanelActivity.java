@@ -13,6 +13,8 @@ public class ChiefBusinessOfficerPanelActivity extends AppCompatActivity {
     private View notificationIcon, profileIcon, menuButton;
     private String userName;
     private String userId;
+    private String firstName;
+    private String lastName;
     
     // Stat card views
     private View cardTotalEmp, cardTotalSdsa, cardTotalPartner, cardTotalPortfolio, cardTotalAgent;
@@ -32,6 +34,8 @@ public class ChiefBusinessOfficerPanelActivity extends AppCompatActivity {
         Intent intent = getIntent();
         userName = intent.getStringExtra("USERNAME");
         userId = intent.getStringExtra("USER_ID");
+        firstName = intent.getStringExtra("FIRST_NAME");
+        lastName = intent.getStringExtra("LAST_NAME");
         
         if (userName == null || userName.isEmpty()) {
             userName = "CBO"; // Default fallback
@@ -185,7 +189,7 @@ public class ChiefBusinessOfficerPanelActivity extends AppCompatActivity {
         
         cardAnalytics.setOnClickListener(v -> {
             Intent intent = new Intent(this, CBOEmpMasterActivity.class);
-            intent.putExtra("USERNAME", userName);
+            passUserDataToIntent(intent);
             intent.putExtra("SOURCE_PANEL", "CBO_PANEL");
             startActivity(intent);
         });
@@ -199,44 +203,42 @@ public class ChiefBusinessOfficerPanelActivity extends AppCompatActivity {
         
         cardPerformance.setOnClickListener(v -> {
             Intent intent = new Intent(this, CBOSdsaActivity.class);
-            intent.putExtra("USERNAME", userName);
+            passUserDataToIntent(intent);
             intent.putExtra("SOURCE_PANEL", "CBO_PANEL");
             startActivity(intent);
         });
         
         cardGrowth.setOnClickListener(v -> {
             Intent intent = new Intent(this, CBOPartnerActivity.class);
-            intent.putExtra("USERNAME", userName);
-            intent.putExtra("USER_ID", userId);
+            passUserDataToIntent(intent);
             intent.putExtra("SOURCE_PANEL", "CBO_PANEL");
             startActivity(intent);
         });
         
         cardInnovation.setOnClickListener(v -> {
             Intent intent = new Intent(this, CBOAgentActivity.class);
-            intent.putExtra("USERNAME", userName);
+            passUserDataToIntent(intent);
             intent.putExtra("SOURCE_PANEL", "CBO_PANEL");
             startActivity(intent);
         });
         
         cardPartnerships.setOnClickListener(v -> {
             Intent intent = new Intent(this, CBOPayoutPanelActivity.class);
-            intent.putExtra("USERNAME", userName);
-            intent.putExtra("USER_ID", userId);
+            passUserDataToIntent(intent);
             intent.putExtra("SOURCE_PANEL", "CBO_PANEL");
             startActivity(intent);
         });
         
         cardMarketAnalysis.setOnClickListener(v -> {
             Intent intent = new Intent(this, DsaCodeListActivity.class);
-            intent.putExtra("USERNAME", userName);
+            passUserDataToIntent(intent);
             intent.putExtra("SOURCE_PANEL", "CBO_PANEL");
             startActivity(intent);
         });
         
         cardRiskManagement.setOnClickListener(v -> {
             Intent intent = new Intent(this, CBOBankersPanelActivity.class);
-            intent.putExtra("USERNAME", userName);
+            passUserDataToIntent(intent);
             intent.putExtra("SOURCE_PANEL", "CBO_PANEL");
             startActivity(intent);
         });
@@ -251,31 +253,47 @@ public class ChiefBusinessOfficerPanelActivity extends AppCompatActivity {
         
         cardBudget.setOnClickListener(v -> {
             Intent intent = new Intent(this, CBOInsurancePanelActivity.class);
-            intent.putExtra("USERNAME", userName);
-            intent.putExtra("USER_ID", userId);
+            passUserDataToIntent(intent);
             intent.putExtra("SOURCE_PANEL", "CBO_PANEL");
             startActivity(intent);
         });
         
         cardGoals.setOnClickListener(v -> {
             Intent intent = new Intent(this, DocCheckListActivity.class);
-            intent.putExtra("USERNAME", userName);
+            passUserDataToIntent(intent);
             intent.putExtra("SOURCE_PANEL", "CBO_PANEL");
             startActivity(intent);
         });
         
         cardSettings.setOnClickListener(v -> {
             Intent intent = new Intent(this, PolicyActivity.class);
-            intent.putExtra("USERNAME", userName);
+            passUserDataToIntent(intent);
             intent.putExtra("SOURCE_PANEL", "CBO_PANEL");
             startActivity(intent);
         });
     }
 
     private void updateWelcomeMessage() {
-        // Update welcome message with username
-        String welcomeMessage = "Welcome back, " + userName;
+        // Update welcome message with full name (firstName + lastName)
+        String welcomeMessage;
+        if (firstName != null && lastName != null && !firstName.isEmpty() && !lastName.isEmpty()) {
+            welcomeMessage = "Welcome back, " + firstName + " " + lastName;
+        } else if (firstName != null && !firstName.isEmpty()) {
+            welcomeMessage = "Welcome back, " + firstName;
+        } else if (userName != null && !userName.isEmpty()) {
+            welcomeMessage = "Welcome back, " + userName;
+        } else {
+            welcomeMessage = "Welcome back, CBO";
+        }
         welcomeText.setText(welcomeMessage);
+    }
+    
+    private void passUserDataToIntent(Intent intent) {
+        // Get current user data and pass it to the new activity
+        if (userId != null) intent.putExtra("USER_ID", userId);
+        if (firstName != null) intent.putExtra("FIRST_NAME", firstName);
+        if (lastName != null) intent.putExtra("LAST_NAME", lastName);
+        if (userName != null) intent.putExtra("USERNAME", userName);
     }
 
     private void showMenuOptions() {
@@ -300,19 +318,19 @@ public class ChiefBusinessOfficerPanelActivity extends AppCompatActivity {
                         break;
                     case 1: // Team Management
                         Intent teamIntent = new Intent(this, CBOTeamActivity.class);
-                        teamIntent.putExtra("USERNAME", userName);
+                        passUserDataToIntent(teamIntent);
                         teamIntent.putExtra("SOURCE_PANEL", "CBO_PANEL");
                         startActivity(teamIntent);
                         break;
                     case 2: // Portfolio Management
                         Intent portfolioIntent = new Intent(this, CBOPortfolioActivity.class);
-                        portfolioIntent.putExtra("USERNAME", userName);
+                        passUserDataToIntent(portfolioIntent);
                         portfolioIntent.putExtra("SOURCE_PANEL", "CBO_PANEL");
                         startActivity(portfolioIntent);
                         break;
                     case 3: // Reports & Analytics
                         Intent reportsIntent = new Intent(this, CBOReportsActivity.class);
-                        reportsIntent.putExtra("USERNAME", userName);
+                        passUserDataToIntent(reportsIntent);
                         reportsIntent.putExtra("SOURCE_PANEL", "CBO_PANEL");
                         startActivity(reportsIntent);
                         break;
@@ -750,17 +768,7 @@ public class ChiefBusinessOfficerPanelActivity extends AppCompatActivity {
             .show();
     }
 
-    private void passUserDataToIntent(Intent intent) {
-        Log.d("CBOPanel", "=== Passing User Data to Intent ===");
-        Log.d("CBOPanel", "Passing USERNAME: " + userName);
-        Log.d("CBOPanel", "Passing USER_ID: " + userId);
-        
-        if (userName != null) intent.putExtra("USERNAME", userName);
-        if (userId != null) intent.putExtra("USER_ID", userId);
-        intent.putExtra("SOURCE_PANEL", "CBO_PANEL");
-        
-        Log.d("CBOPanel", "=================================");
-    }
+
 
     @Override
     public void onBackPressed() {
