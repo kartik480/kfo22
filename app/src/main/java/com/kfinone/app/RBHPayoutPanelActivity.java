@@ -9,9 +9,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.material.card.MaterialCardView;
 
 public class RBHPayoutPanelActivity extends AppCompatActivity {
-    private MaterialCardView payoutTeamBox;
+    private MaterialCardView branchFullPayoutBox, servicePartnerPayoutBox, leadBaseAgentPayoutBox, 
+                           interBranchPayoutBox, payoutTeamBox;
     private ImageButton backButton;
     private String userName;
+    private String userId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,7 +23,7 @@ public class RBHPayoutPanelActivity extends AppCompatActivity {
         // Get user data from intent
         Intent intent = getIntent();
         userName = intent.getStringExtra("USERNAME");
-        String userId = intent.getStringExtra("USER_ID");
+        userId = intent.getStringExtra("USER_ID");
         
         if (userName == null || userName.isEmpty()) {
             userName = "RBH"; // Default fallback
@@ -42,6 +44,10 @@ public class RBHPayoutPanelActivity extends AppCompatActivity {
     }
 
     private void initializeViews() {
+        branchFullPayoutBox = findViewById(R.id.branchFullPayoutBox);
+        servicePartnerPayoutBox = findViewById(R.id.servicePartnerPayoutBox);
+        leadBaseAgentPayoutBox = findViewById(R.id.leadBaseAgentPayoutBox);
+        interBranchPayoutBox = findViewById(R.id.interBranchPayoutBox);
         payoutTeamBox = findViewById(R.id.payoutTeamBox);
         backButton = findViewById(R.id.backButton);
     }
@@ -49,10 +55,47 @@ public class RBHPayoutPanelActivity extends AppCompatActivity {
     private void setupClickListeners() {
         backButton.setOnClickListener(v -> goBack());
         
+        // Branch/Full Payout
+        branchFullPayoutBox.setOnClickListener(v -> {
+            Intent intent = new Intent(this, BranchFullPayoutActivity.class);
+            intent.putExtra("USERNAME", userName);
+            intent.putExtra("USER_ID", userId);
+            intent.putExtra("USER_DESIGNATION", "RBH");
+            startActivity(intent);
+        });
+        
+        // Service Partner Payout
+        servicePartnerPayoutBox.setOnClickListener(v -> {
+            Intent intent = new Intent(this, ServicePartnerPayoutActivity.class);
+            intent.putExtra("USERNAME", userName);
+            intent.putExtra("USER_ID", userId);
+            intent.putExtra("USER_DESIGNATION", "RBH");
+            startActivity(intent);
+        });
+        
+        // Lead Base/Agent Payout
+        leadBaseAgentPayoutBox.setOnClickListener(v -> {
+            Intent intent = new Intent(this, LeadBaseAgentPayoutActivity.class);
+            intent.putExtra("USERNAME", userName);
+            intent.putExtra("USER_ID", userId);
+            intent.putExtra("USER_DESIGNATION", "RBH");
+            startActivity(intent);
+        });
+        
+        // Inter Branch Payout
+        interBranchPayoutBox.setOnClickListener(v -> {
+            Intent intent = new Intent(this, InterBranchPayoutActivity.class);
+            intent.putExtra("USERNAME", userName);
+            intent.putExtra("USER_ID", userId);
+            intent.putExtra("USER_DESIGNATION", "RBH");
+            startActivity(intent);
+        });
+        
+        // Payout Team
         payoutTeamBox.setOnClickListener(v -> {
             Intent intent = new Intent(this, RBHPayoutTeamActivity.class);
             intent.putExtra("USERNAME", userName);
-            intent.putExtra("USER_ID", getIntent().getStringExtra("USER_ID"));
+            intent.putExtra("USER_ID", userId);
             intent.putExtra("USER_DESIGNATION", "RBH");
             startActivity(intent);
         });
