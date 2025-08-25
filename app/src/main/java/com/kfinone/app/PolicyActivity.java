@@ -168,6 +168,11 @@ public class PolicyActivity extends AppCompatActivity {
             passUserDataToIntent(intent);
             startActivity(intent);
             finish();
+        } else if ("BH_PANEL".equals(sourcePanel)) {
+            Intent intent = new Intent(this, BusinessHeadPanelActivity.class);
+            passUserDataToIntent(intent);
+            startActivity(intent);
+            finish();
         } else {
             // Default to HomeActivity (KfinOne panel)
             Intent intent = new Intent(this, HomeActivity.class);

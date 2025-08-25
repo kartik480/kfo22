@@ -23,7 +23,7 @@ public class RegionalBusinessHeadPanelActivity extends AppCompatActivity {
     // Action card views
     private View cardTotalEmp, cardTotalSdsa, cardTotalPartner, cardTotalAgent, cardTeam, cardReports, cardAnalytics, cardStrategy, 
                  cardPerformance, cardGrowth, cardInnovation, cardPartnerships, 
-                 cardMarketAnalysis, cardCompliance, cardDocumentCheckList, cardInsurance, cardPortfolio;
+                 cardMarketAnalysis, cardCompliance, cardDocumentCheckList, cardInsurance, cardPortfolio, cardPolicyManagement;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,6 +108,7 @@ public class RegionalBusinessHeadPanelActivity extends AppCompatActivity {
         cardDocumentCheckList = findViewById(R.id.cardDocumentCheckList);
         cardInsurance = findViewById(R.id.cardInsurance);
         cardPortfolio = findViewById(R.id.cardPortfolio);
+        cardPolicyManagement = findViewById(R.id.cardPolicyManagement);
         
         notificationIcon = findViewById(R.id.notificationIcon);
         profileIcon = findViewById(R.id.profileIcon);
@@ -132,6 +133,7 @@ public class RegionalBusinessHeadPanelActivity extends AppCompatActivity {
         android.util.Log.d("RBHPanel", "cardDocumentCheckList: " + (cardDocumentCheckList != null ? "FOUND" : "NULL"));
         android.util.Log.d("RBHPanel", "cardInsurance: " + (cardInsurance != null ? "FOUND" : "NULL"));
         android.util.Log.d("RBHPanel", "cardPortfolio: " + (cardPortfolio != null ? "FOUND" : "NULL"));
+        android.util.Log.d("RBHPanel", "cardPolicyManagement: " + (cardPolicyManagement != null ? "FOUND" : "NULL"));
     }
 
     private void setupClickListeners() {
@@ -313,6 +315,17 @@ public class RegionalBusinessHeadPanelActivity extends AppCompatActivity {
                 Intent intent = new Intent(this, RBHInsurancePanelActivity.class);
                 passUserDataToIntent(intent);
                 intent.putExtra("SOURCE_PANEL", "RBH_PANEL");
+                startActivity(intent);
+            });
+        }
+
+        if (cardPolicyManagement != null) {
+            cardPolicyManagement.setOnClickListener(v -> {
+                android.util.Log.d("RBHPanel", "Policy Management Card clicked! Navigating to PolicyActivity");
+                Intent intent = new Intent(this, PolicyActivity.class);
+                passUserDataToIntent(intent);
+                intent.putExtra("SOURCE_PANEL", "RBH_PANEL");
+                android.util.Log.d("RBHPanel", "Starting PolicyActivity");
                 startActivity(intent);
             });
         }

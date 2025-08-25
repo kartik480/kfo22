@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Policy Navigation Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        .success { background-color: #d4edda; color: #155724; }
+        .error { background-color: #f8d7da; color: #721c24; }
+        .info { background-color: #d1ecf1; color: #0c5460; }
+        .button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .button:hover { background-color: #0056b3; }
+        .log {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 Policy Management Navigation Test</h1>
+        
+        <div class="test-section">
+            <h2>📱 Android App Testing Instructions</h2>
+            <p>Follow these steps to test the Policy Management navigation:</p>
+            <ol>
+                <li><strong>Build and Install:</strong> Make sure you've built and installed the latest APK</li>
+                <li><strong>Login:</strong> Login as either Business Head or Regional Business Head user</li>
+                <li><strong>Navigate to Panel:</strong> Go to the respective panel homepage</li>
+                <li><strong>Find Policy Card:</strong> Look for the "Policy Management" card in Quick Actions</li>
+                <li><strong>Click Policy Card:</strong> Tap on the Policy Management card</li>
+                <li><strong>Check Navigation:</strong> Verify you're taken to the Policy Management panel</li>
+            </ol>
+        </div>
+
+        <div class="test-section">
+            <h2>🔧 Debug Information</h2>
+            <p><strong>Expected Behavior:</strong></p>
+            <ul>
+                <li>✅ Policy Management card should be visible in Quick Actions section</li>
+                <li>✅ Clicking the card should navigate to Policy Management panel</li>
+                <li>✅ Policy Management panel should show:
+                    <ul>
+                        <li>Top navigation with Back, Refresh, Add buttons</li>
+                        <li>Welcome section with user's name</li>
+                        <li>Stats cards (Total Policies, Active Policies)</li>
+                        <li>Quick Actions (View Policies, Add Policy, Policy Reports, Policy Settings)</li>
+                        <li>Bottom navigation (Dashboard, Emp Links, Reports, Settings)</li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+
+        <div class="test-section">
+            <h2>🐛 Troubleshooting Steps</h2>
+            <p>If the Policy Management panel doesn't appear:</p>
+            <ol>
+                <li><strong>Check Logs:</strong> Look at Android Studio Logcat for any error messages</li>
+                <li><strong>Verify Build:</strong> Make sure the latest build was successful</li>
+                <li><strong>Check Manifest:</strong> Verify activities are registered in AndroidManifest.xml</li>
+                <li><strong>Test Other Cards:</strong> Try clicking other action cards to see if navigation works</li>
+                <li><strong>Restart App:</strong> Sometimes a fresh app restart helps</li>
+            </ol>
+        </div>
+
+        <div class="test-section">
+            <h2>📋 Test Results</h2>
+            <button class="button" onclick="addTestResult('Policy Card Visible', 'success')">✅ Policy Card Visible</button>
+            <button class="button" onclick="addTestResult('Policy Card Clickable', 'success')">✅ Policy Card Clickable</button>
+            <button class="button" onclick="addTestResult('Navigation Works', 'success')">✅ Navigation Works</button>
+            <button class="button" onclick="addTestResult('Policy Panel Loads', 'success')">✅ Policy Panel Loads</button>
+            <button class="button" onclick="addTestResult('Error Occurred', 'error')">❌ Error Occurred</button>
+            <button class="button" onclick="clearLog()">Clear Log</button>
+            
+            <div id="log" class="log"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>📁 Files to Check</h2>
+            <p><strong>Key files for Policy Management:</strong></p>
+            <ul>
+                <li><code>BusinessHeadPanelActivity.java</code> - BH Policy card integration</li>
+                <li><code>RegionalBusinessHeadPanelActivity.java</code> - RBH Policy card integration</li>
+                <li><code>BusinessHeadPolicyManagementActivity.java</code> - BH Policy Management</li>
+                <li><code>RBHPolicyManagementActivity.java</code> - RBH Policy Management</li>
+                <li><code>activity_business_head_policy_management.xml</code> - BH Policy layout</li>
+                <li><code>activity_rbh_policy_management.xml</code> - RBH Policy layout</li>
+                <li><code>AndroidManifest.xml</code> - Activity registration</li>
+            </ul>
+        </div>
+
+        <div class="test-section">
+            <h2>🚀 Quick Fix Commands</h2>
+            <p>If you need to rebuild the project:</p>
+            <div class="log">
+# Clean and rebuild
+./gradlew clean
+./gradlew assembleDebug
+
+# Or just rebuild
+./gradlew assembleDebug
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function addTestResult(test, status) {
+            const log = document.getElementById('log');
+            const timestamp = new Date().toLocaleTimeString();
+            const statusClass = status === 'success' ? '✅' : '❌';
+            log.textContent += `[${timestamp}] ${statusClass} ${test}\n`;
+            log.scrollTop = log.scrollHeight;
+        }
+
+        function clearLog() {
+            document.getElementById('log').textContent = '';
+        }
+
+        // Auto-add some initial test results
+        window.onload = function() {
+            addTestResult('Test page loaded', 'info');
+            addTestResult('Ready to test Policy Management navigation', 'info');
+        };
+    </script>
+</body>
+</html>

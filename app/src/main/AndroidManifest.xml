@@ -902,6 +902,18 @@
                       android:parentActivityName=".BusinessHeadMyPartnerActivity" />
                       
                   <activity
+                      android:name=".BusinessHeadPolicyManagementActivity"
+                      android:exported="false"
+                      android:label="Policy Management"
+                      android:parentActivityName=".BusinessHeadPanelActivity" />
+                      
+                  <activity
+                      android:name=".RBHPolicyManagementActivity"
+                      android:exported="false"
+                      android:label="Policy Management"
+                      android:parentActivityName=".RegionalBusinessHeadPanelActivity" />
+                      
+                  <activity
                       android:name=".BusinessHeadAgentActivity"
                       android:exported="false"
                       android:label="Business Head Agent"
