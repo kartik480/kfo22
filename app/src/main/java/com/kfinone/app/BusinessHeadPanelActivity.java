@@ -80,7 +80,6 @@ public class BusinessHeadPanelActivity extends AppCompatActivity {
     private LinearLayout cardRiskManagement;
     private LinearLayout cardCompliance;
     private LinearLayout cardBudgetManagement;
-    private LinearLayout cardPolicyManagement;
     
     private ExecutorService executor = Executors.newSingleThreadExecutor();
     private RequestQueue requestQueue;
@@ -164,7 +163,6 @@ public class BusinessHeadPanelActivity extends AppCompatActivity {
         cardRiskManagement = findViewById(R.id.cardRiskManagement);
         cardCompliance = findViewById(R.id.cardCompliance);
         cardBudgetManagement = findViewById(R.id.cardBudgetManagement);
-        cardPolicyManagement = findViewById(R.id.cardPolicyManagement);
     }
     
     private void setupHeaderClickListeners() {
@@ -365,16 +363,6 @@ public class BusinessHeadPanelActivity extends AppCompatActivity {
         cardBudgetManagement.setOnClickListener(v -> {
             Intent intent = new Intent(BusinessHeadPanelActivity.this, BusinessHeadPolicyActivity.class);
             passUserDataToIntent(intent);
-            startActivity(intent);
-        });
-
-        // Policy Management
-        cardPolicyManagement.setOnClickListener(v -> {
-            android.util.Log.d("BHPanel", "Policy Management Card clicked! Navigating to PolicyActivity");
-            Intent intent = new Intent(BusinessHeadPanelActivity.this, PolicyActivity.class);
-            passUserDataToIntent(intent);
-            intent.putExtra("SOURCE_PANEL", "BH_PANEL");
-            android.util.Log.d("BHPanel", "Starting PolicyActivity");
             startActivity(intent);
         });
 
