@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test RBH Reporting Users API</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-right: 10px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .result {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 15px;
+            margin-top: 20px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 14px;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+        .error {
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+        .success {
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+        }
+        .info {
+            background-color: #d1ecf1;
+            border-color: #bee5eb;
+            color: #0c5460;
+        }
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .stat-card {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
+            text-align: center;
+        }
+        .stat-number {
+            font-size: 24px;
+            font-weight: bold;
+            color: #007bff;
+        }
+        .stat-label {
+            color: #6c757d;
+            margin-top: 5px;
+        }
+        .employee-list {
+            margin-top: 20px;
+        }
+        .employee-item {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
+            margin-bottom: 10px;
+        }
+        .employee-name {
+            font-weight: bold;
+            font-size: 18px;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .employee-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            font-size: 14px;
+        }
+        .detail-item {
+            color: #666;
+        }
+        .detail-value {
+            color: #333;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧑‍💼 Test RBH Reporting Users API</h1>
+    
+    <div class="container">
+        <h2>API Testing</h2>
+        <p>This page tests the updated RBH Reporting Users API that fetches users from <code>tbl_user</code> table using the <code>reportingTo</code> column.</p>
+        
+        <div class="form-group">
+            <label for="userId">Regional Business Head User ID:</label>
+            <input type="text" id="userId" placeholder="Enter RBH user ID (e.g., 21)" value="21">
+        </div>
+        
+        <button onclick="testAPI()">Test API</button>
+        <button onclick="clearResults()">Clear Results</button>
+        
+        <div id="result" class="result" style="display: none;"></div>
+    </div>
+
+    <div class="container">
+        <h2>API Information</h2>
+        <div class="info">
+            <strong>Endpoint:</strong> GET /api/get_rbh_reporting_users.php?user_id={user_id}<br>
+            <strong>Purpose:</strong> Fetch all users from tbl_user who report to the specified Regional Business Head user<br>
+            <strong>Key Change:</strong> Now uses tbl_user table instead of tbl_rbh_users table<br>
+            <strong>Logic:</strong> Finds users where reportingTo column matches the logged-in RBH user's ID
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>Expected Response Structure</h2>
+        <div class="info">
+            <strong>Data Fields:</strong> All columns from tbl_user table including:<br>
+            • id, username, firstName, lastName, mobile, email_id<br>
+            • employee_no, designation_id, department_id<br>
+            • status, rank, reportingTo, created_at, updated_at<br>
+            • And all other columns as specified in the user's request
+        </div>
+    </div>
+
+    <script>
+        async function testAPI() {
+            const userId = document.getElementById('userId').value.trim();
+            const resultDiv = document.getElementById('result');
+            
+            if (!userId) {
+                showResult('Please enter a valid User ID', 'error');
+                return;
+            }
+            
+            if (!/^\d+$/.test(userId)) {
+                showResult('User ID must be a numeric value', 'error');
+                return;
+            }
+            
+            showResult('Testing API...', 'info');
+            
+            try {
+                const url = `https://emp.kfinone.com/mobile/api/get_rbh_reporting_users.php?user_id=${userId}`;
+                console.log('Testing URL:', url);
+                
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    displayResults(data);
+                } else {
+                    showResult(`API Error: ${data.message}`, 'error');
+                }
+                
+            } catch (error) {
+                console.error('Error:', error);
+                showResult(`Network Error: ${error.message}`, 'error');
+            }
+        }
+        
+        function displayResults(data) {
+            const resultDiv = document.getElementById('result');
+            resultDiv.className = 'result success';
+            resultDiv.style.display = 'block';
+            
+            let html = '<h3>✅ API Response Success</h3>';
+            
+            // Display statistics
+            if (data.statistics) {
+                html += '<div class="stats">';
+                html += `<div class="stat-card">
+                    <div class="stat-number">${data.statistics.total_reporting_users || 0}</div>
+                    <div class="stat-label">Total Reporting Users</div>
+                </div>`;
+                html += `<div class="stat-card">
+                    <div class="stat-number">${data.statistics.unique_designations || 0}</div>
+                    <div class="stat-label">Unique Designations</div>
+                </div>`;
+                html += `<div class="stat-card">
+                    <div class="stat-number">${data.statistics.unique_departments || 0}</div>
+                    <div class="stat-label">Unique Departments</div>
+                </div>`;
+                html += '</div>';
+            }
+            
+            // Display logged-in user info
+            if (data.logged_in_user) {
+                html += `<h4>👤 Logged-in User (RBH)</h4>`;
+                html += `<div class="employee-item">
+                    <div class="employee-name">${data.logged_in_user.fullName || 'N/A'}</div>
+                    <div class="employee-details">
+                        <div class="detail-item">ID: <span class="detail-value">${data.logged_in_user.id}</span></div>
+                        <div class="detail-item">Username: <span class="detail-value">${data.logged_in_user.username}</span></div>
+                        <div class="detail-item">Designation: <span class="detail-value">${data.logged_in_user.designation_name}</span></div>
+                        <div class="detail-item">Department: <span class="detail-value">${data.logged_in_user.department_name || 'N/A'}</span></div>
+                    </div>
+                </div>`;
+            }
+            
+            // Display employee list
+            if (data.data && data.data.length > 0) {
+                html += `<h4>👥 Employees Reporting to RBH (${data.data.length})</h4>`;
+                html += '<div class="employee-list">';
+                
+                data.data.forEach((employee, index) => {
+                    html += `<div class="employee-item">
+                        <div class="employee-name">${employee.firstName || 'N/A'} ${employee.lastName || 'N/A'}</div>
+                        <div class="employee-details">
+                            <div class="detail-item">ID: <span class="detail-value">${employee.id}</span></div>
+                            <div class="detail-item">Username: <span class="detail-value">${employee.username}</span></div>
+                            <div class="detail-item">Employee No: <span class="detail-value">${employee.employee_no || 'N/A'}</span></div>
+                            <div class="detail-item">Mobile: <span class="detail-value">${employee.mobile || 'N/A'}</span></div>
+                            <div class="detail-item">Email: <span class="detail-value">${employee.email_id || 'N/A'}</span></div>
+                            <div class="detail-item">Status: <span class="detail-value">${employee.status || 'N/A'}</span></div>
+                            <div class="detail-item">Designation: <span class="detail-value">${employee.designation_name || 'N/A'}</span></div>
+                            <div class="detail-item">Department: <span class="detail-value">${employee.department_name || 'N/A'}</span></div>
+                        </div>
+                    </div>`;
+                });
+                
+                html += '</div>';
+            } else {
+                html += '<p>No employees found reporting to this RBH user.</p>';
+            }
+            
+            // Display breakdown information
+            if (data.breakdown) {
+                if (data.breakdown.designations && data.breakdown.designations.length > 0) {
+                    html += '<h4>📊 Designation Breakdown</h4>';
+                    html += '<div class="stats">';
+                    data.breakdown.designations.forEach(designation => {
+                        html += `<div class="stat-card">
+                            <div class="stat-number">${designation.count}</div>
+                            <div class="stat-label">${designation.designation_name}</div>
+                        </div>`;
+                    });
+                    html += '</div>';
+                }
+                
+                if (data.breakdown.departments && data.breakdown.departments.length > 0) {
+                    html += '<h4>🏢 Department Breakdown</h4>';
+                    html += '<div class="stats">';
+                    data.breakdown.departments.forEach(dept => {
+                        html += `<div class="stat-card">
+                            <div class="stat-number">${dept.count}</div>
+                            <div class="stat-label">${dept.department_name}</div>
+                        </div>`;
+                    });
+                    html += '</div>';
+                }
+            }
+            
+            // Display raw JSON for debugging
+            html += '<h4>🔍 Raw API Response</h4>';
+            html += `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+            
+            resultDiv.innerHTML = html;
+        }
+        
+        function showResult(message, type) {
+            const resultDiv = document.getElementById('result');
+            resultDiv.className = `result ${type}`;
+            resultDiv.style.display = 'block';
+            resultDiv.textContent = message;
+        }
+        
+        function clearResults() {
+            const resultDiv = document.getElementById('result');
+            resultDiv.style.display = 'none';
+            resultDiv.innerHTML = '';
+        }
+        
+        // Auto-test on page load with default user ID
+        window.addEventListener('load', () => {
+            // Uncomment the line below to auto-test on page load
+            // testAPI();
+        });
+    </script>
+</body>
+</html>

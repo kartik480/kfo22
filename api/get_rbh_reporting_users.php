@@ -55,15 +55,20 @@ try {
     }
     
     // Step 3: Fetch all users who are reporting to this Regional Business Head
+    // Using tbl_user table and reportingTo column to find users who report to the logged-in RBH user
+    // Only selecting the most basic columns that are guaranteed to exist
     $reportingUsersSql = "
         SELECT
-            u.id, u.username, u.alias_name, u.first_name, u.last_name, u.Phone_number, u.email_id,
-            u.branch_state_name_id, u.branch_location_id, u.status, u.reportingTo, u.created_at, u.updated_at
-        FROM tbl_rbh_users u
-        WHERE FIND_IN_SET(?, u.reportingTo)
+            u.id, u.username, u.firstName, u.lastName, u.mobile, u.email_id, u.employee_no,
+            u.department_id, u.designation_id, u.status, u.reportingTo,
+            d.designation_name, dept.department_name
+        FROM tbl_user u
+        LEFT JOIN tbl_designation d ON u.designation_id = d.id
+        LEFT JOIN tbl_department dept ON u.department_id = dept.id
+        WHERE u.reportingTo = ?
         AND (u.status = 'Active' OR u.status = 1 OR u.status IS NULL OR u.status = '')
-        AND u.first_name IS NOT NULL AND u.first_name != ''
-        ORDER BY u.first_name ASC, u.last_name ASC
+        AND u.firstName IS NOT NULL AND u.firstName != ''
+        ORDER BY u.firstName ASC, u.lastName ASC
     ";
     
     $reportingStmt = $conn->prepare($reportingUsersSql);

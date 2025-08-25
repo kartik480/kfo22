@@ -210,16 +210,22 @@ public class RBHEmployeeUsersActivity extends AppCompatActivity {
                                 JSONObject member = teamMembers.getJSONObject(i);
                                 
                                 Map<String, Object> employee = new HashMap<>();
+                                // Map only the basic columns that are guaranteed to exist
                                 employee.put("id", member.optString("id", "N/A"));
                                 employee.put("username", member.optString("username", "N/A"));
-                                employee.put("first_name", member.optString("first_name", "N/A"));
-                                employee.put("last_name", member.optString("last_name", "N/A"));
+                                employee.put("firstName", member.optString("firstName", "N/A"));
+                                employee.put("lastName", member.optString("lastName", "N/A"));
+                                employee.put("mobile", member.optString("mobile", "N/A"));
                                 employee.put("email_id", member.optString("email_id", "N/A"));
-                                employee.put("Phone_number", member.optString("Phone_number", "N/A"));
-                                employee.put("company_name", "N/A"); // Not provided by this API
+                                employee.put("employee_no", member.optString("employee_no", "N/A"));
+                                employee.put("department_id", member.optString("department_id", "N/A"));
+                                employee.put("designation_id", member.optString("designation_id", "N/A"));
                                 employee.put("status", member.optString("status", "N/A"));
-                                employee.put("rank", "N/A"); // Not provided by this API
                                 employee.put("reportingTo", member.optString("reportingTo", "N/A"));
+                                
+                                // Add designation and department names from joined tables
+                                employee.put("designation_name", member.optString("designation_name", "N/A"));
+                                employee.put("department_name", member.optString("department_name", "N/A"));
                                 
                                 newEmployeeList.add(employee);
                             }
@@ -236,7 +242,7 @@ public class RBHEmployeeUsersActivity extends AppCompatActivity {
                             } else {
                                 hideEmptyState();
                                 Toast.makeText(RBHEmployeeUsersActivity.this, 
-                                    "Found " + employeeList.size() + " employees", 
+                                    "Found " + employeeList.size() + " employees reporting to you", 
                                     Toast.LENGTH_SHORT).show();
                             }
                             

@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minimal RBH API Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; background: #f5f5f5; }
+        .container { background: white; padding: 20px; margin: 20px 0; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .result { background: #f0f0f0; padding: 15px; margin: 10px 0; border-radius: 5px; }
+        .error { background: #ffebee; color: #c62828; }
+        .success { background: #e8f5e8; color: #2e7d32; }
+        button { padding: 10px 20px; margin: 5px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        button:hover { background: #0056b3; }
+        input { padding: 8px; margin: 5px; border: 1px solid #ddd; border-radius: 4px; width: 200px; }
+        .user-item { background: #f8f9fa; padding: 10px; margin: 5px 0; border-radius: 4px; border-left: 4px solid #007bff; }
+        .user-name { font-weight: bold; color: #333; }
+        .user-details { color: #666; font-size: 14px; margin-top: 5px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧑‍💼 Minimal RBH API Test</h1>
+        <p><strong>Focus:</strong> Only testing the <code>reportingTo</code> column functionality with minimal columns</p>
+        
+        <div>
+            <label><strong>RBH User ID:</strong></label>
+            <input type="text" id="userId" value="40" placeholder="Enter RBH User ID">
+            <button onclick="testAPI()">Test API</button>
+        </div>
+        
+        <div id="result"></div>
+    </div>
+
+    <script>
+        async function testAPI() {
+            const userId = document.getElementById('userId').value;
+            const resultDiv = document.getElementById('result');
+            
+            resultDiv.innerHTML = '<div class="result">Testing API...</div>';
+            
+            try {
+                const url = `https://emp.kfinone.com/mobile/api/get_rbh_reporting_users.php?user_id=${userId}`;
+                console.log('Testing URL:', url);
+                
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    let html = '<div class="result success">';
+                    html += '<h3>✅ API Success!</h3>';
+                    html += `<p><strong>Message:</strong> ${data.message}</p>`;
+                    html += `<p><strong>Total Users Reporting:</strong> ${data.data ? data.data.length : 0}</p>`;
+                    
+                    if (data.logged_in_user) {
+                        html += `<p><strong>Logged-in RBH User:</strong> ${data.logged_in_user.firstName} ${data.logged_in_user.lastName} (ID: ${data.logged_in_user.id})</p>`;
+                    }
+                    
+                    if (data.data && data.data.length > 0) {
+                        html += '<h4>👥 Users Reporting to RBH:</h4>';
+                        data.data.forEach((user, index) => {
+                            html += `<div class="user-item">
+                                <div class="user-name">${user.firstName || 'N/A'} ${user.lastName || 'N/A'}</div>
+                                <div class="user-details">
+                                    <strong>ID:</strong> ${user.id} | 
+                                    <strong>Username:</strong> ${user.username} | 
+                                    <strong>Employee No:</strong> ${user.employee_no || 'N/A'} | 
+                                    <strong>Mobile:</strong> ${user.mobile || 'N/A'} | 
+                                    <strong>Email:</strong> ${user.email_id || 'N/A'} | 
+                                    <strong>Status:</strong> ${user.status || 'N/A'} | 
+                                    <strong>Designation:</strong> ${user.designation_name || 'N/A'} | 
+                                    <strong>Department:</strong> ${user.department_name || 'N/A'}
+                                </div>
+                            </div>`;
+                        });
+                    } else {
+                        html += '<p>No users found reporting to this RBH user.</p>';
+                    }
+                    
+                    html += '<h4>🔍 Raw Response:</h4>';
+                    html += `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+                    html += '</div>';
+                    
+                    resultDiv.innerHTML = html;
+                } else {
+                    resultDiv.innerHTML = `<div class="result error">
+                        <h3>❌ API Error</h3>
+                        <p><strong>Message:</strong> ${data.message}</p>
+                        <h4>Debug Info:</h4>
+                        <pre>${JSON.stringify(data.debug, null, 2)}</pre>
+                    </div>`;
+                }
+                
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="result error">
+                    <h3>❌ Network Error</h3>
+                    <p>${error.message}</p>
+                </div>`;
+            }
+        }
+        
+        // Auto-test on page load
+        window.addEventListener('load', testAPI);
+    </script>
+</body>
+</html>

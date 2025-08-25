@@ -58,15 +58,18 @@ public class RBHEmployeeAdapter extends BaseAdapter {
         
         Map<String, Object> employee = employeeList.get(position);
         
-        // Get employee data
-        String firstName = (String) employee.get("first_name");
-        String lastName = (String) employee.get("last_name");
+        // Get employee data using the new field names from tbl_user
+        String firstName = (String) employee.get("firstName");
+        String lastName = (String) employee.get("lastName");
         String username = (String) employee.get("username");
         String email = (String) employee.get("email_id");
-        String phone = (String) employee.get("Phone_number");
+        String phone = (String) employee.get("mobile");
         String company = (String) employee.get("company_name");
         String status = (String) employee.get("status");
         String rank = (String) employee.get("rank");
+        String employeeNo = (String) employee.get("employee_no");
+        String designation = (String) employee.get("designation_name");
+        String department = (String) employee.get("department_name");
         
         // Set employee name
         if (firstName != null && lastName != null && !firstName.equals("N/A") && !lastName.equals("N/A")) {
@@ -81,13 +84,22 @@ public class RBHEmployeeAdapter extends BaseAdapter {
             holder.nameText.setText("Unknown User");
         }
         
-        // Set other fields
+        // Set other fields with enhanced information
         holder.usernameText.setText("Username: " + (username != null ? username : "N/A"));
         holder.emailText.setText("Email: " + (email != null ? email : "N/A"));
         holder.phoneText.setText("Phone: " + (phone != null ? phone : "N/A"));
         holder.companyText.setText("Company: " + (company != null ? company : "N/A"));
         holder.statusText.setText("Status: " + (status != null ? status : "N/A"));
         holder.rankText.setText("Rank: " + (rank != null ? rank : "N/A"));
+        
+        // Add employee number and designation info if available
+        if (employeeNo != null && !employeeNo.equals("N/A")) {
+            holder.usernameText.setText("Employee ID: " + employeeNo + " | Username: " + (username != null ? username : "N/A"));
+        }
+        
+        if (designation != null && !designation.equals("N/A")) {
+            holder.rankText.setText("Designation: " + designation + " | Rank: " + (rank != null ? rank : "N/A"));
+        }
         
         return convertView;
     }

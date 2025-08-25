@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple RBH API Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .result { background: #f0f0f0; padding: 15px; margin: 10px 0; border-radius: 5px; }
+        .error { background: #ffebee; color: #c62828; }
+        .success { background: #e8f5e8; color: #2e7d32; }
+        button { padding: 10px 20px; margin: 5px; }
+        input { padding: 8px; margin: 5px; }
+    </style>
+</head>
+<body>
+    <h1>Simple RBH API Test</h1>
+    
+    <div>
+        <label>User ID:</label>
+        <input type="text" id="userId" value="40" placeholder="Enter RBH User ID">
+        <button onclick="testAPI()">Test API</button>
+    </div>
+    
+    <div id="result"></div>
+
+    <script>
+        async function testAPI() {
+            const userId = document.getElementById('userId').value;
+            const resultDiv = document.getElementById('result');
+            
+            resultDiv.innerHTML = 'Testing...';
+            resultDiv.className = 'result';
+            
+            try {
+                const url = `https://emp.kfinone.com/mobile/api/get_rbh_reporting_users.php?user_id=${userId}`;
+                console.log('Testing URL:', url);
+                
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    resultDiv.className = 'result success';
+                    resultDiv.innerHTML = `
+                        <h3>✅ Success!</h3>
+                        <p><strong>Message:</strong> ${data.message}</p>
+                        <p><strong>Total Users:</strong> ${data.data ? data.data.length : 0}</p>
+                        <p><strong>Logged-in User:</strong> ${data.logged_in_user ? data.logged_in_user.firstName + ' ' + data.logged_in_user.lastName : 'N/A'}</p>
+                        <h4>Raw Response:</h4>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                } else {
+                    resultDiv.className = 'result error';
+                    resultDiv.innerHTML = `
+                        <h3>❌ Error</h3>
+                        <p><strong>Message:</strong> ${data.message}</p>
+                        <h4>Debug Info:</h4>
+                        <pre>${JSON.stringify(data.debug, null, 2)}</pre>
+                    `;
+                }
+                
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.innerHTML = `<h3>❌ Network Error</h3><p>${error.message}</p>`;
+            }
+        }
+        
+        // Auto-test on page load
+        window.addEventListener('load', testAPI);
+    </script>
+</body>
+</html>
