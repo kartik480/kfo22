@@ -466,6 +466,85 @@ public class BusinessHeadPanelActivity extends AppCompatActivity {
             requestQueue = Volley.newRequestQueue(this);
         }
         requestQueue.add(jsonRequest);
+        
+        // Also fetch partner count specifically
+        fetchPartnerCount();
+    }
+    
+    private void fetchPartnerCount() {
+        if (username == null || username.isEmpty()) {
+            totalPartnerCount.setText("0");
+            return;
+        }
+        
+        String url = BASE_URL + "get_business_head_my_partners.php";
+        
+        // Create request body with username
+        JSONObject requestBody = new JSONObject();
+        try {
+            requestBody.put("username", username);
+        } catch (JSONException e) {
+            Log.e(TAG, "Error creating request body: " + e.getMessage());
+            return;
+        }
+        
+        JsonObjectRequest jsonRequest = new JsonObjectRequest(
+            Request.Method.POST,
+            url,
+            requestBody,
+            new Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject jsonResponse) {
+                    try {
+                        if (jsonResponse.getString("status").equals("success")) {
+                            // Try to get count from statistics
+                            if (jsonResponse.has("data") && jsonResponse.getJSONObject("data").has("statistics")) {
+                                JSONObject statistics = jsonResponse.getJSONObject("data").getJSONObject("statistics");
+                                int totalCount = statistics.optInt("total_partners", 0);
+                                totalPartnerCount.setText(String.valueOf(totalCount));
+                                Log.d(TAG, "Partner count updated: " + totalCount);
+                            } else if (jsonResponse.has("counts")) {
+                                // Alternative location for counts
+                                int totalCount = jsonResponse.getJSONObject("counts").optInt("total_partners", 0);
+                                totalPartnerCount.setText(String.valueOf(totalCount));
+                                Log.d(TAG, "Partner count updated from counts: " + totalCount);
+                            } else {
+                                // Fallback: count the data array
+                                int totalCount = jsonResponse.getJSONArray("data").length();
+                                totalPartnerCount.setText(String.valueOf(totalCount));
+                                Log.d(TAG, "Partner count updated from data length: " + totalCount);
+                            }
+                        } else {
+                            Log.w(TAG, "Failed to fetch partner count: " + jsonResponse.optString("message", "Unknown error"));
+                            totalPartnerCount.setText("0");
+                        }
+                    } catch (JSONException e) {
+                        Log.e(TAG, "Error parsing partner count response", e);
+                        totalPartnerCount.setText("0");
+                    }
+                }
+            },
+            new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Log.e(TAG, "Error fetching partner count", error);
+                    totalPartnerCount.setText("0");
+                }
+            }
+        );
+
+        // Add timeout and retry policy
+        jsonRequest.setRetryPolicy(new DefaultRetryPolicy(
+            10000, // 10 seconds timeout
+            1,      // 1 retry
+            1.0f    // No backoff multiplier
+        ));
+
+        // Add to Volley queue
+        if (requestQueue == null) {
+            requestQueue = Volley.newRequestQueue(this);
+        }
+        requestQueue.add(jsonRequest);
     }
     
     private void updateStats(int totalBusinessHeads, int activeBusinessHeads, int totalTeamMembers, int activeTeamMembers) {

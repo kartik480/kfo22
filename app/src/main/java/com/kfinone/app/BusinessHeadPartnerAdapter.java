@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.TextView;
 
 import java.util.List;
@@ -59,6 +60,7 @@ public class BusinessHeadPartnerAdapter extends BaseAdapter {
             holder.bankNameText = convertView.findViewById(R.id.bankNameText);
             holder.accountTypeText = convertView.findViewById(R.id.accountTypeText);
             holder.createdAtText = convertView.findViewById(R.id.createdAtText);
+            holder.viewButton = convertView.findViewById(R.id.viewButton);
             
             convertView.setTag(holder);
         } else {
@@ -115,6 +117,14 @@ public class BusinessHeadPartnerAdapter extends BaseAdapter {
         holder.accountTypeText.setText("Account Type: " + (accountType != null ? accountType : "N/A"));
         holder.createdAtText.setText("Created: " + (createdAt != null ? createdAt : "N/A"));
         
+        // Set up view button click listener
+        holder.viewButton.setOnClickListener(v -> {
+            // Create intent to show partner details
+            android.content.Intent intent = new android.content.Intent(context, BusinessHeadPartnerDetailActivity.class);
+            intent.putExtra("PARTNER_DATA", (java.io.Serializable) partner);
+            context.startActivity(intent);
+        });
+        
         return convertView;
     }
     
@@ -128,5 +138,6 @@ public class BusinessHeadPartnerAdapter extends BaseAdapter {
         TextView nameText, usernameText, emailText, phoneText, companyText, statusText, rankText;
         TextView employeeNoText, departmentText, designationText, branchStateText, branchLocationText;
         TextView bankNameText, accountTypeText, createdAtText;
+        Button viewButton;
     }
 }

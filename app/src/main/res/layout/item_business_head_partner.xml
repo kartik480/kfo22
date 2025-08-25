@@ -211,9 +211,21 @@
                 android:text="Created: N/A"
                 android:textSize="14sp"
                 android:textColor="@color/text_secondary"
-                android:gravity="end" />
+                android:layout_marginBottom="8dp" />
 
         </LinearLayout>
+
+        <!-- View Button -->
+        <Button
+            android:id="@+id/viewButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="View Full Details"
+            android:textSize="14sp"
+            android:textColor="@color/white"
+            android:background="@drawable/button_background_primary"
+            android:padding="8dp"
+            android:layout_marginTop="8dp" />
 
     </LinearLayout>
 

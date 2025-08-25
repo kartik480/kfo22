@@ -896,6 +896,12 @@
                       android:theme="@style/FullscreenTheme" />
                       
                   <activity
+                      android:name=".BusinessHeadPartnerDetailActivity"
+                      android:exported="false"
+                      android:label="Partner Details"
+                      android:parentActivityName=".BusinessHeadMyPartnerActivity" />
+                      
+                  <activity
                       android:name=".BusinessHeadAgentActivity"
                       android:exported="false"
                       android:label="Business Head Agent"
