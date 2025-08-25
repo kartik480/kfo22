@@ -1204,6 +1204,13 @@
             android:exported="false"
             android:label="CBO Partner Team Management"
             android:parentActivityName=".CBOPartnerActivity" />
+            
+        <!-- User Profile Activity -->
+        <activity
+            android:name=".UserProfileActivity"
+            android:exported="false"
+            android:label="User Profile"
+            android:theme="@style/FullscreenTheme" />
     </application>
 
 </manifest>

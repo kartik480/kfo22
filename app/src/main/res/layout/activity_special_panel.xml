@@ -49,6 +49,17 @@
                 android:textColor="#FFFFFF"
                 android:fontFamily="sans-serif-medium" />
 
+            <!-- Profile Icon -->
+            <ImageView
+                android:id="@+id/profileIcon"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:src="@drawable/ic_profile"
+                android:tint="#FFFFFF"
+                android:layout_marginStart="16dp"
+                android:background="?android:attr/selectableItemBackgroundBorderless"
+                android:padding="4dp" />
+
         </LinearLayout>
 
         <!-- Main Content Area -->

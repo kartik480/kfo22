@@ -151,8 +151,7 @@ public class RegionalBusinessHeadPanelActivity extends AppCompatActivity {
 
         if (profileIcon != null) {
             profileIcon.setOnClickListener(v -> {
-                Toast.makeText(this, "Profile Settings", Toast.LENGTH_SHORT).show();
-                // TODO: Open profile settings
+                showProfileMenu();
             });
         }
 
@@ -366,6 +365,35 @@ public class RegionalBusinessHeadPanelActivity extends AppCompatActivity {
         builder.setMessage("Regional Business Head Panel v1.0\n\n" +
                 "This panel provides comprehensive management tools for Regional Business Heads to oversee their regional operations, team performance, and business metrics.");
         builder.setPositiveButton("OK", null);
+        builder.show();
+    }
+    
+    private void showProfileMenu() {
+        String[] options = {"Profile", "Settings", "Help", "About"};
+        
+        androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(this);
+        builder.setTitle("Account Options");
+        builder.setItems(options, (dialog, which) -> {
+            switch (which) {
+                case 0:
+                    // Open User Profile
+                    Intent intent = new Intent(this, UserProfileActivity.class);
+                    passUserDataToIntent(intent);
+                    intent.putExtra("USER_DESIGNATION", "RBH");
+                    intent.putExtra("SOURCE_PANEL", "RBH_PANEL");
+                    startActivity(intent);
+                    break;
+                case 1:
+                    Toast.makeText(this, "Settings - Coming Soon!", Toast.LENGTH_SHORT).show();
+                    break;
+                case 2:
+                    Toast.makeText(this, "Help - Coming Soon!", Toast.LENGTH_SHORT).show();
+                    break;
+                case 3:
+                    showAboutDialog();
+                    break;
+            }
+        });
         builder.show();
     }
 

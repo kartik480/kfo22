@@ -37,6 +37,7 @@ public class SpecialPanelActivity extends AppCompatActivity implements Navigatio
 
     // Top navigation elements
     private View menuButton;
+    private View profileIcon;
 
     // Card elements
     private TextView totalEmpCount;
@@ -99,6 +100,7 @@ public class SpecialPanelActivity extends AppCompatActivity implements Navigatio
         
         // Top navigation
         menuButton = findViewById(R.id.menuButton);
+        profileIcon = findViewById(R.id.profileIcon);
 
         // Card counts
         totalEmpCount = findViewById(R.id.totalEmpCount);
@@ -134,6 +136,11 @@ public class SpecialPanelActivity extends AppCompatActivity implements Navigatio
         // Top navigation
         menuButton.setOnClickListener(v -> {
             drawerLayout.openDrawer(GravityCompat.START);
+        });
+        
+        // Profile icon
+        profileIcon.setOnClickListener(v -> {
+            showProfileMenu();
         });
 
         // Card click listeners
@@ -440,6 +447,35 @@ public class SpecialPanelActivity extends AppCompatActivity implements Navigatio
         }
         
         welcomeText.setText(welcomeMessage);
+    }
+    
+    private void showProfileMenu() {
+        String[] options = {"Profile", "Settings", "Help", "About"};
+        
+        new androidx.appcompat.app.AlertDialog.Builder(this)
+            .setTitle("Account Options")
+            .setItems(options, (dialog, which) -> {
+                switch (which) {
+                    case 0:
+                        // Open User Profile
+                        Intent intent = new Intent(this, UserProfileActivity.class);
+                        passUserDataToIntent(intent);
+                        intent.putExtra("USER_DESIGNATION", "MD");
+                        intent.putExtra("SOURCE_PANEL", "MD_PANEL");
+                        startActivity(intent);
+                        break;
+                    case 1:
+                        Toast.makeText(this, "Settings - Coming Soon!", Toast.LENGTH_SHORT).show();
+                        break;
+                    case 2:
+                        Toast.makeText(this, "Help - Coming Soon!", Toast.LENGTH_SHORT).show();
+                        break;
+                    case 3:
+                        Toast.makeText(this, "About - Coming Soon!", Toast.LENGTH_SHORT).show();
+                        break;
+                }
+            })
+            .show();
     }
 
     @Override

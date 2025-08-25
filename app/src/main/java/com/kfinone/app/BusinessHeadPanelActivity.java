@@ -177,13 +177,7 @@ public class BusinessHeadPanelActivity extends AppCompatActivity {
         });
 
         profileIcon.setOnClickListener(v -> {
-            Intent intent = new Intent(BusinessHeadPanelActivity.this, MyAccountPanelActivity.class);
-            // Pass user data
-            if (userId != null) intent.putExtra("USER_ID", userId);
-            if (username != null) intent.putExtra("USERNAME", username);
-            if (firstName != null) intent.putExtra("FIRST_NAME", firstName);
-            if (lastName != null) intent.putExtra("LAST_NAME", lastName);
-            startActivity(intent);
+            showProfileMenu();
         });
     }
     
@@ -223,6 +217,47 @@ public class BusinessHeadPanelActivity extends AppCompatActivity {
                 "• Strategic Planning\n" +
                 "• Resource Management");
         builder.setPositiveButton("OK", null);
+        builder.show();
+    }
+    
+    private void showProfileMenu() {
+        String[] options = {"Profile", "My Account", "Settings", "Help", "About"};
+        
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Account Options");
+        builder.setItems(options, (dialog, which) -> {
+            switch (which) {
+                case 0:
+                    // Open User Profile
+                    Intent intent = new Intent(this, UserProfileActivity.class);
+                    if (userId != null) intent.putExtra("USER_ID", userId);
+                    if (username != null) intent.putExtra("USERNAME", username);
+                    if (firstName != null) intent.putExtra("FIRST_NAME", firstName);
+                    if (lastName != null) intent.putExtra("LAST_NAME", lastName);
+                    intent.putExtra("USER_DESIGNATION", "BH");
+                    intent.putExtra("SOURCE_PANEL", "BH_PANEL");
+                    startActivity(intent);
+                    break;
+                case 1:
+                    // Open My Account (existing functionality)
+                    Intent accountIntent = new Intent(BusinessHeadPanelActivity.this, MyAccountPanelActivity.class);
+                    if (userId != null) accountIntent.putExtra("USER_ID", userId);
+                    if (username != null) accountIntent.putExtra("USERNAME", username);
+                    if (firstName != null) accountIntent.putExtra("FIRST_NAME", firstName);
+                    if (lastName != null) accountIntent.putExtra("LAST_NAME", lastName);
+                    startActivity(accountIntent);
+                    break;
+                case 2:
+                    showToast("Settings - Coming Soon!");
+                    break;
+                case 3:
+                    showToast("Help - Coming Soon!");
+                    break;
+                case 4:
+                    showAboutDialog();
+                    break;
+            }
+        });
         builder.show();
     }
     
