@@ -25,7 +25,9 @@
             android:tint="#FFFFFF"
             android:layout_marginEnd="16dp"
             android:background="?android:attr/selectableItemBackgroundBorderless"
-            android:padding="4dp" />
+            android:padding="4dp"
+            android:clickable="true"
+            android:focusable="true" />
 
         <!-- Title -->
         <TextView
@@ -38,160 +40,452 @@
             android:textColor="#FFFFFF"
             android:fontFamily="sans-serif-medium" />
 
-    </LinearLayout>
-
-    <!-- Header Section -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:background="#FFFFFF"
-        android:padding="20dp"
-        android:layout_marginBottom="20dp"
-        android:elevation="2dp">
-
-        <TextView
-            android:id="@+id/welcomeText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Welcome, Managing Director!"
-            android:textSize="22sp"
-            android:textStyle="bold"
-            android:textColor="#2C3E50"
-            android:fontFamily="sans-serif-medium"
-            android:layout_marginBottom="8dp" />
-
-        <TextView
-            android:id="@+id/descriptionText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Choose your agent management option"
-            android:textSize="14sp"
-            android:textColor="#7F8C8D"
-            android:layout_marginBottom="16dp" />
+        <!-- Refresh Button -->
+        <ImageView
+            android:id="@+id/refreshButton"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_refresh"
+            android:tint="#FFFFFF"
+            android:layout_marginStart="16dp"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:padding="4dp"
+            android:clickable="true"
+            android:focusable="true" />
 
     </LinearLayout>
 
     <!-- Main Content Area -->
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
         android:padding="16dp"
-        android:gravity="center"
-        android:orientation="vertical">
+        android:clipToPadding="false">
 
-        <!-- Agent Management Section -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:gravity="center">
+            android:orientation="vertical">
 
-            <TextView
-                android:layout_width="wrap_content"
+            <!-- Header Section -->
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Select Option"
-                android:textSize="24sp"
-                android:textStyle="bold"
-                android:textColor="#2C3E50"
-                android:layout_marginBottom="32dp" />
+                android:orientation="vertical"
+                android:background="#FFFFFF"
+                android:padding="20dp"
+                android:layout_marginBottom="20dp"
+                android:elevation="2dp">
 
-            <!-- Agent Boxes Row -->
+                <TextView
+                    android:id="@+id/welcomeText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Welcome, Managing Director!"
+                    android:textSize="22sp"
+                    android:textStyle="bold"
+                    android:textColor="#2C3E50"
+                    android:fontFamily="sans-serif-medium"
+                    android:layout_marginBottom="8dp" />
+
+                <TextView
+                    android:id="@+id/descriptionText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Comprehensive agent management and oversight dashboard"
+                    android:textSize="14sp"
+                    android:textColor="#7F8C8D"
+                    android:layout_marginBottom="16dp" />
+
+            </LinearLayout>
+
+
+
+            <!-- Quick Actions Section Header -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:gravity="center_horizontal">
+                android:gravity="center_vertical"
+                android:layout_marginBottom="16dp">
 
-                <!-- My Agent Box -->
+                <View
+                    android:layout_width="4dp"
+                    android:layout_height="24dp"
+                    android:background="#3498DB"
+                    android:layout_marginEnd="12dp" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Quick Actions"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="#2C3E50"
+                    android:fontFamily="sans-serif-medium" />
+
+            </LinearLayout>
+
+            <!-- Quick Actions Grid -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginBottom="24dp">
+
+                <!-- Row 1: My Agents and Agent Team -->
                 <LinearLayout
-                    android:id="@+id/myAgentBox"
-                    android:layout_width="160dp"
-                    android:layout_height="160dp"
-                    android:orientation="vertical"
-                    android:background="#FFFFFF"
-                    android:padding="24dp"
-                    android:layout_marginEnd="24dp"
-                    android:elevation="6dp"
-                    android:gravity="center"
-                    android:backgroundTint="#E8F5E8"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:foreground="?android:attr/selectableItemBackgroundBorderless">
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="16dp">
 
-                    <ImageView
-                        android:layout_width="56dp"
-                        android:layout_height="56dp"
-                        android:src="@drawable/ic_agent"
-                        android:tint="#388E3C"
-                        android:layout_marginBottom="16dp" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="My Agent"
-                        android:textSize="18sp"
-                        android:textColor="#2C3E50"
-                        android:textStyle="bold"
-                        android:gravity="center" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="View and manage your direct agents"
-                        android:textSize="13sp"
-                        android:textColor="#7F8C8D"
+                    <!-- My Agents Box -->
+                    <LinearLayout
+                        android:id="@+id/myAgentBox"
+                        android:layout_width="0dp"
+                        android:layout_height="140dp"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:background="#FFFFFF"
+                        android:padding="20dp"
+                        android:layout_marginEnd="8dp"
+                        android:elevation="3dp"
                         android:gravity="center"
-                        android:layout_marginTop="8dp"
-                        android:lineHeight="18sp" />
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:foreground="?attr/selectableItemBackground">
+
+                        <LinearLayout
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:background="#E8F5E8"
+                            android:gravity="center"
+                            android:layout_marginBottom="12dp">
+
+                            <ImageView
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:src="@drawable/ic_agent"
+                                android:tint="#388E3C" />
+
+                        </LinearLayout>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="My Agents"
+                            android:textSize="16sp"
+                            android:textColor="#2C3E50"
+                            android:textStyle="bold"
+                            android:gravity="center"
+                            android:layout_marginBottom="8dp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="View and manage your direct agents"
+                            android:textSize="12sp"
+                            android:textColor="#7F8C8D"
+                            android:gravity="center"
+                            android:lineHeight="16sp" />
+
+                    </LinearLayout>
+
+                    <!-- Agent Team Box -->
+                    <LinearLayout
+                        android:id="@+id/agentTeamBox"
+                        android:layout_width="0dp"
+                        android:layout_height="140dp"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:background="#FFFFFF"
+                        android:padding="20dp"
+                        android:layout_marginStart="8dp"
+                        android:elevation="3dp"
+                        android:gravity="center"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:foreground="?attr/selectableItemBackground">
+
+                        <LinearLayout
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:background="#E3F2FD"
+                            android:gravity="center"
+                            android:layout_marginBottom="12dp">
+
+                            <ImageView
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:src="@drawable/ic_group"
+                                android:tint="#1976D2" />
+
+                        </LinearLayout>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Agent Team"
+                            android:textSize="16sp"
+                            android:textColor="#2C3E50"
+                            android:textStyle="bold"
+                            android:gravity="center"
+                            android:layout_marginBottom="8dp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Manage your agent team structure"
+                            android:textSize="12sp"
+                            android:textColor="#7F8C8D"
+                            android:gravity="center"
+                            android:lineHeight="16sp" />
+
+                    </LinearLayout>
 
                 </LinearLayout>
 
-                <!-- Agent Team Box -->
+                <!-- Row 2: Add Agent and Reports -->
                 <LinearLayout
-                    android:id="@+id/agentTeamBox"
-                    android:layout_width="160dp"
-                    android:layout_height="160dp"
-                    android:orientation="vertical"
-                    android:background="#FFFFFF"
-                    android:padding="24dp"
-                    android:elevation="6dp"
-                    android:gravity="center"
-                    android:backgroundTint="#E3F2FD"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:foreground="?android:attr/selectableItemBackgroundBorderless">
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
 
-                    <ImageView
-                        android:layout_width="56dp"
-                        android:layout_height="56dp"
-                        android:src="@drawable/ic_group"
-                        android:tint="#1976D2"
-                        android:layout_marginBottom="16dp" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Agent Team"
-                        android:textSize="18sp"
-                        android:textColor="#2C3E50"
-                        android:textStyle="bold"
-                        android:gravity="center" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Manage your agent team structure"
-                        android:textSize="13sp"
-                        android:textColor="#7F8C8D"
+                    <!-- Add Agent Box -->
+                    <LinearLayout
+                        android:id="@+id/addAgentBox"
+                        android:layout_width="0dp"
+                        android:layout_height="140dp"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:background="#FFFFFF"
+                        android:padding="20dp"
+                        android:layout_marginEnd="8dp"
+                        android:elevation="3dp"
                         android:gravity="center"
-                        android:layout_marginTop="8dp"
-                        android:lineHeight="18sp" />
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:foreground="?attr/selectableItemBackground">
+
+                        <LinearLayout
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:background="#FFF3E0"
+                            android:gravity="center"
+                            android:layout_marginBottom="12dp">
+
+                            <ImageView
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:src="@drawable/ic_add"
+                                android:tint="#F57C00" />
+
+                        </LinearLayout>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Add Agent"
+                            android:textSize="16sp"
+                            android:textColor="#2C3E50"
+                            android:textStyle="bold"
+                            android:gravity="center"
+                            android:layout_marginBottom="8dp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Register new agents to your team"
+                            android:textSize="12sp"
+                            android:textColor="#7F8C8D"
+                            android:gravity="center"
+                            android:lineHeight="16sp" />
+
+                    </LinearLayout>
+
+                    <!-- Reports Box -->
+                    <LinearLayout
+                        android:id="@+id/reportsBox"
+                        android:layout_width="0dp"
+                        android:layout_height="140dp"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:background="#FFFFFF"
+                        android:padding="20dp"
+                        android:layout_marginStart="8dp"
+                        android:elevation="3dp"
+                        android:gravity="center"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:foreground="?attr/selectableItemBackground">
+
+                        <LinearLayout
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:background="#FCE4EC"
+                            android:gravity="center"
+                            android:layout_marginBottom="12dp">
+
+                            <ImageView
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:src="@drawable/ic_reports"
+                                android:tint="#C2185B" />
+
+                        </LinearLayout>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Reports"
+                            android:textSize="16sp"
+                            android:textColor="#2C3E50"
+                            android:textStyle="bold"
+                            android:gravity="center"
+                            android:layout_marginBottom="8dp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="View agent performance reports"
+                            android:textSize="12sp"
+                            android:textColor="#7F8C8D"
+                            android:gravity="center"
+                            android:lineHeight="16sp" />
+
+                    </LinearLayout>
 
                 </LinearLayout>
 
             </LinearLayout>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+    <!-- Bottom Navigation -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:background="#FFFFFF"
+        android:elevation="8dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingHorizontal="16dp">
+
+        <LinearLayout
+            android:id="@+id/dashboardButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:background="?android:attr/selectableItemBackground"
+            android:padding="8dp"
+            android:clickable="true"
+            android:focusable="true">
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/ic_dashboard"
+                android:tint="#1976D2" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Dashboard"
+                android:textSize="10sp"
+                android:textColor="#1976D2"
+                android:textStyle="bold"
+                android:layout_marginTop="2dp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/portfolioButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:background="?android:attr/selectableItemBackground"
+            android:padding="8dp"
+            android:clickable="true"
+            android:focusable="true">
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/ic_file"
+                android:tint="#9E9E9E" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Portfolio"
+                android:textSize="10sp"
+                android:textColor="#9E9E9E"
+                android:layout_marginTop="2dp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/reportsButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:background="?android:attr/selectableItemBackground"
+            android:padding="8dp"
+            android:clickable="true"
+            android:focusable="true">
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/ic_reports"
+                android:tint="#9E9E9E" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Reports"
+                android:textSize="10sp"
+                android:textColor="#9E9E9E"
+                android:layout_marginTop="2dp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/settingsButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:background="?android:attr/selectableItemBackground"
+            android:padding="8dp"
+            android:clickable="true"
+            android:focusable="true">
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/ic_settings"
+                android:tint="#9E9E9E" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Settings"
+                android:textSize="10sp"
+                android:textColor="#9E9E9E"
+                android:layout_marginTop="2dp" />
 
         </LinearLayout>
 

@@ -63,18 +63,60 @@ public class ManagingDirectorAgentPanelActivity extends AppCompatActivity {
         // Back button
         findViewById(R.id.backButton).setOnClickListener(v -> onBackPressed());
 
-        // My Agent Box
+        // Refresh button
+        findViewById(R.id.refreshButton).setOnClickListener(v -> {
+            Toast.makeText(this, "Refreshing agent data...", Toast.LENGTH_SHORT).show();
+            // TODO: Implement refresh functionality
+        });
+
+
+
+        // Quick action boxes
         findViewById(R.id.myAgentBox).setOnClickListener(v -> {
             Intent intent = new Intent(this, ManagingDirectorMyAgentSimpleActivity.class);
             passUserDataToIntent(intent);
             startActivity(intent);
         });
 
-        // Agent Team Box
         findViewById(R.id.agentTeamBox).setOnClickListener(v -> {
             Intent intent = new Intent(this, ManagingDirectorAgentTeamSimpleActivity.class);
             passUserDataToIntent(intent);
             startActivity(intent);
+        });
+
+        findViewById(R.id.addAgentBox).setOnClickListener(v -> {
+            Toast.makeText(this, "Add Agent - Coming Soon!", Toast.LENGTH_SHORT).show();
+            // TODO: Navigate to add agent activity
+        });
+
+        findViewById(R.id.reportsBox).setOnClickListener(v -> {
+            Toast.makeText(this, "Agent Reports - Coming Soon!", Toast.LENGTH_SHORT).show();
+            // TODO: Navigate to agent reports activity
+        });
+
+        // Bottom navigation
+        findViewById(R.id.dashboardButton).setOnClickListener(v -> {
+            Intent intent = new Intent(this, SpecialPanelActivity.class);
+            passUserDataToIntent(intent);
+            startActivity(intent);
+            finish();
+        });
+
+        findViewById(R.id.portfolioButton).setOnClickListener(v -> {
+            Intent intent = new Intent(this, PortfolioPanelActivity.class);
+            passUserDataToIntent(intent);
+            startActivity(intent);
+            finish();
+        });
+
+        findViewById(R.id.reportsButton).setOnClickListener(v -> {
+            Toast.makeText(this, "Reports - Coming Soon!", Toast.LENGTH_SHORT).show();
+            // TODO: Navigate to reports activity
+        });
+
+        findViewById(R.id.settingsButton).setOnClickListener(v -> {
+            Toast.makeText(this, "Settings - Coming Soon!", Toast.LENGTH_SHORT).show();
+            // TODO: Navigate to settings activity
         });
     }
 
@@ -87,6 +129,8 @@ public class ManagingDirectorAgentPanelActivity extends AppCompatActivity {
             welcomeText.setText("Welcome, Managing Director!");
         }
     }
+
+
 
     private void passUserDataToIntent(Intent intent) {
         // Get current user data and pass it to the new activity
