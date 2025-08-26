@@ -9,7 +9,6 @@ import com.google.android.material.card.MaterialCardView;
 
 public class BankersPanelActivity extends AppCompatActivity {
 
-    private MaterialCardView addBox;
     private MaterialCardView listBox;
     private TextView backButton;
 
@@ -23,7 +22,6 @@ public class BankersPanelActivity extends AppCompatActivity {
     }
 
     private void initializeViews() {
-        addBox = findViewById(R.id.addBox);
         listBox = findViewById(R.id.listBox);
         backButton = findViewById(R.id.backButton);
     }
@@ -31,10 +29,7 @@ public class BankersPanelActivity extends AppCompatActivity {
     private void setupClickListeners() {
         backButton.setOnClickListener(v -> finish());
 
-        addBox.setOnClickListener(v -> {
-            Intent intent = new Intent(this, AddBankerPanelActivity.class);
-            startActivity(intent);
-        });
+
 
         listBox.setOnClickListener(v -> {
             Intent intent = new Intent(this, BankerListActivity.class);

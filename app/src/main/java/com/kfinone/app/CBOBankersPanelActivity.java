@@ -8,7 +8,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.material.card.MaterialCardView;
 
 public class CBOBankersPanelActivity extends AppCompatActivity {
-    private MaterialCardView addBox, listBox;
+    private MaterialCardView listBox;
     private ImageButton backButton;
     private String userName;
 
@@ -29,7 +29,6 @@ public class CBOBankersPanelActivity extends AppCompatActivity {
     }
 
     private void initializeViews() {
-        addBox = findViewById(R.id.addBox);
         listBox = findViewById(R.id.listBox);
         backButton = findViewById(R.id.backButton);
     }
@@ -37,12 +36,7 @@ public class CBOBankersPanelActivity extends AppCompatActivity {
     private void setupClickListeners() {
         backButton.setOnClickListener(v -> goBack());
         
-        addBox.setOnClickListener(v -> {
-            Intent intent = new Intent(this, AddBankerActivity.class);
-            intent.putExtra("USERNAME", userName);
-            intent.putExtra("SOURCE_PANEL", "CBO_PANEL");
-            startActivity(intent);
-        });
+
         
         listBox.setOnClickListener(v -> {
             Intent intent = new Intent(this, BankerListActivity.class);

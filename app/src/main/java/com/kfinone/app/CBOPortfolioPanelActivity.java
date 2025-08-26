@@ -8,7 +8,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.material.card.MaterialCardView;
 
 public class CBOPortfolioPanelActivity extends AppCompatActivity {
-    private MaterialCardView addPortfolioBox, myPortfolioBox, teamPortfolioBox;
+    private MaterialCardView myPortfolioBox, teamPortfolioBox;
     private ImageButton backButton;
     private String userName;
 
@@ -29,7 +29,6 @@ public class CBOPortfolioPanelActivity extends AppCompatActivity {
     }
 
     private void initializeViews() {
-        addPortfolioBox = findViewById(R.id.addPortfolioBox);
         myPortfolioBox = findViewById(R.id.myPortfolioBox);
         teamPortfolioBox = findViewById(R.id.teamPortfolioBox);
         backButton = findViewById(R.id.backButton);
@@ -38,12 +37,7 @@ public class CBOPortfolioPanelActivity extends AppCompatActivity {
     private void setupClickListeners() {
         backButton.setOnClickListener(v -> goBack());
         
-        addPortfolioBox.setOnClickListener(v -> {
-            Intent intent = new Intent(this, AddPortfolioActivity.class);
-            intent.putExtra("USERNAME", userName);
-            intent.putExtra("SOURCE_PANEL", "CBO_PANEL");
-            startActivity(intent);
-        });
+
         
         myPortfolioBox.setOnClickListener(v -> {
             Intent intent = new Intent(this, MyPortfolioActivity.class);

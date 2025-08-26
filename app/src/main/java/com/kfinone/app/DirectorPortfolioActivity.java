@@ -12,7 +12,6 @@ import androidx.appcompat.widget.Toolbar;
 public class DirectorPortfolioActivity extends AppCompatActivity {
 
     private LinearLayout viewPortfolioButton;
-    private LinearLayout addPortfolioButton;
     
     private String userId;
     private String userName;
@@ -40,7 +39,6 @@ public class DirectorPortfolioActivity extends AppCompatActivity {
 
     private void initializeViews() {
         viewPortfolioButton = findViewById(R.id.viewPortfolioButton);
-        addPortfolioButton = findViewById(R.id.addPortfolioButton);
     }
 
     private void setupClickListeners() {
@@ -51,12 +49,7 @@ public class DirectorPortfolioActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
-        addPortfolioButton.setOnClickListener(v -> {
-            Intent intent = new Intent(this, AddPortfolioActivity.class);
-            passUserDataToIntent(intent);
-            intent.putExtra("SOURCE_PANEL", "DIRECTOR_PANEL");
-            startActivity(intent);
-        });
+
     }
 
     private void setupToolbar() {
