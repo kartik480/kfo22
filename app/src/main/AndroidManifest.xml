@@ -830,6 +830,12 @@
                       android:theme="@style/FullscreenTheme" />
                       
                   <activity
+                      android:name=".MarketingHeadEmpLinksActivity"
+                      android:exported="false"
+                      android:label="Marketing Head Employee Links"
+                      android:theme="@style/FullscreenTheme" />
+                      
+                  <activity
                       android:name=".MyAccountPanelActivity"
                       android:exported="false"
                       android:label="My Account"

@@ -261,8 +261,12 @@ public class MarketingHeadPanelActivity extends AppCompatActivity {
         
         // Emp Links
         cardEmpLinks.setOnClickListener(v -> {
-            showToast("Emp Links - Coming Soon!");
-            // TODO: Launch Emp Links Activity
+            Intent empLinksIntent = new Intent(MarketingHeadPanelActivity.this, MarketingHeadEmpLinksActivity.class);
+            empLinksIntent.putExtra("USERNAME", username);
+            empLinksIntent.putExtra("FIRST_NAME", firstName);
+            empLinksIntent.putExtra("LAST_NAME", lastName);
+            empLinksIntent.putExtra("USER_ID", userId);
+            startActivity(empLinksIntent);
         });
         
         // Data Links
