@@ -84,15 +84,7 @@ public class ManagingDirectorAgentPanelActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
-        findViewById(R.id.addAgentBox).setOnClickListener(v -> {
-            Toast.makeText(this, "Add Agent - Coming Soon!", Toast.LENGTH_SHORT).show();
-            // TODO: Navigate to add agent activity
-        });
 
-        findViewById(R.id.reportsBox).setOnClickListener(v -> {
-            Toast.makeText(this, "Agent Reports - Coming Soon!", Toast.LENGTH_SHORT).show();
-            // TODO: Navigate to agent reports activity
-        });
 
         // Bottom navigation
         findViewById(R.id.dashboardButton).setOnClickListener(v -> {
