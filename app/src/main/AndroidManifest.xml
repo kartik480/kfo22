@@ -956,6 +956,12 @@
                       android:theme="@style/FullscreenTheme" />
                       
                   <activity
+                      android:name=".AgentDetailActivity"
+                      android:exported="false"
+                      android:label="Agent Details"
+                      android:theme="@style/FullscreenTheme" />
+                      
+                  <activity
                       android:name=".BusinessHeadEmpLinksActivity"
                       android:exported="false"
                       android:label="Business Head Emp Links"

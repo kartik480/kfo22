@@ -32,11 +32,12 @@ public class BusinessHeadMyAgentActivity extends AppCompatActivity {
     
     private static final String TAG = "BHMyAgent";
     private static final String BASE_URL = "https://emp.kfinone.com/mobile/api/";
-    private static final String AGENT_API_URL = "https://emp.kfinone.com/mobile/api/business_head_my_agents.php";
+    private static final String AGENT_API_URL = "https://emp.kfinone.com/mobile/api/business_head_my_agents_enhanced.php";
 
     private View backButton;
     private LinearLayout agentListContainer;
     private AutoCompleteTextView agentTypeDropdown, branchStateDropdown, branchLocationDropdown;
+    private TextView totalAgentsText, activeAgentsText;
     private String userName;
     private String userId;
     private String firstName;
@@ -85,6 +86,8 @@ public class BusinessHeadMyAgentActivity extends AppCompatActivity {
         agentTypeDropdown = findViewById(R.id.agentTypeDropdown);
         branchStateDropdown = findViewById(R.id.branchStateDropdown);
         branchLocationDropdown = findViewById(R.id.branchLocationDropdown);
+        totalAgentsText = findViewById(R.id.totalAgentsText);
+        activeAgentsText = findViewById(R.id.activeAgentsText);
     }
     
     private void loadDropdownOptions() {
@@ -267,22 +270,30 @@ public class BusinessHeadMyAgentActivity extends AppCompatActivity {
             boolean success = response.getBoolean("success");
             if (success) {
                 JSONArray data = response.getJSONArray("data");
+                JSONObject stats = response.optJSONObject("stats");
                 
                 List<AgentData> newAgentList = new ArrayList<>();
                 for (int i = 0; i < data.length(); i++) {
                     JSONObject agent = data.getJSONObject(i);
                     AgentData agentData = new AgentData();
                     
-                    // Set fields from tbl_agent_data
+                    // Set fields from tbl_agent_data with enhanced names
                     agentData.setId(agent.optString("id", ""));
                     agentData.setFullName(agent.optString("full_name", ""));
                     agentData.setCompanyName(agent.optString("company_name", ""));
                     agentData.setPhoneNumber(agent.optString("Phone_number", ""));
                     agentData.setAlternativePhoneNumber(agent.optString("alternative_Phone_number", ""));
                     agentData.setEmailId(agent.optString("email_id", ""));
-                    agentData.setPartnerType(agent.optString("partnerType", ""));
-                    agentData.setState(agent.optString("state", ""));
-                    agentData.setLocation(agent.optString("location", ""));
+                    
+                    // Use enhanced names from lookup tables
+                    String partnerTypeName = agent.optString("partner_type_name", "");
+                    String stateName = agent.optString("state_name", "");
+                    String locationName = agent.optString("location_name", "");
+                    
+                    agentData.setPartnerType(partnerTypeName.isEmpty() ? agent.optString("partnerType", "") : partnerTypeName);
+                    agentData.setState(stateName.isEmpty() ? agent.optString("state", "") : stateName);
+                    agentData.setLocation(locationName.isEmpty() ? agent.optString("location", "") : locationName);
+                    
                     agentData.setAddress(agent.optString("address", ""));
                     agentData.setVisitingCard(agent.optString("visiting_card", ""));
                     agentData.setCreatedUser(agent.optString("created_user", ""));
@@ -296,6 +307,7 @@ public class BusinessHeadMyAgentActivity extends AppCompatActivity {
                 
                 runOnUiThread(() -> {
                     updateAgentList(newAgentList);
+                    updateStatistics(stats);
                 });
             } else {
                 String message = response.optString("message", "Unknown error");
@@ -308,6 +320,20 @@ public class BusinessHeadMyAgentActivity extends AppCompatActivity {
             runOnUiThread(() -> {
                 Toast.makeText(BusinessHeadMyAgentActivity.this, "Error parsing response", Toast.LENGTH_SHORT).show();
             });
+        }
+    }
+    
+    private void updateStatistics(JSONObject stats) {
+        if (stats != null) {
+            try {
+                int totalAgents = stats.optInt("total_agents", 0);
+                int activeAgents = stats.optInt("active_agents", 0);
+                
+                totalAgentsText.setText(String.valueOf(totalAgents));
+                activeAgentsText.setText(String.valueOf(activeAgents));
+            } catch (Exception e) {
+                Log.e(TAG, "Error updating statistics", e);
+            }
         }
     }
     
@@ -342,9 +368,9 @@ public class BusinessHeadMyAgentActivity extends AppCompatActivity {
         filteredAgentList.clear();
         filteredAgentList.addAll(filtered);
         
-        // Display filtered agents
+        // Display filtered agents in table format
         for (AgentData agent : filteredAgentList) {
-            addAgentItem(agent);
+            addAgentTableRow(agent);
         }
         
         // Show filter info
@@ -356,55 +382,86 @@ public class BusinessHeadMyAgentActivity extends AppCompatActivity {
         backButton.setOnClickListener(v -> goBack());
     }
 
-    private void addAgentItem(AgentData agent) {
-        CardView cardView = new CardView(this);
-        LinearLayout.LayoutParams cardParams = new LinearLayout.LayoutParams(
+    private void addAgentTableRow(AgentData agent) {
+        LinearLayout rowLayout = new LinearLayout(this);
+        LinearLayout.LayoutParams rowParams = new LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.MATCH_PARENT,
             LinearLayout.LayoutParams.WRAP_CONTENT
         );
-        cardParams.setMargins(0, 0, 0, 16);
-        cardView.setLayoutParams(cardParams);
-        cardView.setRadius(12);
-        cardView.setCardElevation(4);
-        cardView.setCardBackgroundColor(getResources().getColor(R.color.background_light));
+        rowParams.setMargins(0, 0, 0, 8);
+        rowLayout.setLayoutParams(rowParams);
+        rowLayout.setOrientation(LinearLayout.HORIZONTAL);
+        rowLayout.setBackground(getResources().getDrawable(R.color.background_light));
+        rowLayout.setPadding(12, 12, 12, 12);
 
-        LinearLayout contentLayout = new LinearLayout(this);
-        contentLayout.setLayoutParams(new LinearLayout.LayoutParams(
-            LinearLayout.LayoutParams.MATCH_PARENT,
-            LinearLayout.LayoutParams.WRAP_CONTENT
-        ));
-        contentLayout.setOrientation(LinearLayout.VERTICAL);
-        contentLayout.setPadding(20, 20, 20, 20);
+        // Name column
+        TextView nameText = createTableTextView(agent.getFullName(), 2);
+        rowLayout.addView(nameText);
 
-        // Add agent information
-        addTextView(contentLayout, "Name: " + agent.getFullName());
-        addTextView(contentLayout, "Company: " + agent.getCompanyName());
-        addTextView(contentLayout, "Phone: " + agent.getPhoneNumber());
-        if (agent.getAlternativePhoneNumber() != null && !agent.getAlternativePhoneNumber().isEmpty()) {
-            addTextView(contentLayout, "Alt Phone: " + agent.getAlternativePhoneNumber());
-        }
-        addTextView(contentLayout, "Email: " + agent.getEmailId());
-        addTextView(contentLayout, "Partner Type: " + agent.getPartnerType());
-        addTextView(contentLayout, "State: " + agent.getState());
-        addTextView(contentLayout, "Location: " + agent.getLocation());
-        if (agent.getAddress() != null && !agent.getAddress().isEmpty()) {
-            addTextView(contentLayout, "Address: " + agent.getAddress());
-        }
-        addTextView(contentLayout, "Status: " + agent.getStatus());
-        addTextView(contentLayout, "Created At: " + agent.getCreatedAt());
-        addTextView(contentLayout, "Created By: " + agent.getCreatedBy());
+        // Company column
+        TextView companyText = createTableTextView(agent.getCompanyName(), 2);
+        rowLayout.addView(companyText);
 
-        cardView.addView(contentLayout);
-        agentListContainer.addView(cardView);
+        // Partner Type column
+        TextView partnerTypeText = createTableTextView(agent.getPartnerType(), 2);
+        rowLayout.addView(partnerTypeText);
+
+        // State column
+        TextView stateText = createTableTextView(agent.getState(), 2);
+        rowLayout.addView(stateText);
+
+        // Location column
+        TextView locationText = createTableTextView(agent.getLocation(), 2);
+        rowLayout.addView(locationText);
+
+        // Action column (View button)
+        Button viewButton = new Button(this);
+        LinearLayout.LayoutParams buttonParams = new LinearLayout.LayoutParams(
+            0, LinearLayout.LayoutParams.WRAP_CONTENT, 1
+        );
+        viewButton.setLayoutParams(buttonParams);
+        viewButton.setText("View");
+        viewButton.setTextSize(12);
+        viewButton.setBackgroundColor(getResources().getColor(R.color.orange));
+        viewButton.setTextColor(getResources().getColor(R.color.white));
+        viewButton.setPadding(8, 4, 8, 4);
+        
+        viewButton.setOnClickListener(v -> {
+            Intent intent = new Intent(this, AgentDetailActivity.class);
+            intent.putExtra("AGENT_NAME", agent.getFullName());
+            intent.putExtra("COMPANY_NAME", agent.getCompanyName());
+            intent.putExtra("PHONE", agent.getPhoneNumber());
+            intent.putExtra("ALT_PHONE", agent.getAlternativePhoneNumber());
+            intent.putExtra("EMAIL", agent.getEmailId());
+            intent.putExtra("PARTNER_TYPE", agent.getPartnerType());
+            intent.putExtra("STATE", agent.getState());
+            intent.putExtra("LOCATION", agent.getLocation());
+            intent.putExtra("ADDRESS", agent.getAddress());
+            intent.putExtra("STATUS", agent.getStatus());
+            intent.putExtra("CREATED_BY", agent.getCreatedBy());
+            intent.putExtra("CREATED_AT", agent.getCreatedAt());
+            intent.putExtra("UPDATED_AT", agent.getUpdatedAt());
+            intent.putExtra("VISITING_CARD", agent.getVisitingCard());
+            startActivity(intent);
+        });
+        
+        rowLayout.addView(viewButton);
+        agentListContainer.addView(rowLayout);
     }
     
-    private void addTextView(LinearLayout parent, String text) {
+    private TextView createTableTextView(String text, int weight) {
         TextView textView = new TextView(this);
-        textView.setText(text);
-        textView.setTextSize(16);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+            0, LinearLayout.LayoutParams.WRAP_CONTENT, weight
+        );
+        textView.setLayoutParams(params);
+        textView.setText(text != null ? text : "");
+        textView.setTextSize(14);
         textView.setTextColor(getResources().getColor(R.color.black));
-        textView.setPadding(0, 0, 0, 8);
-        parent.addView(textView);
+        textView.setPadding(8, 0, 8, 0);
+        textView.setMaxLines(2);
+        textView.setEllipsize(android.text.TextUtils.TruncateAt.END);
+        return textView;
     }
 
     private void goBack() {
