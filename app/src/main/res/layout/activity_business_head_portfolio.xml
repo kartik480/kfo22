@@ -107,52 +107,7 @@
                 android:orientation="vertical"
                 android:gravity="center">
 
-                <!-- Add Portfolio Box -->
-                <com.google.android.material.card.MaterialCardView
-                    android:id="@+id/addPortfolioBox"
-                    android:layout_width="200dp"
-                    android:layout_height="200dp"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:foreground="?attr/selectableItemBackground"
-                    app:cardCornerRadius="12dp"
-                    app:cardElevation="6dp"
-                    app:cardBackgroundColor="#E8F5E8"
-                    android:layout_marginBottom="16dp">
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical"
-                        android:gravity="center"
-                        android:padding="24dp">
-
-                        <ImageView
-                            android:layout_width="64dp"
-                            android:layout_height="64dp"
-                            android:src="@drawable/ic_add"
-                            android:tint="#4CAF50"
-                            android:layout_marginBottom="16dp" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Add Portfolio"
-                            android:textSize="24sp"
-                            android:textStyle="bold"
-                            android:textColor="#2C3E50" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Create New Portfolio"
-                            android:textSize="14sp"
-                            android:textColor="#7F8C8D"
-                            android:layout_marginTop="4dp" />
-
-                    </LinearLayout>
-
-                </com.google.android.material.card.MaterialCardView>
 
                 <!-- My Portfolio Box -->
                 <com.google.android.material.card.MaterialCardView

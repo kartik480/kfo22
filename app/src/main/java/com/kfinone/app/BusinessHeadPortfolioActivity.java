@@ -10,7 +10,6 @@ import com.google.android.material.card.MaterialCardView;
 
 public class BusinessHeadPortfolioActivity extends AppCompatActivity {
 
-    private MaterialCardView addPortfolioBox;
     private MaterialCardView myPortfolioBox;
     private TextView backButton;
     private View refreshButton;
@@ -43,7 +42,6 @@ public class BusinessHeadPortfolioActivity extends AppCompatActivity {
     }
 
     private void initializeViews() {
-        addPortfolioBox = findViewById(R.id.addPortfolioBox);
         myPortfolioBox = findViewById(R.id.myPortfolioBox);
         backButton = findViewById(R.id.backButton);
         refreshButton = findViewById(R.id.refreshButton);
@@ -84,12 +82,6 @@ public class BusinessHeadPortfolioActivity extends AppCompatActivity {
         });
 
         // Portfolio box click listeners
-        addPortfolioBox.setOnClickListener(v -> {
-            Intent intent = new Intent(this, BusinessHeadAddPortfolioActivity.class);
-            passUserDataToIntent(intent);
-            startActivity(intent);
-        });
-
         myPortfolioBox.setOnClickListener(v -> {
             Intent intent = new Intent(this, BusinessHeadMyPortfolioActivity.class);
             passUserDataToIntent(intent);
