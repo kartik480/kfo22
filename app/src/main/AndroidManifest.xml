@@ -812,6 +812,24 @@
                       android:theme="@style/FullscreenTheme" />
                       
                   <activity
+                      android:name=".MarketingHeadEmpMasterActivity"
+                      android:exported="false"
+                      android:label="Marketing Head Employee Master"
+                      android:theme="@style/FullscreenTheme" />
+                      
+                  <activity
+                      android:name=".MarketingHeadLocationMasterActivity"
+                      android:exported="false"
+                      android:label="Marketing Head Location Master"
+                      android:theme="@style/FullscreenTheme" />
+                      
+                  <activity
+                      android:name=".MarketingHeadSDSAMasterActivity"
+                      android:exported="false"
+                      android:label="Marketing Head SDSA Master"
+                      android:theme="@style/FullscreenTheme" />
+                      
+                  <activity
                       android:name=".MyAccountPanelActivity"
                       android:exported="false"
                       android:label="My Account"

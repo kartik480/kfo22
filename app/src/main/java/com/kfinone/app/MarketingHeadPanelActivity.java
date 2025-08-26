@@ -231,20 +231,32 @@ public class MarketingHeadPanelActivity extends AppCompatActivity {
     private void setupCardClickListeners() {
         // Emp Master
         cardEmpMaster.setOnClickListener(v -> {
-            showToast("Emp Master - Coming Soon!");
-            // TODO: Launch Emp Master Activity
+            Intent empMasterIntent = new Intent(MarketingHeadPanelActivity.this, MarketingHeadEmpMasterActivity.class);
+            empMasterIntent.putExtra("USERNAME", username);
+            empMasterIntent.putExtra("FIRST_NAME", firstName);
+            empMasterIntent.putExtra("LAST_NAME", lastName);
+            empMasterIntent.putExtra("USER_ID", userId);
+            startActivity(empMasterIntent);
         });
         
         // Location Master
         cardLocationMaster.setOnClickListener(v -> {
-            showToast("Location Master - Coming Soon!");
-            // TODO: Launch Location Master Activity
+            Intent locationMasterIntent = new Intent(MarketingHeadPanelActivity.this, MarketingHeadLocationMasterActivity.class);
+            locationMasterIntent.putExtra("USERNAME", username);
+            locationMasterIntent.putExtra("FIRST_NAME", firstName);
+            locationMasterIntent.putExtra("LAST_NAME", lastName);
+            locationMasterIntent.putExtra("USER_ID", userId);
+            startActivity(locationMasterIntent);
         });
         
         // SDSA Master
         cardSDSAMaster.setOnClickListener(v -> {
-            showToast("SDSA Master - Coming Soon!");
-            // TODO: Launch SDSA Master Activity
+            Intent sdsaMasterIntent = new Intent(MarketingHeadPanelActivity.this, MarketingHeadSDSAMasterActivity.class);
+            sdsaMasterIntent.putExtra("USERNAME", username);
+            sdsaMasterIntent.putExtra("FIRST_NAME", firstName);
+            sdsaMasterIntent.putExtra("LAST_NAME", lastName);
+            sdsaMasterIntent.putExtra("USER_ID", userId);
+            startActivity(sdsaMasterIntent);
         });
         
         // Emp Links
