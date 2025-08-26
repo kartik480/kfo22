@@ -26,9 +26,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
+// Removed unused executor imports
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -81,12 +79,11 @@ public class BusinessHeadPanelActivity extends AppCompatActivity {
     private LinearLayout cardCompliance;
     private LinearLayout cardBudgetManagement;
     
-    private ExecutorService executor = Executors.newSingleThreadExecutor();
+    // Executor removed since we're not doing heavy background operations
     private RequestQueue requestQueue;
     
-    // ANR Prevention: Global timeout handler
-    private Handler timeoutHandler = new Handler(Looper.getMainLooper());
-    private static final int NETWORK_TIMEOUT_MS = 8000; // 8 seconds max
+    // Handler for UI operations
+    private Handler uiHandler = new Handler(Looper.getMainLooper());
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -117,23 +114,12 @@ public class BusinessHeadPanelActivity extends AppCompatActivity {
         setInitialStats();
         
         // Load data asynchronously to prevent ANR
-        new Handler(Looper.getMainLooper()).postDelayed(() -> {
+        uiHandler.postDelayed(() -> {
             loadBusinessHeadData();
         }, 100); // Small delay to ensure UI is ready
         
-        // ANR Prevention: Set global timeout for all network operations
-        timeoutHandler.postDelayed(() -> {
-            if (totalEmpCount.getText().equals("0") && 
-                totalSDSACount.getText().equals("0") && 
-                totalPartnerCount.getText().equals("0") && 
-                totalPortfolioCount.getText().equals("0") && 
-                totalAgentCount.getText().equals("0")) {
-                
-                Log.w(TAG, "Network timeout detected - setting fallback values");
-                setInitialStats();
-                showToast("Network timeout - using cached data");
-            }
-        }, NETWORK_TIMEOUT_MS);
+        // Set initial values and focus on partner count
+        Log.d(TAG, "Setting up partner count fetching");
         
         updateWelcomeText();
         
@@ -141,7 +127,7 @@ public class BusinessHeadPanelActivity extends AppCompatActivity {
         setupStatCardClickListeners();
         
         // Check for app updates with delay to prevent blocking UI
-        new Handler(Looper.getMainLooper()).postDelayed(() -> {
+        uiHandler.postDelayed(() -> {
             checkForAppUpdates();
         }, 500);
     }
@@ -420,94 +406,61 @@ public class BusinessHeadPanelActivity extends AppCompatActivity {
     }
     
     private void loadBusinessHeadData() {
-        // Use Volley for better performance instead of HttpURLConnection
-        String url = BASE_URL + "get_business_head_users.php";
+        // Fetch all the counts from their respective working APIs
+        Log.d(TAG, "Loading business head data - fetching all counts");
         
-        JsonObjectRequest jsonRequest = new JsonObjectRequest(
-            Request.Method.GET,
-            url,
-            null,
-            new Response.Listener<JSONObject>() {
-                @Override
-                public void onResponse(JSONObject jsonResponse) {
-                    try {
-                        if (jsonResponse.getString("status").equals("success")) {
-                            // Check if statistics field exists
-                            if (jsonResponse.has("statistics")) {
-                                JSONObject statistics = jsonResponse.getJSONObject("statistics");
-                                
-                                final int totalBusinessHeads = statistics.optInt("total_business_head_users", 0);
-                                final int activeBusinessHeads = statistics.optInt("active_business_head_users", 0);
-                                final int totalTeamMembers = statistics.optInt("total_team_members", 0);
-                                final int activeTeamMembers = statistics.optInt("active_team_members", 0);
-                                final int totalSdsaUsers = statistics.optInt("total_sdsa_users", 0);
-                                final int totalPartnerUsers = statistics.optInt("total_partner_users", 0);
-                                final int totalAgentUsers = statistics.optInt("total_agent_users", 0);
-                                
-                                updateStatsWithRealData(totalTeamMembers, totalSdsaUsers, totalPartnerUsers, 0, totalAgentUsers);
-                            } else {
-                                // If no statistics, use default values
-                                updateStats(0, 0, 0, 0);
-                                Log.w(TAG, "No statistics field found in API response");
-                            }
-                        } else {
-                            showError("Failed to load data: " + jsonResponse.optString("message", "Unknown error"));
-                        }
-                    } catch (JSONException e) {
-                        Log.e(TAG, "Error parsing JSON response", e);
-                        showError("Error parsing response: " + e.getMessage());
-                    }
-                }
-            },
-            new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    Log.e(TAG, "Volley error loading business head data", error);
-                    String errorMessage = "Network error: " + error.getMessage();
-                    if (error.networkResponse != null) {
-                        errorMessage += " (Status: " + error.networkResponse.statusCode + ")";
-                    }
-                    showError(errorMessage);
-                }
-            }
-        );
-
-        // Add aggressive timeout and retry policy to prevent ANR
-        jsonRequest.setRetryPolicy(new DefaultRetryPolicy(
-            5000,  // 5 seconds timeout (reduced from 10s)
-            0,      // No retries (prevents hanging)
-            1.0f    // No backoff multiplier
-        ));
-
-        // Add to Volley queue
-        if (requestQueue == null) {
-            requestQueue = Volley.newRequestQueue(this);
-        }
-        requestQueue.add(jsonRequest);
-        
-        // Also fetch partner count specifically
+        // Fetch partner count
         fetchPartnerCount();
         
-        // Fetch agent count specifically
+        // Fetch SDSA count
+        fetchSDSACount();
+        
+        // Set portfolio count to 0 for now since the API endpoint doesn't exist
+        // TODO: Implement portfolio count when the API is created
+        totalPortfolioCount.setText("0");
+        
+        // Fetch agent count
         fetchAgentCount();
+        
+        // Set employee count to 0 for now since its API is not working
+        // TODO: Uncomment the line below when the employee API is fixed
+        // fetchEmployeeCount();
+        totalEmpCount.setText("0");
+        
+        Log.d(TAG, "Business head data loading completed. Username: " + username + ", UserID: " + userId);
+        Log.d(TAG, "Partner, SDSA, and Agent count APIs are being fetched. Portfolio and Employee counts set to 0.");
     }
     
+    /**
+     * Fetch the total number of partners for the current Business Head user
+     * This method calls the same API endpoint used in BusinessHeadMyPartnerActivity
+     * to ensure consistency in partner counting
+     */
     private void fetchPartnerCount() {
         if (username == null || username.isEmpty()) {
+            Log.w(TAG, "Username is null or empty, cannot fetch partner count");
             totalPartnerCount.setText("0");
             return;
         }
         
-        String url = BASE_URL + "get_business_head_my_partners.php";
+        Log.d(TAG, "Fetching partner count for username: " + username);
+        // Use the same API endpoint as BusinessHeadMyPartnerActivity for consistency
+        String url = "https://emp.kfinone.com/mobile/api/get_business_head_my_partners.php";
+        Log.d(TAG, "Partner count API URL: " + url);
         
-        // Create request body with username
+        // Create request body with username and user_id for better compatibility
         JSONObject requestBody = new JSONObject();
         try {
             requestBody.put("username", username);
+            if (userId != null && !userId.isEmpty()) {
+                requestBody.put("user_id", userId);
+            }
         } catch (JSONException e) {
             Log.e(TAG, "Error creating request body: " + e.getMessage());
             return;
         }
+        
+        Log.d(TAG, "Partner count request body: " + requestBody.toString());
         
         JsonObjectRequest jsonRequest = new JsonObjectRequest(
             Request.Method.POST,
@@ -516,6 +469,7 @@ public class BusinessHeadPanelActivity extends AppCompatActivity {
             new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject jsonResponse) {
+                    Log.d(TAG, "Partner count API response: " + jsonResponse.toString());
                     try {
                         if (jsonResponse.getString("status").equals("success")) {
                             // Try to get count from statistics
@@ -523,17 +477,43 @@ public class BusinessHeadPanelActivity extends AppCompatActivity {
                                 JSONObject statistics = jsonResponse.getJSONObject("data").getJSONObject("statistics");
                                 int totalCount = statistics.optInt("total_partners", 0);
                                 totalPartnerCount.setText(String.valueOf(totalCount));
-                                Log.d(TAG, "Partner count updated: " + totalCount);
+                                Log.d(TAG, "Partner count updated from statistics: " + totalCount);
                             } else if (jsonResponse.has("counts")) {
                                 // Alternative location for counts
                                 int totalCount = jsonResponse.getJSONObject("counts").optInt("total_partners", 0);
                                 totalPartnerCount.setText(String.valueOf(totalCount));
                                 Log.d(TAG, "Partner count updated from counts: " + totalCount);
+                            } else if (jsonResponse.has("data")) {
+                                // Check if data is an array (partner list) or object
+                                if (jsonResponse.getJSONObject("data").has("partner_users")) {
+                                    // This is the working structure from BusinessHeadMyPartnerActivity
+                                    JSONArray partnerUsers = jsonResponse.getJSONObject("data").getJSONArray("partner_users");
+                                    int totalCount = partnerUsers.length();
+                                    totalPartnerCount.setText(String.valueOf(totalCount));
+                                    Log.d(TAG, "Partner count updated from partner_users array: " + totalCount);
+                                } else {
+                                    // Fallback: try to count the data array directly
+                                    try {
+                                        int totalCount = jsonResponse.getJSONArray("data").length();
+                                        totalPartnerCount.setText(String.valueOf(totalCount));
+                                        Log.d(TAG, "Partner count updated from data array length: " + totalCount);
+                                    } catch (Exception e) {
+                                        Log.w(TAG, "Data is not an array, trying object approach");
+                                        // If data is an object, try to get count from it
+                                        JSONObject dataObj = jsonResponse.getJSONObject("data");
+                                        if (dataObj.has("total_count")) {
+                                            int totalCount = dataObj.optInt("total_count", 0);
+                                            totalPartnerCount.setText(String.valueOf(totalCount));
+                                            Log.d(TAG, "Partner count updated from total_count: " + totalCount);
+                                        } else {
+                                            totalPartnerCount.setText("0");
+                                            Log.w(TAG, "No partner count found in response");
+                                        }
+                                    }
+                                }
                             } else {
-                                // Fallback: count the data array
-                                int totalCount = jsonResponse.getJSONArray("data").length();
-                                totalPartnerCount.setText(String.valueOf(totalCount));
-                                Log.d(TAG, "Partner count updated from data length: " + totalCount);
+                                Log.w(TAG, "No data field found in partner count response");
+                                totalPartnerCount.setText("0");
                             }
                         } else {
                             Log.w(TAG, "Failed to fetch partner count: " + jsonResponse.optString("message", "Unknown error"));
@@ -549,6 +529,10 @@ public class BusinessHeadPanelActivity extends AppCompatActivity {
                 @Override
                 public void onErrorResponse(VolleyError error) {
                     Log.e(TAG, "Error fetching partner count", error);
+                    if (error.networkResponse != null) {
+                        Log.e(TAG, "Network response status: " + error.networkResponse.statusCode);
+                        Log.e(TAG, "Network response data: " + new String(error.networkResponse.data));
+                    }
                     totalPartnerCount.setText("0");
                 }
             }
@@ -566,24 +550,40 @@ public class BusinessHeadPanelActivity extends AppCompatActivity {
             requestQueue = Volley.newRequestQueue(this);
         }
         requestQueue.add(jsonRequest);
+        
+        Log.d(TAG, "Partner count request added to queue");
     }
     
-    private void fetchAgentCount() {
+    /**
+     * Fetch the total number of SDSA users for the current Business Head user
+     * This method calls the same API endpoint used in BusinessHeadMySdsaUsersActivity
+     * to ensure consistency in SDSA counting
+     */
+    private void fetchSDSACount() {
         if (username == null || username.isEmpty()) {
-            totalAgentCount.setText("0");
+            Log.w(TAG, "Username is null or empty, cannot fetch SDSA count");
+            totalSDSACount.setText("0");
             return;
         }
         
-        String url = BASE_URL + "get_business_head_agent_count.php";
+        Log.d(TAG, "Fetching SDSA count for username: " + username);
+        // Use the same API endpoint as BusinessHeadMySdsaUsersActivity for consistency
+        String url = "https://emp.kfinone.com/mobile/api/get_business_head_my_sdsa_users.php";
+        Log.d(TAG, "SDSA count API URL: " + url);
         
-        // Create request body with username
+        // Create request body with username and user_id for better compatibility
         JSONObject requestBody = new JSONObject();
         try {
             requestBody.put("username", username);
+            if (userId != null && !userId.isEmpty()) {
+                requestBody.put("user_id", userId);
+            }
         } catch (JSONException e) {
             Log.e(TAG, "Error creating request body: " + e.getMessage());
             return;
         }
+        
+        Log.d(TAG, "SDSA count request body: " + requestBody.toString());
         
         JsonObjectRequest jsonRequest = new JsonObjectRequest(
             Request.Method.POST,
@@ -592,16 +592,289 @@ public class BusinessHeadPanelActivity extends AppCompatActivity {
             new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject jsonResponse) {
+                    Log.d(TAG, "SDSA count API response: " + jsonResponse.toString());
                     try {
                         if (jsonResponse.getString("status").equals("success")) {
-                            // Get agent count from data
-                            if (jsonResponse.has("data")) {
-                                JSONObject data = jsonResponse.getJSONObject("data");
-                                int totalCount = data.optInt("total_agents", 0);
-                                totalAgentCount.setText(String.valueOf(totalCount));
-                                Log.d(TAG, "Agent count updated: " + totalCount);
+                            // Based on the actual API response, try to get count from different locations
+                            if (jsonResponse.has("count")) {
+                                // Direct count field from the API response
+                                int totalCount = jsonResponse.optInt("count", 0);
+                                totalSDSACount.setText(String.valueOf(totalCount));
+                                Log.d(TAG, "SDSA count updated from count field: " + totalCount);
+                            } else if (jsonResponse.has("users")) {
+                                // Count the users array length
+                                JSONArray users = jsonResponse.getJSONArray("users");
+                                int totalCount = users.length();
+                                totalSDSACount.setText(String.valueOf(totalCount));
+                                Log.d(TAG, "SDSA count updated from users array length: " + totalCount);
+                            } else if (jsonResponse.has("data") && jsonResponse.getJSONObject("data").has("statistics")) {
+                                // Try to get count from statistics
+                                JSONObject statistics = jsonResponse.getJSONObject("data").getJSONObject("statistics");
+                                int totalCount = statistics.optInt("total_sdsa_users", 0);
+                                totalSDSACount.setText(String.valueOf(totalCount));
+                                Log.d(TAG, "SDSA count updated from statistics: " + totalCount);
+                            } else if (jsonResponse.has("counts")) {
+                                // Alternative location for counts
+                                int totalCount = jsonResponse.getJSONObject("counts").optInt("total_sdsa_users", 0);
+                                totalSDSACount.setText(String.valueOf(totalCount));
+                                Log.d(TAG, "SDSA count updated from counts: " + totalCount);
+                            } else if (jsonResponse.has("data")) {
+                                // Check if data is an array (SDSA list) or object
+                                if (jsonResponse.getJSONObject("data").has("sdsa_users")) {
+                                    // This is the working structure from BusinessHeadMySdsaUsersActivity
+                                    JSONArray sdsaUsers = jsonResponse.getJSONObject("data").getJSONArray("sdsa_users");
+                                    int totalCount = sdsaUsers.length();
+                                    totalSDSACount.setText(String.valueOf(totalCount));
+                                    Log.d(TAG, "SDSA count updated from sdsa_users array: " + totalCount);
+                                } else {
+                                    // Fallback: try to count the data array directly
+                                    try {
+                                        int totalCount = jsonResponse.getJSONArray("data").length();
+                                        totalSDSACount.setText(String.valueOf(totalCount));
+                                        Log.d(TAG, "SDSA count updated from data array length: " + totalCount);
+                                    } catch (Exception e) {
+                                        Log.w(TAG, "Data is not an array, trying object approach");
+                                        // If data is an object, try to get count from it
+                                        JSONObject dataObj = jsonResponse.getJSONObject("data");
+                                        if (dataObj.has("total_count")) {
+                                            int totalCount = dataObj.optInt("total_count", 0);
+                                            totalSDSACount.setText(String.valueOf(totalCount));
+                                            Log.d(TAG, "SDSA count updated from total_count: " + totalCount);
+                                        } else {
+                                            totalSDSACount.setText("0");
+                                            Log.w(TAG, "No SDSA count found in response");
+                                        }
+                                    }
+                                }
                             } else {
-                                Log.w(TAG, "No data field found in agent count response");
+                                Log.w(TAG, "No data field found in SDSA count response");
+                                totalSDSACount.setText("0");
+                            }
+                        } else {
+                            Log.w(TAG, "Failed to fetch SDSA count: " + jsonResponse.optString("message", "Unknown error"));
+                            totalSDSACount.setText("0");
+                        }
+                    } catch (JSONException e) {
+                        Log.e(TAG, "Error parsing SDSA count response", e);
+                        totalSDSACount.setText("0");
+                    }
+                }
+            },
+            new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Log.e(TAG, "Error fetching SDSA count", error);
+                    if (error.networkResponse != null) {
+                        Log.e(TAG, "Network response status: " + error.networkResponse.statusCode);
+                        Log.e(TAG, "Network response data: " + new String(error.networkResponse.data));
+                    }
+                    totalSDSACount.setText("0");
+                }
+            }
+        );
+
+        // Add aggressive timeout and retry policy to prevent ANR
+        jsonRequest.setRetryPolicy(new DefaultRetryPolicy(
+            5000,  // 5 seconds timeout (reduced from 10s)
+            0,      // No retries (prevents hanging)
+            1.0f    // No backoff multiplier
+        ));
+
+        // Add to Volley queue
+        if (requestQueue == null) {
+            requestQueue = Volley.newRequestQueue(this);
+        }
+        requestQueue.add(jsonRequest);
+        
+        Log.d(TAG, "SDSA count request added to queue");
+    }
+    
+    /**
+     * Fetch the total number of portfolios for the current Business Head user
+     * This method calls the same API endpoint used in BusinessHeadPortfolioActivity
+     * to ensure consistency in portfolio counting
+     * 
+     * NOTE: This method is currently not being called since the portfolio API endpoint
+     * returns 404 errors. The portfolio count is set to 0 until the API is fixed.
+     */
+    private void fetchPortfolioCount() {
+        if (username == null || username.isEmpty()) {
+            Log.w(TAG, "Username is null or empty, cannot fetch portfolio count");
+            totalPortfolioCount.setText("0");
+            return;
+        }
+        
+        Log.d(TAG, "Fetching portfolio count for username: " + username);
+        // Use the same API endpoint as BusinessHeadPortfolioActivity for consistency
+        String url = "https://emp.kfinone.com/mobile/api/get_business_head_portfolios.php";
+        Log.d(TAG, "Portfolio count API URL: " + url);
+        
+        // Create request body with username and user_id for better compatibility
+        JSONObject requestBody = new JSONObject();
+        try {
+            requestBody.put("username", username);
+            if (userId != null && !userId.isEmpty()) {
+                requestBody.put("user_id", userId);
+            }
+        } catch (JSONException e) {
+            Log.e(TAG, "Error creating request body: " + e.getMessage());
+            return;
+        }
+        
+        Log.d(TAG, "Portfolio count request body: " + requestBody.toString());
+        
+        JsonObjectRequest jsonRequest = new JsonObjectRequest(
+            Request.Method.POST,
+            url,
+            requestBody,
+            new Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject jsonResponse) {
+                    Log.d(TAG, "Portfolio count API response: " + jsonResponse.toString());
+                    try {
+                        if (jsonResponse.getString("status").equals("success")) {
+                            // Try to get count from statistics
+                            if (jsonResponse.has("data") && jsonResponse.getJSONObject("data").has("statistics")) {
+                                JSONObject statistics = jsonResponse.getJSONObject("data").getJSONObject("statistics");
+                                int totalCount = statistics.optInt("total_portfolios", 0);
+                                totalPortfolioCount.setText(String.valueOf(totalCount));
+                                Log.d(TAG, "Portfolio count updated from statistics: " + totalCount);
+                            } else if (jsonResponse.has("counts")) {
+                                // Alternative location for counts
+                                int totalCount = jsonResponse.getJSONObject("counts").optInt("total_portfolios", 0);
+                                totalPortfolioCount.setText(String.valueOf(totalCount));
+                                Log.d(TAG, "Portfolio count updated from counts: " + totalCount);
+                            } else if (jsonResponse.has("data")) {
+                                // Check if data is an array (portfolio list) or object
+                                if (jsonResponse.getJSONObject("data").has("portfolios")) {
+                                    // This is the working structure from BusinessHeadPortfolioActivity
+                                    JSONArray portfolios = jsonResponse.getJSONObject("data").getJSONArray("portfolios");
+                                    int totalCount = portfolios.length();
+                                    totalPortfolioCount.setText(String.valueOf(totalCount));
+                                    Log.d(TAG, "Portfolio count updated from portfolios array: " + totalCount);
+                                } else {
+                                    // Fallback: try to count the data array directly
+                                    try {
+                                        int totalCount = jsonResponse.getJSONArray("data").length();
+                                        totalPortfolioCount.setText(String.valueOf(totalCount));
+                                        Log.d(TAG, "Portfolio count updated from data array length: " + totalCount);
+                                    } catch (Exception e) {
+                                        Log.w(TAG, "Data is not an array, trying object approach");
+                                        // If data is an object, try to get count from it
+                                        JSONObject dataObj = jsonResponse.getJSONObject("data");
+                                        if (dataObj.has("total_count")) {
+                                            int totalCount = dataObj.optInt("total_count", 0);
+                                            totalPortfolioCount.setText(String.valueOf(totalCount));
+                                            Log.d(TAG, "Portfolio count updated from total_count: " + totalCount);
+                                        } else {
+                                            totalPortfolioCount.setText("0");
+                                            Log.w(TAG, "No portfolio count found in response");
+                                        }
+                                    }
+                                }
+                            } else {
+                                Log.w(TAG, "No data field found in portfolio count response");
+                                totalPortfolioCount.setText("0");
+                            }
+                        } else {
+                            Log.w(TAG, "Failed to fetch portfolio count: " + jsonResponse.optString("message", "Unknown error"));
+                            totalPortfolioCount.setText("0");
+                        }
+                    } catch (JSONException e) {
+                        Log.e(TAG, "Error parsing portfolio count response", e);
+                        totalPortfolioCount.setText("0");
+                    }
+                }
+            },
+            new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Log.e(TAG, "Error fetching portfolio count", error);
+                    if (error.networkResponse != null) {
+                        Log.e(TAG, "Network response status: " + error.networkResponse.statusCode);
+                        Log.e(TAG, "Network response data: " + new String(error.networkResponse.data));
+                    }
+                    totalPortfolioCount.setText("0");
+                }
+            }
+        );
+
+        // Add aggressive timeout and retry policy to prevent ANR
+        jsonRequest.setRetryPolicy(new DefaultRetryPolicy(
+            5000,  // 5 seconds timeout (reduced from 10s)
+            0,      // No retries (prevents hanging)
+            1.0f    // No backoff multiplier
+        ));
+
+        // Add to Volley queue
+        if (requestQueue == null) {
+            requestQueue = Volley.newRequestQueue(this);
+        }
+        requestQueue.add(jsonRequest);
+        
+        Log.d(TAG, "Portfolio count request added to queue");
+    }
+    
+    /**
+     * Fetch the total number of agents for the current Business Head user
+     * This method calls the same API endpoint used in BusinessHeadMyAgentActivity
+     * to ensure consistency in agent counting
+     */
+    private void fetchAgentCount() {
+        if (username == null || username.isEmpty()) {
+            Log.w(TAG, "Username is null or empty, cannot fetch agent count");
+            totalAgentCount.setText("0");
+            return;
+        }
+        
+        Log.d(TAG, "Fetching agent count for username: " + username);
+        // Use the same API endpoint as BusinessHeadMyAgentActivity for consistency
+        // This API expects GET parameters, not POST body
+        String url = "https://emp.kfinone.com/mobile/api/business_head_my_agents.php?username=" + username;
+        if (userId != null && !userId.isEmpty()) {
+            url += "&user_id=" + userId;
+        }
+        Log.d(TAG, "Agent count API URL: " + url);
+        
+        // This API uses GET method, not POST
+        JsonObjectRequest jsonRequest = new JsonObjectRequest(
+            Request.Method.GET,
+            url,
+            null,
+            new Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject jsonResponse) {
+                    Log.d(TAG, "Agent count API response: " + jsonResponse.toString());
+                    try {
+                        if (jsonResponse.getString("success").equals("true")) {
+                            // Try to get count from stats object first (most reliable)
+                            if (jsonResponse.has("stats")) {
+                                JSONObject stats = jsonResponse.getJSONObject("stats");
+                                int totalCount = stats.optInt("total_agents", 0);
+                                totalAgentCount.setText(String.valueOf(totalCount));
+                                Log.d(TAG, "Agent count updated from stats.total_agents: " + totalCount);
+                            } else if (jsonResponse.has("data")) {
+                                // Check if data is an array (agent list) - count the array length
+                                try {
+                                    JSONArray agents = jsonResponse.getJSONArray("data");
+                                    int totalCount = agents.length();
+                                    totalAgentCount.setText(String.valueOf(totalCount));
+                                    Log.d(TAG, "Agent count updated from data array length: " + totalCount);
+                                } catch (Exception e) {
+                                    Log.w(TAG, "Data is not an array, trying object approach");
+                                    // If data is an object, try to get count from it
+                                    JSONObject dataObj = jsonResponse.getJSONObject("data");
+                                    if (dataObj.has("total_count")) {
+                                        int totalCount = dataObj.optInt("total_count", 0);
+                                        totalAgentCount.setText(String.valueOf(totalCount));
+                                        Log.d(TAG, "Agent count updated from data.total_count: " + totalCount);
+                                    } else {
+                                        totalAgentCount.setText("0");
+                                        Log.w(TAG, "No agent count found in response");
+                                    }
+                                }
+                            } else {
+                                Log.w(TAG, "No stats or data field found in agent count response");
                                 totalAgentCount.setText("0");
                             }
                         } else {
@@ -618,6 +891,10 @@ public class BusinessHeadPanelActivity extends AppCompatActivity {
                 @Override
                 public void onErrorResponse(VolleyError error) {
                     Log.e(TAG, "Error fetching agent count", error);
+                    if (error.networkResponse != null) {
+                        Log.e(TAG, "Network response status: " + error.networkResponse.statusCode);
+                        Log.e(TAG, "Network response data: " + new String(error.networkResponse.data));
+                    }
                     totalAgentCount.setText("0");
                 }
             }
@@ -635,29 +912,131 @@ public class BusinessHeadPanelActivity extends AppCompatActivity {
             requestQueue = Volley.newRequestQueue(this);
         }
         requestQueue.add(jsonRequest);
+        
+        Log.d(TAG, "Agent count request added to queue");
     }
     
-    private void updateStats(int totalBusinessHeads, int activeBusinessHeads, int totalTeamMembers, int activeTeamMembers) {
-        // Update stats with real data from API
-        totalEmpCount.setText(String.valueOf(totalTeamMembers));
-        totalSDSACount.setText(String.valueOf(totalTeamMembers)); // SDSA count from team members
-        totalPartnerCount.setText(String.valueOf(totalTeamMembers)); // Partner count from team members
-        totalPortfolioCount.setText(String.valueOf(totalTeamMembers)); // Portfolio count from team members
-        totalAgentCount.setText(String.valueOf(totalTeamMembers)); // Agent count from team members
+    /**
+     * Fetch the total number of employees for the current Business Head user
+     * This method is prepared for when the employee API endpoint is fixed
+     * Currently not called since the API returns 404 errors
+     */
+    private void fetchEmployeeCount() {
+        if (username == null || username.isEmpty()) {
+            Log.w(TAG, "Username is null or empty, cannot fetch employee count");
+            totalEmpCount.setText("0");
+            return;
+        }
         
-        Log.d(TAG, "Updated stats - Total Team Members: " + totalTeamMembers + ", Active Team Members: " + activeTeamMembers);
-    }
-    
-    private void updateStatsWithRealData(int totalEmp, int totalSdsa, int totalPartner, int totalPortfolio, int totalAgent) {
-        // Update each stat card with real data from API
-        totalEmpCount.setText(String.valueOf(totalEmp));
-        totalSDSACount.setText(String.valueOf(totalSdsa));
-        totalPartnerCount.setText(String.valueOf(totalPartner));
-        totalPortfolioCount.setText(String.valueOf(totalPortfolio));
-        totalAgentCount.setText(String.valueOf(totalAgent));
+        Log.d(TAG, "Fetching employee count for username: " + username);
+        // Use the employee API endpoint when it's fixed
+        String url = "https://emp.kfinone.com/mobile/api/get_business_head_employees.php";
+        Log.d(TAG, "Employee count API URL: " + url);
         
-        Log.d(TAG, "Updated stats with real data - Emp: " + totalEmp + ", SDSA: " + totalSdsa + 
-              ", Partner: " + totalPartner + ", Portfolio: " + totalPortfolio + ", Agent: " + totalAgent);
+        // Create request body with username and user_id for better compatibility
+        JSONObject requestBody = new JSONObject();
+        try {
+            requestBody.put("username", username);
+            if (userId != null && !userId.isEmpty()) {
+                requestBody.put("user_id", userId);
+            }
+        } catch (JSONException e) {
+            Log.e(TAG, "Error creating request body: " + e.getMessage());
+            return;
+        }
+        
+        Log.d(TAG, "Employee count request body: " + requestBody.toString());
+        
+        JsonObjectRequest jsonRequest = new JsonObjectRequest(
+            Request.Method.POST,
+            url,
+            requestBody,
+            new Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject jsonResponse) {
+                    Log.d(TAG, "Employee count API response: " + jsonResponse.toString());
+                    try {
+                        if (jsonResponse.getString("status").equals("success")) {
+                            // Try to get count from statistics
+                            if (jsonResponse.has("data") && jsonResponse.getJSONObject("data").has("statistics")) {
+                                JSONObject statistics = jsonResponse.getJSONObject("data").getJSONObject("statistics");
+                                int totalCount = statistics.optInt("total_employees", 0);
+                                totalEmpCount.setText(String.valueOf(totalCount));
+                                Log.d(TAG, "Employee count updated from statistics: " + totalCount);
+                            } else if (jsonResponse.has("counts")) {
+                                // Alternative location for counts
+                                int totalCount = jsonResponse.getJSONObject("counts").optInt("total_employees", 0);
+                                totalEmpCount.setText(String.valueOf(totalCount));
+                                Log.d(TAG, "Employee count updated from counts: " + totalCount);
+                            } else if (jsonResponse.has("data")) {
+                                // Check if data is an array (employee list) or object
+                                if (jsonResponse.getJSONObject("data").has("employees")) {
+                                    // This is the expected structure
+                                    JSONArray employees = jsonResponse.getJSONObject("data").getJSONArray("employees");
+                                    int totalCount = employees.length();
+                                    totalEmpCount.setText(String.valueOf(totalCount));
+                                    Log.d(TAG, "Employee count updated from employees array: " + totalCount);
+                                } else {
+                                    // Fallback: try to count the data array directly
+                                    try {
+                                        int totalCount = jsonResponse.getJSONArray("data").length();
+                                        totalEmpCount.setText(String.valueOf(totalCount));
+                                        Log.d(TAG, "Employee count updated from data array length: " + totalCount);
+                                    } catch (Exception e) {
+                                        Log.w(TAG, "Data is not an array, trying object approach");
+                                        // If data is an object, try to get count from it
+                                        JSONObject dataObj = jsonResponse.getJSONObject("data");
+                                        if (dataObj.has("total_count")) {
+                                            int totalCount = dataObj.optInt("total_count", 0);
+                                            totalEmpCount.setText(String.valueOf(totalCount));
+                                            Log.d(TAG, "Employee count updated from total_count: " + totalCount);
+                                        } else {
+                                            totalEmpCount.setText("0");
+                                            Log.w(TAG, "No employee count found in response");
+                                        }
+                                    }
+                                }
+                            } else {
+                                Log.w(TAG, "No data field found in employee count response");
+                                totalEmpCount.setText("0");
+                            }
+                        } else {
+                            Log.w(TAG, "Failed to fetch employee count: " + jsonResponse.optString("message", "Unknown error"));
+                            totalEmpCount.setText("0");
+                        }
+                    } catch (JSONException e) {
+                        Log.e(TAG, "Error parsing employee count response", e);
+                        totalEmpCount.setText("0");
+                    }
+                }
+            },
+            new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Log.e(TAG, "Error fetching employee count", error);
+                    if (error.networkResponse != null) {
+                        Log.e(TAG, "Network response status: " + error.networkResponse.statusCode);
+                        Log.e(TAG, "Network response data: " + new String(error.networkResponse.data));
+                    }
+                    totalEmpCount.setText("0");
+                }
+            }
+        );
+
+        // Add aggressive timeout and retry policy to prevent ANR
+        jsonRequest.setRetryPolicy(new DefaultRetryPolicy(
+            5000,  // 5 seconds timeout (reduced from 10s)
+            0,      // No retries (prevents hanging)
+            1.0f    // No backoff multiplier
+        ));
+
+        // Add to Volley queue
+        if (requestQueue == null) {
+            requestQueue = Volley.newRequestQueue(this);
+        }
+        requestQueue.add(jsonRequest);
+        
+        Log.d(TAG, "Employee count request added to queue");
     }
     
     private void setupStatCardClickListeners() {
@@ -672,6 +1051,13 @@ public class BusinessHeadPanelActivity extends AppCompatActivity {
             startActivity(intent);
         });
         
+        // Add long press listener to refresh all counts
+        cardTotalEmp.setOnLongClickListener(v -> {
+            refreshAllCounts();
+            showToast("Refreshing all counts...");
+            return true;
+        });
+        
         // Total SDSA Card - Navigate to Business Head SDSA Panel
         cardTotalSDSA.setOnClickListener(v -> {
             Intent intent = new Intent(BusinessHeadPanelActivity.this, BusinessHeadSdsaActivity.class);
@@ -683,15 +1069,30 @@ public class BusinessHeadPanelActivity extends AppCompatActivity {
             startActivity(intent);
         });
         
-        // Total Partner Card - Navigate to Business Head Partner Panel
+        // Add long press listener to refresh SDSA count
+        cardTotalSDSA.setOnLongClickListener(v -> {
+            refreshSDSACount();
+            showToast("Refreshing SDSA count...");
+            return true;
+        });
+        
+        // Total Partner Card - Navigate directly to Business Head My Partner Panel
         cardTotalPartner.setOnClickListener(v -> {
-            Intent intent = new Intent(BusinessHeadPanelActivity.this, BusinessHeadPartnerActivity.class);
+            Intent intent = new Intent(BusinessHeadPanelActivity.this, BusinessHeadMyPartnerActivity.class);
             // Pass user data
             if (userId != null) intent.putExtra("USER_ID", userId);
             if (username != null) intent.putExtra("USERNAME", username);
             if (firstName != null) intent.putExtra("FIRST_NAME", firstName);
             if (lastName != null) intent.putExtra("LAST_NAME", lastName);
+            intent.putExtra("SOURCE_PANEL", "BH_PANEL");
             startActivity(intent);
+        });
+        
+        // Add long press listener to refresh partner count
+        cardTotalPartner.setOnLongClickListener(v -> {
+            refreshPartnerCount();
+            showToast("Refreshing partner count...");
+            return true;
         });
         
         // Total Portfolio Card - Navigate to Business Head Portfolio Panel
@@ -705,6 +1106,13 @@ public class BusinessHeadPanelActivity extends AppCompatActivity {
             startActivity(intent);
         });
         
+        // Add long press listener to refresh portfolio count
+        cardTotalPortfolio.setOnLongClickListener(v -> {
+            refreshPortfolioCount();
+            showToast("Refreshing portfolio count...");
+            return true;
+        });
+        
         // Total Agent Card - Navigate to Business Head Agent Panel
         cardTotalAgent.setOnClickListener(v -> {
             Intent intent = new Intent(BusinessHeadPanelActivity.this, BusinessHeadAgentActivity.class);
@@ -714,6 +1122,13 @@ public class BusinessHeadPanelActivity extends AppCompatActivity {
             if (firstName != null) intent.putExtra("FIRST_NAME", firstName);
             if (lastName != null) intent.putExtra("LAST_NAME", lastName);
             startActivity(intent);
+        });
+        
+        // Add long press listener to refresh agent count
+        cardTotalAgent.setOnLongClickListener(v -> {
+            refreshAgentCount();
+            showToast("Refreshing agent count...");
+            return true;
         });
     }
     
@@ -729,6 +1144,99 @@ public class BusinessHeadPanelActivity extends AppCompatActivity {
     
     private void showToast(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+    }
+    
+    /**
+     * Manually refresh the partner count
+     * This can be called from UI or other parts of the app
+     */
+    public void refreshPartnerCount() {
+        if (username != null && !username.isEmpty()) {
+            Log.d(TAG, "Manual refresh of partner count requested");
+            fetchPartnerCount();
+        } else {
+            Log.w(TAG, "Cannot refresh partner count - username not available");
+        }
+    }
+    
+    /**
+     * Manually refresh the SDSA count
+     * This can be called from UI or other parts of the app
+     */
+    public void refreshSDSACount() {
+        if (username != null && !username.isEmpty()) {
+            Log.d(TAG, "Manual refresh of SDSA count requested");
+            fetchSDSACount();
+        } else {
+            Log.w(TAG, "Cannot refresh SDSA count - username not available");
+        }
+    }
+    
+    /**
+     * Manually refresh the portfolio count
+     * This can be called from UI or other parts of the app
+     * Note: Currently set to 0 since the portfolio API endpoint doesn't exist
+     */
+    public void refreshPortfolioCount() {
+        if (username != null && !username.isEmpty()) {
+            Log.d(TAG, "Manual refresh of portfolio count requested");
+            // For now, set to 0 since the API endpoint doesn't exist
+            // TODO: Implement fetchPortfolioCount() when the API is created
+            totalPortfolioCount.setText("0");
+            showToast("Portfolio count API not available yet");
+        } else {
+            Log.w(TAG, "Cannot refresh portfolio count - username not available");
+        }
+    }
+    
+    /**
+     * Manually refresh the agent count
+     * This can be called from UI or other parts of the app
+     */
+    public void refreshAgentCount() {
+        if (username != null && !username.isEmpty()) {
+            Log.d(TAG, "Manual refresh of agent count requested");
+            fetchAgentCount();
+        } else {
+            Log.w(TAG, "Cannot refresh agent count - username not available");
+        }
+    }
+    
+    /**
+     * Refresh all counts at once
+     * This can be called from UI or other parts of the app
+     */
+    public void refreshAllCounts() {
+        if (username != null && !username.isEmpty()) {
+            Log.d(TAG, "Manual refresh of all counts requested");
+            fetchPartnerCount();
+            fetchSDSACount();
+            // Portfolio count is set to 0 since the API doesn't exist
+            totalPortfolioCount.setText("0");
+            fetchAgentCount();
+            // TODO: Uncomment the line below when the employee API is fixed
+            // fetchEmployeeCount();
+        } else {
+            Log.w(TAG, "Cannot refresh counts - username not available");
+        }
+    }
+    
+    /**
+     * Manually refresh the employee count
+     * This can be called from UI or other parts of the app
+     * Note: Currently set to 0 since the employee API is not working
+     */
+    public void refreshEmployeeCount() {
+        if (username != null && !username.isEmpty()) {
+            Log.d(TAG, "Manual refresh of employee count requested");
+            // For now, set to 0 since the API is not working
+            // TODO: Uncomment the line below when the employee API is fixed
+            // fetchEmployeeCount();
+            totalEmpCount.setText("0");
+            showToast("Employee count API not available yet");
+        } else {
+            Log.w(TAG, "Cannot refresh employee count - username not available");
+        }
     }
     
     @Override
@@ -753,31 +1261,13 @@ public class BusinessHeadPanelActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         
-        // ANR Prevention: Cancel all pending operations
-        if (timeoutHandler != null) {
-            timeoutHandler.removeCallbacksAndMessages(null);
-        }
-        
-        // Clean up resources to prevent memory leaks
-        if (executor != null && !executor.isShutdown()) {
-            executor.shutdown();
-            try {
-                if (!executor.awaitTermination(800, TimeUnit.MILLISECONDS)) {
-                    executor.shutdownNow();
-                }
-            } catch (InterruptedException e) {
-                executor.shutdownNow();
-            }
-        }
-        
         if (requestQueue != null) {
             requestQueue.cancelAll("BusinessHeadPanelActivity");
         }
         
         // Clear references to prevent memory leaks
         requestQueue = null;
-        executor = null;
-        timeoutHandler = null;
+        uiHandler = null;
     }
     
     @Override
@@ -799,6 +1289,12 @@ public class BusinessHeadPanelActivity extends AppCompatActivity {
         
         // Restore user data and welcome message when returning to this activity
         updateWelcomeText();
+        
+        // Refresh all counts when returning to the home page
+        if (username != null && !username.isEmpty()) {
+            Log.d(TAG, "Refreshing all counts on resume");
+            refreshAllCounts();
+        }
     }
     
     @Override
