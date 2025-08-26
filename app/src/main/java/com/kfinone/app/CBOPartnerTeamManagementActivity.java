@@ -212,7 +212,7 @@ public class CBOPartnerTeamManagementActivity extends AppCompatActivity {
         
         if (partnerData.length() == 0) {
             TextView noDataText = new TextView(this);
-            noDataText.setText("No partner data found for this user");
+            noDataText.setText("No partner users found created by this RBH user");
             noDataText.setTextSize(16);
             noDataText.setTextColor(getResources().getColor(android.R.color.darker_gray));
             noDataText.setGravity(android.view.Gravity.CENTER);
@@ -234,7 +234,7 @@ public class CBOPartnerTeamManagementActivity extends AppCompatActivity {
                     partnerCard.setPadding(16, 16, 16, 16);
                     partnerCard.setElevation(2);
                     
-                    // Partner name
+                    // Partner username/name
                     TextView nameText = new TextView(this);
                     nameText.setLayoutParams(new LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.MATCH_PARENT,
@@ -247,17 +247,125 @@ public class CBOPartnerTeamManagementActivity extends AppCompatActivity {
                     nameText.setPadding(0, 0, 0, 8);
                     partnerCard.addView(nameText);
                     
-                    // Partner details
-                    if (partner.has("partner_details")) {
-                        TextView detailsText = new TextView(this);
-                        detailsText.setLayoutParams(new LinearLayout.LayoutParams(
+                    // Company name
+                    if (partner.has("company_name") && !partner.getString("company_name").equals("N/A")) {
+                        TextView companyText = new TextView(this);
+                        companyText.setLayoutParams(new LinearLayout.LayoutParams(
                             LinearLayout.LayoutParams.MATCH_PARENT,
                             LinearLayout.LayoutParams.WRAP_CONTENT
                         ));
-                        detailsText.setText("Details: " + partner.getString("partner_details"));
-                        detailsText.setTextSize(14);
-                        detailsText.setTextColor(getResources().getColor(android.R.color.darker_gray));
-                        partnerCard.addView(detailsText);
+                        companyText.setText("Company: " + partner.getString("company_name"));
+                        companyText.setTextSize(14);
+                        companyText.setTextColor(getResources().getColor(android.R.color.darker_gray));
+                        companyText.setPadding(0, 0, 0, 4);
+                        partnerCard.addView(companyText);
+                    }
+                    
+                    // Partner type
+                    if (partner.has("partner_type") && !partner.getString("partner_type").equals("N/A")) {
+                        TextView typeText = new TextView(this);
+                        typeText.setLayoutParams(new LinearLayout.LayoutParams(
+                            LinearLayout.LayoutParams.MATCH_PARENT,
+                            LinearLayout.LayoutParams.WRAP_CONTENT
+                        ));
+                        typeText.setText("Type: " + partner.getString("partner_type"));
+                        typeText.setTextSize(14);
+                        typeText.setTextColor(getResources().getColor(android.R.color.darker_gray));
+                        typeText.setPadding(0, 0, 0, 4);
+                        partnerCard.addView(typeText);
+                    }
+                    
+                    // Contact information
+                    if (partner.has("phone_number") && !partner.getString("phone_number").equals("N/A")) {
+                        TextView phoneText = new TextView(this);
+                        phoneText.setLayoutParams(new LinearLayout.LayoutParams(
+                            LinearLayout.LayoutParams.MATCH_PARENT,
+                            LinearLayout.LayoutParams.WRAP_CONTENT
+                        ));
+                        phoneText.setText("Phone: " + partner.getString("phone_number"));
+                        phoneText.setTextSize(14);
+                        phoneText.setTextColor(getResources().getColor(android.R.color.darker_gray));
+                        phoneText.setPadding(0, 0, 0, 4);
+                        partnerCard.addView(phoneText);
+                    }
+                    
+                    if (partner.has("email_id") && !partner.getString("email_id").equals("N/A")) {
+                        TextView emailText = new TextView(this);
+                        emailText.setLayoutParams(new LinearLayout.LayoutParams(
+                            LinearLayout.LayoutParams.MATCH_PARENT,
+                            LinearLayout.LayoutParams.WRAP_CONTENT
+                        ));
+                        emailText.setText("Email: " + partner.getString("email_id"));
+                        emailText.setTextSize(14);
+                        emailText.setTextColor(getResources().getColor(android.R.color.darker_gray));
+                        emailText.setPadding(0, 0, 0, 4);
+                        partnerCard.addView(emailText);
+                    }
+                    
+                    // Location information
+                    if (partner.has("state") && !partner.getString("state").equals("N/A")) {
+                        TextView stateText = new TextView(this);
+                        stateText.setLayoutParams(new LinearLayout.LayoutParams(
+                            LinearLayout.LayoutParams.MATCH_PARENT,
+                            LinearLayout.LayoutParams.WRAP_CONTENT
+                        ));
+                        stateText.setText("State: " + partner.getString("state"));
+                        stateText.setTextSize(14);
+                        stateText.setTextColor(getResources().getColor(android.R.color.darker_gray));
+                        stateText.setPadding(0, 0, 0, 4);
+                        partnerCard.addView(stateText);
+                    }
+                    
+                    if (partner.has("location") && !partner.getString("location").equals("N/A")) {
+                        TextView locationText = new TextView(this);
+                        locationText.setLayoutParams(new LinearLayout.LayoutParams(
+                            LinearLayout.LayoutParams.MATCH_PARENT,
+                            LinearLayout.LayoutParams.WRAP_CONTENT
+                        ));
+                        locationText.setText("Location: " + partner.getString("location"));
+                        locationText.setTextSize(14);
+                        locationText.setTextColor(getResources().getColor(android.R.color.darker_gray));
+                        locationText.setPadding(0, 0, 0, 4);
+                        partnerCard.addView(locationText);
+                    }
+                    
+                    // Status and creation info
+                    TextView statusText = new TextView(this);
+                    statusText.setLayoutParams(new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT
+                    ));
+                    statusText.setText("Status: " + partner.getString("status"));
+                    statusText.setTextSize(14);
+                    statusText.setTextColor(getResources().getColor(android.R.color.darker_gray));
+                    statusText.setPadding(0, 0, 0, 4);
+                    partnerCard.addView(statusText);
+                    
+                    if (partner.has("created_date") && !partner.getString("created_date").equals("N/A")) {
+                        TextView dateText = new TextView(this);
+                        dateText.setLayoutParams(new LinearLayout.LayoutParams(
+                            LinearLayout.LayoutParams.MATCH_PARENT,
+                            LinearLayout.LayoutParams.WRAP_CONTENT
+                        ));
+                        dateText.setText("Created: " + partner.getString("created_date"));
+                        dateText.setTextSize(14);
+                        dateText.setTextColor(getResources().getColor(android.R.color.darker_gray));
+                        dateText.setPadding(0, 0, 0, 4);
+                        partnerCard.addView(dateText);
+                    }
+                    
+                    // Created by info
+                    if (partner.has("created_by")) {
+                        TextView createdByText = new TextView(this);
+                        createdByText.setLayoutParams(new LinearLayout.LayoutParams(
+                            LinearLayout.LayoutParams.MATCH_PARENT,
+                            LinearLayout.LayoutParams.WRAP_CONTENT
+                        ));
+                        createdByText.setText("Created by RBH: " + partner.getString("created_by"));
+                        createdByText.setTextSize(14);
+                        createdByText.setTextColor(getResources().getColor(android.R.color.holo_blue_dark));
+                        createdByText.setPadding(0, 0, 0, 4);
+                        partnerCard.addView(createdByText);
                     }
                     
                     dataContent.addView(partnerCard);

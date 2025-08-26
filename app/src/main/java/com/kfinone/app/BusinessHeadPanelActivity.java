@@ -491,7 +491,7 @@ public class BusinessHeadPanelActivity extends AppCompatActivity {
                                     int totalCount = partnerUsers.length();
                                     totalPartnerCount.setText(String.valueOf(totalCount));
                                     Log.d(TAG, "Partner count updated from partner_users array: " + totalCount);
-                                } else {
+                            } else {
                                     // Fallback: try to count the data array directly
                                     try {
                                         int totalCount = jsonResponse.getJSONArray("data").length();
@@ -510,8 +510,8 @@ public class BusinessHeadPanelActivity extends AppCompatActivity {
                                             Log.w(TAG, "No partner count found in response");
                                         }
                                     }
-                                }
-                            } else {
+                            }
+                        } else {
                                 Log.w(TAG, "No data field found in partner count response");
                                 totalPartnerCount.setText("0");
                             }
@@ -608,7 +608,7 @@ public class BusinessHeadPanelActivity extends AppCompatActivity {
                                 totalSDSACount.setText(String.valueOf(totalCount));
                                 Log.d(TAG, "SDSA count updated from users array length: " + totalCount);
                             } else if (jsonResponse.has("data") && jsonResponse.getJSONObject("data").has("statistics")) {
-                                // Try to get count from statistics
+                            // Try to get count from statistics
                                 JSONObject statistics = jsonResponse.getJSONObject("data").getJSONObject("statistics");
                                 int totalCount = statistics.optInt("total_sdsa_users", 0);
                                 totalSDSACount.setText(String.valueOf(totalCount));
@@ -626,10 +626,10 @@ public class BusinessHeadPanelActivity extends AppCompatActivity {
                                     int totalCount = sdsaUsers.length();
                                     totalSDSACount.setText(String.valueOf(totalCount));
                                     Log.d(TAG, "SDSA count updated from sdsa_users array: " + totalCount);
-                                } else {
+                            } else {
                                     // Fallback: try to count the data array directly
                                     try {
-                                        int totalCount = jsonResponse.getJSONArray("data").length();
+                                int totalCount = jsonResponse.getJSONArray("data").length();
                                         totalSDSACount.setText(String.valueOf(totalCount));
                                         Log.d(TAG, "SDSA count updated from data array length: " + totalCount);
                                     } catch (Exception e) {
@@ -645,8 +645,8 @@ public class BusinessHeadPanelActivity extends AppCompatActivity {
                                             Log.w(TAG, "No SDSA count found in response");
                                         }
                                     }
-                                }
-                            } else {
+                            }
+                        } else {
                                 Log.w(TAG, "No data field found in SDSA count response");
                                 totalSDSACount.setText("0");
                             }
@@ -868,7 +868,7 @@ public class BusinessHeadPanelActivity extends AppCompatActivity {
                                         int totalCount = dataObj.optInt("total_count", 0);
                                         totalAgentCount.setText(String.valueOf(totalCount));
                                         Log.d(TAG, "Agent count updated from data.total_count: " + totalCount);
-                                    } else {
+                            } else {
                                         totalAgentCount.setText("0");
                                         Log.w(TAG, "No agent count found in response");
                                     }

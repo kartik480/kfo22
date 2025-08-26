@@ -46,10 +46,10 @@ try {
     $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $username, $password);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     
-    // First, get the selected user's ID from the name
+    // First, get the selected RBH user's username from the name
     $stmt1 = $pdo->prepare("
-        SELECT id FROM tbl_user 
-        WHERE CONCAT(first_name, ' ', last_name) = ? 
+        SELECT username FROM tbl_user 
+        WHERE username = ? 
         AND status = 'active'
     ");
     $stmt1->execute([$selectedUserName]);
@@ -59,92 +59,129 @@ try {
     if (!$selectedUser) {
         echo json_encode([
             'success' => false,
-            'message' => 'Selected user not found'
+            'message' => 'Selected RBH user not found'
         ]);
         exit();
     }
     
-    $selectedUserId = $selectedUser['id'];
+    $selectedUserUsername = $selectedUser['username'];
     
-    // Now get partner team data for the selected user
-    // This could include partner relationships, team members, etc.
-    // For now, we'll create a sample structure that can be expanded
-    
-    // Get partner information
+    // Now get partner users created by this RBH user using the createdBy column
+    // Focus on tbl_partner_users table as requested
     $stmt2 = $pdo->prepare("
         SELECT 
-            p.id,
-            p.partner_name,
-            p.partner_type,
-            p.status,
-            p.created_date,
-            CONCAT(u.first_name, ' ', u.last_name) as assigned_user
-        FROM tbl_partners p
-        LEFT JOIN tbl_user u ON p.assigned_user_id = u.id
-        WHERE p.assigned_user_id = ? OR p.created_by = ?
-        ORDER BY p.created_date DESC
+            pu.id,
+            pu.username as partner_username,
+            pu.status,
+            pu.createdBy,
+            pu.updated_at,
+            pu.remarks,
+            pu.partner_type,
+            pu.company_name,
+            pu.phone_number,
+            pu.email_id,
+            pu.address,
+            pu.state,
+            pu.location,
+            pu.pincode,
+            pu.bank_name,
+            pu.account_number,
+            pu.ifsc_code,
+            pu.pan_number,
+            pu.aadhaar_number
+        FROM tbl_partner_users pu
+        WHERE pu.createdBy = ?
+        ORDER BY pu.id DESC
     ");
-    $stmt2->execute([$selectedUserId, $selectedUserId]);
+    $stmt2->execute([$selectedUserUsername]);
     
-    $partners = $stmt2->fetchAll(PDO::FETCH_ASSOC);
+    $partnerUsers = $stmt2->fetchAll(PDO::FETCH_ASSOC);
     
-    // If no partners table exists or no data, create sample data
-    if (empty($partners)) {
-        // Create sample partner data for demonstration
-        $partners = [
-            [
-                'id' => '1',
-                'partner_name' => 'Sample Partner 1',
-                'partner_type' => 'Business',
-                'status' => 'Active',
-                'created_date' => date('Y-m-d'),
-                'assigned_user' => $selectedUserName,
-                'partner_details' => 'This is a sample business partner for demonstration purposes.'
-            ],
-            [
-                'id' => '2',
-                'partner_name' => 'Sample Partner 2',
-                'partner_type' => 'Technology',
-                'status' => 'Active',
-                'created_date' => date('Y-m-d', strtotime('-1 day')),
-                'assigned_user' => $selectedUserName,
-                'partner_details' => 'This is a sample technology partner for demonstration purposes.'
+    // If no partner users found, check if table exists and provide debug info
+    if (empty($partnerUsers)) {
+        // Check if tbl_partner_users table exists
+        $tableCheckQuery = "SHOW TABLES LIKE 'tbl_partner_users'";
+        $stmt = $pdo->prepare($tableCheckQuery);
+        $stmt->execute();
+        $tableExists = $stmt->fetch();
+        
+        if (!$tableExists) {
+            echo json_encode([
+                'success' => false,
+                'message' => 'tbl_partner_users table does not exist',
+                'debug' => [
+                    'selected_rbh_user' => $selectedUserUsername,
+                    'table_exists' => false
+                ]
+            ]);
+            exit();
+        }
+        
+        // Table exists but no data found
+        echo json_encode([
+            'success' => false,
+            'message' => 'No partner users found created by this RBH user',
+            'debug' => [
+                'selected_rbh_user' => $selectedUserUsername,
+                'table_exists' => true,
+                'query_executed' => "SELECT * FROM tbl_partner_users WHERE createdBy = '$selectedUserUsername'",
+                'focus_column' => 'createdBy'
             ]
-        ];
+        ]);
+        exit();
     }
     
     // Format the data for the response
     $formattedData = [];
-    foreach ($partners as $partner) {
+    foreach ($partnerUsers as $partner) {
         $formattedData[] = [
-            'partner_name' => $partner['partner_name'],
+            'id' => $partner['id'],
+            'partner_name' => $partner['partner_username'],
             'partner_type' => $partner['partner_type'] ?? 'N/A',
+            'company_name' => $partner['company_name'] ?? 'N/A',
             'status' => $partner['status'] ?? 'Active',
-            'created_date' => $partner['created_date'] ?? date('Y-m-d'),
-            'assigned_user' => $partner['assigned_user'] ?? $selectedUserName,
-            'partner_details' => $partner['partner_details'] ?? 'Partner details not available.'
+            'created_by' => $partner['createdBy'],
+            'phone_number' => $partner['phone_number'] ?? 'N/A',
+            'email_id' => $partner['email_id'] ?? 'N/A',
+            'address' => $partner['address'] ?? 'N/A',
+            'state' => $partner['state'] ?? 'N/A',
+            'location' => $partner['location'] ?? 'N/A',
+            'pincode' => $partner['pincode'] ?? 'N/A',
+            'bank_name' => $partner['bank_name'] ?? 'N/A',
+            'account_number' => $partner['account_number'] ?? 'N/A',
+            'ifsc_code' => $partner['ifsc_code'] ?? 'N/A',
+            'pan_number' => $partner['pan_number'] ?? 'N/A',
+            'aadhaar_number' => $partner['aadhaar_number'] ?? 'N/A',
+            'remarks' => $partner['remarks'] ?? 'N/A',
+            'partner_details' => "Partner created by RBH user: " . $partner['createdBy']
         ];
     }
     
     echo json_encode([
         'success' => true,
         'data' => $formattedData,
-        'message' => 'Partner team data retrieved successfully',
+        'message' => 'Partner users created by RBH user retrieved successfully',
         'count' => count($formattedData),
-        'selected_user' => $selectedUserName
+        'selected_rbh_user' => $selectedUserUsername,
+        'query_info' => [
+            'table_used' => 'tbl_partner_users',
+            'filter_column' => 'createdBy',
+            'filter_value' => $selectedUserUsername,
+            'focus' => 'createdBy column as requested'
+        ]
     ]);
     
 } catch (PDOException $e) {
     error_log("Database error: " . $e->getMessage());
     echo json_encode([
         'success' => false,
-        'message' => 'Database error occurred'
+        'message' => 'Database error: ' . $e->getMessage()
     ]);
 } catch (Exception $e) {
     error_log("General error: " . $e->getMessage());
     echo json_encode([
         'success' => false,
-        'message' => 'An error occurred'
+        'message' => 'An error occurred: ' . $e->getMessage()
     ]);
 }
 ?>
