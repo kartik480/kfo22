@@ -15,7 +15,6 @@ public class BusinessHeadAgentActivity extends AppCompatActivity {
     private View backButton;
 
     // Agent boxes
-    private CardView addAgentBox;
     private CardView myAgentBox;
 
     // User data
@@ -46,7 +45,6 @@ public class BusinessHeadAgentActivity extends AppCompatActivity {
         backButton = findViewById(R.id.backButton);
 
         // Agent boxes
-        addAgentBox = findViewById(R.id.addAgentBox);
         myAgentBox = findViewById(R.id.myAgentBox);
     }
 
@@ -55,12 +53,6 @@ public class BusinessHeadAgentActivity extends AppCompatActivity {
         backButton.setOnClickListener(v -> goBack());
 
         // Agent boxes click listeners
-        addAgentBox.setOnClickListener(v -> {
-            Intent intent = new Intent(this, BusinessHeadAddAgentActivity.class);
-            passUserDataToIntent(intent);
-            startActivity(intent);
-        });
-
         myAgentBox.setOnClickListener(v -> {
             Intent intent = new Intent(this, BusinessHeadMyAgentActivity.class);
             passUserDataToIntent(intent);

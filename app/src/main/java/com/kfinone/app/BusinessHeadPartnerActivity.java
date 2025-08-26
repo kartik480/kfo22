@@ -15,7 +15,6 @@ public class BusinessHeadPartnerActivity extends AppCompatActivity {
     private View backButton;
 
     // Partner boxes
-    private CardView addPartnerBox;
     private CardView myPartnerBox;
 
     // User data
@@ -46,7 +45,6 @@ public class BusinessHeadPartnerActivity extends AppCompatActivity {
         backButton = findViewById(R.id.backButton);
 
         // Partner boxes
-        addPartnerBox = findViewById(R.id.addPartnerBox);
         myPartnerBox = findViewById(R.id.myPartnerBox);
     }
 
@@ -55,12 +53,6 @@ public class BusinessHeadPartnerActivity extends AppCompatActivity {
         backButton.setOnClickListener(v -> goBack());
 
         // Partner boxes click listeners
-        addPartnerBox.setOnClickListener(v -> {
-            Intent intent = new Intent(this, BusinessHeadAddPartnerActivity.class);
-            passUserDataToIntent(intent);
-            startActivity(intent);
-        });
-
         myPartnerBox.setOnClickListener(v -> {
             Intent intent = new Intent(this, BusinessHeadMyPartnerActivity.class);
             passUserDataToIntent(intent);

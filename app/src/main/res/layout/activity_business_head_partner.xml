@@ -59,46 +59,7 @@
             android:orientation="vertical"
             android:padding="20dp">
 
-            <!-- Add Partner Box -->
-            <androidx.cardview.widget.CardView
-                android:id="@+id/addPartnerBox"
-                android:layout_width="match_parent"
-                android:layout_height="120dp"
-                android:layout_marginBottom="20dp"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="4dp"
-                app:cardBackgroundColor="@color/background_light"
-                android:clickable="true"
-                android:focusable="true"
-                android:foreground="?attr/selectableItemBackground">
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical"
-                    android:gravity="center"
-                    android:padding="20dp">
-
-                    <ImageView
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"
-                        android:src="@drawable/ic_add"
-                        android:background="@drawable/gradient_icon_background"
-                        android:padding="12dp"
-                        android:layout_marginBottom="8dp" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Add Partner"
-                        android:textSize="18sp"
-                        android:textStyle="bold"
-                        android:textColor="@color/black"
-                        android:gravity="center" />
-
-                </LinearLayout>
-
-            </androidx.cardview.widget.CardView>
 
             <!-- My Partner Box -->
             <androidx.cardview.widget.CardView
