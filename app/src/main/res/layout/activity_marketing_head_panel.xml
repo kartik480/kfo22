@@ -92,9 +92,11 @@
                 android:orientation="horizontal"
                 android:paddingHorizontal="12dp">
 
-                <!-- Total Marketing Team -->
+
+
+                <!-- Total Emp -->
                 <androidx.cardview.widget.CardView
-                    android:id="@+id/cardTotalMarketingTeam"
+                    android:id="@+id/cardTotalEmp"
                     android:layout_width="140dp"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="12dp"
@@ -113,18 +115,18 @@
                         android:gravity="center">
 
                         <TextView
-                            android:id="@+id/totalMarketingTeamCount"
+                            android:id="@+id/totalEmpCount"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="0"
                             android:textSize="28sp"
                             android:textStyle="bold"
-                            android:textColor="@color/green" />
+                            android:textColor="#4CAF50" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Marketing Team"
+                            android:text="Total Emp"
                             android:textSize="12sp"
                             android:textColor="@color/gray"
                             android:layout_marginTop="4dp" />
@@ -133,9 +135,9 @@
 
                 </androidx.cardview.widget.CardView>
 
-                <!-- Active Campaigns -->
+                <!-- Total SDSA -->
                 <androidx.cardview.widget.CardView
-                    android:id="@+id/cardActiveCampaigns"
+                    android:id="@+id/cardTotalSDSA"
                     android:layout_width="140dp"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="12dp"
@@ -154,141 +156,18 @@
                         android:gravity="center">
 
                         <TextView
-                            android:id="@+id/activeCampaignsCount"
+                            android:id="@+id/totalSDSACount"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="0"
                             android:textSize="28sp"
                             android:textStyle="bold"
-                            android:textColor="#2196F3" />
+                            android:textColor="#FF5722" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Active Campaigns"
-                            android:textSize="12sp"
-                            android:textColor="@color/gray"
-                            android:layout_marginTop="4dp" />
-
-                    </LinearLayout>
-
-                </androidx.cardview.widget.CardView>
-
-                <!-- Lead Conversion -->
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/cardLeadConversion"
-                    android:layout_width="140dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="12dp"
-                    app:cardCornerRadius="12dp"
-                    app:cardElevation="4dp"
-                    app:cardBackgroundColor="@color/white"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:foreground="?attr/selectableItemBackground">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:padding="16dp"
-                        android:gravity="center">
-
-                        <TextView
-                            android:id="@+id/leadConversionRate"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="0%"
-                            android:textSize="28sp"
-                            android:textStyle="bold"
-                            android:textColor="#FF9800" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Lead Conversion"
-                            android:textSize="12sp"
-                            android:textColor="@color/gray"
-                            android:layout_marginTop="4dp" />
-
-                    </LinearLayout>
-
-                </androidx.cardview.widget.CardView>
-
-                <!-- Market Share -->
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/cardMarketShare"
-                    android:layout_width="140dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="12dp"
-                    app:cardCornerRadius="12dp"
-                    app:cardElevation="4dp"
-                    app:cardBackgroundColor="@color/white"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:foreground="?attr/selectableItemBackground">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:padding="16dp"
-                        android:gravity="center">
-
-                        <TextView
-                            android:id="@+id/marketSharePercentage"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="0%"
-                            android:textSize="28sp"
-                            android:textStyle="bold"
-                            android:textColor="#9C27B0" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Market Share"
-                            android:textSize="12sp"
-                            android:textColor="@color/gray"
-                            android:layout_marginTop="4dp" />
-
-                    </LinearLayout>
-
-                </androidx.cardview.widget.CardView>
-
-                <!-- Brand Awareness -->
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/cardBrandAwareness"
-                    android:layout_width="140dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="12dp"
-                    app:cardCornerRadius="12dp"
-                    app:cardElevation="4dp"
-                    app:cardBackgroundColor="@color/white"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:foreground="?attr/selectableItemBackground">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:padding="16dp"
-                        android:gravity="center">
-
-                        <TextView
-                            android:id="@+id/brandAwarenessScore"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="0"
-                            android:textSize="28sp"
-                            android:textStyle="bold"
-                            android:textColor="#E91E63" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Brand Awareness"
+                            android:text="Total SDSA"
                             android:textSize="12sp"
                             android:textColor="@color/gray"
                             android:layout_marginTop="4dp" />
