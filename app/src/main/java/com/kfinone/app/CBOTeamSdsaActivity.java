@@ -290,6 +290,7 @@ public class CBOTeamSdsaActivity extends AppCompatActivity {
         try {
             int responseCode = connection.getResponseCode();
             android.util.Log.d("CBOTeamSdsa", "Response code: " + responseCode);
+            
             if (responseCode == HttpURLConnection.HTTP_OK) {
                 BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
                 StringBuilder response = new StringBuilder();
@@ -298,15 +299,25 @@ public class CBOTeamSdsaActivity extends AppCompatActivity {
                     response.append(line);
                 }
                 reader.close();
+                android.util.Log.d("CBOTeamSdsa", "Success response length: " + response.length());
                 return response.toString();
             } else {
-                BufferedReader errorReader = new BufferedReader(new InputStreamReader(connection.getErrorStream()));
-                StringBuilder errorResponse = new StringBuilder();
-                String line;
-                while ((line = errorReader.readLine()) != null) {
-                    errorResponse.append(line);
+                android.util.Log.e("CBOTeamSdsa", "HTTP Error: " + responseCode);
+                
+                // Try to read error stream
+                try {
+                    BufferedReader errorReader = new BufferedReader(new InputStreamReader(connection.getErrorStream()));
+                    StringBuilder errorResponse = new StringBuilder();
+                    String line;
+                    while ((line = errorReader.readLine()) != null) {
+                        errorResponse.append(line);
+                    }
+                    errorReader.close();
+                    android.util.Log.e("CBOTeamSdsa", "Error response: " + errorResponse.toString());
+                } catch (Exception e) {
+                    android.util.Log.e("CBOTeamSdsa", "Could not read error stream: " + e.getMessage());
                 }
-                errorReader.close();
+                
                 return null;
             }
         } finally {
@@ -332,13 +343,13 @@ public class CBOTeamSdsaActivity extends AppCompatActivity {
         // Hide user info
         hideSelectedUserInfo();
         
-        // Hide reporting users section
-        reportingUsersSection.setVisibility(View.GONE);
-        
         // Disable action buttons
         showDataButton.setEnabled(false);
         
-        Toast.makeText(this, "Selection reset successfully", Toast.LENGTH_SHORT).show();
+        // Load all users again
+        fetchAllSdsaUsers();
+        
+        Toast.makeText(this, "Selection reset successfully, showing all users", Toast.LENGTH_SHORT).show();
     }
 
     private void goBack() {
@@ -350,7 +361,7 @@ public class CBOTeamSdsaActivity extends AppCompatActivity {
 
     private void refreshData() {
         Toast.makeText(this, "Refreshing team SDSA data...", Toast.LENGTH_SHORT).show();
-        loadTeamSdsaData();
+        loadTeamSdsaData(); // This will load all SDSA users
         fetchRbhUsers();
     }
 
@@ -360,9 +371,166 @@ public class CBOTeamSdsaActivity extends AppCompatActivity {
     }
 
     private void loadTeamSdsaData() {
-        // TODO: Load real team SDSA data from server
-        // For now, show placeholder content
-        Toast.makeText(this, "Loading team SDSA data...", Toast.LENGTH_SHORT).show();
+        // First test the connection, then load all SDSA users
+        testConnection();
+    }
+
+    private void testConnection() {
+        executorService.execute(() -> {
+            try {
+                String testUrl = "https://emp.kfinone.com/mobile/api/test_connection.php";
+                android.util.Log.d("CBOTeamSdsa", "Testing connection to: " + testUrl);
+                
+                String response = makeGetRequest(testUrl);
+                android.util.Log.d("CBOTeamSdsa", "Test response: " + (response != null ? response.length() : 0) + " characters");
+                
+                if (response != null && !response.isEmpty()) {
+                    try {
+                        JSONObject jsonResponse = new JSONObject(response);
+                        boolean success = jsonResponse.getBoolean("success");
+                        
+                        if (success) {
+                            android.util.Log.d("CBOTeamSdsa", "Connection test successful");
+                            // Now fetch all SDSA users
+                            fetchAllSdsaUsers();
+                        } else {
+                            String message = jsonResponse.getString("message");
+                            android.util.Log.e("CBOTeamSdsa", "Connection test failed: " + message);
+                            runOnUiThread(() -> Toast.makeText(CBOTeamSdsaActivity.this, 
+                                "Connection test failed: " + message, Toast.LENGTH_SHORT).show());
+                        }
+                    } catch (JSONException e) {
+                        android.util.Log.e("CBOTeamSdsa", "JSON Parse Error in test: " + e.getMessage());
+                        runOnUiThread(() -> Toast.makeText(CBOTeamSdsaActivity.this, 
+                            "Error parsing test response: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+                    }
+                } else {
+                    android.util.Log.e("CBOTeamSdsa", "No test response from server");
+                    runOnUiThread(() -> Toast.makeText(CBOTeamSdsaActivity.this, 
+                        "No test response from server", Toast.LENGTH_SHORT).show());
+                }
+                
+            } catch (Exception e) {
+                android.util.Log.e("CBOTeamSdsa", "Exception in connection test: " + e.getMessage(), e);
+                runOnUiThread(() -> Toast.makeText(CBOTeamSdsaActivity.this, 
+                    "Connection test error: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+            }
+        });
+    }
+
+    private void fetchAllSdsaUsers() {
+        executorService.execute(() -> {
+            try {
+                // Use the simple API first to test basic functionality
+                String apiUrl = "https://emp.kfinone.com/mobile/api/get_all_sdsa_users_simple.php";
+                android.util.Log.d("CBOTeamSdsa", "Fetching all SDSA users from: " + apiUrl);
+                
+                String response = makeGetRequest(apiUrl);
+                android.util.Log.d("CBOTeamSdsa", "Response received: " + (response != null ? response.length() : 0) + " characters");
+                
+                if (response != null && !response.isEmpty()) {
+                    try {
+                        JSONObject jsonResponse = new JSONObject(response);
+                        android.util.Log.d("CBOTeamSdsa", "JSON parsed successfully");
+                        
+                        boolean success = jsonResponse.getBoolean("success");
+                        android.util.Log.d("CBOTeamSdsa", "Success: " + success);
+                        
+                        if (success) {
+                            JSONArray usersArray = jsonResponse.getJSONArray("users");
+                            android.util.Log.d("CBOTeamSdsa", "Users array length: " + usersArray.length());
+                            
+                            List<ReportingUser> allUsers = new ArrayList<>();
+                            
+                            for (int i = 0; i < usersArray.length(); i++) {
+                                JSONObject userObj = usersArray.getJSONObject(i);
+                                ReportingUser user = new ReportingUser(
+                                    userObj.getString("id"),
+                                    userObj.getString("username"),
+                                    userObj.getString("first_name"),
+                                    userObj.getString("last_name"),
+                                    userObj.getString("email_id"),
+                                    userObj.getString("Phone_number"),
+                                    userObj.getString("designation"),
+                                    userObj.getString("department"),
+                                    userObj.getString("status")
+                                );
+                                
+                                // Set additional fields from joined tables
+                                user.setEmployeeNo(userObj.optString("employee_no"));
+                                user.setRank(userObj.optString("rank"));
+                                user.setCompanyName(userObj.optString("company_name"));
+                                user.setAlternativeMobileNumber(userObj.optString("alternative_mobile_number"));
+                                user.setOfficeAddress(userObj.optString("office_address"));
+                                user.setResidentialAddress(userObj.optString("residential_address"));
+                                user.setAadhaarNumber(userObj.optString("aadhaar_number"));
+                                user.setPanNumber(userObj.optString("pan_number"));
+                                user.setAccountNumber(userObj.optString("account_number"));
+                                user.setIfscCode(userObj.optString("ifsc_code"));
+                                user.setUserId(userObj.optString("user_id"));
+                                user.setCreatedBy(userObj.optString("createdBy"));
+                                user.setCreatedAt(userObj.optString("created_at"));
+                                user.setUpdatedAt(userObj.optString("updated_at"));
+                                user.setReportingTo(userObj.optString("reportingTo"));
+                                
+                                // Set fields from joined tables (actual names instead of IDs)
+                                // For simple API, these will be the direct values from tbl_sdsa_users
+                                user.setBranchState(userObj.optString("branchstate"));
+                                user.setBranchLocation(userObj.optString("branchloaction"));
+                                user.setBankName(userObj.optString("bank_name"));
+                                user.setAccountType(userObj.optString("account_type"));
+                                
+                                allUsers.add(user);
+                            }
+                            
+                            android.util.Log.d("CBOTeamSdsa", "Created " + allUsers.size() + " ReportingUser objects");
+                            
+                            // Update UI on main thread
+                            runOnUiThread(() -> displayAllSdsaUsers(allUsers));
+                            
+                        } else {
+                            String message = jsonResponse.getString("message");
+                            android.util.Log.e("CBOTeamSdsa", "API Error: " + message);
+                            runOnUiThread(() -> Toast.makeText(CBOTeamSdsaActivity.this, 
+                                "Error: " + message, Toast.LENGTH_SHORT).show());
+                        }
+                    } catch (JSONException e) {
+                        android.util.Log.e("CBOTeamSdsa", "JSON Parse Error: " + e.getMessage());
+                        runOnUiThread(() -> Toast.makeText(CBOTeamSdsaActivity.this, 
+                            "Error parsing response: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+                    }
+                } else {
+                    android.util.Log.e("CBOTeamSdsa", "No response from server");
+                    runOnUiThread(() -> Toast.makeText(CBOTeamSdsaActivity.this, 
+                        "No response from server", Toast.LENGTH_SHORT).show());
+                }
+                
+            } catch (Exception e) {
+                android.util.Log.e("CBOTeamSdsa", "Exception fetching all SDSA users: " + e.getMessage(), e);
+                runOnUiThread(() -> Toast.makeText(CBOTeamSdsaActivity.this, 
+                    "Error fetching all SDSA users: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+            }
+        });
+    }
+
+    private void displayAllSdsaUsers(List<ReportingUser> users) {
+        if (users.isEmpty()) {
+            Toast.makeText(this, "No SDSA users found in the system", Toast.LENGTH_SHORT).show();
+            reportingUsersSection.setVisibility(View.GONE);
+            return;
+        }
+        
+        // Update summary information
+        updateReportingUsersSummary(users);
+        
+        // Create adapter for the ListView
+        ReportingUserAdapter adapter = new ReportingUserAdapter(this, users);
+        reportingUsersListView.setAdapter(adapter);
+        
+        // Show the reporting users section
+        reportingUsersSection.setVisibility(View.VISIBLE);
+        
+        Toast.makeText(this, "Loaded " + users.size() + " SDSA users", Toast.LENGTH_SHORT).show();
     }
 
     private void passUserDataToIntent(Intent intent) {
@@ -423,10 +591,11 @@ public class CBOTeamSdsaActivity extends AppCompatActivity {
                              user.setReportingTo(userObj.optString("reportingTo"));
                              
                              // Set fields from joined tables (actual names instead of IDs)
-                             user.setBranchState(userObj.optString("branch_state_name"));
-                             user.setBranchLocation(userObj.optString("branch_location"));
-                             user.setBankName(userObj.optString("actual_bank_name"));
-                             user.setAccountType(userObj.optString("actual_account_type"));
+                             // For simple API, these will be the direct values from tbl_sdsa_users
+                             user.setBranchState(userObj.optString("branchstate"));
+                             user.setBranchLocation(userObj.optString("branchloaction"));
+                             user.setBankName(userObj.optString("bank_name"));
+                             user.setAccountType(userObj.optString("account_type"));
                              
                              reportingUsers.add(user);
                          }
@@ -457,6 +626,12 @@ public class CBOTeamSdsaActivity extends AppCompatActivity {
             Toast.makeText(this, "No users found reporting to this RBH", Toast.LENGTH_SHORT).show();
             reportingUsersSection.setVisibility(View.GONE);
             return;
+        }
+        
+        // Update section title to show filtered users
+        TextView sectionTitle = findViewById(R.id.reportingUsersTitle);
+        if (sectionTitle != null) {
+            sectionTitle.setText("Users Reporting to Selected RBH:");
         }
         
         // Update summary information

@@ -127,13 +127,13 @@
                     android:textColor="#2C3E50"
                     android:layout_marginBottom="8dp" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Choose a Regional Business Head to view their SDSA team"
-                    android:textSize="12sp"
-                    android:textColor="#7F8C8D"
-                    android:layout_marginBottom="12dp" />
+                                 <TextView
+                     android:layout_width="wrap_content"
+                     android:layout_height="wrap_content"
+                     android:text="Choose a Regional Business Head to filter users, or view all users below"
+                     android:textSize="12sp"
+                     android:textColor="#7F8C8D"
+                     android:layout_marginBottom="12dp" />
 
                 <!-- RBH User Dropdown -->
                 <Spinner
@@ -218,9 +218,10 @@
                     android:visibility="gone">
 
                     <TextView
+                        android:id="@+id/reportingUsersTitle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Users Reporting to Selected RBH:"
+                        android:text="All SDSA Users in System:"
                         android:textSize="16sp"
                         android:textStyle="bold"
                         android:textColor="#2C3E50"
