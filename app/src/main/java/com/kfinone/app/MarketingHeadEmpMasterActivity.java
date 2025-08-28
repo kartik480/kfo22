@@ -69,8 +69,12 @@ public class MarketingHeadEmpMasterActivity extends AppCompatActivity {
     private void setupClickListeners() {
         // Active Emp List
         cardActiveEmpList.setOnClickListener(v -> {
-            showToast("Active Employee List - Coming Soon!");
-            // TODO: Launch Active Employee List Activity
+            Intent activeEmpListIntent = new Intent(MarketingHeadEmpMasterActivity.this, MarketingHeadActiveEmpListActivity.class);
+            activeEmpListIntent.putExtra("USERNAME", username);
+            activeEmpListIntent.putExtra("FIRST_NAME", firstName);
+            activeEmpListIntent.putExtra("LAST_NAME", lastName);
+            activeEmpListIntent.putExtra("USER_ID", userId);
+            startActivity(activeEmpListIntent);
         });
         
         // Inactive Emp List

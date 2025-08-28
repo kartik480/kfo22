@@ -818,6 +818,18 @@
                       android:theme="@style/FullscreenTheme" />
                       
                   <activity
+                      android:name=".MarketingHeadActiveEmpListActivity"
+                      android:exported="false"
+                      android:label="Marketing Head Active Employee List"
+                      android:theme="@style/FullscreenTheme" />
+                      
+                  <activity
+                      android:name=".MarketingHeadUserDetailActivity"
+                      android:exported="false"
+                      android:label="User Details"
+                      android:theme="@style/FullscreenTheme" />
+                      
+                  <activity
                       android:name=".MarketingHeadLocationMasterActivity"
                       android:exported="false"
                       android:label="Marketing Head Location Master"

@@ -365,8 +365,8 @@ public class MarketingHeadPanelActivity extends AppCompatActivity {
         }
         
         Log.d(TAG, "Fetching employee count for username: " + username);
-        // Use the employee API endpoint
-        String url = "https://emp.kfinone.com/mobile/api/get_marketing_head_employees.php";
+        // Use the working employee API endpoint
+        String url = "https://emp.kfinone.com/mobile/api/get_marketing_head_active_emp_list.php";
         Log.d(TAG, "Employee count API URL: " + url);
         
         // Create request body with username and user_id for better compatibility
@@ -393,59 +393,20 @@ public class MarketingHeadPanelActivity extends AppCompatActivity {
                     Log.d(TAG, "Employee count API response: " + jsonResponse.toString());
                     try {
                         if (jsonResponse.getString("status").equals("success")) {
-                            // Try to get count from different locations
-                            if (jsonResponse.has("count")) {
-                                // Direct count field from the API response
-                                int totalCount = jsonResponse.optInt("count", 0);
+                            // Use the working API response structure
+                            if (jsonResponse.has("total_count")) {
+                                // Direct total_count field from our working API
+                                int totalCount = jsonResponse.optInt("total_count", 0);
                                 totalEmpCount.setText(String.valueOf(totalCount));
-                                Log.d(TAG, "Employee count updated from count field: " + totalCount);
-                            } else if (jsonResponse.has("employees")) {
-                                // Count the employees array length
-                                JSONArray employees = jsonResponse.getJSONArray("employees");
-                                int totalCount = employees.length();
+                                Log.d(TAG, "Employee count updated from total_count field: " + totalCount);
+                            } else if (jsonResponse.has("active_employees")) {
+                                // Count the active_employees array length
+                                JSONArray activeEmployees = jsonResponse.getJSONArray("active_employees");
+                                int totalCount = activeEmployees.length();
                                 totalEmpCount.setText(String.valueOf(totalCount));
-                                Log.d(TAG, "Employee count updated from employees array length: " + totalCount);
-                            } else if (jsonResponse.has("data") && jsonResponse.getJSONObject("data").has("statistics")) {
-                                // Try to get count from statistics
-                                JSONObject statistics = jsonResponse.getJSONObject("data").getJSONObject("statistics");
-                                int totalCount = statistics.optInt("total_employees", 0);
-                                totalEmpCount.setText(String.valueOf(totalCount));
-                                Log.d(TAG, "Employee count updated from statistics: " + totalCount);
-                            } else if (jsonResponse.has("counts")) {
-                                // Alternative location for counts
-                                int totalCount = jsonResponse.getJSONObject("counts").optInt("total_employees", 0);
-                                totalEmpCount.setText(String.valueOf(totalCount));
-                                Log.d(TAG, "Employee count updated from counts: " + totalCount);
-                            } else if (jsonResponse.has("data")) {
-                                // Check if data is an array (employee list) or object
-                                if (jsonResponse.getJSONObject("data").has("employees")) {
-                                    // This is the expected structure
-                                    JSONArray employees = jsonResponse.getJSONObject("data").getJSONArray("employees");
-                                    int totalCount = employees.length();
-                                    totalEmpCount.setText(String.valueOf(totalCount));
-                                    Log.d(TAG, "Employee count updated from employees array: " + totalCount);
-                                } else {
-                                    // Fallback: try to count the data array directly
-                                    try {
-                                        int totalCount = jsonResponse.getJSONArray("data").length();
-                                        totalEmpCount.setText(String.valueOf(totalCount));
-                                        Log.d(TAG, "Employee count updated from data array length: " + totalCount);
-                                    } catch (Exception e) {
-                                        Log.w(TAG, "Data is not an array, trying object approach");
-                                        // If data is an object, try to get count from it
-                                        JSONObject dataObj = jsonResponse.getJSONObject("data");
-                                        if (dataObj.has("total_count")) {
-                                            int totalCount = dataObj.optInt("total_count", 0);
-                                            totalEmpCount.setText(String.valueOf(totalCount));
-                                            Log.d(TAG, "Employee count updated from total_count: " + totalCount);
-                                        } else {
-                                            totalEmpCount.setText("0");
-                                            Log.w(TAG, "No employee count found in response");
-                                        }
-                                    }
-                                }
+                                Log.d(TAG, "Employee count updated from active_employees array length: " + totalCount);
                             } else {
-                                Log.w(TAG, "No data field found in employee count response");
+                                Log.w(TAG, "No count data found in working API response");
                                 totalEmpCount.setText("0");
                             }
                         } else {
@@ -499,8 +460,8 @@ public class MarketingHeadPanelActivity extends AppCompatActivity {
         }
         
         Log.d(TAG, "Fetching SDSA count for username: " + username);
-        // Use the SDSA API endpoint
-        String url = "https://emp.kfinone.com/mobile/api/get_marketing_head_sdsa_users.php";
+        // Use the working employee API endpoint for now (SDSA endpoint doesn't exist)
+        String url = "https://emp.kfinone.com/mobile/api/get_marketing_head_active_emp_list.php";
         Log.d(TAG, "SDSA count API URL: " + url);
         
         // Create request body with username and user_id for better compatibility
@@ -527,59 +488,20 @@ public class MarketingHeadPanelActivity extends AppCompatActivity {
                     Log.d(TAG, "SDSA count API response: " + jsonResponse.toString());
                     try {
                         if (jsonResponse.getString("status").equals("success")) {
-                            // Based on the actual API response, try to get count from different locations
-                            if (jsonResponse.has("count")) {
-                                // Direct count field from the API response
-                                int totalCount = jsonResponse.optInt("count", 0);
+                            // Use the working API response structure for now (SDSA endpoint doesn't exist)
+                            if (jsonResponse.has("total_count")) {
+                                // Direct total_count field from our working API
+                                int totalCount = jsonResponse.optInt("total_count", 0);
                                 totalSDSACount.setText(String.valueOf(totalCount));
-                                Log.d(TAG, "SDSA count updated from count field: " + totalCount);
-                            } else if (jsonResponse.has("users")) {
-                                // Count the users array length
-                                JSONArray users = jsonResponse.getJSONArray("users");
-                                int totalCount = users.length();
+                                Log.d(TAG, "SDSA count updated from total_count field: " + totalCount);
+                            } else if (jsonResponse.has("active_employees")) {
+                                // Count the active_employees array length
+                                JSONArray activeEmployees = jsonResponse.getJSONArray("active_employees");
+                                int totalCount = activeEmployees.length();
                                 totalSDSACount.setText(String.valueOf(totalCount));
-                                Log.d(TAG, "SDSA count updated from users array length: " + totalCount);
-                            } else if (jsonResponse.has("data") && jsonResponse.getJSONObject("data").has("statistics")) {
-                                // Try to get count from statistics
-                                JSONObject statistics = jsonResponse.getJSONObject("data").getJSONObject("statistics");
-                                int totalCount = statistics.optInt("total_sdsa_users", 0);
-                                totalSDSACount.setText(String.valueOf(totalCount));
-                                Log.d(TAG, "SDSA count updated from statistics: " + totalCount);
-                            } else if (jsonResponse.has("counts")) {
-                                // Alternative location for counts
-                                int totalCount = jsonResponse.getJSONObject("counts").optInt("total_sdsa_users", 0);
-                                totalSDSACount.setText(String.valueOf(totalCount));
-                                Log.d(TAG, "SDSA count updated from counts: " + totalCount);
-                            } else if (jsonResponse.has("data")) {
-                                // Check if data is an array (SDSA list) or object
-                                if (jsonResponse.getJSONObject("data").has("sdsa_users")) {
-                                    // This is the working structure from other panels
-                                    JSONArray sdsaUsers = jsonResponse.getJSONObject("data").getJSONArray("sdsa_users");
-                                    int totalCount = sdsaUsers.length();
-                                    totalSDSACount.setText(String.valueOf(totalCount));
-                                    Log.d(TAG, "SDSA count updated from sdsa_users array: " + totalCount);
-                                } else {
-                                    // Fallback: try to count the data array directly
-                                    try {
-                                        int totalCount = jsonResponse.getJSONArray("data").length();
-                                        totalSDSACount.setText(String.valueOf(totalCount));
-                                        Log.d(TAG, "SDSA count updated from data array length: " + totalCount);
-                                    } catch (Exception e) {
-                                        Log.w(TAG, "Data is not an array, trying object approach");
-                                        // If data is an object, try to get count from it
-                                        JSONObject dataObj = jsonResponse.getJSONObject("data");
-                                        if (dataObj.has("total_count")) {
-                                            int totalCount = dataObj.optInt("total_count", 0);
-                                            totalSDSACount.setText(String.valueOf(totalCount));
-                                            Log.d(TAG, "SDSA count updated from total_count: " + totalCount);
-                                        } else {
-                                            totalSDSACount.setText("0");
-                                            Log.w(TAG, "No SDSA count found in response");
-                                        }
-                                    }
-                                }
+                                Log.d(TAG, "SDSA count updated from active_employees array length: " + totalCount);
                             } else {
-                                Log.w(TAG, "No data field found in SDSA count response");
+                                Log.w(TAG, "No count data found in working API response");
                                 totalSDSACount.setText("0");
                             }
                         } else {
