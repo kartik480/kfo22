@@ -36,7 +36,7 @@ try {
         exit();
     }
     
-    // Query to get users who report to the specified RBH user
+    // Query to get users who report to the specified RBH user with joined data from related tables
     $query = "
         SELECT 
             s.id,
@@ -78,8 +78,17 @@ try {
             s.updated_at,
             CONCAT(s.first_name, ' ', s.last_name) as fullName,
             CONCAT(s.first_name, ' ', s.last_name, ' (', s.designation, ')') as displayName,
-            CONCAT(s.first_name, ' ', s.last_name, ' - ', s.designation, ' (', s.department, ')') as detailedDisplayName
+            CONCAT(s.first_name, ' ', s.last_name, ' - ', s.designation, ' (', s.department, ')') as detailedDisplayName,
+            -- Join with related tables to get actual names instead of IDs
+            bs.branch_state_name,
+            bl.branch_location,
+            b.bank_name as actual_bank_name,
+            at.account_type as actual_account_type
         FROM tbl_sdsa_users s
+        LEFT JOIN tbl_branch_state bs ON s.branch_state_name_id = bs.id
+        LEFT JOIN tbl_branch_location bl ON s.branch_location_id = bl.id
+        LEFT JOIN tbl_bank b ON s.bank_id = b.id
+        LEFT JOIN tbl_account_type at ON s.account_type_id = at.id
         WHERE s.reportingTo = :rbh_user_id
         ORDER BY s.rank ASC, s.first_name ASC, s.last_name ASC
     ";

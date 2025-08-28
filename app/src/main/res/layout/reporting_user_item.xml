@@ -112,7 +112,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:layout_marginBottom="8dp">
 
         <TextView
             android:id="@+id/userRankText"
@@ -134,6 +135,28 @@
             android:textColor="#95A5A6"
             android:drawableStart="@drawable/ic_business"
             android:drawablePadding="4dp" />
+
+    </LinearLayout>
+
+    <!-- View Button Row -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="end">
+
+        <Button
+            android:id="@+id/viewUserButton"
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:text="View Details"
+            android:textSize="12sp"
+            android:textColor="#FFFFFF"
+            android:background="@drawable/button_background_view"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:minWidth="0dp"
+            android:minHeight="0dp" />
 
     </LinearLayout>
 

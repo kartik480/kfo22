@@ -111,11 +111,7 @@ public class CBOTeamSdsaActivity extends AppCompatActivity {
         activeUsersText = findViewById(R.id.activeUsersText);
         inactiveUsersText = findViewById(R.id.inactiveUsersText);
 
-        // Set click listener for reporting users list
-        reportingUsersListView.setOnItemClickListener((parent, view, position, id) -> {
-            ReportingUser user = (ReportingUser) parent.getItemAtPosition(position);
-            showReportingUserDetails(user);
-        });
+        // Note: Individual user clicks are now handled by View Details buttons in the adapter
 
         executorService = Executors.newSingleThreadExecutor();
         rbhUserList = new ArrayList<>();
@@ -395,21 +391,45 @@ public class CBOTeamSdsaActivity extends AppCompatActivity {
                         JSONArray usersArray = jsonResponse.getJSONArray("users");
                         List<ReportingUser> reportingUsers = new ArrayList<>();
                         
-                        for (int i = 0; i < usersArray.length(); i++) {
-                            JSONObject userObj = usersArray.getJSONObject(i);
-                            ReportingUser user = new ReportingUser(
-                                userObj.getString("id"),
-                                userObj.getString("username"),
-                                userObj.getString("first_name"),
-                                userObj.getString("last_name"),
-                                userObj.getString("email_id"),
-                                userObj.getString("Phone_number"),
-                                userObj.getString("designation"),
-                                userObj.getString("department"),
-                                userObj.getString("status")
-                            );
-                            reportingUsers.add(user);
-                        }
+                                                 for (int i = 0; i < usersArray.length(); i++) {
+                             JSONObject userObj = usersArray.getJSONObject(i);
+                             ReportingUser user = new ReportingUser(
+                                 userObj.getString("id"),
+                                 userObj.getString("username"),
+                                 userObj.getString("first_name"),
+                                 userObj.getString("last_name"),
+                                 userObj.getString("email_id"),
+                                 userObj.getString("Phone_number"),
+                                 userObj.getString("designation"),
+                                 userObj.getString("department"),
+                                 userObj.getString("status")
+                             );
+                             
+                             // Set additional fields from joined tables
+                             user.setEmployeeNo(userObj.optString("employee_no"));
+                             user.setRank(userObj.optString("rank"));
+                             user.setCompanyName(userObj.optString("company_name"));
+                             user.setAlternativeMobileNumber(userObj.optString("alternative_mobile_number"));
+                             user.setOfficeAddress(userObj.optString("office_address"));
+                             user.setResidentialAddress(userObj.optString("residential_address"));
+                             user.setAadhaarNumber(userObj.optString("aadhaar_number"));
+                             user.setPanNumber(userObj.optString("pan_number"));
+                             user.setAccountNumber(userObj.optString("account_number"));
+                             user.setIfscCode(userObj.optString("ifsc_code"));
+                             user.setUserId(userObj.optString("user_id"));
+                             user.setCreatedBy(userObj.optString("createdBy"));
+                             user.setCreatedAt(userObj.optString("created_at"));
+                             user.setUpdatedAt(userObj.optString("updated_at"));
+                             user.setReportingTo(userObj.optString("reportingTo"));
+                             
+                             // Set fields from joined tables (actual names instead of IDs)
+                             user.setBranchState(userObj.optString("branch_state_name"));
+                             user.setBranchLocation(userObj.optString("branch_location"));
+                             user.setBankName(userObj.optString("actual_bank_name"));
+                             user.setAccountType(userObj.optString("actual_account_type"));
+                             
+                             reportingUsers.add(user);
+                         }
                         
                         // Update UI on main thread
                         runOnUiThread(() -> displayReportingUsers(reportingUsers));

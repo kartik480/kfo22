@@ -101,4 +101,44 @@ public class ReportingUser {
     public String getDisplayName() {
         return firstName + " " + lastName + " (" + designation + ")";
     }
+
+    // Setters
+    public void setId(String id) { this.id = id; }
+    public void setUsername(String username) { this.username = username; }
+    public void setAliasName(String aliasName) { this.aliasName = aliasName; }
+    public void setFirstName(String firstName) { this.firstName = firstName; }
+    public void setLastName(String lastName) { this.lastName = lastName; }
+    public void setPassword(String password) { this.password = password; }
+    public void setPhoneNumber(String phoneNumber) { this.phoneNumber = phoneNumber; }
+    public void setEmailId(String emailId) { this.emailId = emailId; }
+    public void setAlternativeMobileNumber(String alternativeMobileNumber) { this.alternativeMobileNumber = alternativeMobileNumber; }
+    public void setCompanyName(String companyName) { this.companyName = companyName; }
+    public void setBranchStateNameId(String branchStateNameId) { this.branchStateNameId = branchStateNameId; }
+    public void setBranchLocationId(String branchLocationId) { this.branchLocationId = branchLocationId; }
+    public void setBankId(String bankId) { this.bankId = bankId; }
+    public void setAccountTypeId(String accountTypeId) { this.accountTypeId = accountTypeId; }
+    public void setOfficeAddress(String officeAddress) { this.officeAddress = officeAddress; }
+    public void setResidentialAddress(String residentialAddress) { this.residentialAddress = residentialAddress; }
+    public void setAadhaarNumber(String aadhaarNumber) { this.aadhaarNumber = aadhaarNumber; }
+    public void setPanNumber(String panNumber) { this.panNumber = panNumber; }
+    public void setAccountNumber(String accountNumber) { this.accountNumber = accountNumber; }
+    public void setIfscCode(String ifscCode) { this.ifscCode = ifscCode; }
+    public void setRank(String rank) { this.rank = rank; }
+    public void setStatus(String status) { this.status = status; }
+    public void setReportingTo(String reportingTo) { this.reportingTo = reportingTo; }
+    public void setEmployeeNo(String employeeNo) { this.employeeNo = employeeNo; }
+    public void setDepartment(String department) { this.department = department; }
+    public void setDesignation(String designation) { this.designation = designation; }
+    public void setBranchState(String branchState) { this.branchState = branchState; }
+    public void setBranchLocation(String branchLocation) { this.branchLocation = branchLocation; }
+    public void setBankName(String bankName) { this.bankName = bankName; }
+    public void setAccountType(String accountType) { this.accountType = accountType; }
+    public void setPanImg(String panImg) { this.panImg = panImg; }
+    public void setAadhaarImg(String aadhaarImg) { this.aadhaarImg = aadhaarImg; }
+    public void setPhotoImg(String photoImg) { this.photoImg = photoImg; }
+    public void setBankProofImg(String bankProofImg) { this.bankProofImg = bankProofImg; }
+    public void setUserId(String userId) { this.userId = userId; }
+    public void setCreatedBy(String createdBy) { this.createdBy = createdBy; }
+    public void setCreatedAt(String createdAt) { this.createdAt = createdAt; }
+    public void setUpdatedAt(String updatedAt) { this.updatedAt = updatedAt; }
 }
