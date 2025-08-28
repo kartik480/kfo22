@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="?attr/selectableItemBackground"
+    android:clickable="true"
+    android:focusable="true">
+
+    <!-- User Name and Designation -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="8dp">
+
+        <TextView
+            android:id="@+id/userNameText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="John Doe"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="#2C3E50" />
+
+        <TextView
+            android:id="@+id/userStatusText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Active"
+            android:textSize="12sp"
+            android:textColor="#27AE60"
+            android:background="@drawable/status_background"
+            android:padding="4dp"
+            android:layout_marginStart="8dp" />
+
+    </LinearLayout>
+
+    <!-- Designation -->
+    <TextView
+        android:id="@+id/userDesignationText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Senior Sales Executive"
+        android:textSize="14sp"
+        android:textColor="#7F8C8D"
+        android:layout_marginBottom="8dp" />
+
+    <!-- Contact Information -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="4dp">
+
+        <TextView
+            android:id="@+id/userEmailText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="john.doe@company.com"
+            android:textSize="12sp"
+            android:textColor="#7F8C8D"
+            android:drawableStart="@drawable/ic_email"
+            android:drawablePadding="4dp" />
+
+        <TextView
+            android:id="@+id/userPhoneText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="+91 98765 43210"
+            android:textSize="12sp"
+            android:textColor="#7F8C8D"
+            android:drawableStart="@drawable/ic_phone"
+            android:drawablePadding="4dp" />
+
+    </LinearLayout>
+
+    <!-- Department and Employee Info -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="4dp">
+
+        <TextView
+            android:id="@+id/userDepartmentText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Sales Department"
+            android:textSize="12sp"
+            android:textColor="#7F8C8D"
+            android:drawableStart="@drawable/ic_department"
+            android:drawablePadding="4dp" />
+
+        <TextView
+            android:id="@+id/userEmployeeNoText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="EMP001"
+            android:textSize="12sp"
+            android:textColor="#7F8C8D"
+            android:drawableStart="@drawable/ic_employee"
+            android:drawablePadding="4dp" />
+
+    </LinearLayout>
+
+    <!-- Additional Information Row -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/userRankText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Rank: 5"
+            android:textSize="11sp"
+            android:textColor="#95A5A6"
+            android:drawableStart="@drawable/ic_rank"
+            android:drawablePadding="4dp" />
+
+        <TextView
+            android:id="@+id/userCompanyText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Company: KFinOne"
+            android:textSize="11sp"
+            android:textColor="#95A5A6"
+            android:drawableStart="@drawable/ic_business"
+            android:drawablePadding="4dp" />
+
+    </LinearLayout>
+
+</LinearLayout>

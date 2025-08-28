@@ -7,6 +7,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -23,6 +24,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import com.kfinone.app.ReportingUser;
+import com.kfinone.app.ReportingUserAdapter;
 
 public class CBOTeamSdsaActivity extends AppCompatActivity {
 
@@ -46,6 +49,13 @@ public class CBOTeamSdsaActivity extends AppCompatActivity {
     // Action buttons
     private Button showDataButton;
     private Button resetButton;
+
+    // Reporting Users List
+    private LinearLayout reportingUsersSection;
+    private ListView reportingUsersListView;
+    private TextView totalUsersText;
+    private TextView activeUsersText;
+    private TextView inactiveUsersText;
 
     // User data
     private String userName;
@@ -93,6 +103,19 @@ public class CBOTeamSdsaActivity extends AppCompatActivity {
         // Action buttons
         showDataButton = findViewById(R.id.showDataButton);
         resetButton = findViewById(R.id.resetButton);
+
+        // Reporting Users List
+        reportingUsersSection = findViewById(R.id.reportingUsersSection);
+        reportingUsersListView = findViewById(R.id.reportingUsersListView);
+        totalUsersText = findViewById(R.id.totalUsersText);
+        activeUsersText = findViewById(R.id.activeUsersText);
+        inactiveUsersText = findViewById(R.id.inactiveUsersText);
+
+        // Set click listener for reporting users list
+        reportingUsersListView.setOnItemClickListener((parent, view, position, id) -> {
+            ReportingUser user = (ReportingUser) parent.getItemAtPosition(position);
+            showReportingUserDetails(user);
+        });
 
         executorService = Executors.newSingleThreadExecutor();
         rbhUserList = new ArrayList<>();
@@ -299,9 +322,8 @@ public class CBOTeamSdsaActivity extends AppCompatActivity {
         // Show user data in a dialog or navigate to user details
         Toast.makeText(this, "Showing data for: " + rbhUser.getFullName(), Toast.LENGTH_SHORT).show();
         
-        // TODO: Implement actual data display logic
-        // This could show a dialog with user details, performance metrics, etc.
-        // For now, just show a toast message
+        // Fetch and display reporting users
+        fetchReportingUsers(rbhUser.getId());
     }
     
     private void resetSelection() {
@@ -313,6 +335,9 @@ public class CBOTeamSdsaActivity extends AppCompatActivity {
         
         // Hide user info
         hideSelectedUserInfo();
+        
+        // Hide reporting users section
+        reportingUsersSection.setVisibility(View.GONE);
         
         // Disable action buttons
         showDataButton.setEnabled(false);
@@ -354,6 +379,149 @@ public class CBOTeamSdsaActivity extends AppCompatActivity {
     public void onBackPressed() {
         super.onBackPressed();
         goBack();
+    }
+
+    private void fetchReportingUsers(String rbhUserId) {
+        executorService.execute(() -> {
+            try {
+                String apiUrl = "https://emp.kfinone.com/mobile/api/get_reporting_users.php?rbh_user_id=" + rbhUserId;
+                String response = makeGetRequest(apiUrl);
+                
+                if (response != null) {
+                    JSONObject jsonResponse = new JSONObject(response);
+                    boolean success = jsonResponse.getBoolean("success");
+                    
+                    if (success) {
+                        JSONArray usersArray = jsonResponse.getJSONArray("users");
+                        List<ReportingUser> reportingUsers = new ArrayList<>();
+                        
+                        for (int i = 0; i < usersArray.length(); i++) {
+                            JSONObject userObj = usersArray.getJSONObject(i);
+                            ReportingUser user = new ReportingUser(
+                                userObj.getString("id"),
+                                userObj.getString("username"),
+                                userObj.getString("first_name"),
+                                userObj.getString("last_name"),
+                                userObj.getString("email_id"),
+                                userObj.getString("Phone_number"),
+                                userObj.getString("designation"),
+                                userObj.getString("department"),
+                                userObj.getString("status")
+                            );
+                            reportingUsers.add(user);
+                        }
+                        
+                        // Update UI on main thread
+                        runOnUiThread(() -> displayReportingUsers(reportingUsers));
+                        
+                    } else {
+                        String message = jsonResponse.getString("message");
+                        runOnUiThread(() -> Toast.makeText(CBOTeamSdsaActivity.this, 
+                            "Error: " + message, Toast.LENGTH_SHORT).show());
+                    }
+                } else {
+                    runOnUiThread(() -> Toast.makeText(CBOTeamSdsaActivity.this, 
+                        "No response from server", Toast.LENGTH_SHORT).show());
+                }
+                
+            } catch (Exception e) {
+                android.util.Log.e("CBOTeamSdsa", "Error fetching reporting users: " + e.getMessage());
+                runOnUiThread(() -> Toast.makeText(CBOTeamSdsaActivity.this, 
+                    "Error fetching reporting users: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+            }
+        });
+    }
+    
+    private void displayReportingUsers(List<ReportingUser> users) {
+        if (users.isEmpty()) {
+            Toast.makeText(this, "No users found reporting to this RBH", Toast.LENGTH_SHORT).show();
+            reportingUsersSection.setVisibility(View.GONE);
+            return;
+        }
+        
+        // Update summary information
+        updateReportingUsersSummary(users);
+        
+        // Create adapter for the ListView
+        ReportingUserAdapter adapter = new ReportingUserAdapter(this, users);
+        reportingUsersListView.setAdapter(adapter);
+        
+        // Show the reporting users section
+        reportingUsersSection.setVisibility(View.VISIBLE);
+    }
+    
+    private void updateReportingUsersSummary(List<ReportingUser> users) {
+        int totalUsers = users.size();
+        int activeUsers = 0;
+        int inactiveUsers = 0;
+        
+        for (ReportingUser user : users) {
+            if (user.getStatus() != null && "active".equalsIgnoreCase(user.getStatus())) {
+                activeUsers++;
+            } else {
+                inactiveUsers++;
+            }
+        }
+        
+        totalUsersText.setText("Total Users: " + totalUsers);
+        activeUsersText.setText("Active: " + activeUsers);
+        inactiveUsersText.setText("Inactive: " + inactiveUsers);
+    }
+    
+    private void showReportingUserDetails(ReportingUser user) {
+        // Show comprehensive user information about the selected reporting user
+        StringBuilder details = new StringBuilder();
+        details.append("=== COMPLETE USER DETAILS ===\n\n");
+        
+        // Basic Information
+        details.append("📋 BASIC INFORMATION:\n");
+        details.append("• Full Name: ").append(user.getFullName()).append("\n");
+        details.append("• Username: ").append(user.getUsername()).append("\n");
+        details.append("• Employee No: ").append(user.getEmployeeNo()).append("\n");
+        details.append("• Status: ").append(user.getStatus()).append("\n");
+        details.append("• Rank: ").append(user.getRank()).append("\n\n");
+        
+        // Contact Information
+        details.append("📞 CONTACT INFORMATION:\n");
+        details.append("• Email: ").append(user.getEmailId()).append("\n");
+        details.append("• Phone: ").append(user.getPhoneNumber()).append("\n");
+        details.append("• Alternative Mobile: ").append(user.getAlternativeMobileNumber()).append("\n\n");
+        
+        // Professional Information
+        details.append("💼 PROFESSIONAL DETAILS:\n");
+        details.append("• Department: ").append(user.getDepartment()).append("\n");
+        details.append("• Designation: ").append(user.getDesignation()).append("\n");
+        details.append("• Company: ").append(user.getCompanyName()).append("\n");
+        details.append("• Reporting To: ").append(user.getReportingTo()).append("\n\n");
+        
+        // Location Information
+        details.append("📍 LOCATION DETAILS:\n");
+        details.append("• Branch State: ").append(user.getBranchState()).append("\n");
+        details.append("• Branch Location: ").append(user.getBranchLocation()).append("\n");
+        details.append("• Office Address: ").append(user.getOfficeAddress()).append("\n");
+        details.append("• Residential Address: ").append(user.getResidentialAddress()).append("\n\n");
+        
+        // Banking Information
+        details.append("🏦 BANKING DETAILS:\n");
+        details.append("• Bank Name: ").append(user.getBankName()).append("\n");
+        details.append("• Account Type: ").append(user.getAccountType()).append("\n");
+        details.append("• Account Number: ").append(user.getAccountNumber()).append("\n");
+        details.append("• IFSC Code: ").append(user.getIfscCode()).append("\n\n");
+        
+        // Identity Information
+        details.append("🆔 IDENTITY DETAILS:\n");
+        details.append("• Aadhaar Number: ").append(user.getAadhaarNumber()).append("\n");
+        details.append("• PAN Number: ").append(user.getPanNumber()).append("\n");
+        details.append("• User ID: ").append(user.getUserId()).append("\n\n");
+        
+        // System Information
+        details.append("⚙️ SYSTEM DETAILS:\n");
+        details.append("• Created By: ").append(user.getCreatedBy()).append("\n");
+        details.append("• Created At: ").append(user.getCreatedAt()).append("\n");
+        details.append("• Updated At: ").append(user.getUpdatedAt()).append("\n");
+        
+        // Show in a Toast (you might want to show a dialog for better readability)
+        Toast.makeText(this, details.toString(), Toast.LENGTH_LONG).show();
     }
 
     @Override

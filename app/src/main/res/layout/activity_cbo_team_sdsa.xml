@@ -54,32 +54,75 @@
     </LinearLayout>
 
     <!-- Main Content -->
-    <ScrollView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
+        android:orientation="vertical"
         android:padding="16dp">
 
+        <!-- Header Section -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:background="#FFFFFF"
+            android:padding="20dp"
+            android:layout_marginBottom="16dp"
+            android:elevation="2dp">
 
-            <!-- Header Section -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Team SDSA Management"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:textColor="#2C3E50"
+                android:layout_marginBottom="8dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Manage your team SDSA information and details"
+                android:textSize="14sp"
+                android:textColor="#7F8C8D" />
+
+        </LinearLayout>
+
+        <!-- Quick Actions Card -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="#FFFFFF"
+            android:padding="20dp"
+            android:layout_marginBottom="16dp"
+            android:elevation="2dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Quick Actions"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="#2C3E50"
+                android:layout_marginBottom="16dp" />
+
+            <!-- Select RBH User Dropdown Section -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:background="#FFFFFF"
-                android:padding="20dp"
                 android:layout_marginBottom="16dp"
-                android:elevation="2dp">
+                android:padding="16dp"
+                android:background="#F8F9FA"
+                android:layout_marginTop="8dp">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Team SDSA Management"
-                    android:textSize="24sp"
+                    android:text="Select Regional Business Head"
+                    android:textSize="16sp"
                     android:textStyle="bold"
                     android:textColor="#2C3E50"
                     android:layout_marginBottom="8dp" />
@@ -87,47 +130,97 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Manage your team SDSA information and details"
-                    android:textSize="14sp"
-                    android:textColor="#7F8C8D" />
+                    android:text="Choose a Regional Business Head to view their SDSA team"
+                    android:textSize="12sp"
+                    android:textColor="#7F8C8D"
+                    android:layout_marginBottom="12dp" />
 
-            </LinearLayout>
-
-
-
-            <!-- Quick Actions Card -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:background="#FFFFFF"
-                android:padding="20dp"
-                android:layout_marginBottom="16dp"
-                android:elevation="2dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
+                <!-- RBH User Dropdown -->
+                <Spinner
+                    android:id="@+id/rbhUserSpinner"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Quick Actions"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:textColor="#2C3E50"
-                    android:layout_marginBottom="16dp" />
+                    android:background="@drawable/spinner_background"
+                    android:padding="12dp"
+                    android:layout_marginBottom="8dp" />
 
-                <!-- Select RBH User Dropdown Section -->
+                <!-- Selected User Info -->
                 <LinearLayout
+                    android:id="@+id/selectedUserInfo"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:layout_marginBottom="16dp"
-                    android:padding="16dp"
-                    android:background="#F8F9FA"
-                    android:layout_marginTop="8dp">
+                    android:background="#E8F4FD"
+                    android:padding="12dp"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:id="@+id/selectedUserName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Selected User: John Doe"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:textColor="#2C3E50"
+                        android:layout_marginBottom="4dp" />
+
+                    <TextView
+                        android:id="@+id/selectedUserDetails"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Designation: Regional Business Head"
+                        android:textSize="12sp"
+                        android:textColor="#7F8C8D" />
+
+                </LinearLayout>
+
+                <!-- Action Buttons Section -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="12dp">
+
+                    <!-- Show Data Button -->
+                    <Button
+                        android:id="@+id/showDataButton"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Show Data"
+                        android:textColor="#FFFFFF"
+                        android:background="@drawable/button_background_secondary"
+                        android:padding="12dp"
+                        android:layout_marginEnd="6dp"
+                        android:enabled="false" />
+
+                    <!-- Reset Button -->
+                    <Button
+                        android:id="@+id/resetButton"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Reset"
+                        android:textColor="#FFFFFF"
+                        android:background="@drawable/button_background_reset"
+                        android:padding="12dp"
+                        android:layout_marginStart="6dp" />
+
+                </LinearLayout>
+
+                <!-- Reporting Users List Section -->
+                <LinearLayout
+                    android:id="@+id/reportingUsersSection"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginTop="16dp"
+                    android:visibility="gone">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Select Regional Business Head"
+                        android:text="Users Reporting to Selected RBH:"
                         android:textSize="16sp"
                         android:textStyle="bold"
                         android:textColor="#2C3E50"
@@ -136,171 +229,67 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Choose a Regional Business Head to view their SDSA team"
+                        android:text="(Scroll down to see all users)"
                         android:textSize="12sp"
                         android:textColor="#7F8C8D"
-                        android:layout_marginBottom="12dp" />
+                        android:layout_marginBottom="8dp"
+                        android:drawableStart="@drawable/ic_scroll"
+                        android:drawablePadding="4dp" />
 
-                    <!-- RBH User Dropdown -->
-                    <Spinner
-                        android:id="@+id/rbhUserSpinner"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/spinner_background"
-                        android:padding="12dp"
-                        android:layout_marginBottom="8dp" />
-
-                    <!-- Selected User Info -->
+                    <!-- Summary Card -->
                     <LinearLayout
-                        android:id="@+id/selectedUserInfo"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:background="#E8F4FD"
-                        android:padding="12dp"
-                        android:visibility="gone">
-
-                        <TextView
-                            android:id="@+id/selectedUserName"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Selected User: John Doe"
-                            android:textSize="14sp"
-                            android:textStyle="bold"
-                            android:textColor="#2C3E50"
-                            android:layout_marginBottom="4dp" />
-
-                        <TextView
-                            android:id="@+id/selectedUserDetails"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Designation: Regional Business Head"
-                            android:textSize="12sp"
-                            android:textColor="#7F8C8D" />
-
-                    </LinearLayout>
-
-
-
-                    <!-- Action Buttons Section -->
-                    <LinearLayout
+                        android:id="@+id/reportingUsersSummary"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        android:layout_marginTop="12dp">
+                        android:background="#E8F4FD"
+                        android:padding="12dp"
+                        android:layout_marginBottom="12dp">
 
-                        <!-- Show Data Button -->
-                        <Button
-                            android:id="@+id/showDataButton"
+                        <TextView
+                            android:id="@+id/totalUsersText"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Show Data"
-                            android:textColor="#FFFFFF"
-                            android:background="@drawable/button_background_secondary"
-                            android:padding="12dp"
-                            android:layout_marginEnd="6dp"
-                            android:enabled="false" />
+                            android:text="Total Users: 0"
+                            android:textSize="14sp"
+                            android:textStyle="bold"
+                            android:textColor="#2C3E50" />
 
-                        <!-- Reset Button -->
-                        <Button
-                            android:id="@+id/resetButton"
+                        <TextView
+                            android:id="@+id/activeUsersText"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Reset"
-                            android:textColor="#FFFFFF"
-                            android:background="@drawable/button_background_reset"
-                            android:padding="12dp"
-                            android:layout_marginStart="6dp" />
+                            android:text="Active: 0"
+                            android:textSize="14sp"
+                            android:textColor="#27AE60" />
+
+                        <TextView
+                            android:id="@+id/inactiveUsersText"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Inactive: 0"
+                            android:textSize="14sp"
+                            android:textColor="#E74C3C" />
 
                     </LinearLayout>
 
-                </LinearLayout>
-
-                <!-- View All Team Members Button -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:background="?attr/selectableItemBackground"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:padding="12dp"
-                    android:layout_marginBottom="8dp">
-
-                    <ImageView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:src="@drawable/ic_people"
-                        android:contentDescription="Team Members"
-                        android:layout_gravity="center_vertical" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="View All Team Members"
-                        android:textSize="16sp"
-                        android:textColor="#2C3E50"
-                        android:layout_marginStart="12dp"
-                        android:layout_gravity="center_vertical" />
-
-                </LinearLayout>
-
-                <!-- Add New Team Member Button -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:background="?attr/selectableItemBackground"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:padding="12dp"
-                    android:layout_marginBottom="8dp">
-
-                    <ImageView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:src="@drawable/ic_add"
-                        android:contentDescription="Add Member"
-                        android:layout_gravity="center_vertical" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Add New Team Member"
-                        android:textSize="16sp"
-                        android:textColor="#2C3E50"
-                        android:layout_marginStart="12dp"
-                        android:layout_gravity="center_vertical" />
-
-                </LinearLayout>
-
-                <!-- Team Reports Button -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:background="?attr/selectableItemBackground"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:padding="12dp">
-
-                    <ImageView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:src="@drawable/ic_reports"
-                        android:contentDescription="Reports"
-                        android:layout_gravity="center_vertical" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Team Reports"
-                        android:textSize="16sp"
-                        android:textColor="#2C3E50"
-                        android:layout_marginStart="12dp"
-                        android:layout_gravity="center_vertical" />
+                    <ListView
+                        android:id="@+id/reportingUsersListView"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"
+                        android:background="#FFFFFF"
+                        android:divider="#E0E0E0"
+                        android:dividerHeight="1dp"
+                        android:padding="8dp"
+                        android:scrollbars="vertical"
+                        android:fadeScrollbars="false"
+                        android:overScrollMode="never"
+                        android:minHeight="200dp"
+                        android:maxHeight="400dp" />
 
                 </LinearLayout>
 
@@ -308,7 +297,7 @@
 
         </LinearLayout>
 
-    </ScrollView>
+    </LinearLayout>
 
     <!-- Bottom Navigation -->
     <LinearLayout
