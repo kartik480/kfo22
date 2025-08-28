@@ -42,7 +42,10 @@ public class CBOTeamSdsaActivity extends AppCompatActivity {
     private LinearLayout selectedUserInfo;
     private TextView selectedUserName;
     private TextView selectedUserDetails;
-    private Button viewSdsaTeamButton;
+    
+    // Action buttons
+    private Button showDataButton;
+    private Button resetButton;
 
     // User data
     private String userName;
@@ -86,7 +89,10 @@ public class CBOTeamSdsaActivity extends AppCompatActivity {
         selectedUserInfo = findViewById(R.id.selectedUserInfo);
         selectedUserName = findViewById(R.id.selectedUserName);
         selectedUserDetails = findViewById(R.id.selectedUserDetails);
-        viewSdsaTeamButton = findViewById(R.id.viewSdsaTeamButton);
+        
+        // Action buttons
+        showDataButton = findViewById(R.id.showDataButton);
+        resetButton = findViewById(R.id.resetButton);
 
         executorService = Executors.newSingleThreadExecutor();
         rbhUserList = new ArrayList<>();
@@ -130,11 +136,11 @@ public class CBOTeamSdsaActivity extends AppCompatActivity {
                 if (position > 0 && position <= rbhUserList.size()) {
                     selectedRbhUser = rbhUserList.get(position - 1);
                     showSelectedUserInfo();
-                    viewSdsaTeamButton.setEnabled(true);
+                    showDataButton.setEnabled(true);
                 } else {
                     selectedRbhUser = null;
                     hideSelectedUserInfo();
-                    viewSdsaTeamButton.setEnabled(false);
+                    showDataButton.setEnabled(false);
                 }
             }
 
@@ -142,17 +148,22 @@ public class CBOTeamSdsaActivity extends AppCompatActivity {
             public void onNothingSelected(AdapterView<?> parent) {
                 selectedRbhUser = null;
                 hideSelectedUserInfo();
-                viewSdsaTeamButton.setEnabled(false);
+                showDataButton.setEnabled(false);
             }
         });
 
-        // View SDSA Team Button
-        viewSdsaTeamButton.setOnClickListener(v -> {
+        // Show Data Button
+        showDataButton.setOnClickListener(v -> {
             if (selectedRbhUser != null) {
-                viewSdsaTeam(selectedRbhUser);
+                showUserData(selectedRbhUser);
             } else {
                 Toast.makeText(this, "Please select a Regional Business Head first", Toast.LENGTH_SHORT).show();
             }
+        });
+        
+        // Reset Button
+        resetButton.setOnClickListener(v -> {
+            resetSelection();
         });
     }
 
@@ -169,19 +180,13 @@ public class CBOTeamSdsaActivity extends AppCompatActivity {
         selectedUserInfo.setVisibility(View.GONE);
     }
 
-    private void viewSdsaTeam(RbhUser rbhUser) {
-        // Navigate to RBH My SDSA activity with the selected RBH user ID
-        Intent intent = new Intent(this, RBHMySdsaActivity.class);
-        intent.putExtra("USER_ID", rbhUser.getId());
-        intent.putExtra("USERNAME", rbhUser.getUsername());
-        intent.putExtra("SELECTED_RBH_USER", rbhUser.getFullName());
-        startActivity(intent);
-    }
+
 
     private void fetchRbhUsers() {
         android.util.Log.d("CBOTeamSdsa", "Starting to fetch RBH users...");
         executorService.execute(() -> {
             try {
+                // Use main database API
                 String apiUrl = "https://emp.kfinone.com/mobile/api/get_rbh_users_for_dropdown.php";
                 android.util.Log.d("CBOTeamSdsa", "Making API call to: " + apiUrl);
                 String response = makeGetRequest(apiUrl);
@@ -288,6 +293,31 @@ public class CBOTeamSdsaActivity extends AppCompatActivity {
         } finally {
             connection.disconnect();
         }
+    }
+
+    private void showUserData(RbhUser rbhUser) {
+        // Show user data in a dialog or navigate to user details
+        Toast.makeText(this, "Showing data for: " + rbhUser.getFullName(), Toast.LENGTH_SHORT).show();
+        
+        // TODO: Implement actual data display logic
+        // This could show a dialog with user details, performance metrics, etc.
+        // For now, just show a toast message
+    }
+    
+    private void resetSelection() {
+        // Reset the spinner to default selection
+        rbhUserSpinner.setSelection(0);
+        
+        // Clear selected user
+        selectedRbhUser = null;
+        
+        // Hide user info
+        hideSelectedUserInfo();
+        
+        // Disable action buttons
+        showDataButton.setEnabled(false);
+        
+        Toast.makeText(this, "Selection reset successfully", Toast.LENGTH_SHORT).show();
     }
 
     private void goBack() {
