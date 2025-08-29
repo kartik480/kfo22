@@ -848,6 +848,12 @@
                       android:theme="@style/FullscreenTheme" />
                       
                   <activity
+                      android:name=".MarketingHeadInactiveSDSAListActivity"
+                      android:exported="false"
+                      android:label="Marketing Head Inactive SDSA List"
+                      android:theme="@style/FullscreenTheme" />
+                      
+                  <activity
                       android:name=".MarketingHeadEmpLinksActivity"
                       android:exported="false"
                       android:label="Marketing Head Employee Links"

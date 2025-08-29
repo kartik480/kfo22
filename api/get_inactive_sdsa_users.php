@@ -4,84 +4,90 @@ header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type');
 
-// Handle preflight requests
-if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+// Handle preflight OPTIONS request
+if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
     http_response_code(200);
     exit();
 }
 
-// Include database configuration
-require_once 'db_config.php';
+    // Database configuration
+    $host = 'p3plzcpnl508816.prod.phx3.secureserver.net';
+    $dbname = 'emp_kfinone';
+    $username = 'emp_kfinone';
+    $password = '*F*im1!Y0D25';
 
 try {
-    $conn = getConnection();
+    // Create PDO connection
+    error_log("Inactive SDSA Users API - Attempting database connection");
+    $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $username, $password);
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    error_log("Inactive SDSA Users API - Database connection successful");
     
-    // Fetch inactive SDSA users from tbl_sdsa_users where status = 0
-    // Using the correct column names from the actual table structure
-    $stmt = $conn->prepare("
+    // Query to get inactive SDSA users (status = 0) with joined data
+    $query = "
         SELECT 
-            id,
-            username,
-            alias_name,
-            first_name,
-            last_name,
-            Phone_number,
-            email_id,
-            alternative_mobile_number,
-            company_name,
-            branch_state_name_id,
-            branch_location_id,
-            bank_id,
-            account_type_id,
-            office_address,
-            residential_address,
-            aadhaar_number,
-            pan_number,
-            account_number,
-            ifsc_code,
-            rank,
-            status,
-            reportingTo,
-            employee_no,
-            department,
-            designation,
-            branchstate,
-            branchloaction,
-            bank_name,
-            account_type,
-            user_id,
-            createdBy,
-            created_at,
-            updated_at
-        FROM tbl_sdsa_users 
-        WHERE status = 0 
-        ORDER BY first_name ASC
-    ");
+            u.*,
+            bs.branch_state_name,
+            bl.branch_location,
+            b.bank_name as actual_bank_name,
+            at.account_type as actual_account_type,
+            CONCAT(u.first_name, ' ', u.last_name) as fullName,
+            CASE 
+                WHEN u.alias_name IS NOT NULL AND u.alias_name != '' 
+                THEN CONCAT(u.first_name, ' ', u.last_name, ' (', u.alias_name, ')')
+                ELSE CONCAT(u.first_name, ' ', u.last_name)
+            END as displayName
+        FROM tbl_sdsa_users u
+        LEFT JOIN tbl_branch_state bs ON u.branch_state_name_id = bs.id
+        LEFT JOIN tbl_branch_location bl ON u.branch_location_id = bl.id
+        LEFT JOIN tbl_bank b ON u.bank_id = b.id
+        LEFT JOIN tbl_account_type at ON u.account_type_id = at.id
+        WHERE u.status = '0'
+        ORDER BY u.first_name, u.last_name
+    ";
+    
+    error_log("Inactive SDSA Users API - Executing query");
+    $stmt = $pdo->prepare($query);
     $stmt->execute();
-    $inactiveUsers = $stmt->fetchAll(PDO::FETCH_ASSOC);
     
-    // Get total count
-    $countStmt = $conn->prepare("SELECT COUNT(*) as total FROM tbl_sdsa_users WHERE status = 0");
-    $countStmt->execute();
-    $countResult = $countStmt->fetch(PDO::FETCH_ASSOC);
-    $totalCount = $countResult['total'];
+    $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $count = count($users);
+    error_log("Inactive SDSA Users API - Query executed successfully. Found $count users");
     
-    // Return in the format expected by the Android app
-    echo json_encode(array(
+    // Prepare response
+    $response = [
         'success' => true,
-        'message' => 'Inactive SDSA users fetched successfully.',
-        'data' => $inactiveUsers,
-        'total_count' => $totalCount
-    ));
+        'message' => 'Inactive SDSA users retrieved successfully',
+        'count' => $count,
+        'users' => $users
+    ];
     
-    closeConnection($conn);
+    echo json_encode($response);
+    
+} catch (PDOException $e) {
+    // Database error
+    error_log("Inactive SDSA Users API - Database Error: " . $e->getMessage());
+    $response = [
+        'success' => false,
+        'message' => 'Database error: ' . $e->getMessage(),
+        'count' => 0,
+        'users' => []
+    ];
+    
+    http_response_code(500);
+    echo json_encode($response);
     
 } catch (Exception $e) {
-    error_log("Get inactive SDSA users error: " . $e->getMessage());
+    // General error
+    error_log("Inactive SDSA Users API - General Error: " . $e->getMessage());
+    $response = [
+        'success' => false,
+        'message' => 'Error: ' . $e->getMessage(),
+        'count' => 0,
+        'users' => []
+    ];
+    
     http_response_code(500);
-    echo json_encode(array(
-        'success' => false, 
-        'error' => 'An error occurred while fetching inactive SDSA users: ' . $e->getMessage()
-    ));
+    echo json_encode($response);
 }
 ?> 

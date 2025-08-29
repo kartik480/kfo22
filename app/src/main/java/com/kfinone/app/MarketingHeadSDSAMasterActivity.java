@@ -79,8 +79,12 @@ public class MarketingHeadSDSAMasterActivity extends AppCompatActivity {
         
         // Inactive SDSA List
         cardInactiveSDSAList.setOnClickListener(v -> {
-            showToast("Inactive SDSA List - Coming Soon!");
-            // TODO: Launch Inactive SDSA List Activity
+            Intent intent = new Intent(MarketingHeadSDSAMasterActivity.this, MarketingHeadInactiveSDSAListActivity.class);
+            intent.putExtra("USERNAME", username);
+            intent.putExtra("FIRST_NAME", firstName);
+            intent.putExtra("LAST_NAME", lastName);
+            intent.putExtra("USER_ID", userId);
+            startActivity(intent);
         });
     }
     
