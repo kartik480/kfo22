@@ -854,6 +854,12 @@
                       android:theme="@style/FullscreenTheme" />
                       
                   <activity
+                      android:name=".MarketingHeadInactiveEmpListActivity"
+                      android:exported="false"
+                      android:label="Marketing Head Inactive Employee List"
+                      android:theme="@style/FullscreenTheme" />
+                      
+                  <activity
                       android:name=".MarketingHeadEmpLinksActivity"
                       android:exported="false"
                       android:label="Marketing Head Employee Links"

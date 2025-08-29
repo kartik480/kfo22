@@ -79,8 +79,12 @@ public class MarketingHeadEmpMasterActivity extends AppCompatActivity {
         
         // Inactive Emp List
         cardInactiveEmpList.setOnClickListener(v -> {
-            showToast("Inactive Employee List - Coming Soon!");
-            // TODO: Launch Inactive Employee List Activity
+            Intent inactiveEmpListIntent = new Intent(MarketingHeadEmpMasterActivity.this, MarketingHeadInactiveEmpListActivity.class);
+            inactiveEmpListIntent.putExtra("USERNAME", username);
+            inactiveEmpListIntent.putExtra("FIRST_NAME", firstName);
+            inactiveEmpListIntent.putExtra("LAST_NAME", lastName);
+            inactiveEmpListIntent.putExtra("USER_ID", userId);
+            startActivity(inactiveEmpListIntent);
         });
     }
     
