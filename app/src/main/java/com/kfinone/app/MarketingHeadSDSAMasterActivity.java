@@ -15,6 +15,17 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class MarketingHeadSDSAMasterActivity extends AppCompatActivity {
     private static final String TAG = "MarketingHeadSDSAMaster";
     
@@ -24,12 +35,19 @@ public class MarketingHeadSDSAMasterActivity extends AppCompatActivity {
     private String userId;
     
     private TextView welcomeText;
+    private TextView totalSDSACount;
     private TextView activeSDSACount;
     private TextView inactiveSDSACount;
     
     // Card Views
     private CardView cardActiveSDSAList;
     private CardView cardInactiveSDSAList;
+    
+    // API URLs
+    private static final String TOTAL_SDSA_API_URL = "https://emp.kfinone.com/mobile/api/get_total_sdsa_count.php";
+    
+    // Volley request queue
+    private RequestQueue requestQueue;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,14 +69,20 @@ public class MarketingHeadSDSAMasterActivity extends AppCompatActivity {
         initializeViews();
         setupClickListeners();
         updateWelcomeText();
-        setInitialStats();
+        
+        // Initialize Volley request queue
+        requestQueue = Volley.newRequestQueue(this);
         
         // Setup back button
         findViewById(R.id.backButton).setOnClickListener(v -> onBackPressed());
+        
+        // Load SDSA counts
+        loadSDSACounts();
     }
     
     private void initializeViews() {
         welcomeText = findViewById(R.id.welcomeText);
+        totalSDSACount = findViewById(R.id.totalSDSACount);
         activeSDSACount = findViewById(R.id.activeSDSACount);
         inactiveSDSACount = findViewById(R.id.inactiveSDSACount);
         
@@ -88,9 +112,71 @@ public class MarketingHeadSDSAMasterActivity extends AppCompatActivity {
         });
     }
     
-    private void setInitialStats() {
+    private void loadSDSACounts() {
+        // Set initial values
+        totalSDSACount.setText("0");
         activeSDSACount.setText("0");
         inactiveSDSACount.setText("0");
+        
+        Log.d(TAG, "Setting initial values - Total: 0, Active: 0, Inactive: 0");
+        
+        // Load all SDSA counts from single API
+        loadTotalSDSACount();
+    }
+    
+    private void loadTotalSDSACount() {
+        Log.d(TAG, "Calling API URL: " + TOTAL_SDSA_API_URL);
+        
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
+            Request.Method.GET,
+            TOTAL_SDSA_API_URL,
+            null,
+            new Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject response) {
+                    try {
+                        Log.d(TAG, "Raw API Response: " + response.toString());
+                        
+                        boolean success = response.getBoolean("success");
+                        Log.d(TAG, "API Success: " + success);
+                        
+                        if (success) {
+                            JSONObject data = response.getJSONObject("data");
+                            Log.d(TAG, "Data object: " + data.toString());
+                            
+                            int totalCount = data.getInt("total_count");
+                            int activeCount = data.getInt("active_count");
+                            int inactiveCount = data.getInt("inactive_count");
+                            
+                            Log.d(TAG, "Parsed counts - Total: " + totalCount + 
+                                      ", Active: " + activeCount + ", Inactive: " + inactiveCount);
+                            
+                            // Update all counts
+                            totalSDSACount.setText(String.valueOf(totalCount));
+                            activeSDSACount.setText(String.valueOf(activeCount));
+                            inactiveSDSACount.setText(String.valueOf(inactiveCount));
+                            
+                            Log.d(TAG, "SDSA Counts loaded - Total: " + totalCount + 
+                                      ", Active: " + activeCount + ", Inactive: " + inactiveCount);
+                            Log.d(TAG, "Updated TextView totalSDSACount with: " + totalCount);
+                            Log.d(TAG, "Updated TextView activeSDSACount with: " + activeCount);
+                            Log.d(TAG, "Updated TextView inactiveSDSACount with: " + inactiveCount);
+                        }
+                    } catch (JSONException e) {
+                        Log.e(TAG, "Error parsing total SDSA response: " + e.getMessage());
+                        Log.e(TAG, "Full response that caused error: " + response.toString());
+                    }
+                }
+            },
+            new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Log.e(TAG, "Error loading total SDSA count: " + error.getMessage());
+                }
+            }
+        );
+        
+        requestQueue.add(jsonObjectRequest);
     }
     
     private void updateWelcomeText() {
@@ -140,5 +226,13 @@ public class MarketingHeadSDSAMasterActivity extends AppCompatActivity {
                 "© 2024 KfinOne. All rights reserved.");
         builder.setPositiveButton("OK", null);
         builder.show();
+    }
+    
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (requestQueue != null) {
+            requestQueue.cancelAll(TAG);
+        }
     }
 }
