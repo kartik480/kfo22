@@ -18,13 +18,20 @@ $password = '*F*im1!Y0D25';
 
 try {
     // Create PDO connection
-    error_log("Inactive Employees API - Attempting database connection");
     $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $username, $password);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    error_log("Inactive Employees API - Database connection successful");
     
-    // Query to get inactive users (status = 0) with EXACTLY the columns you provided
-    $query = "
+    // First, let's see what columns actually exist in tbl_user
+    $describeQuery = "DESCRIBE tbl_user";
+    $describeStmt = $pdo->prepare($describeQuery);
+    $describeStmt->execute();
+    $actualColumns = $describeStmt->fetchAll(PDO::FETCH_ASSOC);
+    
+    // Get column names only
+    $columnNames = array_column($actualColumns, 'Field');
+    
+    // Now let's try a simple query with just basic columns that should exist
+    $simpleQuery = "
         SELECT 
             id,
             username,
@@ -32,107 +39,48 @@ try {
             lastName,
             mobile,
             email_id,
-            password,
-            dob,
-            employee_no,
-            father_name,
-            joining_date,
-            department_id,
-            designation_id,
-            branch_state_name_id,
-            branch_location_id,
-            present_address,
-            permanent_address,
             status,
-            rank,
-            avatar,
-            height,
-            weight,
-            passport_no,
-            passport_valid,
-            languages,
-            hobbies,
-            blood_group,
-            emergency_no,
-            emergency_address,
-            reference_name,
-            reference_relation,
-            reference_mobile,
-            reference_address,
-            reference_name2,
-            reference_relation2,
-            reference_mobile2,
-            reference_address2,
-            acc_holder_name,
-            bank_name,
-            branch_name,
-            account_number,
-            ifsc_code,
-            school_marksCard,
-            intermediate_marksCard,
-            degree_certificate,
-            pg_certificate,
-            experience_letter,
-            relieving_letter,
-            bank_passbook,
-            passport_document,
-            aadhar_document,
-            pancard_document,
-            resume_document,
-            joiningKit_document,
-            reportingTo,
-            official_phone,
-            official_email,
-            work_state,
-            work_location,
-            alias_name,
-            residential_address,
-            office_address,
-            pan_number,
-            aadhaar_number,
-            alternative_mobile_number,
-            company_name,
-            manage_icons,
-            data_icons,
-            work_icons,
-            payout_icons,
-            last_working_date,
-            leaving_reason,
-            re_joining_date,
-            createdBy,
-            created_at,
-            updated_at
+            employee_no,
+            created_at
         FROM tbl_user 
         WHERE status = '0' OR status = 0
         ORDER BY firstName, lastName
+        LIMIT 5
     ";
     
-    error_log("Inactive Employees API - Executing query on tbl_user");
-    $stmt = $pdo->prepare($query);
+    $stmt = $pdo->prepare($simpleQuery);
     $stmt->execute();
     
     $employees = $stmt->fetchAll(PDO::FETCH_ASSOC);
     $count = count($employees);
-    error_log("Inactive Employees API - Query executed successfully. Found $count inactive users");
     
-    // Prepare response
+    // Prepare response with debug info
     $response = [
         'success' => true,
         'message' => 'Inactive employees retrieved successfully',
         'count' => $count,
-        'employees' => $employees
+        'employees' => $employees,
+        'debug_info' => [
+            'actual_columns_in_table' => $columnNames,
+            'total_columns_found' => count($columnNames),
+            'note' => 'Using only basic columns to avoid errors. Check debug_info for actual table structure.'
+        ]
     ];
     
     echo json_encode($response);
     
 } catch (PDOException $e) {
     // Database error
-    error_log("Inactive Employees API - Database Error: " . $e->getMessage());
     $response = [
         'success' => false,
         'message' => 'Database error: ' . $e->getMessage(),
         'count' => 0,
-        'employees' => []
+        'employees' => [],
+        'debug_info' => [
+            'error_code' => $e->getCode(),
+            'error_message' => $e->getMessage(),
+            'note' => 'This will show us exactly what columns exist in your table'
+        ]
     ];
     
     http_response_code(500);
@@ -140,12 +88,15 @@ try {
     
 } catch (Exception $e) {
     // General error
-    error_log("Inactive Employees API - General Error: " . $e->getMessage());
     $response = [
         'success' => false,
         'message' => 'Error: ' . $e->getMessage(),
         'count' => 0,
-        'employees' => []
+        'employees' => [],
+        'debug_info' => [
+            'error_code' => $e->getCode(),
+            'error_message' => $e->getMessage()
+        ]
     ];
     
     http_response_code(500);

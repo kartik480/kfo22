@@ -134,12 +134,13 @@ public class MarketingHeadInactiveEmpListActivity extends AppCompatActivity {
                             // Clear existing list
                             employees.clear();
                             
-                            // Parse employees
-                            for (int i = 0; i < employeesArray.length(); i++) {
-                                JSONObject empObj = employeesArray.getJSONObject(i);
-                                MarketingHeadUser employee = parseEmployee(empObj);
-                                employees.add(employee);
-                            }
+                                                         // Parse employees
+                             for (int i = 0; i < employeesArray.length(); i++) {
+                                 JSONObject empObj = employeesArray.getJSONObject(i);
+                                 Log.d(TAG, "Employee " + i + " data: " + empObj.toString());
+                                 MarketingHeadUser employee = parseEmployee(empObj);
+                                 employees.add(employee);
+                             }
                             
                             // Update adapter
                             adapter.notifyDataSetChanged();
@@ -153,11 +154,21 @@ public class MarketingHeadInactiveEmpListActivity extends AppCompatActivity {
                                 hideEmptyState();
                             }
                             
-                            Log.d(TAG, "Successfully loaded " + count + " inactive employees");
+                                                         Log.d(TAG, "Successfully loaded " + count + " inactive employees");
+                             Log.d(TAG, "First employee data: " + (count > 0 ? employees.get(0).getFullName() : "No employees"));
                             
-                        } else {
-                            showError("Failed to load inactive employees: " + message);
-                        }
+                                                 } else {
+                             // Check if there's debug info
+                             if (response.has("debug_info")) {
+                                 try {
+                                     JSONObject debugInfo = response.getJSONObject("debug_info");
+                                     Log.d(TAG, "Debug info: " + debugInfo.toString());
+                                 } catch (JSONException e) {
+                                     Log.e(TAG, "Error parsing debug info: " + e.getMessage());
+                                 }
+                             }
+                             showError("Failed to load inactive employees: " + message);
+                         }
                         
                     } catch (JSONException e) {
                         Log.e(TAG, "JSON parsing error: " + e.getMessage());
@@ -186,49 +197,52 @@ public class MarketingHeadInactiveEmpListActivity extends AppCompatActivity {
     }
     
     private MarketingHeadUser parseEmployee(JSONObject empObj) throws JSONException {
+        // Log the employee data for debugging
+        Log.d(TAG, "Parsing employee: " + empObj.optString("firstName", "") + " " + empObj.optString("lastName", ""));
+        
         return new MarketingHeadUser(
             empObj.optString("id", ""),
             empObj.optString("username", ""),
-            empObj.optString("alias_name", ""),
+            empObj.optString("", ""), // alias_name not in basic columns
             empObj.optString("firstName", ""),
             empObj.optString("lastName", ""),
-            empObj.optString("password", ""),
+            empObj.optString("", ""), // password not in basic columns
             empObj.optString("mobile", ""),
             empObj.optString("email_id", ""),
-            empObj.optString("dob", ""), // Now using dob from tbl_user
-            empObj.optString("branch_state_name_id", ""),
-            empObj.optString("branch_location_id", ""),
-            empObj.optString("acc_holder_name", ""),
-            empObj.optString("bank_name", ""),
-            empObj.optString("", ""), // account_type not in tbl_user
-            empObj.optString("branch_name", ""),
-            empObj.optString("account_number", ""),
-            empObj.optString("ifsc_code", ""),
-            empObj.optString("rank", ""),
+            empObj.optString("", ""), // dob not in basic columns
+            empObj.optString("", ""), // branch_state_name_id not in basic columns
+            empObj.optString("", ""), // branch_location_id not in basic columns
+            empObj.optString("", ""), // acc_holder_name not in basic columns
+            empObj.optString("", ""), // bank_name not in basic columns
+            empObj.optString("", ""), // account_type not in basic columns
+            empObj.optString("", ""), // branch_name not in basic columns
+            empObj.optString("", ""), // account_number not in basic columns
+            empObj.optString("", ""), // ifsc_code not in basic columns
+            empObj.optString("", ""), // rank not in basic columns
             empObj.optString("status", ""),
-            empObj.optString("reportingTo", ""),
-            empObj.optString("", ""), // designation not in tbl_user, using designation_id
-            empObj.optString("", ""), // department not in tbl_user, using department_id
+            empObj.optString("", ""), // reportingTo not in basic columns
+            empObj.optString("", ""), // designation not in basic columns
+            empObj.optString("", ""), // department not in basic columns
             empObj.optString("employee_no", ""),
-            empObj.optString("work_state", ""),
-            empObj.optString("work_location", ""),
-            empObj.optString("residential_address", ""),
-            empObj.optString("office_address", ""),
-            empObj.optString("pan_number", ""),
-            empObj.optString("aadhaar_number", ""),
-            empObj.optString("manage_icons", ""),
-            empObj.optString("data_icons", ""),
-            empObj.optString("reference_name", ""),
-            empObj.optString("reference_relation", ""),
-            empObj.optString("reference_mobile", ""),
-            empObj.optString("reference_address", ""),
-            empObj.optString("reference_name2", ""),
-            empObj.optString("reference_relation2", ""),
-            empObj.optString("reference_mobile2", ""),
-            empObj.optString("reference_address2", ""),
-            empObj.optString("official_phone", ""),
-            empObj.optString("official_email", ""),
-            empObj.optString("createdBy", ""),
+            empObj.optString("", ""), // work_state not in basic columns
+            empObj.optString("", ""), // work_location not in basic columns
+            empObj.optString("", ""), // residential_address not in basic columns
+            empObj.optString("", ""), // office_address not in basic columns
+            empObj.optString("", ""), // pan_number not in basic columns
+            empObj.optString("", ""), // aadhaar_number not in basic columns
+            empObj.optString("", ""), // manage_icons not in basic columns
+            empObj.optString("", ""), // data_icons not in basic columns
+            empObj.optString("", ""), // reference_name not in basic columns
+            empObj.optString("", ""), // reference_relation not in basic columns
+            empObj.optString("", ""), // reference_mobile not in basic columns
+            empObj.optString("", ""), // reference_address not in basic columns
+            empObj.optString("", ""), // reference_name2 not in basic columns
+            empObj.optString("", ""), // reference_relation2 not in basic columns
+            empObj.optString("", ""), // reference_mobile2 not in basic columns
+            empObj.optString("", ""), // reference_address2 not in basic columns
+            empObj.optString("", ""), // official_phone not in basic columns
+            empObj.optString("", ""), // official_email not in basic columns
+            empObj.optString("", ""), // createdBy not in basic columns
             empObj.optString("created_at", ""),
             empObj.optString("updated_at", "")
         );
