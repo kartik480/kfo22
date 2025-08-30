@@ -72,38 +72,38 @@ public class MarketingHeadLocationMasterActivity extends AppCompatActivity {
     private void setupClickListeners() {
         // State
         cardState.setOnClickListener(v -> {
-            showToast("State Management - Coming Soon!");
-            // TODO: Launch State Management Activity
+            Intent intent = new Intent(MarketingHeadLocationMasterActivity.this, StateActivity.class);
+            startActivity(intent);
         });
         
         // Location
         cardLocation.setOnClickListener(v -> {
-            showToast("Location Management - Coming Soon!");
-            // TODO: Launch Location Management Activity
+            Intent intent = new Intent(MarketingHeadLocationMasterActivity.this, LocationActivity.class);
+            startActivity(intent);
         });
         
         // Sub Location
         cardSubLocation.setOnClickListener(v -> {
-            showToast("Sub Location Management - Coming Soon!");
-            // TODO: Launch Sub Location Management Activity
+            Intent intent = new Intent(MarketingHeadLocationMasterActivity.this, SubLocationActivity.class);
+            startActivity(intent);
         });
         
         // Pincode
         cardPincode.setOnClickListener(v -> {
-            showToast("Pincode Management - Coming Soon!");
-            // TODO: Launch Pincode Management Activity
+            Intent intent = new Intent(MarketingHeadLocationMasterActivity.this, PincodeActivity.class);
+            startActivity(intent);
         });
         
         // Branch State
         cardBranchState.setOnClickListener(v -> {
-            showToast("Branch State Management - Coming Soon!");
-            // TODO: Launch Branch State Management Activity
+            Intent intent = new Intent(MarketingHeadLocationMasterActivity.this, BranchStateActivity.class);
+            startActivity(intent);
         });
         
         // Branch Location
         cardBranchLocation.setOnClickListener(v -> {
-            showToast("Branch Location Management - Coming Soon!");
-            // TODO: Launch Branch Location Management Activity
+            Intent intent = new Intent(MarketingHeadLocationMasterActivity.this, BranchLocationActivity.class);
+            startActivity(intent);
         });
     }
     
