@@ -293,8 +293,12 @@ public class MarketingHeadPanelActivity extends AppCompatActivity {
         
         // Banker
         cardBanker.setOnClickListener(v -> {
-            showToast("Banker - Coming Soon!");
-            // TODO: Launch Banker Activity
+            Intent bankerIntent = new Intent(MarketingHeadPanelActivity.this, MarketingHeadBankerPanelActivity.class);
+            bankerIntent.putExtra("USERNAME", username);
+            bankerIntent.putExtra("FIRST_NAME", firstName);
+            bankerIntent.putExtra("LAST_NAME", lastName);
+            bankerIntent.putExtra("USER_ID", userId);
+            startActivity(bankerIntent);
         });
     }
     

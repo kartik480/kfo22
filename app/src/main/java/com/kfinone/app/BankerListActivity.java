@@ -532,11 +532,17 @@ public class BankerListActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        // Check if we came from Director panel
+        // Check which panel we came from and go back accordingly
         String sourcePanel = getIntent().getStringExtra("SOURCE_PANEL");
         if ("DIRECTOR_PANEL".equals(sourcePanel)) {
             // Navigate back to Director Bankers Activity
             Intent intent = new Intent(this, DirectorBankersActivity.class);
+            passUserDataToIntent(intent);
+            startActivity(intent);
+            finish();
+        } else if ("MARKETING_HEAD_PANEL".equals(sourcePanel)) {
+            // Navigate back to Marketing Head Banker Panel
+            Intent intent = new Intent(this, MarketingHeadBankerPanelActivity.class);
             passUserDataToIntent(intent);
             startActivity(intent);
             finish();

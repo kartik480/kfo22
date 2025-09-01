@@ -30,7 +30,7 @@
             android:name=".LoginActivity"
             android:exported="false"
             android:theme="@style/FullscreenTheme" />
-        <activity
+        <activity   
             android:name=".MainActivity"
             android:exported="false"
             android:label="@string/app_name"
@@ -839,6 +839,12 @@
                       android:name=".MarketingHeadDsaCodeMasterActivity"
                       android:exported="false"
                       android:label="Marketing Head DSA Code Master"
+                      android:theme="@style/FullscreenTheme" />
+                      
+                  <activity
+                      android:name=".MarketingHeadBankerPanelActivity"
+                      android:exported="false"
+                      android:label="Marketing Head Banker Panel"
                       android:theme="@style/FullscreenTheme" />
                       
                   <activity
