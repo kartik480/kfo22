@@ -271,14 +271,22 @@ public class MarketingHeadPanelActivity extends AppCompatActivity {
         
         // Data Links
         cardDataLinks.setOnClickListener(v -> {
-            showToast("Data Links - Coming Soon!");
-            // TODO: Launch Data Links Activity
+            Intent dataLinksIntent = new Intent(MarketingHeadPanelActivity.this, MarketingHeadDataLinksActivity.class);
+            dataLinksIntent.putExtra("USERNAME", username);
+            dataLinksIntent.putExtra("FIRST_NAME", firstName);
+            dataLinksIntent.putExtra("LAST_NAME", lastName);
+            dataLinksIntent.putExtra("USER_ID", userId);
+            startActivity(dataLinksIntent);
         });
         
         // Work Links
         cardWorkLinks.setOnClickListener(v -> {
-            showToast("Work Links - Coming Soon!");
-            // TODO: Launch Work Links Activity
+            Intent workLinksIntent = new Intent(MarketingHeadPanelActivity.this, MarketingHeadWorkLinksActivity.class);
+            workLinksIntent.putExtra("USERNAME", username);
+            workLinksIntent.putExtra("FIRST_NAME", firstName);
+            workLinksIntent.putExtra("LAST_NAME", lastName);
+            workLinksIntent.putExtra("USER_ID", userId);
+            startActivity(workLinksIntent);
         });
         
         // DSA Codes
