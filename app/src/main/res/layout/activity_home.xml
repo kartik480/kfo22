@@ -144,6 +144,8 @@
 
                 </com.google.android.material.card.MaterialCardView>
 
+
+
                 <!-- First Row of Boxes -->
                 <HorizontalScrollView
                     android:layout_width="match_parent"

@@ -283,8 +283,12 @@ public class MarketingHeadPanelActivity extends AppCompatActivity {
         
         // DSA Codes
         cardDSACodes.setOnClickListener(v -> {
-            showToast("DSA Codes - Coming Soon!");
-            // TODO: Launch DSA Codes Activity
+            Intent dsaCodeIntent = new Intent(MarketingHeadPanelActivity.this, MarketingHeadDsaCodeMasterActivity.class);
+            dsaCodeIntent.putExtra("USERNAME", username);
+            dsaCodeIntent.putExtra("FIRST_NAME", firstName);
+            dsaCodeIntent.putExtra("LAST_NAME", lastName);
+            dsaCodeIntent.putExtra("USER_ID", userId);
+            startActivity(dsaCodeIntent);
         });
         
         // Banker
@@ -450,7 +454,7 @@ public class MarketingHeadPanelActivity extends AppCompatActivity {
     
     /**
      * Fetch the total number of SDSA users for the current Marketing Head user
-     * This method calls the same API endpoint used in other panels for consistency
+     * This method calls the same API endpoint used in the Active SDSA List for consistency
      */
     private void fetchSDSACount() {
         if (username == null || username.isEmpty()) {
@@ -460,52 +464,28 @@ public class MarketingHeadPanelActivity extends AppCompatActivity {
         }
         
         Log.d(TAG, "Fetching SDSA count for username: " + username);
-        // Use the working employee API endpoint for now (SDSA endpoint doesn't exist)
-        String url = "https://emp.kfinone.com/mobile/api/get_marketing_head_active_emp_list.php";
+        // Use the same API endpoint as Active SDSA List
+        String url = "https://emp.kfinone.com/mobile/api/get_all_sdsa_users.php";
         Log.d(TAG, "SDSA count API URL: " + url);
         
-        // Create request body with username and user_id for better compatibility
-        JSONObject requestBody = new JSONObject();
-        try {
-            requestBody.put("username", username);
-            if (userId != null && !userId.isEmpty()) {
-                requestBody.put("user_id", userId);
-            }
-        } catch (JSONException e) {
-            Log.e(TAG, "Error creating request body: " + e.getMessage());
-            return;
-        }
-        
-        Log.d(TAG, "SDSA count request body: " + requestBody.toString());
-        
         JsonObjectRequest jsonRequest = new JsonObjectRequest(
-            Request.Method.POST,
+            Request.Method.GET,
             url,
-            requestBody,
+            null,
             new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject jsonResponse) {
                     Log.d(TAG, "SDSA count API response: " + jsonResponse.toString());
                     try {
-                        if (jsonResponse.getString("status").equals("success")) {
-                            // Use the working API response structure for now (SDSA endpoint doesn't exist)
-                            if (jsonResponse.has("total_count")) {
-                                // Direct total_count field from our working API
-                                int totalCount = jsonResponse.optInt("total_count", 0);
-                                totalSDSACount.setText(String.valueOf(totalCount));
-                                Log.d(TAG, "SDSA count updated from total_count field: " + totalCount);
-                            } else if (jsonResponse.has("active_employees")) {
-                                // Count the active_employees array length
-                                JSONArray activeEmployees = jsonResponse.getJSONArray("active_employees");
-                                int totalCount = activeEmployees.length();
-                                totalSDSACount.setText(String.valueOf(totalCount));
-                                Log.d(TAG, "SDSA count updated from active_employees array length: " + totalCount);
-                            } else {
-                                Log.w(TAG, "No count data found in working API response");
-                                totalSDSACount.setText("0");
-                            }
+                        boolean success = jsonResponse.getBoolean("success");
+                        if (success) {
+                            // Get count from the same field as Active SDSA List
+                            int totalCount = jsonResponse.optInt("count", 0);
+                            totalSDSACount.setText(String.valueOf(totalCount));
+                            Log.d(TAG, "SDSA count updated: " + totalCount);
                         } else {
-                            Log.w(TAG, "Failed to fetch SDSA count: " + jsonResponse.optString("message", "Unknown error"));
+                            String message = jsonResponse.optString("message", "Unknown error");
+                            Log.w(TAG, "Failed to fetch SDSA count: " + message);
                             totalSDSACount.setText("0");
                         }
                     } catch (JSONException e) {
@@ -543,6 +523,8 @@ public class MarketingHeadPanelActivity extends AppCompatActivity {
         Log.d(TAG, "SDSA count request added to queue");
     }
     
+
+    
     /**
      * Manually refresh the employee count
      * This can be called from UI or other parts of the app
@@ -568,6 +550,8 @@ public class MarketingHeadPanelActivity extends AppCompatActivity {
             Log.w(TAG, "Cannot refresh SDSA count - username not available");
         }
     }
+    
+
     
     /**
      * Refresh all counts at once

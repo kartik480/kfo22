@@ -223,7 +223,7 @@ public class MarketingHeadSDSAMasterActivity extends AppCompatActivity {
                 "• Active SDSA List\n" +
                 "• Inactive SDSA List\n" +
                 "• SDSA Status Management\n\n" +
-                "© 2024 KfinOne. All rights reserved.");
+                "© 2025 KfinOne. All rights reserved.");
         builder.setPositiveButton("OK", null);
         builder.show();
     }

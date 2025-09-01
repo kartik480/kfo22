@@ -16,7 +16,7 @@
         android:supportsRtl="true"
         android:theme="@style/FullscreenTheme"
         android:usesCleartextTraffic="true"
-        tools:targetApi="31">
+        tools:targetApi="35">
         <activity
             android:name=".EnhancedLoginActivity"
             android:exported="true"
@@ -833,6 +833,12 @@
                       android:name=".MarketingHeadLocationMasterActivity"
                       android:exported="false"
                       android:label="Marketing Head Location Master"
+                      android:theme="@style/FullscreenTheme" />
+                      
+                  <activity
+                      android:name=".MarketingHeadDsaCodeMasterActivity"
+                      android:exported="false"
+                      android:label="Marketing Head DSA Code Master"
                       android:theme="@style/FullscreenTheme" />
                       
                   <activity

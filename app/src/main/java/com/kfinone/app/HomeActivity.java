@@ -10,6 +10,7 @@ import android.widget.Toast;
 import android.util.Log;
 import android.view.WindowManager;
 
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
@@ -18,6 +19,8 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+
+
 
 public class HomeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -46,6 +49,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     private String firstName;
     private String lastName;
     private String userId;
+    private String username;
     private BottomNavigationView bottomNavigationView;
 
     @Override
@@ -88,6 +92,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             
             // Get full name as fallback
             fullName = intent.getStringExtra("USERNAME");
+            username = intent.getStringExtra("USERNAME");
             
             // Get user ID
             userId = intent.getStringExtra("USER_ID");

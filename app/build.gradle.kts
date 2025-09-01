@@ -5,13 +5,13 @@ plugins {
 
 android {
     namespace = "com.kfinone.app"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.kfinone.app"
         minSdk = 26
-        targetSdk = 34
-        versionCode = 17
+        targetSdk = 35
+        versionCode = 18
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
