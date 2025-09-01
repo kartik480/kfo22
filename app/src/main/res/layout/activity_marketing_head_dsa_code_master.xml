@@ -123,52 +123,10 @@
             <GridLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:columnCount="2"
+                android:columnCount="1"
                 android:rowCount="1"
                 android:alignmentMode="alignMargins"
                 android:useDefaultMargins="true">
-
-                <!-- Add DSA -->
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/cardAddDsa"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_columnWeight="1"
-                    app:cardCornerRadius="12dp"
-                    app:cardElevation="4dp"
-                    app:cardBackgroundColor="@color/white"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:foreground="?attr/selectableItemBackground">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:padding="16dp"
-                        android:gravity="center">
-
-                        <ImageView
-                            android:layout_width="48dp"
-                            android:layout_height="48dp"
-                            android:src="@drawable/ic_add"
-                            android:background="@drawable/blue_gradient_icon_background"
-                            android:padding="12dp"
-                            android:contentDescription="Add DSA" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="DSA Code List"
-                            android:textSize="16sp"
-                            android:textStyle="bold"
-                            android:textColor="@color/black"
-                            android:layout_marginTop="8dp"
-                            android:gravity="center" />
-
-                    </LinearLayout>
-
-                </androidx.cardview.widget.CardView>
 
                 <!-- DSA List -->
                 <androidx.cardview.widget.CardView

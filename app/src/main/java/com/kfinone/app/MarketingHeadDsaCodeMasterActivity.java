@@ -26,7 +26,6 @@ public class MarketingHeadDsaCodeMasterActivity extends AppCompatActivity {
     private TextView welcomeText;
     
     // Card Views
-    private CardView cardAddDsa;
     private CardView cardDsaList;
     
     @Override
@@ -69,23 +68,11 @@ public class MarketingHeadDsaCodeMasterActivity extends AppCompatActivity {
     private void initializeViews() {
         welcomeText = findViewById(R.id.welcomeText);
         
-        cardAddDsa = findViewById(R.id.cardAddDsa);
         cardDsaList = findViewById(R.id.cardDsaList);
     }
     
     private void setupClickListeners() {
-        // Direct navigation to DSA Code List (same as CBO panel)
-        cardAddDsa.setOnClickListener(v -> {
-            Intent intent = new Intent(MarketingHeadDsaCodeMasterActivity.this, DsaCodeListActivity.class);
-            intent.putExtra("USERNAME", username);
-            intent.putExtra("FIRST_NAME", firstName);
-            intent.putExtra("LAST_NAME", lastName);
-            intent.putExtra("USER_ID", userId);
-            intent.putExtra("SOURCE_PANEL", "MARKETING_HEAD_PANEL");
-            startActivity(intent);
-        });
-        
-        // DSA List also goes to DSA Code List (same as CBO panel)
+        // DSA List goes to DSA Code List
         cardDsaList.setOnClickListener(v -> {
             Intent intent = new Intent(MarketingHeadDsaCodeMasterActivity.this, DsaCodeListActivity.class);
             intent.putExtra("USERNAME", username);

@@ -287,6 +287,11 @@ public class DsaCodeListActivity extends AppCompatActivity {
             passUserDataToIntent(intent);
             startActivity(intent);
             finish();
+        } else if ("MARKETING_HEAD_PANEL".equals(sourcePanel)) {
+            Intent intent = new Intent(this, MarketingHeadPanelActivity.class);
+            passUserDataToIntent(intent);
+            startActivity(intent);
+            finish();
         } else {
             // Default to HomeActivity (KfinOne panel)
             Intent intent = new Intent(this, HomeActivity.class);
