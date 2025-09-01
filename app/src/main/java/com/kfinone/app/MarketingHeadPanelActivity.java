@@ -313,8 +313,12 @@ public class MarketingHeadPanelActivity extends AppCompatActivity {
     private void setupStatCardClickListeners() {
         // Total Emp
         cardTotalEmp.setOnClickListener(v -> {
-            showToast("Employee Overview - Coming Soon!");
-            // TODO: Launch Employee Management Activity
+            Intent activeEmpListIntent = new Intent(MarketingHeadPanelActivity.this, MarketingHeadActiveEmpListActivity.class);
+            activeEmpListIntent.putExtra("USERNAME", username);
+            activeEmpListIntent.putExtra("FIRST_NAME", firstName);
+            activeEmpListIntent.putExtra("LAST_NAME", lastName);
+            activeEmpListIntent.putExtra("USER_ID", userId);
+            startActivity(activeEmpListIntent);
         });
         
         // Add long press listener to refresh employee count
@@ -326,8 +330,12 @@ public class MarketingHeadPanelActivity extends AppCompatActivity {
         
         // Total SDSA
         cardTotalSDSA.setOnClickListener(v -> {
-            showToast("SDSA Overview - Coming Soon!");
-            // TODO: Launch SDSA Management Activity
+            Intent activeSDSAListIntent = new Intent(MarketingHeadPanelActivity.this, MarketingHeadActiveSDSAListActivity.class);
+            activeSDSAListIntent.putExtra("USERNAME", username);
+            activeSDSAListIntent.putExtra("FIRST_NAME", firstName);
+            activeSDSAListIntent.putExtra("LAST_NAME", lastName);
+            activeSDSAListIntent.putExtra("USER_ID", userId);
+            startActivity(activeSDSAListIntent);
         });
         
         // Add long press listener to refresh SDSA count
