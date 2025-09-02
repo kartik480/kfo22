@@ -33,7 +33,7 @@ public class DirectorMyAgentActivity extends AppCompatActivity {
     private List<String> branchLocationNames = new ArrayList<>();
     private List<String> branchLocationIds = new ArrayList<>();
 
-    private static final String BASE_URL = "https://yourdomain.com/api/";
+    private static final String BASE_URL = "https://emp.kfinone.com/mobile/api/";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -73,39 +73,160 @@ public class DirectorMyAgentActivity extends AppCompatActivity {
     }
 
     private void loadDropdownOptions() {
-        // Load sample data for spinners (replace with actual API calls)
-        partnerTypeNames.add("Select Agent Type");
-        partnerTypeNames.add("Individual");
-        partnerTypeNames.add("Corporate");
-        partnerTypeNames.add("Partner");
-
-        branchStateNames.add("Select Branch State");
-        branchStateNames.add("Maharashtra");
-        branchStateNames.add("Delhi");
-        branchStateNames.add("Karnataka");
-        branchStateNames.add("Tamil Nadu");
-
-        branchLocationNames.add("Select Branch Location");
-        branchLocationNames.add("Mumbai");
-        branchLocationNames.add("Pune");
-        branchLocationNames.add("Delhi");
-        branchLocationNames.add("Bangalore");
-
-        // Set up spinners
-        ArrayAdapter<String> partnerTypeAdapter = new ArrayAdapter<>(this, 
-            android.R.layout.simple_spinner_item, partnerTypeNames);
-        partnerTypeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerPartnerType.setAdapter(partnerTypeAdapter);
-
-        ArrayAdapter<String> branchStateAdapter = new ArrayAdapter<>(this, 
-            android.R.layout.simple_spinner_item, branchStateNames);
-        branchStateAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerBranchState.setAdapter(branchStateAdapter);
-
-        ArrayAdapter<String> branchLocationAdapter = new ArrayAdapter<>(this, 
-            android.R.layout.simple_spinner_item, branchLocationNames);
-        branchLocationAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerBranchLocation.setAdapter(branchLocationAdapter);
+        // Load data from APIs
+        loadPartnerTypes();
+        loadBranchStates();
+        loadBranchLocations();
+    }
+    
+    private void loadPartnerTypes() {
+        String url = BASE_URL + "get_director_partner_types.php";
+        
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
+            new Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject response) {
+                    try {
+                        boolean success = response.getBoolean("success");
+                        if (success) {
+                            JSONObject data = response.getJSONObject("data");
+                            JSONArray partnerTypesArray = data.getJSONArray("partner_types");
+                            
+                            partnerTypeNames.clear();
+                            partnerTypeIds.clear();
+                            partnerTypeNames.add("Select Agent Type");
+                            
+                            for (int i = 0; i < partnerTypesArray.length(); i++) {
+                                JSONObject partnerType = partnerTypesArray.getJSONObject(i);
+                                partnerTypeNames.add(partnerType.getString("partner_type"));
+                                partnerTypeIds.add(partnerType.getString("id"));
+                            }
+                            
+                            // Set up spinner
+                            ArrayAdapter<String> adapter = new ArrayAdapter<>(DirectorMyAgentActivity.this, 
+                                android.R.layout.simple_spinner_item, partnerTypeNames);
+                            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                            spinnerPartnerType.setAdapter(adapter);
+                            
+                            Toast.makeText(DirectorMyAgentActivity.this, 
+                                "Loaded " + partnerTypesArray.length() + " partner types", Toast.LENGTH_SHORT).show();
+                        } else {
+                            String message = response.getString("message");
+                            Toast.makeText(DirectorMyAgentActivity.this, "Error: " + message, Toast.LENGTH_LONG).show();
+                        }
+                    } catch (JSONException e) {
+                        Toast.makeText(DirectorMyAgentActivity.this, "Error parsing partner types: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                }
+            },
+            new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Toast.makeText(DirectorMyAgentActivity.this, "Failed to load partner types: " + error.getMessage(), Toast.LENGTH_LONG).show();
+                }
+            });
+        
+        requestQueue.add(request);
+    }
+    
+    private void loadBranchStates() {
+        String url = BASE_URL + "get_director_branch_states.php";
+        
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
+            new Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject response) {
+                    try {
+                        boolean success = response.getBoolean("success");
+                        if (success) {
+                            JSONObject data = response.getJSONObject("data");
+                            JSONArray branchStatesArray = data.getJSONArray("branch_states");
+                            
+                            branchStateNames.clear();
+                            branchStateIds.clear();
+                            branchStateNames.add("Select Branch State");
+                            
+                            for (int i = 0; i < branchStatesArray.length(); i++) {
+                                JSONObject branchState = branchStatesArray.getJSONObject(i);
+                                branchStateNames.add(branchState.getString("branch_state_name"));
+                                branchStateIds.add(branchState.getString("id"));
+                            }
+                            
+                            // Set up spinner
+                            ArrayAdapter<String> adapter = new ArrayAdapter<>(DirectorMyAgentActivity.this, 
+                                android.R.layout.simple_spinner_item, branchStateNames);
+                            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                            spinnerBranchState.setAdapter(adapter);
+                            
+                            Toast.makeText(DirectorMyAgentActivity.this, 
+                                "Loaded " + branchStatesArray.length() + " branch states", Toast.LENGTH_SHORT).show();
+                        } else {
+                            String message = response.getString("message");
+                            Toast.makeText(DirectorMyAgentActivity.this, "Error: " + message, Toast.LENGTH_LONG).show();
+                        }
+                    } catch (JSONException e) {
+                        Toast.makeText(DirectorMyAgentActivity.this, "Error parsing branch states: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                }
+            },
+            new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Toast.makeText(DirectorMyAgentActivity.this, "Failed to load branch states: " + error.getMessage(), Toast.LENGTH_LONG).show();
+                }
+            });
+        
+        requestQueue.add(request);
+    }
+    
+    private void loadBranchLocations() {
+        String url = BASE_URL + "get_director_branch_locations.php";
+        
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
+            new Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject response) {
+                    try {
+                        boolean success = response.getBoolean("success");
+                        if (success) {
+                            JSONObject data = response.getJSONObject("data");
+                            JSONArray branchLocationsArray = data.getJSONArray("branch_locations");
+                            
+                            branchLocationNames.clear();
+                            branchLocationIds.clear();
+                            branchLocationNames.add("Select Branch Location");
+                            
+                            for (int i = 0; i < branchLocationsArray.length(); i++) {
+                                JSONObject branchLocation = branchLocationsArray.getJSONObject(i);
+                                branchLocationNames.add(branchLocation.getString("branch_location"));
+                                branchLocationIds.add(branchLocation.getString("id"));
+                            }
+                            
+                            // Set up spinner
+                            ArrayAdapter<String> adapter = new ArrayAdapter<>(DirectorMyAgentActivity.this, 
+                                android.R.layout.simple_spinner_item, branchLocationNames);
+                            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                            spinnerBranchLocation.setAdapter(adapter);
+                            
+                            Toast.makeText(DirectorMyAgentActivity.this, 
+                                "Loaded " + branchLocationsArray.length() + " branch locations", Toast.LENGTH_SHORT).show();
+                        } else {
+                            String message = response.getString("message");
+                            Toast.makeText(DirectorMyAgentActivity.this, "Error: " + message, Toast.LENGTH_LONG).show();
+                        }
+                    } catch (JSONException e) {
+                        Toast.makeText(DirectorMyAgentActivity.this, "Error parsing branch locations: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                }
+            },
+            new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Toast.makeText(DirectorMyAgentActivity.this, "Failed to load branch locations: " + error.getMessage(), Toast.LENGTH_LONG).show();
+                }
+            });
+        
+        requestQueue.add(request);
     }
 
     private void filterAgents() {
