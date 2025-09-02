@@ -37,6 +37,7 @@ public class PortfolioTeamActivity extends AppCompatActivity {
     private List<TeamMember> teamList;
     private List<TeamMember> allTeamList; // Store all team members for filtering
     private List<RBHUser> rbhUsers; // Store RBH users for dropdown
+    private List<Portfolio> rbhPortfolios; // Store portfolios created by RBH users
     private OkHttpClient httpClient;
 
     @Override
@@ -50,6 +51,7 @@ public class PortfolioTeamActivity extends AppCompatActivity {
         initializeViews();
         setupClickListeners();
         loadRBHUsers();
+        loadRBHPortfolios();
         loadTeamData();
     }
 
@@ -68,6 +70,7 @@ public class PortfolioTeamActivity extends AppCompatActivity {
         teamList = new ArrayList<>();
         allTeamList = new ArrayList<>();
         rbhUsers = new ArrayList<>();
+        rbhPortfolios = new ArrayList<>();
         teamAdapter = new TeamAdapter(teamList);
         teamRecyclerView.setAdapter(teamAdapter);
     }
@@ -166,6 +169,122 @@ public class PortfolioTeamActivity extends AppCompatActivity {
         ArrayAdapter<String> userAdapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, userOptions);
         userDropdown.setAdapter(userAdapter);
     }
+    
+    private void loadRBHPortfolios() {
+        // Build API URL
+        String apiUrl = "https://emp.kfinone.com/mobile/api/get_rbh_portfolios.php";
+        
+        // Create request
+        Request request = new Request.Builder()
+                .url(apiUrl)
+                .get()
+                .build();
+        
+        // Make API call
+        httpClient.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                runOnUiThread(() -> {
+                    Toast.makeText(PortfolioTeamActivity.this, "Failed to load portfolios: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                });
+            }
+            
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (response.isSuccessful()) {
+                    String responseBody = response.body().string();
+                    parseRBHPortfoliosData(responseBody);
+                } else {
+                    runOnUiThread(() -> {
+                        Toast.makeText(PortfolioTeamActivity.this, "Failed to load portfolios. Server error: " + response.code(), Toast.LENGTH_LONG).show();
+                    });
+                }
+            }
+        });
+    }
+    
+    private void parseRBHPortfoliosData(String jsonResponse) {
+        try {
+            JSONObject jsonObject = new JSONObject(jsonResponse);
+            boolean success = jsonObject.getBoolean("success");
+            
+            if (success) {
+                JSONObject data = jsonObject.getJSONObject("data");
+                JSONArray portfoliosArray = data.getJSONArray("portfolios");
+                
+                rbhPortfolios.clear();
+                
+                for (int i = 0; i < portfoliosArray.length(); i++) {
+                    JSONObject portfolioJson = portfoliosArray.getJSONObject(i);
+                    
+                    Portfolio portfolio = new Portfolio(
+                        portfolioJson.optString("id", ""),
+                        portfolioJson.optString("customer_name", ""),
+                        portfolioJson.optString("company_name", ""),
+                        portfolioJson.optString("Phone_number", ""),
+                        portfolioJson.optString("alternative_Phone_number", ""),
+                        portfolioJson.optString("email_id", ""),
+                        portfolioJson.optString("state", ""),
+                        portfolioJson.optString("location", ""),
+                        portfolioJson.optString("sub_location", ""),
+                        portfolioJson.optString("pin_code", ""),
+                        portfolioJson.optString("customer_type", ""),
+                        portfolioJson.optString("industry_type", ""),
+                        portfolioJson.optString("business_type", ""),
+                        portfolioJson.optString("birth_date", ""),
+                        portfolioJson.optString("address", ""),
+                        portfolioJson.optString("createdBy", ""),
+                        portfolioJson.optString("status", ""),
+                        portfolioJson.optString("created_at", ""),
+                        portfolioJson.optString("updated_at", "")
+                    );
+                    
+                    rbhPortfolios.add(portfolio);
+                }
+                
+                runOnUiThread(() -> {
+                    updateTeamListWithPortfolios();
+                    Toast.makeText(PortfolioTeamActivity.this, "Loaded " + rbhPortfolios.size() + " RBH portfolios", Toast.LENGTH_SHORT).show();
+                });
+                
+            } else {
+                String message = jsonObject.optString("message", "Unknown error");
+                runOnUiThread(() -> {
+                    Toast.makeText(PortfolioTeamActivity.this, "Error: " + message, Toast.LENGTH_LONG).show();
+                });
+            }
+            
+        } catch (JSONException e) {
+            runOnUiThread(() -> {
+                Toast.makeText(PortfolioTeamActivity.this, "Error parsing portfolio data: " + e.getMessage(), Toast.LENGTH_LONG).show();
+            });
+        }
+    }
+    
+    private void updateTeamListWithPortfolios() {
+        // Convert portfolios to team members for display
+        allTeamList.clear();
+        
+        for (Portfolio portfolio : rbhPortfolios) {
+            // Create a team member representation of the portfolio
+            TeamMember teamMember = new TeamMember(
+                portfolio.getId(),
+                portfolio.getCustomerName(),
+                portfolio.getCompanyName(),
+                portfolio.getStatus(),
+                portfolio.getEmailId(),
+                portfolio.getCreatedBy() // Use createdBy as userType
+            );
+            
+            allTeamList.add(teamMember);
+        }
+        
+        // Initially show all data
+        teamList.clear();
+        teamList.addAll(allTeamList);
+        teamAdapter.notifyDataSetChanged();
+        updateEmptyState();
+    }
 
     private void setupClickListeners() {
         backButton.setOnClickListener(v -> finish());
@@ -185,11 +304,8 @@ public class PortfolioTeamActivity extends AppCompatActivity {
     }
 
     private void loadTeamData() {
-        // TODO: Load team data from server
-        // Clear all data - no sample data
-        allTeamList.clear();
-        teamList.clear();
-        teamAdapter.notifyDataSetChanged();
+        // Team data is now loaded from RBH portfolios
+        // This method is kept for compatibility but data is loaded via loadRBHPortfolios()
         updateEmptyState();
     }
 
@@ -204,12 +320,15 @@ public class PortfolioTeamActivity extends AppCompatActivity {
         teamList.clear();
         
         if ("All Users".equals(selectedUser)) {
-            // Show all team members
+            // Show all portfolios
             teamList.addAll(allTeamList);
         } else {
-            // Filter by selected user type
+            // Extract username from the dropdown selection format "Full Name (username)"
+            String username = extractUsernameFromSelection(selectedUser);
+            
+            // Filter by selected RBH user
             for (TeamMember member : allTeamList) {
-                if (selectedUser.equals(member.getUserType())) {
+                if (username.equals(member.getUserType())) {
                     teamList.add(member);
                 }
             }
@@ -218,7 +337,19 @@ public class PortfolioTeamActivity extends AppCompatActivity {
         teamAdapter.notifyDataSetChanged();
         updateEmptyState();
         
-        Toast.makeText(this, "Showing data for: " + selectedUser, Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Showing portfolios for: " + selectedUser, Toast.LENGTH_SHORT).show();
+    }
+    
+    private String extractUsernameFromSelection(String selection) {
+        // Extract username from format "Full Name (username)"
+        if (selection.contains("(") && selection.contains(")")) {
+            int startIndex = selection.lastIndexOf("(") + 1;
+            int endIndex = selection.lastIndexOf(")");
+            if (startIndex > 0 && endIndex > startIndex) {
+                return selection.substring(startIndex, endIndex);
+            }
+        }
+        return selection; // Return as is if format doesn't match
     }
 
     private void resetFilters() {
