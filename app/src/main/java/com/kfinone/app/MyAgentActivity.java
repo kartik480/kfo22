@@ -40,7 +40,7 @@ public class MyAgentActivity extends AppCompatActivity {
     private RequestQueue requestQueue;
 
     // Data
-    private List<AgentItem> agentList = new ArrayList<>();
+    private List<AgentData> agentList = new ArrayList<>();
     private AgentAdapter agentAdapter;
     
     // Background processing
@@ -340,7 +340,7 @@ public class MyAgentActivity extends AppCompatActivity {
 
     private void parseAgentData(JSONArray response) {
         Log.d(TAG, "parseAgentData started with " + response.length() + " items");
-        List<AgentItem> newAgentList = new ArrayList<>();
+        List<AgentData> newAgentList = new ArrayList<>();
         try {
             for (int i = 0; i < response.length(); i++) {
                 JSONObject agent = response.getJSONObject(i);
@@ -362,7 +362,8 @@ public class MyAgentActivity extends AppCompatActivity {
                 String createdUser = agent.optString("created_user", "");
                 String createdBy = agent.optString("createdBy", agent.optString("created_by", ""));
                 
-                AgentItem agentItem = new AgentItem(
+                AgentData agentItem = new AgentData(
+                    "", // id
                     fullName,
                     companyName,
                     phoneNumber,
@@ -374,7 +375,14 @@ public class MyAgentActivity extends AppCompatActivity {
                     address,
                     visitingCard,
                     createdUser,
-                    createdBy
+                    createdBy,
+                    "", // status
+                    "", // createdAt
+                    "", // updatedAt
+                    "", // creatorFirstName
+                    "", // creatorLastName
+                    createdBy, // creatorUsername
+                    "" // creatorFullName
                 );
                 newAgentList.add(agentItem);
                 Log.d(TAG, "Added agent: " + agentItem.getFullName());
@@ -479,11 +487,12 @@ public class MyAgentActivity extends AppCompatActivity {
 
     private void parseFilteredAgentData(JSONArray response) {
         Log.d(TAG, "parseFilteredAgentData started with " + response.length() + " items");
-        List<AgentItem> filteredList = new ArrayList<>();
+        List<AgentData> filteredList = new ArrayList<>();
         try {
             for (int i = 0; i < response.length(); i++) {
                 JSONObject agent = response.getJSONObject(i);
-                AgentItem agentItem = new AgentItem(
+                AgentData agentItem = new AgentData(
+                    agent.optString("id", ""), // id
                     agent.optString("full_name", ""),
                     agent.optString("company_name", ""),
                     agent.optString("Phone_number", ""),
@@ -495,7 +504,14 @@ public class MyAgentActivity extends AppCompatActivity {
                     agent.optString("address", ""),
                     agent.optString("visiting_card", ""),
                     agent.optString("created_user", ""),
-                    agent.optString("createdBy", "")
+                    agent.optString("createdBy", ""),
+                    agent.optString("status", ""), // status
+                    agent.optString("created_at", ""), // createdAt
+                    agent.optString("updated_at", ""), // updatedAt
+                    agent.optString("creator_first_name", ""), // creatorFirstName
+                    agent.optString("creator_last_name", ""), // creatorLastName
+                    agent.optString("creator_username", ""), // creatorUsername
+                    agent.optString("creator_full_name", "") // creatorFullName
                 );
                 filteredList.add(agentItem);
                 Log.d(TAG, "Added filtered agent: " + agentItem.getFullName());
@@ -527,9 +543,9 @@ public class MyAgentActivity extends AppCompatActivity {
     }
 
     private void filterAgents(String agentType, String branchState, String branchLocation) {
-        List<AgentItem> filteredList = new ArrayList<>();
+        List<AgentData> filteredList = new ArrayList<>();
         
-        for (AgentItem agent : agentList) {
+        for (AgentData agent : agentList) {
             boolean matchesAgentType = agentType.equals("All") || agent.getPartnerType().equals(agentType);
             boolean matchesBranchState = branchState.equals("All") || agent.getState().equals(branchState);
             boolean matchesBranchLocation = branchLocation.equals("All") || agent.getLocation().equals(branchLocation);
@@ -548,9 +564,9 @@ public class MyAgentActivity extends AppCompatActivity {
 
     private void displaySampleData() {
         // Create sample data for testing
-        List<AgentItem> sampleList = new ArrayList<>();
-        sampleList.add(new AgentItem("John Doe", "ABC Corp", "1234567890", "0987654321", "john@abc.com", "Business", "Maharashtra", "Mumbai", "Mumbai Address", "", "Admin", "Admin"));
-        sampleList.add(new AgentItem("Jane Smith", "XYZ Ltd", "9876543210", "0123456789", "jane@xyz.com", "Individual", "Delhi", "New Delhi", "Delhi Address", "", "Admin", "Admin"));
+        List<AgentData> sampleList = new ArrayList<>();
+        sampleList.add(new AgentData("1", "John Doe", "ABC Corp", "1234567890", "0987654321", "john@abc.com", "Business", "Maharashtra", "Mumbai", "Mumbai Address", "", "Admin", "Admin", "Active", "2024-01-01", "2024-01-01", "Admin", "User", "Admin", "Admin User"));
+        sampleList.add(new AgentData("2", "Jane Smith", "XYZ Ltd", "9876543210", "0123456789", "jane@xyz.com", "Individual", "Delhi", "New Delhi", "Delhi Address", "", "Admin", "Admin", "Active", "2024-01-01", "2024-01-01", "Admin", "User", "Admin", "Admin User"));
         
         agentList.clear();
         agentList.addAll(sampleList);

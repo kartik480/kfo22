@@ -1,13 +1,18 @@
 package com.kfinone.app;
 
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -24,6 +29,12 @@ public class DirectorMyAgentActivity extends AppCompatActivity {
     private Spinner spinnerPartnerType, spinnerBranchState, spinnerBranchLocation;
     private Button btnFilter, btnReset;
     private RequestQueue requestQueue;
+    private RecyclerView agentsRecyclerView;
+    private LinearLayout emptyStateContainer;
+    private LinearLayout loadingContainer;
+    private TextView agentCountText;
+    private String userName;
+    private String userId;
 
     // For mapping dropdown display names to IDs
     private List<String> partnerTypeNames = new ArrayList<>();
@@ -32,6 +43,11 @@ public class DirectorMyAgentActivity extends AppCompatActivity {
     private List<String> branchStateIds = new ArrayList<>();
     private List<String> branchLocationNames = new ArrayList<>();
     private List<String> branchLocationIds = new ArrayList<>();
+    
+    // For agents data
+    private List<AgentData> allAgents = new ArrayList<>();
+    private List<AgentData> filteredAgents = new ArrayList<>();
+    private AgentAdapter agentAdapter;
 
     private static final String BASE_URL = "https://emp.kfinone.com/mobile/api/";
 
@@ -52,17 +68,33 @@ public class DirectorMyAgentActivity extends AppCompatActivity {
         spinnerBranchLocation = findViewById(R.id.spinner_branch_location);
         btnFilter = findViewById(R.id.btn_filter);
         btnReset = findViewById(R.id.btn_reset);
+        agentsRecyclerView = findViewById(R.id.agentsRecyclerView);
+        emptyStateContainer = findViewById(R.id.emptyStateContainer);
+        loadingContainer = findViewById(R.id.loadingContainer);
+        agentCountText = findViewById(R.id.agentCountText);
 
         requestQueue = Volley.newRequestQueue(this);
+        
+        // Get user data from intent
+        userName = getIntent().getStringExtra("userName");
+        userId = getIntent().getStringExtra("userId");
+        
+        // Initialize agents data
+        allAgents = new ArrayList<>();
+        filteredAgents = new ArrayList<>();
+        
+        // Setup RecyclerView
+        setupRecyclerView();
 
         loadDropdownOptions();
+        loadMyAgents();
 
         btnFilter.setOnClickListener(v -> filterAgents());
         btnReset.setOnClickListener(v -> {
             spinnerPartnerType.setSelection(0);
             spinnerBranchState.setSelection(0);
             spinnerBranchLocation.setSelection(0);
-            Toast.makeText(this, "Filters reset", Toast.LENGTH_SHORT).show();
+            resetFilters();
         });
     }
 
@@ -258,5 +290,132 @@ public class DirectorMyAgentActivity extends AppCompatActivity {
         
         // TODO: Implement actual filtering logic here
         // For now, just show the message
+    }
+    
+    private void setupRecyclerView() {
+        agentAdapter = new AgentAdapter(filteredAgents);
+        agentsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        agentsRecyclerView.setAdapter(agentAdapter);
+    }
+    
+    private void loadMyAgents() {
+        if (userName == null || userName.isEmpty()) {
+            Toast.makeText(this, "User information not available", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        
+        showLoadingState();
+        
+        String url = BASE_URL + "get_director_my_agents.php?username=" + userName;
+        
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
+            new Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject response) {
+                    hideLoadingState();
+                    try {
+                        if (response.getBoolean("success")) {
+                            parseAgentsData(response);
+                            updateAgentsDisplay();
+                        } else {
+                            String message = response.getString("message");
+                            Toast.makeText(DirectorMyAgentActivity.this, message, Toast.LENGTH_SHORT).show();
+                            showEmptyState();
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        Toast.makeText(DirectorMyAgentActivity.this, "Error parsing response", Toast.LENGTH_SHORT).show();
+                        showEmptyState();
+                    }
+                }
+            },
+            new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    hideLoadingState();
+                    Toast.makeText(DirectorMyAgentActivity.this, "Error loading agents: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                    showEmptyState();
+                }
+            });
+        
+        requestQueue.add(request);
+    }
+    
+    private void parseAgentsData(JSONObject response) throws JSONException {
+        allAgents.clear();
+        
+        JSONObject data = response.getJSONObject("data");
+        JSONArray agentsArray = data.getJSONArray("agents");
+        
+        for (int i = 0; i < agentsArray.length(); i++) {
+            JSONObject agentJson = agentsArray.getJSONObject(i);
+            
+            AgentData agent = new AgentData(
+                agentJson.optString("id", ""),
+                agentJson.optString("full_name", ""),
+                agentJson.optString("company_name", ""),
+                agentJson.optString("Phone_number", ""),
+                agentJson.optString("alternative_Phone_number", ""),
+                agentJson.optString("email_id", ""),
+                agentJson.optString("partnerType", ""),
+                agentJson.optString("state", ""),
+                agentJson.optString("location", ""),
+                agentJson.optString("address", ""),
+                agentJson.optString("visiting_card", ""),
+                agentJson.optString("created_user", ""),
+                agentJson.optString("createdBy", ""),
+                agentJson.optString("status", ""),
+                agentJson.optString("created_at", ""),
+                agentJson.optString("updated_at", ""),
+                agentJson.optString("creator_first_name", ""),
+                agentJson.optString("creator_last_name", ""),
+                agentJson.optString("creator_username", ""),
+                agentJson.optString("creator_full_name", "")
+            );
+            
+            allAgents.add(agent);
+        }
+        
+        // Initially show all agents
+        filteredAgents.clear();
+        filteredAgents.addAll(allAgents);
+    }
+    
+    private void updateAgentsDisplay() {
+        agentAdapter.notifyDataSetChanged();
+        agentCountText.setText(filteredAgents.size() + " agents");
+        
+        if (filteredAgents.isEmpty()) {
+            showEmptyState();
+        } else {
+            showAgentsList();
+        }
+    }
+    
+    private void showLoadingState() {
+        loadingContainer.setVisibility(View.VISIBLE);
+        agentsRecyclerView.setVisibility(View.GONE);
+        emptyStateContainer.setVisibility(View.GONE);
+    }
+    
+    private void hideLoadingState() {
+        loadingContainer.setVisibility(View.GONE);
+    }
+    
+    private void showEmptyState() {
+        emptyStateContainer.setVisibility(View.VISIBLE);
+        agentsRecyclerView.setVisibility(View.GONE);
+    }
+    
+    private void showAgentsList() {
+        agentsRecyclerView.setVisibility(View.VISIBLE);
+        emptyStateContainer.setVisibility(View.GONE);
+    }
+    
+    private void resetFilters() {
+        filteredAgents.clear();
+        filteredAgents.addAll(allAgents);
+        updateAgentsDisplay();
+        Toast.makeText(this, "Filters reset", Toast.LENGTH_SHORT).show();
     }
 } 

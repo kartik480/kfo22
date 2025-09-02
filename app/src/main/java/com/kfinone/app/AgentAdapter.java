@@ -1,91 +1,67 @@
 package com.kfinone.app;
 
-import android.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
-public class AgentAdapter extends RecyclerView.Adapter<AgentAdapter.AgentViewHolder> {
-    private List<AgentItem> agentList;
+public class AgentAdapter extends RecyclerView.Adapter<AgentAdapter.ViewHolder> {
+    private List<AgentData> agents;
 
-    public AgentAdapter(List<AgentItem> agentList) {
-        this.agentList = agentList;
+    public AgentAdapter(List<AgentData> agents) {
+        this.agents = agents;
     }
 
     @NonNull
     @Override
-    public AgentViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_agent_row, parent, false);
-        return new AgentViewHolder(view);
+                .inflate(R.layout.item_agent, parent, false);
+        return new ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull AgentViewHolder holder, int position) {
-        AgentItem agent = agentList.get(position);
-        holder.bind(agent);
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        AgentData agent = agents.get(position);
+        
+        holder.fullNameText.setText(agent.getFullName() != null ? agent.getFullName() : "N/A");
+        holder.companyNameText.setText(agent.getCompanyName() != null ? agent.getCompanyName() : "N/A");
+        holder.phoneText.setText(agent.getPhoneNumber() != null ? agent.getPhoneNumber() : "N/A");
+        holder.emailText.setText(agent.getEmailId() != null ? agent.getEmailId() : "N/A");
+        holder.partnerTypeText.setText(agent.getPartnerType() != null ? agent.getPartnerType() : "N/A");
+        holder.locationText.setText(agent.getLocation() != null ? agent.getLocation() : "N/A");
+        holder.statusText.setText(agent.getStatus() != null ? agent.getStatus() : "N/A");
+        holder.createdByText.setText(agent.getCreatorFullName() != null ? agent.getCreatorFullName() : "N/A");
     }
 
     @Override
     public int getItemCount() {
-        return agentList.size();
+        return agents.size();
     }
 
-    public void updateData(List<AgentItem> newAgentList) {
-        this.agentList = newAgentList;
-        notifyDataSetChanged();
-    }
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+        TextView fullNameText;
+        TextView companyNameText;
+        TextView phoneText;
+        TextView emailText;
+        TextView partnerTypeText;
+        TextView locationText;
+        TextView statusText;
+        TextView createdByText;
 
-    static class AgentViewHolder extends RecyclerView.ViewHolder {
-        private TextView fullNameText, companyText, mobileText, agentTypeText, 
-                       branchStateText, branchLocationText;
-        private Button actionButton;
-
-        public AgentViewHolder(@NonNull View itemView) {
+        public ViewHolder(@NonNull View itemView) {
             super(itemView);
             fullNameText = itemView.findViewById(R.id.fullNameText);
-            companyText = itemView.findViewById(R.id.companyText);
-            mobileText = itemView.findViewById(R.id.mobileText);
-            agentTypeText = itemView.findViewById(R.id.agentTypeText);
-            branchStateText = itemView.findViewById(R.id.branchStateText);
-            branchLocationText = itemView.findViewById(R.id.branchLocationText);
-            actionButton = itemView.findViewById(R.id.actionButton);
-        }
-
-        public void bind(AgentItem agent) {
-            fullNameText.setText(agent.getFullName().isEmpty() ? "-" : agent.getFullName());
-            companyText.setText(agent.getCompanyName().isEmpty() ? "-" : agent.getCompanyName());
-            mobileText.setText(agent.getPhoneNumber().isEmpty() ? "-" : agent.getPhoneNumber());
-            agentTypeText.setText(agent.getPartnerType().isEmpty() ? "-" : agent.getPartnerType());
-            branchStateText.setText(agent.getState().isEmpty() ? "-" : agent.getState());
-            branchLocationText.setText(agent.getLocation().isEmpty() ? "-" : agent.getLocation());
-
-            actionButton.setOnClickListener(v -> showAgentDetails(agent));
-        }
-
-        private void showAgentDetails(AgentItem agent) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(itemView.getContext());
-            builder.setTitle("Agent Details - " + agent.getFullName());
-            
-            String details = "Name: " + agent.getFullName() + "\n" +
-                            "Company: " + agent.getCompanyName() + "\n" +
-                            "Phone: " + agent.getPhoneNumber() + "\n" +
-                            "Alternative Phone: " + agent.getAlternativePhoneNumber() + "\n" +
-                            "Email: " + agent.getEmailId() + "\n" +
-                            "Type: " + agent.getPartnerType() + "\n" +
-                            "State: " + agent.getState() + "\n" +
-                            "Location: " + agent.getLocation() + "\n" +
-                            "Address: " + agent.getAddress() + "\n" +
-                            "Created By: " + agent.getCreatedBy();
-            
-            builder.setMessage(details);
-            builder.setPositiveButton("Close", null);
-            builder.show();
+            companyNameText = itemView.findViewById(R.id.companyNameText);
+            phoneText = itemView.findViewById(R.id.phoneText);
+            emailText = itemView.findViewById(R.id.emailText);
+            partnerTypeText = itemView.findViewById(R.id.partnerTypeText);
+            locationText = itemView.findViewById(R.id.locationText);
+            statusText = itemView.findViewById(R.id.statusText);
+            createdByText = itemView.findViewById(R.id.createdByText);
         }
     }
 }

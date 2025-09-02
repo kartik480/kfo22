@@ -199,81 +199,114 @@
     </LinearLayout>
 
     <!-- Content Area -->
-    <ScrollView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
+        android:orientation="vertical"
         android:paddingHorizontal="16dp">
 
+        <!-- Agents List Header -->
         <LinearLayout
-            android:id="@+id/agentListContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:background="#FFFFFF"
+            android:padding="16dp"
+            android:layout_marginBottom="8dp"
+            android:elevation="2dp">
 
-            <!-- Empty State -->
-            <LinearLayout
-                android:id="@+id/emptyStateContainer"
-                android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:orientation="vertical"
-                android:gravity="center"
-                android:background="#FFFFFF"
-                android:padding="16dp">
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="My Agents"
+                android:textSize="18sp"
+                android:textColor="#2C3E50"
+                android:textStyle="bold" />
 
-                <ImageView
-                    android:layout_width="64dp"
-                    android:layout_height="64dp"
-                    android:src="@drawable/ic_people"
-                    android:tint="#BDBDBD"
-                    android:layout_marginBottom="16dp" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="No Agents Found"
-                    android:textSize="16sp"
-                    android:textColor="#9E9E9E"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Try adjusting your filters or add new agents"
-                    android:textSize="14sp"
-                    android:textColor="#BDBDBD"
-                    android:gravity="center"
-                    android:layout_marginTop="8dp" />
-
-            </LinearLayout>
-
-            <!-- Loading State -->
-            <LinearLayout
-                android:id="@+id/loadingContainer"
-                android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:orientation="vertical"
-                android:gravity="center"
-                android:background="#FFFFFF"
-                android:padding="16dp"
-                android:visibility="gone">
-
-                <ProgressBar
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:layout_marginBottom="16dp" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Loading Agents..."
-                    android:textSize="16sp"
-                    android:textColor="#7F8C8D" />
-
-            </LinearLayout>
+            <TextView
+                android:id="@+id/agentCountText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0 agents"
+                android:textSize="14sp"
+                android:textColor="#7F8C8D" />
 
         </LinearLayout>
 
-    </ScrollView>
+        <!-- Agents RecyclerView -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/agentsRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:visibility="gone" />
+
+        <!-- Empty State -->
+        <LinearLayout
+            android:id="@+id/emptyStateContainer"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:background="#FFFFFF"
+            android:padding="16dp">
+
+            <ImageView
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:src="@drawable/ic_people"
+                android:tint="#BDBDBD"
+                android:layout_marginBottom="16dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="No Agents Found"
+                android:textSize="16sp"
+                android:textColor="#9E9E9E"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="You haven't created any agents yet"
+                android:textSize="14sp"
+                android:textColor="#BDBDBD"
+                android:gravity="center"
+                android:layout_marginTop="8dp" />
+
+        </LinearLayout>
+
+        <!-- Loading State -->
+        <LinearLayout
+            android:id="@+id/loadingContainer"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:background="#FFFFFF"
+            android:padding="16dp"
+            android:visibility="gone">
+
+            <ProgressBar
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginBottom="16dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Loading Agents..."
+                android:textSize="16sp"
+                android:textColor="#7F8C8D" />
+
+        </LinearLayout>
+
+    </LinearLayout>
 
 </LinearLayout> 
