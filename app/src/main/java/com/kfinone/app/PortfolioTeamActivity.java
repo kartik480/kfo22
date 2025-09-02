@@ -11,8 +11,17 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.button.MaterialButton;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 public class PortfolioTeamActivity extends AppCompatActivity {
 
@@ -27,15 +36,20 @@ public class PortfolioTeamActivity extends AppCompatActivity {
     private TeamAdapter teamAdapter;
     private List<TeamMember> teamList;
     private List<TeamMember> allTeamList; // Store all team members for filtering
+    private List<RBHUser> rbhUsers; // Store RBH users for dropdown
+    private OkHttpClient httpClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_portfolio_team);
 
+        // Initialize HTTP client
+        httpClient = new OkHttpClient();
+        
         initializeViews();
-        setupDropdowns();
         setupClickListeners();
+        loadRBHUsers();
         loadTeamData();
     }
 
@@ -53,15 +67,103 @@ public class PortfolioTeamActivity extends AppCompatActivity {
         teamRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         teamList = new ArrayList<>();
         allTeamList = new ArrayList<>();
+        rbhUsers = new ArrayList<>();
         teamAdapter = new TeamAdapter(teamList);
         teamRecyclerView.setAdapter(teamAdapter);
     }
 
-    private void setupDropdowns() {
-        // TODO: Load user options from server
-        // No sample dropdown options
-        String[] users = {};
-        ArrayAdapter<String> userAdapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, users);
+    private void loadRBHUsers() {
+        // Build API URL
+        String apiUrl = "https://emp.kfinone.com/mobile/api/get_rbh_users_for_dropdown.php";
+        
+        // Create request
+        Request request = new Request.Builder()
+                .url(apiUrl)
+                .get()
+                .build();
+        
+        // Make API call
+        httpClient.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                runOnUiThread(() -> {
+                    Toast.makeText(PortfolioTeamActivity.this, "Failed to load users: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                });
+            }
+            
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (response.isSuccessful()) {
+                    String responseBody = response.body().string();
+                    parseRBHUsersData(responseBody);
+                } else {
+                    runOnUiThread(() -> {
+                        Toast.makeText(PortfolioTeamActivity.this, "Failed to load users. Server error: " + response.code(), Toast.LENGTH_LONG).show();
+                    });
+                }
+            }
+        });
+    }
+    
+    private void parseRBHUsersData(String jsonResponse) {
+        try {
+            JSONObject jsonObject = new JSONObject(jsonResponse);
+            boolean success = jsonObject.getBoolean("success");
+            
+            if (success) {
+                JSONObject data = jsonObject.getJSONObject("data");
+                JSONArray usersArray = data.getJSONArray("users");
+                
+                rbhUsers.clear();
+                
+                for (int i = 0; i < usersArray.length(); i++) {
+                    JSONObject userJson = usersArray.getJSONObject(i);
+                    
+                    RBHUser user = new RBHUser(
+                        userJson.optString("id", ""),
+                        userJson.optString("username", ""),
+                        userJson.optString("firstName", ""),
+                        userJson.optString("lastName", ""),
+                        userJson.optString("designation_id", ""),
+                        userJson.optString("designation_name", ""),
+                        userJson.optString("full_name", ""),
+                        userJson.optString("email_id", ""),
+                        userJson.optString("mobile", ""),
+                        userJson.optString("status", "")
+                    );
+                    
+                    rbhUsers.add(user);
+                }
+                
+                runOnUiThread(() -> {
+                    setupDropdown();
+                    Toast.makeText(PortfolioTeamActivity.this, "Loaded " + rbhUsers.size() + " RBH users", Toast.LENGTH_SHORT).show();
+                });
+                
+            } else {
+                String message = jsonObject.optString("message", "Unknown error");
+                runOnUiThread(() -> {
+                    Toast.makeText(PortfolioTeamActivity.this, "Error: " + message, Toast.LENGTH_LONG).show();
+                });
+            }
+            
+        } catch (JSONException e) {
+            runOnUiThread(() -> {
+                Toast.makeText(PortfolioTeamActivity.this, "Error parsing user data: " + e.getMessage(), Toast.LENGTH_LONG).show();
+            });
+        }
+    }
+    
+    private void setupDropdown() {
+        // Create dropdown options from RBH users
+        List<String> userOptions = new ArrayList<>();
+        userOptions.add("All Users"); // Add default option
+        
+        for (RBHUser user : rbhUsers) {
+            userOptions.add(user.getFullName() + " (" + user.getUsername() + ")");
+        }
+        
+        ArrayAdapter<String> userAdapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, userOptions);
         userDropdown.setAdapter(userAdapter);
     }
 
@@ -166,5 +268,46 @@ public class PortfolioTeamActivity extends AppCompatActivity {
         public String getStatus() { return status; }
         public String getEmail() { return email; }
         public String getUserType() { return userType; }
+    }
+    
+    // RBH User class for dropdown
+    public static class RBHUser {
+        private String id;
+        private String username;
+        private String firstName;
+        private String lastName;
+        private String designationId;
+        private String designationName;
+        private String fullName;
+        private String emailId;
+        private String mobile;
+        private String status;
+
+        public RBHUser(String id, String username, String firstName, String lastName, 
+                      String designationId, String designationName, String fullName, 
+                      String emailId, String mobile, String status) {
+            this.id = id;
+            this.username = username;
+            this.firstName = firstName;
+            this.lastName = lastName;
+            this.designationId = designationId;
+            this.designationName = designationName;
+            this.fullName = fullName;
+            this.emailId = emailId;
+            this.mobile = mobile;
+            this.status = status;
+        }
+
+        // Getters
+        public String getId() { return id; }
+        public String getUsername() { return username; }
+        public String getFirstName() { return firstName; }
+        public String getLastName() { return lastName; }
+        public String getDesignationId() { return designationId; }
+        public String getDesignationName() { return designationName; }
+        public String getFullName() { return fullName; }
+        public String getEmailId() { return emailId; }
+        public String getMobile() { return mobile; }
+        public String getStatus() { return status; }
     }
 } 
