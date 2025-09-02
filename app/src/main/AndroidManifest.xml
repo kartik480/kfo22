@@ -1313,6 +1313,11 @@
             android:label="Managing Director Agent List"
             android:parentActivityName=".ManagingDirectorMyAgentSimpleActivity"
             android:theme="@style/FullscreenTheme" />
+        <activity
+            android:name=".ManagingDirectorPortfolioTeamActivity"
+            android:exported="false"
+            android:label="Managing Director Portfolio Team"
+            android:parentActivityName=".PortfolioPanelActivity" />
             
         <activity
             android:name=".CBOPartnerTeamManagementActivity"
