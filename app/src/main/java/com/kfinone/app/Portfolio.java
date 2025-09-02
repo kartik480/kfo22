@@ -4,58 +4,88 @@ public class Portfolio {
     private String id;
     private String customerName;
     private String companyName;
-    private String mobile;
+    private String phoneNumber;
+    private String alternativePhoneNumber;
+    private String emailId;
     private String state;
     private String location;
+    private String subLocation;
+    private String pinCode;
+    private String customerType;
+    private String industryType;
+    private String businessType;
+    private String birthDate;
+    private String address;
     private String createdBy;
     private String status;
-    private String email;
-    private String address;
-    private String createdDate;
-    private String updatedDate;
+    private String createdAt;
+    private String updatedAt;
 
-    public Portfolio(String id, String customerName, String companyName, String mobile, 
-                    String state, String location, String createdBy, String status,
-                    String email, String address, String createdDate, String updatedDate) {
+    public Portfolio(String id, String customerName, String companyName, String phoneNumber, 
+                    String alternativePhoneNumber, String emailId, String state, String location,
+                    String subLocation, String pinCode, String customerType, String industryType,
+                    String businessType, String birthDate, String address, String createdBy, 
+                    String status, String createdAt, String updatedAt) {
         this.id = id;
         this.customerName = customerName;
         this.companyName = companyName;
-        this.mobile = mobile;
+        this.phoneNumber = phoneNumber;
+        this.alternativePhoneNumber = alternativePhoneNumber;
+        this.emailId = emailId;
         this.state = state;
         this.location = location;
+        this.subLocation = subLocation;
+        this.pinCode = pinCode;
+        this.customerType = customerType;
+        this.industryType = industryType;
+        this.businessType = businessType;
+        this.birthDate = birthDate;
+        this.address = address;
         this.createdBy = createdBy;
         this.status = status;
-        this.email = email;
-        this.address = address;
-        this.createdDate = createdDate;
-        this.updatedDate = updatedDate;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
     }
 
     // Getters
     public String getId() { return id; }
     public String getCustomerName() { return customerName; }
     public String getCompanyName() { return companyName; }
-    public String getMobile() { return mobile; }
+    public String getPhoneNumber() { return phoneNumber; }
+    public String getAlternativePhoneNumber() { return alternativePhoneNumber; }
+    public String getEmailId() { return emailId; }
     public String getState() { return state; }
     public String getLocation() { return location; }
+    public String getSubLocation() { return subLocation; }
+    public String getPinCode() { return pinCode; }
+    public String getCustomerType() { return customerType; }
+    public String getIndustryType() { return industryType; }
+    public String getBusinessType() { return businessType; }
+    public String getBirthDate() { return birthDate; }
+    public String getAddress() { return address; }
     public String getCreatedBy() { return createdBy; }
     public String getStatus() { return status; }
-    public String getEmail() { return email; }
-    public String getAddress() { return address; }
-    public String getCreatedDate() { return createdDate; }
-    public String getUpdatedDate() { return updatedDate; }
+    public String getCreatedAt() { return createdAt; }
+    public String getUpdatedAt() { return updatedAt; }
 
     // Setters
     public void setId(String id) { this.id = id; }
     public void setCustomerName(String customerName) { this.customerName = customerName; }
     public void setCompanyName(String companyName) { this.companyName = companyName; }
-    public void setMobile(String mobile) { this.mobile = mobile; }
+    public void setPhoneNumber(String phoneNumber) { this.phoneNumber = phoneNumber; }
+    public void setAlternativePhoneNumber(String alternativePhoneNumber) { this.alternativePhoneNumber = alternativePhoneNumber; }
+    public void setEmailId(String emailId) { this.emailId = emailId; }
     public void setState(String state) { this.state = state; }
     public void setLocation(String location) { this.location = location; }
+    public void setSubLocation(String subLocation) { this.subLocation = subLocation; }
+    public void setPinCode(String pinCode) { this.pinCode = pinCode; }
+    public void setCustomerType(String customerType) { this.customerType = customerType; }
+    public void setIndustryType(String industryType) { this.industryType = industryType; }
+    public void setBusinessType(String businessType) { this.businessType = businessType; }
+    public void setBirthDate(String birthDate) { this.birthDate = birthDate; }
+    public void setAddress(String address) { this.address = address; }
     public void setCreatedBy(String createdBy) { this.createdBy = createdBy; }
     public void setStatus(String status) { this.status = status; }
-    public void setEmail(String email) { this.email = email; }
-    public void setAddress(String address) { this.address = address; }
-    public void setCreatedDate(String createdDate) { this.createdDate = createdDate; }
-    public void setUpdatedDate(String updatedDate) { this.updatedDate = updatedDate; }
+    public void setCreatedAt(String createdAt) { this.createdAt = createdAt; }
+    public void setUpdatedAt(String updatedAt) { this.updatedAt = updatedAt; }
 }

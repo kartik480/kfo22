@@ -8,8 +8,17 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 public class MyPortfolioActivity extends AppCompatActivity implements PortfolioAdapter.OnPortfolioActionListener {
 
@@ -19,11 +28,26 @@ public class MyPortfolioActivity extends AppCompatActivity implements PortfolioA
     private View refreshButton;
     private PortfolioAdapter portfolioAdapter;
     private List<Portfolio> portfolioList;
+    private String userName;
+    private String userId;
+    private OkHttpClient httpClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_portfolio);
+
+        // Get user data from intent
+        Intent intent = getIntent();
+        userName = intent.getStringExtra("USERNAME");
+        userId = intent.getStringExtra("USER_ID");
+        
+        if (userName == null || userName.isEmpty()) {
+            userName = "Unknown User";
+        }
+
+        // Initialize HTTP client
+        httpClient = new OkHttpClient();
 
         initializeViews();
         setupClickListeners();
@@ -53,11 +77,102 @@ public class MyPortfolioActivity extends AppCompatActivity implements PortfolioA
     }
 
     private void loadPortfolioData() {
-        // TODO: Load portfolio data from server
-        portfolioList.clear();
-        // Only fetch real data here. No sample data.
-        // portfolioAdapter.notifyDataSetChanged();
-        updateEmptyState();
+        // Show loading state
+        Toast.makeText(this, "Loading portfolios...", Toast.LENGTH_SHORT).show();
+        
+        // Build API URL
+        String apiUrl = "https://emp.kfinone.com/mobile/api/get_cbo_portfolios.php?username=" + userName;
+        
+        // Create request
+        Request request = new Request.Builder()
+                .url(apiUrl)
+                .get()
+                .build();
+        
+        // Make API call
+        httpClient.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                runOnUiThread(() -> {
+                    Toast.makeText(MyPortfolioActivity.this, "Failed to load portfolios: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                    updateEmptyState();
+                });
+            }
+            
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (response.isSuccessful()) {
+                    String responseBody = response.body().string();
+                    parsePortfolioData(responseBody);
+                } else {
+                    runOnUiThread(() -> {
+                        Toast.makeText(MyPortfolioActivity.this, "Failed to load portfolios. Server error: " + response.code(), Toast.LENGTH_LONG).show();
+                        updateEmptyState();
+                    });
+                }
+            }
+        });
+    }
+    
+    private void parsePortfolioData(String jsonResponse) {
+        try {
+            JSONObject jsonObject = new JSONObject(jsonResponse);
+            boolean success = jsonObject.getBoolean("success");
+            
+            if (success) {
+                JSONObject data = jsonObject.getJSONObject("data");
+                JSONArray portfoliosArray = data.getJSONArray("portfolios");
+                
+                portfolioList.clear();
+                
+                for (int i = 0; i < portfoliosArray.length(); i++) {
+                    JSONObject portfolioJson = portfoliosArray.getJSONObject(i);
+                    
+                    Portfolio portfolio = new Portfolio(
+                        portfolioJson.optString("id", ""),
+                        portfolioJson.optString("customer_name", ""),
+                        portfolioJson.optString("company_name", ""),
+                        portfolioJson.optString("Phone_number", ""),
+                        portfolioJson.optString("alternative_Phone_number", ""),
+                        portfolioJson.optString("email_id", ""),
+                        portfolioJson.optString("state", ""),
+                        portfolioJson.optString("location", ""),
+                        portfolioJson.optString("sub_location", ""),
+                        portfolioJson.optString("pin_code", ""),
+                        portfolioJson.optString("customer_type", ""),
+                        portfolioJson.optString("industry_type", ""),
+                        portfolioJson.optString("business_type", ""),
+                        portfolioJson.optString("birth_date", ""),
+                        portfolioJson.optString("address", ""),
+                        portfolioJson.optString("createdBy", ""),
+                        portfolioJson.optString("status", ""),
+                        portfolioJson.optString("created_at", ""),
+                        portfolioJson.optString("updated_at", "")
+                    );
+                    
+                    portfolioList.add(portfolio);
+                }
+                
+                runOnUiThread(() -> {
+                    portfolioAdapter.notifyDataSetChanged();
+                    updateEmptyState();
+                    Toast.makeText(MyPortfolioActivity.this, "Loaded " + portfolioList.size() + " portfolios", Toast.LENGTH_SHORT).show();
+                });
+                
+            } else {
+                String message = jsonObject.optString("message", "Unknown error");
+                runOnUiThread(() -> {
+                    Toast.makeText(MyPortfolioActivity.this, "Error: " + message, Toast.LENGTH_LONG).show();
+                    updateEmptyState();
+                });
+            }
+            
+        } catch (JSONException e) {
+            runOnUiThread(() -> {
+                Toast.makeText(MyPortfolioActivity.this, "Error parsing portfolio data: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                updateEmptyState();
+            });
+        }
     }
 
     private void updateEmptyState() {

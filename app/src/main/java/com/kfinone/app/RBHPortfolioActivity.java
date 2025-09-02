@@ -146,21 +146,24 @@ public class RBHPortfolioActivity extends AppCompatActivity implements Portfolio
         
         // Add sample portfolio items
         portfolioList.add(new Portfolio(
-            "1", "John Doe", "ABC Corporation", "+91 98765 43210",
-            "Maharashtra", "Mumbai", "RBH User", "Active",
-            "john.doe@abc.com", "123 Business Street, Mumbai", "2024-01-15", "2024-01-15"
+            "1", "John Doe", "ABC Corporation", "+91 98765 43210", "+91 98765 43211",
+            "john.doe@abc.com", "Maharashtra", "Mumbai", "Mumbai Central", "400001",
+            "Individual", "Technology", "Software", "1990-01-15", "123 Business Street, Mumbai",
+            "RBH User", "Active", "2024-01-15", "2024-01-15"
         ));
         
         portfolioList.add(new Portfolio(
-            "2", "Jane Smith", "XYZ Industries", "+91 87654 32109",
-            "Karnataka", "Bangalore", "RBH User", "Active",
-            "jane.smith@xyz.com", "456 Tech Park, Bangalore", "2024-01-10", "2024-01-10"
+            "2", "Jane Smith", "XYZ Industries", "+91 87654 32109", "+91 87654 32110",
+            "jane.smith@xyz.com", "Karnataka", "Bangalore", "Whitefield", "560066",
+            "Corporate", "Manufacturing", "Industrial", "1985-05-20", "456 Tech Park, Bangalore",
+            "RBH User", "Active", "2024-01-10", "2024-01-10"
         ));
         
         portfolioList.add(new Portfolio(
-            "3", "Mike Johnson", "DEF Solutions", "+91 76543 21098",
-            "Telangana", "Hyderabad", "RBH User", "Inactive",
-            "mike.johnson@def.com", "789 Innovation Hub, Hyderabad", "2024-01-05", "2024-01-05"
+            "3", "Mike Johnson", "DEF Solutions", "+91 76543 21098", "+91 76543 21099",
+            "mike.johnson@def.com", "Telangana", "Hyderabad", "HITEC City", "500081",
+            "Individual", "Consulting", "Services", "1988-12-10", "789 Innovation Hub, Hyderabad",
+            "RBH User", "Inactive", "2024-01-05", "2024-01-05"
         ));
         
         portfolioAdapter.notifyDataSetChanged();

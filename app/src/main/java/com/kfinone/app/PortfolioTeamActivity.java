@@ -20,8 +20,7 @@ public class PortfolioTeamActivity extends AppCompatActivity {
     private View emptyStateLayout;
     private TextView backButton;
     private View addMemberButton;
-    private TextView totalMembersText;
-    private TextView activeMembersText;
+
     private AutoCompleteTextView userDropdown;
     private MaterialButton showDataButton;
     private MaterialButton resetButton;
@@ -45,8 +44,7 @@ public class PortfolioTeamActivity extends AppCompatActivity {
         emptyStateLayout = findViewById(R.id.emptyStateLayout);
         backButton = findViewById(R.id.backButton);
         addMemberButton = findViewById(R.id.addMemberButton);
-        totalMembersText = findViewById(R.id.totalMembersText);
-        activeMembersText = findViewById(R.id.activeMembersText);
+
         userDropdown = findViewById(R.id.userDropdown);
         showDataButton = findViewById(R.id.showDataButton);
         resetButton = findViewById(R.id.resetButton);
@@ -60,8 +58,9 @@ public class PortfolioTeamActivity extends AppCompatActivity {
     }
 
     private void setupDropdowns() {
-        // User options for filtering
-        String[] users = {"All Users", "Admin", "Manager", "Supervisor", "Analyst", "Trader", "Research"};
+        // TODO: Load user options from server
+        // No sample dropdown options
+        String[] users = {};
         ArrayAdapter<String> userAdapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, users);
         userDropdown.setAdapter(userAdapter);
     }
@@ -85,24 +84,10 @@ public class PortfolioTeamActivity extends AppCompatActivity {
 
     private void loadTeamData() {
         // TODO: Load team data from server
-        // For now, show sample data
+        // Clear all data - no sample data
         allTeamList.clear();
-        
-        // Add sample team members
-        allTeamList.add(new TeamMember("1", "John Doe", "Portfolio Manager", "Active", "john.doe@email.com", "Admin"));
-        allTeamList.add(new TeamMember("2", "Jane Smith", "Analyst", "Active", "jane.smith@email.com", "Manager"));
-        allTeamList.add(new TeamMember("3", "Mike Johnson", "Trader", "Active", "mike.johnson@email.com", "Supervisor"));
-        allTeamList.add(new TeamMember("4", "Sarah Wilson", "Research", "Active", "sarah.wilson@email.com", "Analyst"));
-        allTeamList.add(new TeamMember("5", "David Brown", "Intern", "Inactive", "david.brown@email.com", "Manager"));
-        allTeamList.add(new TeamMember("6", "Emily Davis", "Senior Analyst", "Active", "emily.davis@email.com", "Admin"));
-        allTeamList.add(new TeamMember("7", "Robert Wilson", "Risk Manager", "Active", "robert.wilson@email.com", "Supervisor"));
-        allTeamList.add(new TeamMember("8", "Lisa Anderson", "Data Analyst", "Active", "lisa.anderson@email.com", "Analyst"));
-        
-        // Initially show all data
         teamList.clear();
-        teamList.addAll(allTeamList);
         teamAdapter.notifyDataSetChanged();
-        updateStats();
         updateEmptyState();
     }
 
@@ -129,7 +114,6 @@ public class PortfolioTeamActivity extends AppCompatActivity {
         }
         
         teamAdapter.notifyDataSetChanged();
-        updateStats();
         updateEmptyState();
         
         Toast.makeText(this, "Showing data for: " + selectedUser, Toast.LENGTH_SHORT).show();
@@ -140,25 +124,12 @@ public class PortfolioTeamActivity extends AppCompatActivity {
         teamList.clear();
         teamList.addAll(allTeamList);
         teamAdapter.notifyDataSetChanged();
-        updateStats();
         updateEmptyState();
         
         Toast.makeText(this, "Filters reset", Toast.LENGTH_SHORT).show();
     }
 
-    private void updateStats() {
-        int totalMembers = teamList.size();
-        int activeMembers = 0;
-        
-        for (TeamMember member : teamList) {
-            if ("Active".equals(member.getStatus())) {
-                activeMembers++;
-            }
-        }
-        
-        totalMembersText.setText(String.valueOf(totalMembers));
-        activeMembersText.setText(String.valueOf(activeMembers));
-    }
+
 
     private void updateEmptyState() {
         if (teamList.isEmpty()) {

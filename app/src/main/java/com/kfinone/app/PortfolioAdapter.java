@@ -45,8 +45,8 @@ public class PortfolioAdapter extends RecyclerView.Adapter<PortfolioAdapter.View
         // Set company name
         holder.companyNameText.setText(portfolio.getCompanyName() != null ? portfolio.getCompanyName() : "N/A");
         
-        // Set mobile
-        holder.mobileText.setText(portfolio.getMobile() != null ? portfolio.getMobile() : "N/A");
+        // Set phone number
+        holder.mobileText.setText(portfolio.getPhoneNumber() != null ? portfolio.getPhoneNumber() : "N/A");
         
         // Set state
         holder.stateText.setText(portfolio.getState() != null ? portfolio.getState() : "N/A");
