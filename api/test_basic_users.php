@@ -14,35 +14,16 @@ try {
     $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $username, $password);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     
-    // Get all designations
-    $query = "SELECT id, designation_name FROM tbl_designation ORDER BY designation_name";
+    // Very basic query
+    $query = "SELECT COUNT(*) as user_count FROM tbl_user";
     $stmt = $pdo->prepare($query);
     $stmt->execute();
-    $designations = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    
-    // Get users with their designations
-    $query2 = "SELECT 
-                u.id,
-                u.username,
-                u.firstName,
-                u.lastName,
-                u.designation_id,
-                u.email_id,
-                u.mobile,
-                d.designation_name
-              FROM tbl_user u
-              LEFT JOIN tbl_designation d ON u.designation_id = d.id
-              ORDER BY d.designation_name, u.firstName
-              LIMIT 20";
-    
-    $stmt2 = $pdo->prepare($query2);
-    $stmt2->execute();
-    $users = $stmt2->fetchAll(PDO::FETCH_ASSOC);
+    $result = $stmt->fetch(PDO::FETCH_ASSOC);
     
     echo json_encode([
         'success' => true,
-        'designations' => $designations,
-        'sample_users' => $users
+        'message' => 'Basic connection test successful',
+        'total_users' => $result['user_count']
     ]);
     
 } catch (PDOException $e) {

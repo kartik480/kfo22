@@ -1308,6 +1308,12 @@
             android:parentActivityName=".ManagingDirectorAgentPanelActivity"
             android:theme="@style/FullscreenTheme" />
         <activity
+            android:name=".ManagingDirectorAgentTeamActivity"
+            android:exported="false"
+            android:label="Managing Director Agent Team"
+            android:parentActivityName=".ManagingDirectorAgentTeamSimpleActivity"
+            android:theme="@style/FullscreenTheme" />
+        <activity
             android:name=".ManagingDirectorAgentListActivity"
             android:exported="false"
             android:label="Managing Director Agent List"

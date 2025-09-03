@@ -13,48 +13,42 @@ $password = '*F*im1!Y0D25';
 try {
     $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $username, $password);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    
-    // Get all designations
-    $query = "SELECT id, designation_name FROM tbl_designation ORDER BY designation_name";
-    $stmt = $pdo->prepare($query);
-    $stmt->execute();
-    $designations = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    
-    // Get users with their designations
-    $query2 = "SELECT 
+} catch (PDOException $e) {
+    http_response_code(500);
+    echo json_encode(['error' => 'Database connection failed: ' . $e->getMessage()]);
+    exit;
+}
+
+try {
+    // Simple query first - just get all users
+    $query = "SELECT 
                 u.id,
                 u.username,
                 u.firstName,
                 u.lastName,
                 u.designation_id,
-                u.email_id,
+                u.emailId,
                 u.mobile,
-                d.designation_name
+                u.status
               FROM tbl_user u
-              LEFT JOIN tbl_designation d ON u.designation_id = d.id
-              ORDER BY d.designation_name, u.firstName
-              LIMIT 20";
-    
-    $stmt2 = $pdo->prepare($query2);
-    $stmt2->execute();
-    $users = $stmt2->fetchAll(PDO::FETCH_ASSOC);
-    
-    echo json_encode([
-        'success' => true,
-        'designations' => $designations,
-        'sample_users' => $users
-    ]);
-    
+              WHERE u.status = 'active'
+              LIMIT 10";
+
+    $stmt = $pdo->prepare($query);
+    $stmt->execute();
+    $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    // Return direct JSON array
+    echo json_encode($users, JSON_PRETTY_PRINT);
+
 } catch (PDOException $e) {
     http_response_code(500);
     echo json_encode([
-        'success' => false,
         'error' => 'Database error: ' . $e->getMessage()
     ]);
 } catch (Exception $e) {
     http_response_code(500);
     echo json_encode([
-        'success' => false,
         'error' => 'Server error: ' . $e->getMessage()
     ]);
 }

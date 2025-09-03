@@ -49,9 +49,9 @@ public class ManagingDirectorAgentTeamSimpleActivity extends AppCompatActivity {
 
         // Team Structure Box
         findViewById(R.id.teamStructureBox).setOnClickListener(v -> {
-            // Show a simple message instead of opening a list
-            Toast.makeText(this, "Team Structure - Coming Soon", Toast.LENGTH_SHORT).show();
-            // TODO: Implement team structure view without full lists
+            Intent intent = new Intent(this, ManagingDirectorAgentTeamActivity.class);
+            passUserDataToIntent(intent);
+            startActivity(intent);
         });
 
 
