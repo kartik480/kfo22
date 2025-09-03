@@ -88,8 +88,11 @@ public class ManagingDirectorAgentTeamActivity extends AppCompatActivity {
 
         // Setup RecyclerView
         agentAdapter = new AgentAdapter(filteredAgents);
-        agentTeamRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        agentTeamRecyclerView.setLayoutManager(layoutManager);
         agentTeamRecyclerView.setAdapter(agentAdapter);
+        agentTeamRecyclerView.setHasFixedSize(true);
+        agentTeamRecyclerView.setNestedScrollingEnabled(true);
     }
 
     private void setupClickListeners() {
@@ -104,7 +107,7 @@ public class ManagingDirectorAgentTeamActivity extends AppCompatActivity {
     }
 
     private void loadTeamUsers() {
-        String url = "https://emp.kfinone.com/mobile/api/get_all_users_for_dropdown.php";
+        String url = "https://emp.kfinone.com/mobile/api/get_md_agent_team_users.php";
         
         JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null,
             new Response.Listener<JSONArray>() {
@@ -137,8 +140,8 @@ public class ManagingDirectorAgentTeamActivity extends AppCompatActivity {
                     user.optString("username", ""),
                     user.optString("firstName", ""),
                     user.optString("lastName", ""),
-                    user.optString("designationId", ""),
-                    user.optString("designationName", ""),
+                    user.optString("designation_id", ""),
+                    user.optString("designation_name", ""),
                     user.optString("emailId", ""),
                     user.optString("mobile", ""),
                     user.optString("status", "")
@@ -209,6 +212,7 @@ public class ManagingDirectorAgentTeamActivity extends AppCompatActivity {
     private void parseAgentData(JSONArray response) {
         allAgents.clear();
         try {
+            Log.d(TAG, "Parsing agent data. Response length: " + response.length());
             for (int i = 0; i < response.length(); i++) {
                 JSONObject agent = response.getJSONObject(i);
                 AgentData agentData = new AgentData(
@@ -234,7 +238,9 @@ public class ManagingDirectorAgentTeamActivity extends AppCompatActivity {
                     agent.optString("creator_full_name", "")
                 );
                 allAgents.add(agentData);
+                Log.d(TAG, "Added agent: " + agentData.getFullName() + " (Created by: " + agentData.getCreatedBy() + ")");
             }
+            Log.d(TAG, "Total agents loaded: " + allAgents.size());
             filteredAgents.clear();
             filteredAgents.addAll(allAgents);
             updateDataDisplay();
@@ -281,13 +287,16 @@ public class ManagingDirectorAgentTeamActivity extends AppCompatActivity {
     }
 
     private void updateDataDisplay() {
+        Log.d(TAG, "Updating data display. Filtered agents count: " + filteredAgents.size());
         agentAdapter.notifyDataSetChanged();
         dataCountText.setText("Total Agents: " + filteredAgents.size());
         
         if (filteredAgents.isEmpty()) {
+            Log.d(TAG, "No agents to display, showing empty state");
             agentTeamRecyclerView.setVisibility(View.GONE);
             emptyStateLayout.setVisibility(View.VISIBLE);
         } else {
+            Log.d(TAG, "Showing " + filteredAgents.size() + " agents in RecyclerView");
             agentTeamRecyclerView.setVisibility(View.VISIBLE);
             emptyStateLayout.setVisibility(View.GONE);
         }

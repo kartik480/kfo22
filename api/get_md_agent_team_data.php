@@ -20,7 +20,7 @@ try {
 }
 
 try {
-    // Get agents with creator information using JOIN
+    // Get agents created by CBO, RBH, and Director users only
     $query = "SELECT 
                 a.id,
                 a.full_name,
@@ -42,11 +42,11 @@ try {
                 u.lastName as creator_last_name,
                 u.username as creator_username,
                 CONCAT(u.firstName, ' ', u.lastName) as creator_full_name,
-                COALESCE(d.designation_name, 'User') as creator_designation_name
+                d.designation_name as creator_designation_name
               FROM tbl_agent_data a
-              LEFT JOIN tbl_user u ON a.createdBy = u.username
-              LEFT JOIN tbl_designation d ON u.designation_id = d.id
-              WHERE u.status = 'active' OR u.status IS NULL
+              INNER JOIN tbl_user u ON a.createdBy = u.username
+              INNER JOIN tbl_designation d ON u.designation_id = d.id
+              WHERE d.designation_name IN ('Chief Business Officer', 'Regional Business Head', 'Director')
               ORDER BY a.created_at DESC
               LIMIT 200";
 
