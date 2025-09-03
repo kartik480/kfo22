@@ -6,7 +6,8 @@
     android:background="?android:attr/selectableItemBackground"
     android:padding="12dp"
     android:clickable="true"
-    android:focusable="true">
+    android:focusable="true"
+    android:minHeight="48dp">
 
     <TextView
         android:id="@+id/customerNameText"
