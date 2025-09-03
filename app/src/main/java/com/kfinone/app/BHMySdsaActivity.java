@@ -135,9 +135,8 @@ public class BHMySdsaActivity extends AppCompatActivity {
     }
 
     private void goBack() {
-        Intent intent = new Intent(this, BusinessHeadSdsaActivity.class);
-        passUserDataToIntent(intent);
-        startActivity(intent);
+        // Simply finish this activity to return to the previous one
+        // This preserves the user data in the BusinessHeadSdsaActivity
         finish();
     }
 

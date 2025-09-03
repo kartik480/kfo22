@@ -72,9 +72,8 @@ public class BusinessHeadMyPortfolioActivity extends AppCompatActivity implement
     }
 
     private void goBack() {
-        Intent intent = new Intent(this, BusinessHeadPortfolioActivity.class);
-        passUserDataToIntent(intent);
-        startActivity(intent);
+        // Simply finish this activity to return to the previous one
+        // This preserves the user data in the BusinessHeadPortfolioActivity
         finish();
     }
     
