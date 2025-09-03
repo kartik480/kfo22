@@ -293,7 +293,7 @@
                 android:alignmentMode="alignMargins"
                 android:useDefaultMargins="true">
 
-                <!-- Card 1: Emp links -->
+                <!-- Card 1: Portfolio -->
                 <LinearLayout
                     android:id="@+id/cardPortfolio"
                     android:layout_width="0dp"
@@ -313,12 +313,12 @@
                         android:src="@drawable/ic_portfolio"
                         android:background="@drawable/icon_gradient_blue"
                         android:padding="12dp"
-                        android:contentDescription="Emp links" />
+                        android:contentDescription="Portfolio" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Emp links"
+                        android:text="Portfolio"
                         android:textSize="14sp"
                         android:textStyle="bold"
                         android:textColor="@color/black"

@@ -1129,6 +1129,16 @@
             android:label="RBH Portfolio Management"
             android:parentActivityName=".RegionalBusinessHeadPanelActivity" />
         <activity
+            android:name=".RBHMyPortfolioActivity"
+            android:exported="false"
+            android:label="RBH My Portfolio"
+            android:parentActivityName=".RBHPortfolioPanelActivity" />
+        <activity
+            android:name=".RBHPortfolioTeamActivity"
+            android:exported="false"
+            android:label="RBH Portfolio Team"
+            android:parentActivityName=".RBHPortfolioPanelActivity" />
+        <activity
             android:name=".RBHPortfolioActivity"
             android:exported="false"
             android:label="RBH Portfolio Lists"

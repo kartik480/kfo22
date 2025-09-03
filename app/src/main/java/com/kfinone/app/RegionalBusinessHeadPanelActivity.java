@@ -205,9 +205,9 @@ public class RegionalBusinessHeadPanelActivity extends AppCompatActivity {
         
         if (cardPortfolio != null) {
             cardPortfolio.setOnClickListener(v -> {
-                // Navigate to RBH Emp Links Panel
-                android.util.Log.d("RBHPanel", "Emp Links Card clicked! Navigating to RBHEmpLinksActivity");
-                Intent intent = new Intent(this, RBHEmpLinksActivity.class);
+                // Navigate to RBH Portfolio Panel
+                android.util.Log.d("RBHPanel", "Portfolio Card clicked! Navigating to RBHPortfolioPanelActivity");
+                Intent intent = new Intent(this, RBHPortfolioPanelActivity.class);
                 passUserDataToIntent(intent);
                 startActivity(intent);
             });
