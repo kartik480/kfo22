@@ -136,57 +136,14 @@ public class RBHPortfolioTeamActivity extends AppCompatActivity implements RBHPo
     }
     
     private void loadSamplePortfolioData() {
-        // Add sample portfolio data for demonstration
+        // Clear all portfolios - no sample data
         allPortfolios.clear();
-        
-        allPortfolios.add(new RBHPortfolio(
-            "1", "Rajesh Kumar", "Tech Solutions Pvt Ltd", "9876543210", 
-            "9876543211", "rajesh@techsolutions.com", "Maharashtra", "Mumbai", 
-            "Andheri", "400001", "Corporate", "IT", "Software", "1985-05-15", 
-            "123 Business Park, Andheri West", "SDSA User 1", "Active", 
-            "2024-01-15", "2024-01-15"
-        ));
-        
-        allPortfolios.add(new RBHPortfolio(
-            "2", "Priya Sharma", "Global Manufacturing Co", "8765432109", 
-            "8765432108", "priya@globalmfg.com", "Gujarat", "Ahmedabad", 
-            "Vastrapur", "380015", "Corporate", "Manufacturing", "Industrial", "1988-08-22", 
-            "456 Industrial Area, Vastrapur", "SDSA User 2", "Active", 
-            "2024-01-16", "2024-01-16"
-        ));
-        
-        allPortfolios.add(new RBHPortfolio(
-            "3", "Amit Patel", "Finance Services Ltd", "7654321098", 
-            "7654321097", "amit@financeservices.com", "Karnataka", "Bangalore", 
-            "Koramangala", "560034", "Corporate", "Finance", "Banking", "1982-12-10", 
-            "789 Financial District, Koramangala", "SDSA User 1", "Active", 
-            "2024-01-17", "2024-01-17"
-        ));
-        
-        allPortfolios.add(new RBHPortfolio(
-            "4", "Sunita Reddy", "Healthcare Solutions", "6543210987", 
-            "6543210986", "sunita@healthcare.com", "Telangana", "Hyderabad", 
-            "Gachibowli", "500032", "Corporate", "Healthcare", "Medical", "1987-03-25", 
-            "321 Medical Hub, Gachibowli", "SDSA User 3", "Active", 
-            "2024-01-18", "2024-01-18"
-        ));
-        
-        allPortfolios.add(new RBHPortfolio(
-            "5", "Vikram Singh", "Retail Chain Stores", "5432109876", 
-            "5432109875", "vikram@retailchain.com", "Punjab", "Chandigarh", 
-            "Sector 17", "160017", "Corporate", "Retail", "Consumer Goods", "1984-07-18", 
-            "654 Shopping Complex, Sector 17", "SDSA User 2", "Active", 
-            "2024-01-19", "2024-01-19"
-        ));
-        
-        // Initialize filtered portfolios with all data
         filteredPortfolios.clear();
-        filteredPortfolios.addAll(allPortfolios);
         
-        // Update the display
+        // Update the display to show empty state
         updateDataDisplay();
         
-        Log.d(TAG, "Loaded " + allPortfolios.size() + " sample portfolio records");
+        Log.d(TAG, "Portfolio data cleared - showing empty state");
     }
     
     private void filterData() {
