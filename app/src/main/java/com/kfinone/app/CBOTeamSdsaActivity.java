@@ -189,8 +189,7 @@ public class CBOTeamSdsaActivity extends AppCompatActivity {
     private void showSelectedUserInfo() {
         if (selectedRbhUser != null) {
             selectedUserName.setText("Selected User: " + selectedRbhUser.getFullName());
-            selectedUserDetails.setText("Designation: " + selectedRbhUser.getDesignationName() + 
-                                     " | Department: " + selectedRbhUser.getDepartmentName());
+            selectedUserDetails.setText("Designation: " + selectedRbhUser.getDesignationName());
             selectedUserInfo.setVisibility(View.VISIBLE);
         }
     }
@@ -227,11 +226,8 @@ public class CBOTeamSdsaActivity extends AppCompatActivity {
                                         userObj.optString("username"),
                                         userObj.optString("firstName"),
                                         userObj.optString("lastName"),
-                                        userObj.optString("email"),
-                                        userObj.optString("phone"),
-                                        userObj.optString("status"),
+                                        userObj.optString("designation_id"),
                                         userObj.optString("designation_name"),
-                                        userObj.optString("department_name"),
                                         userObj.optString("fullName"),
                                         userObj.optString("displayName")
                                     );

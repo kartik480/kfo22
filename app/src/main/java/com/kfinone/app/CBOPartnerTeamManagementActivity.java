@@ -44,6 +44,10 @@ public class CBOPartnerTeamManagementActivity extends AppCompatActivity {
     private String userName;
     private String userId;
     
+    // RBH Users data
+    private List<RbhUser> rbhUsersList;
+    private RbhUser selectedRbhUser;
+    
     // Executor for API calls
     private ExecutorService executor;
     
@@ -61,10 +65,13 @@ public class CBOPartnerTeamManagementActivity extends AppCompatActivity {
 
         // Initialize executor service
         executor = Executors.newSingleThreadExecutor();
+        
+        // Initialize RBH users list
+        rbhUsersList = new ArrayList<>();
 
         initializeViews();
         setupToolbar();
-        loadUserDropdownData();
+        loadRbhUsersForDropdown();
     }
 
     private void initializeViews() {
@@ -90,11 +97,11 @@ public class CBOPartnerTeamManagementActivity extends AppCompatActivity {
         }
     }
 
-    private void loadUserDropdownData() {
+    private void loadRbhUsersForDropdown() {
         executor.execute(() -> {
             try {
                 // Call API to get RBH users for dropdown
-                String url = BASE_URL + "get_rbh_users.php";
+                String url = BASE_URL + "get_rbh_users_for_dropdown.php";
                 JSONObject request = new JSONObject();
                 request.put("user_id", userId);
                 
@@ -105,24 +112,26 @@ public class CBOPartnerTeamManagementActivity extends AppCompatActivity {
                     JSONObject jsonResponse = new JSONObject(response);
                     if (jsonResponse.getBoolean("success")) {
                         JSONArray users = jsonResponse.getJSONArray("data");
-                        List<String> userNames = new ArrayList<>();
-                        List<String> userIds = new ArrayList<>();
+                        rbhUsersList.clear();
                         
                         for (int i = 0; i < users.length(); i++) {
                             JSONObject user = users.getJSONObject(i);
-                            userNames.add(user.getString("name"));
-                            userIds.add(user.getString("id"));
+                            RbhUser rbhUser = new RbhUser(
+                                user.optString("id", ""),
+                                user.optString("username", ""),
+                                user.optString("firstName", ""),
+                                user.optString("lastName", ""),
+                                user.optString("designation_id", ""),
+                                user.optString("designation_name", ""),
+                                user.optString("fullName", ""),
+                                user.optString("displayName", "")
+                            );
+                            rbhUsersList.add(rbhUser);
                         }
                         
                         // Update UI on main thread
                         runOnUiThread(() -> {
-                            ArrayAdapter<String> adapter = new ArrayAdapter<>(
-                                this, 
-                                android.R.layout.simple_spinner_item, 
-                                userNames
-                            );
-                            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                            userDropdown.setAdapter(adapter);
+                            setupRbhUserDropdown();
                         });
                     } else {
                         runOnUiThread(() -> {
@@ -142,15 +151,48 @@ public class CBOPartnerTeamManagementActivity extends AppCompatActivity {
             }
         });
     }
-
-    private void showPartnerData() {
-        if (userDropdown.getSelectedItem() == null) {
-            Toast.makeText(this, "Please select a user first", Toast.LENGTH_SHORT).show();
+    
+    private void setupRbhUserDropdown() {
+        Log.d(TAG, "Setting up RBH user dropdown. Users list size: " + rbhUsersList.size());
+        
+        if (rbhUsersList.isEmpty()) {
+            Log.e(TAG, "RBH users list is empty, cannot setup dropdown");
+            Toast.makeText(this, "No RBH users found", Toast.LENGTH_SHORT).show();
             return;
         }
         
-        String selectedUserName = userDropdown.getSelectedItem().toString();
-        Log.d(TAG, "Showing data for user: " + selectedUserName);
+        ArrayAdapter<RbhUser> adapter = new ArrayAdapter<>(
+            this, 
+            android.R.layout.simple_spinner_item, 
+            rbhUsersList
+        );
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        userDropdown.setAdapter(adapter);
+        
+        // Add item selection listener
+        userDropdown.setOnItemSelectedListener(new android.widget.AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(android.widget.AdapterView<?> parent, View view, int position, long id) {
+                selectedRbhUser = (RbhUser) parent.getItemAtPosition(position);
+                Log.d(TAG, "Selected RBH user: " + selectedRbhUser.getDisplayName() + " (ID: " + selectedRbhUser.getId() + ")");
+            }
+            
+            @Override
+            public void onNothingSelected(android.widget.AdapterView<?> parent) {
+                selectedRbhUser = null;
+            }
+        });
+        
+        Log.d(TAG, "RBH user dropdown setup completed");
+    }
+
+    private void showPartnerData() {
+        if (selectedRbhUser == null) {
+            Toast.makeText(this, "Please select an RBH user first", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        
+        Log.d(TAG, "Showing partner data for RBH user: " + selectedRbhUser.getDisplayName() + " (ID: " + selectedRbhUser.getId() + ")");
         
         // Show loading state
         showDataButton.setEnabled(false);
@@ -158,11 +200,12 @@ public class CBOPartnerTeamManagementActivity extends AppCompatActivity {
         
         executor.execute(() -> {
             try {
-                // Call API to get partner data for selected user
+                // Call API to get partner data for selected RBH user
                 String url = BASE_URL + "get_cbo_partner_team_data.php";
                 JSONObject request = new JSONObject();
                 request.put("user_id", userId);
-                request.put("selected_user_name", selectedUserName);
+                request.put("selected_rbh_user_id", selectedRbhUser.getId());
+                request.put("selected_rbh_user_name", selectedRbhUser.getFullName());
                 
                 String response = makeHttpRequest(url, request.toString());
                 Log.d(TAG, "Partner data API response: " + response);
@@ -395,6 +438,7 @@ public class CBOPartnerTeamManagementActivity extends AppCompatActivity {
     private void resetData() {
         // Reset dropdown selection
         userDropdown.setSelection(0);
+        selectedRbhUser = null;
         
         // Hide data container
         dataContainer.setVisibility(View.GONE);
