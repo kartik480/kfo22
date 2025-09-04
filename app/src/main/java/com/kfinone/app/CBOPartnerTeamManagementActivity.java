@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -39,13 +40,19 @@ public class CBOPartnerTeamManagementActivity extends AppCompatActivity {
     private Button resetButton;
     private LinearLayout dataContainer;
     private LinearLayout dataContent;
+    
+    // ListView for users created by RBH
+    private ListView rbhUsersListView;
+    private RbhUserAdapter rbhUsersAdapter;
+    private List<RbhUserItem> rbhUsersList;
+    private TextView listboxTitle;
 
     // User data
     private String userName;
     private String userId;
     
     // RBH Users data
-    private List<RbhUser> rbhUsersList;
+    private List<RbhUser> rbhUsersForDropdown;
     private RbhUser selectedRbhUser;
     
     // Executor for API calls
@@ -67,11 +74,12 @@ public class CBOPartnerTeamManagementActivity extends AppCompatActivity {
         executor = Executors.newSingleThreadExecutor();
         
         // Initialize RBH users list
-        rbhUsersList = new ArrayList<>();
+        rbhUsersForDropdown = new ArrayList<>();
 
         initializeViews();
         setupToolbar();
         loadRbhUsersForDropdown();
+        loadUsersCreatedByRBH();
     }
 
     private void initializeViews() {
@@ -80,6 +88,18 @@ public class CBOPartnerTeamManagementActivity extends AppCompatActivity {
         resetButton = findViewById(R.id.resetButton);
         dataContainer = findViewById(R.id.dataContainer);
         dataContent = findViewById(R.id.dataContent);
+        
+        // Initialize ListView for users created by RBH
+        rbhUsersListView = findViewById(R.id.rbhUsersListView);
+        listboxTitle = findViewById(R.id.listboxTitle);
+        rbhUsersList = new ArrayList<>(); // Initialize the list
+        rbhUsersAdapter = new RbhUserAdapter(this, rbhUsersList);
+        rbhUsersListView.setAdapter(rbhUsersAdapter);
+        
+        // Add some padding and styling to the ListView
+        rbhUsersListView.setDivider(null);
+        rbhUsersListView.setDividerHeight(0);
+        rbhUsersListView.setPadding(0, 8, 0, 8);
 
         // Setup click listeners
         showDataButton.setOnClickListener(v -> showPartnerData());
@@ -112,7 +132,7 @@ public class CBOPartnerTeamManagementActivity extends AppCompatActivity {
                     JSONObject jsonResponse = new JSONObject(response);
                     if (jsonResponse.getBoolean("success")) {
                         JSONArray users = jsonResponse.getJSONArray("data");
-                        rbhUsersList.clear();
+                        rbhUsersForDropdown.clear();
                         
                         for (int i = 0; i < users.length(); i++) {
                             JSONObject user = users.getJSONObject(i);
@@ -126,7 +146,7 @@ public class CBOPartnerTeamManagementActivity extends AppCompatActivity {
                                 user.optString("fullName", ""),
                                 user.optString("displayName", "")
                             );
-                            rbhUsersList.add(rbhUser);
+                            rbhUsersForDropdown.add(rbhUser);
                         }
                         
                         // Update UI on main thread
@@ -153,9 +173,9 @@ public class CBOPartnerTeamManagementActivity extends AppCompatActivity {
     }
     
     private void setupRbhUserDropdown() {
-        Log.d(TAG, "Setting up RBH user dropdown. Users list size: " + rbhUsersList.size());
+        Log.d(TAG, "Setting up RBH user dropdown. Users list size: " + rbhUsersForDropdown.size());
         
-        if (rbhUsersList.isEmpty()) {
+        if (rbhUsersForDropdown.isEmpty()) {
             Log.e(TAG, "RBH users list is empty, cannot setup dropdown");
             Toast.makeText(this, "No RBH users found", Toast.LENGTH_SHORT).show();
             return;
@@ -164,7 +184,7 @@ public class CBOPartnerTeamManagementActivity extends AppCompatActivity {
         ArrayAdapter<RbhUser> adapter = new ArrayAdapter<>(
             this, 
             android.R.layout.simple_spinner_item, 
-            rbhUsersList
+            rbhUsersForDropdown
         );
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         userDropdown.setAdapter(adapter);
@@ -193,6 +213,7 @@ public class CBOPartnerTeamManagementActivity extends AppCompatActivity {
         }
         
         Log.d(TAG, "Showing partner data for RBH user: " + selectedRbhUser.getDisplayName() + " (ID: " + selectedRbhUser.getId() + ")");
+        Toast.makeText(this, "Loading data for: " + selectedRbhUser.getDisplayName(), Toast.LENGTH_SHORT).show();
         
         // Show loading state
         showDataButton.setEnabled(false);
@@ -201,11 +222,9 @@ public class CBOPartnerTeamManagementActivity extends AppCompatActivity {
         executor.execute(() -> {
             try {
                 // Call API to get partner data for selected RBH user
-                String url = BASE_URL + "get_cbo_partner_team_data.php";
+                String url = BASE_URL + "get_partners_by_rbh.php";
                 JSONObject request = new JSONObject();
-                request.put("user_id", userId);
-                request.put("selected_rbh_user_id", selectedRbhUser.getId());
-                request.put("selected_rbh_user_name", selectedRbhUser.getFullName());
+                request.put("rbh_username", selectedRbhUser.getUsername()); // Send RBH username to find partners created by them
                 
                 String response = makeHttpRequest(url, request.toString());
                 Log.d(TAG, "Partner data API response: " + response);
@@ -217,9 +236,12 @@ public class CBOPartnerTeamManagementActivity extends AppCompatActivity {
                         
                         // Update UI on main thread
                         runOnUiThread(() -> {
-                            displayPartnerData(partnerData);
+                            // Update the listbox to show filtered data
+                            updateListboxWithPartnerData(partnerData);
+                            listboxTitle.setText("Partner Users Created by " + selectedRbhUser.getDisplayName());
                             showDataButton.setEnabled(true);
                             showDataButton.setText("Show Data");
+                            Toast.makeText(CBOPartnerTeamManagementActivity.this, "Showing " + partnerData.length() + " partner users created by " + selectedRbhUser.getDisplayName(), Toast.LENGTH_SHORT).show();
                         });
                     } else {
                         runOnUiThread(() -> {
@@ -248,6 +270,33 @@ public class CBOPartnerTeamManagementActivity extends AppCompatActivity {
                 });
             }
         });
+    }
+
+    private void updateListboxWithPartnerData(JSONArray partnerData) {
+        rbhUsersList.clear();
+        
+        if (partnerData.length() == 0) {
+            RbhUserItem noDataItem = new RbhUserItem("", "", "No partner users found", "Created by " + selectedRbhUser.getDisplayName(), "");
+            rbhUsersList.add(noDataItem);
+        } else {
+            for (int i = 0; i < partnerData.length(); i++) {
+                try {
+                    JSONObject partner = partnerData.getJSONObject(i);
+                    String id = partner.getString("id");
+                    String username = partner.getString("partner_username");
+                    String fullName = partner.getString("partner_name");
+                    String creatorName = selectedRbhUser.getDisplayName(); // Show the selected RBH user as creator
+                    String creatorDesignation = "Regional Business Head";
+                    
+                    RbhUserItem userItem = new RbhUserItem(id, username, fullName, creatorName, creatorDesignation);
+                    rbhUsersList.add(userItem);
+                } catch (JSONException e) {
+                    Log.e(TAG, "Error parsing partner data: " + e.getMessage());
+                }
+            }
+        }
+        
+        rbhUsersAdapter.updateData(rbhUsersList);
     }
 
     private void displayPartnerData(JSONArray partnerData) {
@@ -440,13 +489,19 @@ public class CBOPartnerTeamManagementActivity extends AppCompatActivity {
         userDropdown.setSelection(0);
         selectedRbhUser = null;
         
+        // Reset title
+        listboxTitle.setText("Users Created by Regional Business Head");
+        
+        // Reload all users created by RBH users
+        loadUsersCreatedByRBH();
+        
         // Hide data container
         dataContainer.setVisibility(View.GONE);
         
         // Clear data content
         dataContent.removeAllViews();
         
-        Toast.makeText(this, "Data reset successfully", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Reset to show all users created by RBH users", Toast.LENGTH_SHORT).show();
     }
 
     private String makeHttpRequest(String url, String jsonBody) {
@@ -467,6 +522,77 @@ public class CBOPartnerTeamManagementActivity extends AppCompatActivity {
             Log.e(TAG, "HTTP request failed", e);
             return null;
         }
+    }
+
+    private String makeGetRequest(String url) {
+        try {
+            OkHttpClient client = new OkHttpClient();
+            
+            Request request = new Request.Builder()
+                .url(url)
+                .get()
+                .build();
+            
+            try (Response response = client.newCall(request).execute()) {
+                return response.body().string();
+            }
+        } catch (IOException e) {
+            Log.e(TAG, "HTTP GET request failed", e);
+            return null;
+        }
+    }
+
+    private void loadUsersCreatedByRBH() {
+        executor.execute(() -> {
+            try {
+                String url = BASE_URL + "cbo_partner_team_rbh_users.php";
+                String response = makeGetRequest(url);
+                
+                if (response != null) {
+                    JSONObject jsonResponse = new JSONObject(response);
+                    if (jsonResponse.getBoolean("success")) {
+                        JSONArray dataArray = jsonResponse.getJSONArray("data");
+                        
+                        runOnUiThread(() -> {
+                            rbhUsersList.clear();
+                            for (int i = 0; i < dataArray.length(); i++) {
+                                try {
+                                    JSONObject user = dataArray.getJSONObject(i);
+                                    String id = user.getString("id");
+                                    String username = user.getString("username");
+                                    String fullName = user.getString("full_name");
+                                    String creatorName = user.getString("creator_name");
+                                    String creatorDesignation = user.optString("creator_designation", "Regional Business Head");
+                                    
+                                    RbhUserItem userItem = new RbhUserItem(id, username, fullName, creatorName, creatorDesignation);
+                                    rbhUsersList.add(userItem);
+                                } catch (JSONException e) {
+                                    Log.e(TAG, "Error parsing user data: " + e.getMessage());
+                                }
+                            }
+                            rbhUsersAdapter.updateData(rbhUsersList);
+                            
+                            if (rbhUsersList.isEmpty()) {
+                                Toast.makeText(CBOPartnerTeamManagementActivity.this, "No users found created by Regional Business Head users", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    } else {
+                        runOnUiThread(() -> {
+                            try {
+                                Toast.makeText(CBOPartnerTeamManagementActivity.this, "Error: " + jsonResponse.getString("message"), Toast.LENGTH_SHORT).show();
+                            } catch (JSONException e) {
+                                Toast.makeText(CBOPartnerTeamManagementActivity.this, "Error loading data", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+                }
+            } catch (Exception e) {
+                Log.e(TAG, "Error loading users created by RBH: " + e.getMessage());
+                runOnUiThread(() -> {
+                    Toast.makeText(CBOPartnerTeamManagementActivity.this, "Error loading users created by Regional Business Head users", Toast.LENGTH_SHORT).show();
+                });
+            }
+        });
     }
 
     private void passUserDataToIntent(Intent intent) {

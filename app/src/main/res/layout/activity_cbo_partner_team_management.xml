@@ -115,6 +115,40 @@
 
             </LinearLayout>
 
+            <!-- Users Created by RBH Listbox Section -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="#FFFFFF"
+                android:padding="20dp"
+                android:elevation="2dp"
+                android:layout_marginBottom="16dp">
+
+                <TextView
+                    android:id="@+id/listboxTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Users Created by Regional Business Head"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="#2C3E50"
+                    android:layout_marginBottom="16dp" />
+
+                <ListView
+                    android:id="@+id/rbhUsersListView"
+                    android:layout_width="match_parent"
+                    android:layout_height="300dp"
+                    android:background="#F8F9FA"
+                    android:divider="@null"
+                    android:dividerHeight="0dp"
+                    android:padding="8dp"
+                    android:scrollbars="vertical"
+                    android:fadeScrollbars="false"
+                    android:clipToPadding="false" />
+
+            </LinearLayout>
+
             <!-- Data Display Section -->
             <LinearLayout
                 android:id="@+id/dataContainer"
