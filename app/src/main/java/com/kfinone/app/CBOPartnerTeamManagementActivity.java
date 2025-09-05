@@ -608,6 +608,7 @@ public class CBOPartnerTeamManagementActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+        super.onBackPressed();
         // Navigate back to CBO Partner panel
         Intent intent = new Intent(this, CBOPartnerActivity.class);
         passUserDataToIntent(intent);
