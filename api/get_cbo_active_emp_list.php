@@ -76,6 +76,7 @@ try {
     // If manager not found in tbl_cbo_users, that's okay - we can still show their team
     
     // Now fetch all users who report to this manager
+    // First try tbl_cbo_users table
     $teamSql = "
         SELECT 
             id,
@@ -114,17 +115,58 @@ try {
     $teamStmt->execute([$reportingTo]);
     $teamMembers = $teamStmt->fetchAll(PDO::FETCH_ASSOC);
     
-    // Get summary statistics
+    // If no team members found in tbl_cbo_users, try tbl_user table as fallback
+    if (empty($teamMembers)) {
+        $fallbackSql = "
+            SELECT 
+                id,
+                username,
+                firstName as first_name,
+                lastName as last_name,
+                mobile as Phone_number,
+                email_id,
+                mobile as alternative_mobile_number,
+                '' as company_name,
+                '' as branch_state_name_id,
+                '' as branch_location_id,
+                '' as bank_id,
+                '' as account_type_id,
+                '' as office_address,
+                '' as residential_address,
+                '' as aadhaar_number,
+                '' as pan_number,
+                '' as account_number,
+                '' as ifsc_code,
+                '' as rank,
+                status,
+                reportingTo,
+                id as user_id,
+                '' as createdBy,
+                '' as created_at,
+                '' as updated_at,
+                CONCAT(COALESCE(firstName, ''), ' ', COALESCE(lastName, '')) as full_name
+            FROM tbl_user 
+            WHERE reportingTo = ? 
+            AND (status = 'Active' OR status = 1 OR status IS NULL OR status = '')
+            ORDER BY firstName, lastName
+        ";
+        
+        $fallbackStmt = $conn->prepare($fallbackSql);
+        $fallbackStmt->execute([$reportingTo]);
+        $teamMembers = $fallbackStmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+    
+    // Get summary statistics - check both tables
     $statsSql = "
         SELECT 
-            COUNT(*) as total_team_members,
-            COUNT(CASE WHEN status = 'Active' OR status = 1 OR status IS NULL OR status = '' THEN 1 END) as active_members
-        FROM tbl_cbo_users 
-        WHERE reportingTo = ?
+            (SELECT COUNT(*) FROM tbl_cbo_users WHERE reportingTo = ?) +
+            (SELECT COUNT(*) FROM tbl_user WHERE reportingTo = ?) as total_team_members,
+            (SELECT COUNT(CASE WHEN status = 'Active' OR status = 1 OR status IS NULL OR status = '' THEN 1 END) FROM tbl_cbo_users WHERE reportingTo = ?) +
+            (SELECT COUNT(CASE WHEN status = 'Active' OR status = 1 OR status IS NULL OR status = '' THEN 1 END) FROM tbl_user WHERE reportingTo = ?) as active_members
     ";
     
     $statsStmt = $conn->prepare($statsSql);
-    $statsStmt->execute([$reportingTo]);
+    $statsStmt->execute([$reportingTo, $reportingTo, $reportingTo, $reportingTo]);
     $stats = $statsStmt->fetch(PDO::FETCH_ASSOC);
     
     // Format response

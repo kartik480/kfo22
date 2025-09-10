@@ -351,9 +351,11 @@ public class BusinessHeadPanelActivity extends AppCompatActivity {
             startActivity(intent);
         });
         
-        // Risk Management
+        // Risk Management (Vehicle Insurance)
         cardRiskManagement.setOnClickListener(v -> {
-            showToast("Risk Management - Coming Soon!");
+            Intent intent = new Intent(BusinessHeadPanelActivity.this, BusinessHeadVehicleInsuranceActivity.class);
+            passUserDataToIntent(intent);
+            startActivity(intent);
         });
         
         // Compliance (Document Check List)

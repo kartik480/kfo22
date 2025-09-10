@@ -1085,6 +1085,20 @@
                       android:label="Business Head Policy"
                       android:theme="@style/FullscreenTheme" />
                       
+                  <!-- Business Head Vehicle Insurance Activity -->
+                  <activity
+                      android:name=".BusinessHeadVehicleInsuranceActivity"
+                      android:exported="false"
+                      android:label="Vehicle Insurance"
+                      android:parentActivityName=".BusinessHeadPanelActivity" />
+                      
+                  <!-- Business Head My Insurance Activity -->
+                  <activity
+                      android:name=".BusinessHeadMyInsuranceActivity"
+                      android:exported="false"
+                      android:label="Insurance List"
+                      android:parentActivityName=".BusinessHeadVehicleInsuranceActivity" />
+                      
                   <!-- Business Head Bankers List Activity -->
                   <activity
                       android:name=".BusinessHeadBankersListActivity"
