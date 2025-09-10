@@ -570,6 +570,11 @@
         <activity android:name=".DirectorAddInsuranceActivity" />
         <activity android:name=".DirectorMyInsuranceActivity" />
         <activity android:name=".DirectorAgentTeamActivity" />
+        <activity
+            android:name=".DirectorDynamicPayoutPanelActivity"
+            android:exported="false"
+            android:label="My Payouts"
+            android:parentActivityName=".User10002PanelActivity" />
         
         <!-- Chief Business Officer Activities -->
         <activity

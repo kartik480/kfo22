@@ -306,7 +306,9 @@ public class User10002PanelActivity extends AppCompatActivity implements Navigat
         });
 
         payoutBox.setOnClickListener(v -> {
-            Toast.makeText(this, "Payout - Coming Soon", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(this, DirectorDynamicPayoutPanelActivity.class);
+            passUserDataToIntent(intent);
+            startActivity(intent);
         });
 
         dsaCodesBox.setOnClickListener(v -> {
