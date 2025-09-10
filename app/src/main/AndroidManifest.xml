@@ -580,6 +580,16 @@
             android:exported="false"
             android:label="Add Insurance"
             android:parentActivityName=".User10002PanelActivity" />
+        <activity
+            android:name=".DirectorMyInsuranceListActivity"
+            android:exported="false"
+            android:label="Insurance List"
+            android:parentActivityName=".DirectorAddInsurancePanelActivity" />
+        <activity
+            android:name=".DirectorTeamInsuranceActivity"
+            android:exported="false"
+            android:label="Team Insurance"
+            android:parentActivityName=".DirectorAddInsurancePanelActivity" />
         
         <!-- Chief Business Officer Activities -->
         <activity

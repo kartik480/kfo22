@@ -50,20 +50,16 @@ public class DirectorAddInsurancePanelActivity extends AppCompatActivity {
 
         // My Insurance box
         myInsuranceBox.setOnClickListener(v -> {
-            Toast.makeText(this, "My Insurance - Coming Soon", Toast.LENGTH_SHORT).show();
-            // TODO: Navigate to My Insurance activity when implemented
-            // Intent intent = new Intent(this, DirectorMyInsuranceActivity.class);
-            // passUserDataToIntent(intent);
-            // startActivity(intent);
+            Intent intent = new Intent(this, DirectorMyInsuranceListActivity.class);
+            passUserDataToIntent(intent);
+            startActivity(intent);
         });
 
         // Team Insurance box
         teamInsuranceBox.setOnClickListener(v -> {
-            Toast.makeText(this, "Team Insurance - Coming Soon", Toast.LENGTH_SHORT).show();
-            // TODO: Navigate to Team Insurance activity when implemented
-            // Intent intent = new Intent(this, DirectorTeamInsuranceActivity.class);
-            // passUserDataToIntent(intent);
-            // startActivity(intent);
+            Intent intent = new Intent(this, DirectorTeamInsuranceActivity.class);
+            passUserDataToIntent(intent);
+            startActivity(intent);
         });
     }
 
