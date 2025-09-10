@@ -99,6 +99,21 @@
             android:textSize="14sp"
             android:textColor="@color/gray" />
 
+        <!-- View Button -->
+        <Button
+            android:id="@+id/viewButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:layout_gravity="end"
+            android:text="View Details"
+            android:textSize="14sp"
+            android:textColor="@color/white"
+            android:background="@drawable/button_background"
+            android:paddingHorizontal="16dp"
+            android:paddingVertical="8dp"
+            android:minWidth="120dp" />
+
     </LinearLayout>
 
 </androidx.cardview.widget.CardView> 

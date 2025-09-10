@@ -556,6 +556,11 @@
             android:exported="false"
             android:label="Director Team Employee Links"
             android:parentActivityName=".DirectorEmpLinksActivity" />
+        <activity
+            android:name=".UserDetailActivity"
+            android:exported="false"
+            android:label="User Details"
+            android:parentActivityName=".DirectorTeamEmpLinksActivity" />
         <activity android:name=".DirectorMyAgentActivity" />
         <activity android:name=".DirectorMySdsaActivity" />
         <activity android:name=".DirectorSdsaTeamActivity" />

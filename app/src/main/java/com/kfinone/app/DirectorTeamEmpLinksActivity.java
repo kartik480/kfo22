@@ -156,11 +156,31 @@ public class DirectorTeamEmpLinksActivity extends AppCompatActivity {
                     holder.manageIcons.setText("Manage Icons: None");
                 }
             }
+            
+            // Set View button click listener
+            if (holder.viewButton != null) {
+                holder.viewButton.setOnClickListener(v -> {
+                    Intent intent = new Intent(v.getContext(), UserDetailActivity.class);
+                    intent.putExtra("USERNAME", user.username);
+                    intent.putExtra("FULLNAME", user.fullname);
+                    intent.putExtra("MOBILE", user.mobile);
+                    intent.putExtra("EMAIL", user.email);
+                    intent.putExtra("EMPLOYEE_NO", user.employeeNo);
+                    intent.putExtra("DESIGNATION", user.designationName);
+                    intent.putExtra("DEPARTMENT", user.department);
+                    intent.putExtra("STATUS", user.status != null ? user.status.toString() : "1");
+                    intent.putExtra("MANAGE_ICONS", user.manageIcons != null ? String.join(", ", user.manageIcons) : "");
+                    intent.putExtra("MANAGER_NAME", user.managerName != null ? user.managerName : "");
+                    intent.putExtra("MANAGER_DESIGNATION", user.managerDesignation != null ? user.managerDesignation : "");
+                    v.getContext().startActivity(intent);
+                });
+            }
         }
         @Override
         public int getItemCount() { return users.size(); }
         class ViewHolder extends RecyclerView.ViewHolder {
             TextView employeeName, employeeId, mobile, manageIcons, designation, department, status;
+            Button viewButton;
             ViewHolder(View itemView) {
                 super(itemView);
                 employeeName = itemView.findViewById(R.id.nameText);
@@ -170,6 +190,7 @@ public class DirectorTeamEmpLinksActivity extends AppCompatActivity {
                 department = itemView.findViewById(R.id.departmentText);
                 status = itemView.findViewById(R.id.statusText);
                 manageIcons = itemView.findViewById(R.id.manageIcons);
+                viewButton = itemView.findViewById(R.id.viewButton);
             }
         }
     }
