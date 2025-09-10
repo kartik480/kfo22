@@ -76,6 +76,17 @@
         </LinearLayout>
     </LinearLayout>
 
+    <!-- Data Count -->
+    <TextView
+        android:id="@+id/dataCountText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Total Agents: 0"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:textColor="#2C3E50"
+        android:layout_margin="16dp" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/agentRecyclerView"
         android:layout_width="match_parent"

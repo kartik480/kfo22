@@ -244,6 +244,13 @@ public class ManagingDirectorAgentTeamActivity extends AppCompatActivity {
             filteredAgents.clear();
             filteredAgents.addAll(allAgents);
             updateDataDisplay();
+            
+            // Show success message with count
+            if (allAgents.isEmpty()) {
+                Toast.makeText(this, "No agents found", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, "Loaded " + allAgents.size() + " agents", Toast.LENGTH_SHORT).show();
+            }
         } catch (JSONException e) {
             Log.e(TAG, "Error parsing agent data: " + e.getMessage());
         }
@@ -284,6 +291,7 @@ public class ManagingDirectorAgentTeamActivity extends AppCompatActivity {
         filteredAgents.clear();
         filteredAgents.addAll(allAgents);
         updateDataDisplay();
+        Toast.makeText(this, "Showing all " + allAgents.size() + " agents", Toast.LENGTH_SHORT).show();
     }
 
     private void updateDataDisplay() {

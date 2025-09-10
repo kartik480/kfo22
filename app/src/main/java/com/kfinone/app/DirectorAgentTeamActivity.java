@@ -5,11 +5,15 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import org.json.JSONArray;
@@ -39,6 +43,7 @@ public class DirectorAgentTeamActivity extends AppCompatActivity {
     private RecyclerView agentRecyclerView;
     private AgentListAdapter agentListAdapter;
     private List<AgentItem> agentList = new ArrayList<>();
+    private TextView dataCountText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,9 +60,11 @@ public class DirectorAgentTeamActivity extends AppCompatActivity {
         selectUserSpinner = findViewById(R.id.selectUserSpinner);
         showDataButton = findViewById(R.id.showDataButton);
         resetButton = findViewById(R.id.resetButton);
+        dataCountText = findViewById(R.id.dataCountText);
 
         requestQueue = Volley.newRequestQueue(this);
         loadUsersForDropdown();
+        loadAllAgentData(); // Load all agent data immediately
 
         agentRecyclerView = findViewById(R.id.agentRecyclerView);
         agentListAdapter = new AgentListAdapter(agentList);
@@ -76,8 +83,7 @@ public class DirectorAgentTeamActivity extends AppCompatActivity {
 
         resetButton.setOnClickListener(v -> {
             selectUserSpinner.setSelection(0);
-            agentList.clear();
-            agentListAdapter.notifyDataSetChanged();
+            loadAllAgentData(); // Reload all agent data when reset
         });
     }
 
@@ -123,6 +129,54 @@ public class DirectorAgentTeamActivity extends AppCompatActivity {
         requestQueue.add(request);
     }
 
+    private void loadAllAgentData() {
+        String url = "https://emp.kfinone.com/mobile/api/get_md_agent_team_data.php";
+        JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null,
+            new Response.Listener<JSONArray>() {
+                @Override
+                public void onResponse(JSONArray response) {
+                    try {
+                        agentList.clear();
+                        for (int i = 0; i < response.length(); i++) {
+                            JSONObject agent = response.getJSONObject(i);
+                            AgentItem agentItem = new AgentItem(
+                                agent.optString("full_name", ""),
+                                agent.optString("company_name", ""),
+                                agent.optString("Phone_number", ""),
+                                agent.optString("alternative_Phone_number", ""),
+                                agent.optString("email_id", ""),
+                                agent.optString("partnerType", ""),
+                                agent.optString("state", ""),
+                                agent.optString("location", ""),
+                                agent.optString("address", ""),
+                                agent.optString("visiting_card", ""),
+                                agent.optString("created_user", ""),
+                                agent.optString("createdBy", "")
+                            );
+                            agentList.add(agentItem);
+                        }
+                        agentListAdapter.notifyDataSetChanged();
+                        dataCountText.setText("Total Agents: " + agentList.size());
+                        if (agentList.isEmpty()) {
+                            Toast.makeText(DirectorAgentTeamActivity.this, "No agents found", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(DirectorAgentTeamActivity.this, "Loaded " + agentList.size() + " agents", Toast.LENGTH_SHORT).show();
+                        }
+                    } catch (Exception e) {
+                        Toast.makeText(DirectorAgentTeamActivity.this, "Error parsing agent data", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            },
+            new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Toast.makeText(DirectorAgentTeamActivity.this, "Error loading agent data", Toast.LENGTH_SHORT).show();
+                }
+            }
+        );
+        requestQueue.add(request);
+    }
+
     private void fetchAgentData(String userId) {
         String url = "https://emp.kfinone.com/mobile/api/get_agent_data_by_user.php?user_id=" + userId;
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
@@ -151,6 +205,7 @@ public class DirectorAgentTeamActivity extends AppCompatActivity {
                             agentList.add(agentItem);
                         }
                         agentListAdapter.notifyDataSetChanged();
+                        dataCountText.setText("Total Agents: " + agentList.size());
                         if (agentList.isEmpty()) {
                             Toast.makeText(this, "No agents found for this user", Toast.LENGTH_SHORT).show();
                         }
