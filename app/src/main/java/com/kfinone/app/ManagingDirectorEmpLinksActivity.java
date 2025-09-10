@@ -113,41 +113,46 @@ public class ManagingDirectorEmpLinksActivity extends AppCompatActivity {
         hideError();
         
         // First, get the manage_icons from tbl_user for the current user
-        String userUrl = "https://emp.kfinone.com/mobile/api/get_user_manage_icons.php?user_id=" + userId;
+        String userUrl = "https://emp.kfinone.com/mobile/api/get_user_manage_icons.php";
         
-        JsonObjectRequest userRequest = new JsonObjectRequest(Request.Method.GET, userUrl, null,
+        // Create request body for POST request
+        JSONObject requestBody = new JSONObject();
+        try {
+            requestBody.put("user_id", userId);
+            requestBody.put("username", userName);
+        } catch (JSONException e) {
+            Log.e(TAG, "Error creating request body", e);
+            showError("Error preparing request");
+            return;
+        }
+        
+        JsonObjectRequest userRequest = new JsonObjectRequest(Request.Method.POST, userUrl, requestBody,
             new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject response) {
-                    try {
-                        if (response.optBoolean("success", false)) {
-                            JSONObject userData = response.getJSONObject("user");
-                            String manageIconsStr = userData.optString("manage_icons", "");
-                            
-                            if (!manageIconsStr.isEmpty()) {
-                                try {
-                                    // Parse the manage_icons JSON array
-                                    JSONArray iconIdsArray = new JSONArray(manageIconsStr);
-                                    String[] iconIds = new String[iconIdsArray.length()];
-                                    for (int i = 0; i < iconIdsArray.length(); i++) {
-                                        iconIds[i] = iconIdsArray.getString(i);
-                                    }
-                                    fetchIconDetails(iconIds);
-                                } catch (JSONException e) {
-                                    // Fallback: try comma-separated string
-                                    String[] iconIds = manageIconsStr.split(",");
-                                    fetchIconDetails(iconIds);
+                    if (response.optBoolean("success", false)) {
+                        String manageIconsStr = response.optString("manage_icons", "");
+                        
+                        if (!manageIconsStr.isEmpty()) {
+                            try {
+                                // Parse the manage_icons JSON array
+                                JSONArray iconIdsArray = new JSONArray(manageIconsStr);
+                                String[] iconIds = new String[iconIdsArray.length()];
+                                for (int i = 0; i < iconIdsArray.length(); i++) {
+                                    iconIds[i] = iconIdsArray.getString(i);
                                 }
-                            } else {
-                                showError("No manage icons found for this user");
+                                fetchIconDetails(iconIds);
+                            } catch (JSONException e) {
+                                // Fallback: try comma-separated string
+                                String[] iconIds = manageIconsStr.split(",");
+                                fetchIconDetails(iconIds);
                             }
                         } else {
-                            String errorMsg = response.optString("error", "Unknown error occurred");
-                            showError("Error: " + errorMsg);
+                            showError("No manage icons found for this user");
                         }
-                    } catch (JSONException e) {
-                        Log.e(TAG, "Error parsing user data: " + e.getMessage());
-                        showError("Error parsing user data");
+                    } else {
+                        String errorMsg = response.optString("error", "Unknown error occurred");
+                        showError("Error: " + errorMsg);
                     }
                 }
             },
