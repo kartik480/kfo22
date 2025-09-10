@@ -330,7 +330,9 @@ public class User10002PanelActivity extends AppCompatActivity implements Navigat
         });
 
         addInsuranceBox.setOnClickListener(v -> {
-            Toast.makeText(this, "Add Insurance - Coming Soon", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(this, DirectorAddInsurancePanelActivity.class);
+            passUserDataToIntent(intent);
+            startActivity(intent);
         });
 
         // New Management Tool boxes - with navigation to their panels
