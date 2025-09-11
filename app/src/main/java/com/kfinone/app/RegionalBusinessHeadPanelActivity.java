@@ -23,7 +23,7 @@ public class RegionalBusinessHeadPanelActivity extends AppCompatActivity {
     // Action card views
     private View cardTotalEmp, cardTotalSdsa, cardTotalPartner, cardTotalAgent, cardTeam, cardReports, cardAnalytics, cardStrategy, 
                  cardPerformance, cardGrowth, cardInnovation, cardPartnerships, 
-                 cardMarketAnalysis, cardCompliance, cardDocumentCheckList, cardInsurance, cardPortfolio, cardPolicyManagement;
+                 cardMarketAnalysis, cardCompliance, cardDocumentCheckList, cardInsurance, cardPortfolio, cardPolicyManagement, cardDatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,6 +109,7 @@ public class RegionalBusinessHeadPanelActivity extends AppCompatActivity {
         cardInsurance = findViewById(R.id.cardInsurance);
         cardPortfolio = findViewById(R.id.cardPortfolio);
         cardPolicyManagement = findViewById(R.id.cardPolicyManagement);
+        cardDatabase = findViewById(R.id.cardDatabase);
         
         notificationIcon = findViewById(R.id.notificationIcon);
         profileIcon = findViewById(R.id.profileIcon);
@@ -326,6 +327,15 @@ public class RegionalBusinessHeadPanelActivity extends AppCompatActivity {
                 passUserDataToIntent(intent);
                 intent.putExtra("SOURCE_PANEL", "RBH_PANEL");
                 android.util.Log.d("RBHPanel", "Starting PolicyActivity");
+                startActivity(intent);
+            });
+        }
+
+        if (cardDatabase != null) {
+            cardDatabase.setOnClickListener(v -> {
+                android.util.Log.d("RBHPanel", "Database Card clicked! Navigating to RegionalBusinessHeadDatabaseActivity");
+                Intent intent = new Intent(this, RegionalBusinessHeadDatabaseActivity.class);
+                passUserDataToIntent(intent);
                 startActivity(intent);
             });
         }

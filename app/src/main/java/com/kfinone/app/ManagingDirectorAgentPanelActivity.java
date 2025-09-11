@@ -84,7 +84,11 @@ public class ManagingDirectorAgentPanelActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
-
+        findViewById(R.id.databaseBox).setOnClickListener(v -> {
+            Intent intent = new Intent(this, ManagingDirectorDatabaseActivity.class);
+            passUserDataToIntent(intent);
+            startActivity(intent);
+        });
 
         // Bottom navigation
         findViewById(R.id.dashboardButton).setOnClickListener(v -> {

@@ -23,7 +23,7 @@ public class ChiefBusinessOfficerPanelActivity extends AppCompatActivity {
     private View cardPortfolio, cardTeam, cardReports, cardAnalytics, cardStrategy, 
                  cardPerformance, cardGrowth, cardInnovation, cardPartnerships, 
                  cardMarketAnalysis, cardRiskManagement, cardCompliance, cardBudget, 
-                 cardGoals, cardSettings;
+                 cardGoals, cardSettings, cardDatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,6 +110,7 @@ public class ChiefBusinessOfficerPanelActivity extends AppCompatActivity {
         cardBudget = findViewById(R.id.cardBudget);
         cardGoals = findViewById(R.id.cardGoals);
         cardSettings = findViewById(R.id.cardSettings);
+        cardDatabase = findViewById(R.id.cardDatabase);
         
         notificationIcon = findViewById(R.id.notificationIcon);
         profileIcon = findViewById(R.id.profileIcon);
@@ -268,6 +269,12 @@ public class ChiefBusinessOfficerPanelActivity extends AppCompatActivity {
             Intent intent = new Intent(this, PolicyActivity.class);
             passUserDataToIntent(intent);
             intent.putExtra("SOURCE_PANEL", "CBO_PANEL");
+            startActivity(intent);
+        });
+        
+        cardDatabase.setOnClickListener(v -> {
+            Intent intent = new Intent(this, ChiefBusinessOfficerDatabaseActivity.class);
+            passUserDataToIntent(intent);
             startActivity(intent);
         });
     }

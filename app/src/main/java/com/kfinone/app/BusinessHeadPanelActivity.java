@@ -78,6 +78,7 @@ public class BusinessHeadPanelActivity extends AppCompatActivity {
     private LinearLayout cardRiskManagement;
     private LinearLayout cardCompliance;
     private LinearLayout cardBudgetManagement;
+    private LinearLayout cardDatabase;
     
     // Executor removed since we're not doing heavy background operations
     private RequestQueue requestQueue;
@@ -167,6 +168,7 @@ public class BusinessHeadPanelActivity extends AppCompatActivity {
         cardRiskManagement = findViewById(R.id.cardRiskManagement);
         cardCompliance = findViewById(R.id.cardCompliance);
         cardBudgetManagement = findViewById(R.id.cardBudgetManagement);
+        cardDatabase = findViewById(R.id.cardDatabase);
     }
     
     private void setupHeaderClickListeners() {
@@ -354,6 +356,13 @@ public class BusinessHeadPanelActivity extends AppCompatActivity {
         // Risk Management (Vehicle Insurance)
         cardRiskManagement.setOnClickListener(v -> {
             Intent intent = new Intent(BusinessHeadPanelActivity.this, BusinessHeadVehicleInsuranceActivity.class);
+            passUserDataToIntent(intent);
+            startActivity(intent);
+        });
+        
+        // Database
+        cardDatabase.setOnClickListener(v -> {
+            Intent intent = new Intent(BusinessHeadPanelActivity.this, BusinessHeadDatabaseActivity.class);
             passUserDataToIntent(intent);
             startActivity(intent);
         });
