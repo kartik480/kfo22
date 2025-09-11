@@ -79,6 +79,7 @@ public class BusinessHeadPanelActivity extends AppCompatActivity {
     private LinearLayout cardCompliance;
     private LinearLayout cardBudgetManagement;
     private LinearLayout cardDatabase;
+    private LinearLayout cardTraining;
     
     // Executor removed since we're not doing heavy background operations
     private RequestQueue requestQueue;
@@ -169,6 +170,7 @@ public class BusinessHeadPanelActivity extends AppCompatActivity {
         cardCompliance = findViewById(R.id.cardCompliance);
         cardBudgetManagement = findViewById(R.id.cardBudgetManagement);
         cardDatabase = findViewById(R.id.cardDatabase);
+        cardTraining = findViewById(R.id.cardTraining);
     }
     
     private void setupHeaderClickListeners() {
@@ -365,6 +367,15 @@ public class BusinessHeadPanelActivity extends AppCompatActivity {
             Intent intent = new Intent(BusinessHeadPanelActivity.this, BusinessHeadDatabaseActivity.class);
             passUserDataToIntent(intent);
             startActivity(intent);
+        });
+
+        // Training
+        cardTraining.setOnClickListener(v -> {
+            Toast.makeText(this, "Training - Coming Soon", Toast.LENGTH_SHORT).show();
+            // TODO: Navigate to Training activity when implemented
+            // Intent intent = new Intent(BusinessHeadPanelActivity.this, BusinessHeadTrainingActivity.class);
+            // passUserDataToIntent(intent);
+            // startActivity(intent);
         });
         
         // Compliance (Document Check List)

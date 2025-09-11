@@ -23,7 +23,7 @@ public class ChiefBusinessOfficerPanelActivity extends AppCompatActivity {
     private View cardPortfolio, cardTeam, cardReports, cardAnalytics, cardStrategy, 
                  cardPerformance, cardGrowth, cardInnovation, cardPartnerships, 
                  cardMarketAnalysis, cardRiskManagement, cardCompliance, cardBudget, 
-                 cardGoals, cardSettings, cardDatabase;
+                 cardGoals, cardSettings, cardDatabase, cardTraining;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,6 +111,7 @@ public class ChiefBusinessOfficerPanelActivity extends AppCompatActivity {
         cardGoals = findViewById(R.id.cardGoals);
         cardSettings = findViewById(R.id.cardSettings);
         cardDatabase = findViewById(R.id.cardDatabase);
+        cardTraining = findViewById(R.id.cardTraining);
         
         notificationIcon = findViewById(R.id.notificationIcon);
         profileIcon = findViewById(R.id.profileIcon);
@@ -276,6 +277,14 @@ public class ChiefBusinessOfficerPanelActivity extends AppCompatActivity {
             Intent intent = new Intent(this, ChiefBusinessOfficerDatabaseActivity.class);
             passUserDataToIntent(intent);
             startActivity(intent);
+        });
+
+        cardTraining.setOnClickListener(v -> {
+            Toast.makeText(this, "Training - Coming Soon", Toast.LENGTH_SHORT).show();
+            // TODO: Navigate to Training activity when implemented
+            // Intent intent = new Intent(this, ChiefBusinessOfficerTrainingActivity.class);
+            // passUserDataToIntent(intent);
+            // startActivity(intent);
         });
     }
 

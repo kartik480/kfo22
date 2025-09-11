@@ -23,7 +23,7 @@ public class RegionalBusinessHeadPanelActivity extends AppCompatActivity {
     // Action card views
     private View cardTotalEmp, cardTotalSdsa, cardTotalPartner, cardTotalAgent, cardTeam, cardReports, cardAnalytics, cardStrategy, 
                  cardPerformance, cardGrowth, cardInnovation, cardPartnerships, 
-                 cardMarketAnalysis, cardCompliance, cardDocumentCheckList, cardInsurance, cardPortfolio, cardPolicyManagement, cardDatabase;
+                 cardMarketAnalysis, cardCompliance, cardDocumentCheckList, cardInsurance, cardPortfolio, cardPolicyManagement, cardDatabase, cardTraining;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,6 +110,7 @@ public class RegionalBusinessHeadPanelActivity extends AppCompatActivity {
         cardPortfolio = findViewById(R.id.cardPortfolio);
         cardPolicyManagement = findViewById(R.id.cardPolicyManagement);
         cardDatabase = findViewById(R.id.cardDatabase);
+        cardTraining = findViewById(R.id.cardTraining);
         
         notificationIcon = findViewById(R.id.notificationIcon);
         profileIcon = findViewById(R.id.profileIcon);
@@ -337,6 +338,17 @@ public class RegionalBusinessHeadPanelActivity extends AppCompatActivity {
                 Intent intent = new Intent(this, RegionalBusinessHeadDatabaseActivity.class);
                 passUserDataToIntent(intent);
                 startActivity(intent);
+            });
+        }
+
+        if (cardTraining != null) {
+            cardTraining.setOnClickListener(v -> {
+                android.util.Log.d("RBHPanel", "Training Card clicked!");
+                Toast.makeText(this, "Training - Coming Soon", Toast.LENGTH_SHORT).show();
+                // TODO: Navigate to Training activity when implemented
+                // Intent intent = new Intent(this, RegionalBusinessHeadTrainingActivity.class);
+                // passUserDataToIntent(intent);
+                // startActivity(intent);
             });
         }
     }

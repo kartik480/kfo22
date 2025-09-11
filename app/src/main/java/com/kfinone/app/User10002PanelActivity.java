@@ -78,6 +78,7 @@ public class User10002PanelActivity extends AppCompatActivity implements Navigat
     private MaterialCardView dataLinksBox;
     private MaterialCardView workLinksBox;
     private MaterialCardView databaseBox;
+    private MaterialCardView trainingBox;
 
     // User data
     private String userId;
@@ -192,6 +193,7 @@ public class User10002PanelActivity extends AppCompatActivity implements Navigat
         dataLinksBox = findViewById(R.id.dataLinksBox);
         workLinksBox = findViewById(R.id.workLinksBox);
         databaseBox = findViewById(R.id.databaseBox);
+        trainingBox = findViewById(R.id.trainingBox);
 
         // Set up navigation view
         navigationView.setNavigationItemSelectedListener(this);
@@ -361,6 +363,14 @@ public class User10002PanelActivity extends AppCompatActivity implements Navigat
             passUserDataToIntent(intent);
             startActivity(intent);
         });
+
+        trainingBox.setOnClickListener(v -> {
+            Toast.makeText(this, "Training - Coming Soon", Toast.LENGTH_SHORT).show();
+            // TODO: Navigate to Training activity when implemented
+            // Intent intent = new Intent(this, DirectorTrainingActivity.class);
+            // passUserDataToIntent(intent);
+            // startActivity(intent);
+        });
     }
 
     private void setupAnimations() {
@@ -388,6 +398,7 @@ public class User10002PanelActivity extends AppCompatActivity implements Navigat
         dataLinksBox.startAnimation(fadeIn);
         workLinksBox.startAnimation(fadeIn);
         databaseBox.startAnimation(fadeIn);
+        trainingBox.startAnimation(fadeIn);
     }
 
     private void loadDashboardData() {

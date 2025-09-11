@@ -90,6 +90,14 @@ public class ManagingDirectorAgentPanelActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
+        findViewById(R.id.trainingBox).setOnClickListener(v -> {
+            Toast.makeText(this, "Training - Coming Soon", Toast.LENGTH_SHORT).show();
+            // TODO: Navigate to Training activity when implemented
+            // Intent intent = new Intent(this, ManagingDirectorTrainingActivity.class);
+            // passUserDataToIntent(intent);
+            // startActivity(intent);
+        });
+
         // Bottom navigation
         findViewById(R.id.dashboardButton).setOnClickListener(v -> {
             Intent intent = new Intent(this, SpecialPanelActivity.class);
