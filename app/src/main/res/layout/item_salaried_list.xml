@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:background="?android:attr/selectableItemBackground"
+    android:padding="12dp"
+    android:gravity="center_vertical">
+
+    <!-- Mobile Number -->
+    <TextView
+        android:id="@+id/mobileNumberText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1.5"
+        android:text="9876543210"
+        android:textSize="12sp"
+        android:textColor="#333333"
+        android:maxLines="1"
+        android:ellipsize="end" />
+
+    <!-- Lead Name -->
+    <TextView
+        android:id="@+id/leadNameText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="2"
+        android:text="John Smith"
+        android:textSize="12sp"
+        android:textColor="#333333"
+        android:maxLines="2"
+        android:ellipsize="end" />
+
+    <!-- Email Id -->
+    <TextView
+        android:id="@+id/emailIdText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="2"
+        android:text="john.smith@email.com"
+        android:textSize="12sp"
+        android:textColor="#333333"
+        android:maxLines="2"
+        android:ellipsize="end" />
+
+    <!-- Created BY -->
+    <TextView
+        android:id="@+id/createdByText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1.5"
+        android:text="Admin"
+        android:textSize="12sp"
+        android:textColor="#333333"
+        android:maxLines="1"
+        android:ellipsize="end" />
+
+    <!-- Actions -->
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="horizontal"
+        android:gravity="center">
+
+        <TextView
+            android:id="@+id/viewButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="View"
+            android:textSize="10sp"
+            android:textColor="#1976D2"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:padding="4dp"
+            android:clickable="true" />
+
+        <TextView
+            android:id="@+id/editButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Edit"
+            android:textSize="10sp"
+            android:textColor="#FF9800"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:padding="4dp"
+            android:layout_marginStart="4dp"
+            android:clickable="true" />
+
+    </LinearLayout>
+
+</LinearLayout>

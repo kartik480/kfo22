@@ -576,6 +576,16 @@
             android:label="My Payouts"
             android:parentActivityName=".User10002PanelActivity" />
         <activity
+            android:name=".DirectorDatabaseActivity"
+            android:exported="false"
+            android:label="Director Database"
+            android:parentActivityName=".User10002PanelActivity" />
+        <activity
+            android:name=".DirectorSalDataActivity"
+            android:exported="false"
+            android:label="Database Salaried List"
+            android:parentActivityName=".DirectorDatabaseActivity" />
+        <activity
             android:name=".DirectorAddInsurancePanelActivity"
             android:exported="false"
             android:label="Add Insurance"

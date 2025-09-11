@@ -77,6 +77,7 @@ public class User10002PanelActivity extends AppCompatActivity implements Navigat
     private MaterialCardView empLinksBox;
     private MaterialCardView dataLinksBox;
     private MaterialCardView workLinksBox;
+    private MaterialCardView databaseBox;
 
     // User data
     private String userId;
@@ -190,6 +191,7 @@ public class User10002PanelActivity extends AppCompatActivity implements Navigat
         empLinksBox = findViewById(R.id.empLinksBox);
         dataLinksBox = findViewById(R.id.dataLinksBox);
         workLinksBox = findViewById(R.id.workLinksBox);
+        databaseBox = findViewById(R.id.databaseBox);
 
         // Set up navigation view
         navigationView.setNavigationItemSelectedListener(this);
@@ -353,6 +355,12 @@ public class User10002PanelActivity extends AppCompatActivity implements Navigat
             passUserDataToIntent(intent);
             startActivity(intent);
         });
+
+        databaseBox.setOnClickListener(v -> {
+            Intent intent = new Intent(this, DirectorDatabaseActivity.class);
+            passUserDataToIntent(intent);
+            startActivity(intent);
+        });
     }
 
     private void setupAnimations() {
@@ -379,6 +387,7 @@ public class User10002PanelActivity extends AppCompatActivity implements Navigat
         empLinksBox.startAnimation(fadeIn);
         dataLinksBox.startAnimation(fadeIn);
         workLinksBox.startAnimation(fadeIn);
+        databaseBox.startAnimation(fadeIn);
     }
 
     private void loadDashboardData() {
