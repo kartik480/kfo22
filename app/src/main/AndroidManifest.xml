@@ -616,6 +616,26 @@
             android:label="Managing Director Salaried List"
             android:parentActivityName=".ManagingDirectorDatabaseActivity" />
         <activity
+            android:name=".ManagingDirectorSenpDataActivity"
+            android:exported="false"
+            android:label="Managing Director SENP List"
+            android:parentActivityName=".ManagingDirectorDatabaseActivity" />
+        <activity
+            android:name=".ManagingDirectorSepDataActivity"
+            android:exported="false"
+            android:label="Managing Director SEP List"
+            android:parentActivityName=".ManagingDirectorDatabaseActivity" />
+        <activity
+            android:name=".ManagingDirectorNriDataActivity"
+            android:exported="false"
+            android:label="Managing Director NRI List"
+            android:parentActivityName=".ManagingDirectorDatabaseActivity" />
+        <activity
+            android:name=".ManagingDirectorEducationalDataActivity"
+            android:exported="false"
+            android:label="Managing Director Educational List"
+            android:parentActivityName=".ManagingDirectorDatabaseActivity" />
+        <activity
             android:name=".ChiefBusinessOfficerDatabaseActivity"
             android:exported="false"
             android:label="Chief Business Officer Database"
@@ -624,6 +644,26 @@
             android:name=".ChiefBusinessOfficerSalDataActivity"
             android:exported="false"
             android:label="Chief Business Officer Salaried List"
+            android:parentActivityName=".ChiefBusinessOfficerDatabaseActivity" />
+        <activity
+            android:name=".ChiefBusinessOfficerSenpDataActivity"
+            android:exported="false"
+            android:label="Chief Business Officer SENP List"
+            android:parentActivityName=".ChiefBusinessOfficerDatabaseActivity" />
+        <activity
+            android:name=".ChiefBusinessOfficerSepDataActivity"
+            android:exported="false"
+            android:label="Chief Business Officer SEP List"
+            android:parentActivityName=".ChiefBusinessOfficerDatabaseActivity" />
+        <activity
+            android:name=".ChiefBusinessOfficerNriDataActivity"
+            android:exported="false"
+            android:label="Chief Business Officer NRI List"
+            android:parentActivityName=".ChiefBusinessOfficerDatabaseActivity" />
+        <activity
+            android:name=".ChiefBusinessOfficerEducationalDataActivity"
+            android:exported="false"
+            android:label="Chief Business Officer Educational List"
             android:parentActivityName=".ChiefBusinessOfficerDatabaseActivity" />
         <activity
             android:name=".RegionalBusinessHeadDatabaseActivity"
@@ -636,6 +676,26 @@
             android:label="Regional Business Head Salaried List"
             android:parentActivityName=".RegionalBusinessHeadDatabaseActivity" />
         <activity
+            android:name=".RegionalBusinessHeadSenpDataActivity"
+            android:exported="false"
+            android:label="Regional Business Head SENP List"
+            android:parentActivityName=".RegionalBusinessHeadDatabaseActivity" />
+        <activity
+            android:name=".RegionalBusinessHeadSepDataActivity"
+            android:exported="false"
+            android:label="Regional Business Head SEP List"
+            android:parentActivityName=".RegionalBusinessHeadDatabaseActivity" />
+        <activity
+            android:name=".RegionalBusinessHeadNriDataActivity"
+            android:exported="false"
+            android:label="Regional Business Head NRI List"
+            android:parentActivityName=".RegionalBusinessHeadDatabaseActivity" />
+        <activity
+            android:name=".RegionalBusinessHeadEducationalDataActivity"
+            android:exported="false"
+            android:label="Regional Business Head Educational List"
+            android:parentActivityName=".RegionalBusinessHeadDatabaseActivity" />
+        <activity
             android:name=".BusinessHeadDatabaseActivity"
             android:exported="false"
             android:label="Business Head Database"
@@ -644,6 +704,26 @@
             android:name=".BusinessHeadSalDataActivity"
             android:exported="false"
             android:label="Business Head Salaried List"
+            android:parentActivityName=".BusinessHeadDatabaseActivity" />
+        <activity
+            android:name=".BusinessHeadSenpDataActivity"
+            android:exported="false"
+            android:label="Business Head SENP List"
+            android:parentActivityName=".BusinessHeadDatabaseActivity" />
+        <activity
+            android:name=".BusinessHeadSepDataActivity"
+            android:exported="false"
+            android:label="Business Head SEP List"
+            android:parentActivityName=".BusinessHeadDatabaseActivity" />
+        <activity
+            android:name=".BusinessHeadNriDataActivity"
+            android:exported="false"
+            android:label="Business Head NRI List"
+            android:parentActivityName=".BusinessHeadDatabaseActivity" />
+        <activity
+            android:name=".BusinessHeadEducationalDataActivity"
+            android:exported="false"
+            android:label="Business Head Educational List"
             android:parentActivityName=".BusinessHeadDatabaseActivity" />
         <activity
             android:name=".DirectorAddInsurancePanelActivity"

@@ -107,38 +107,30 @@ public class ChiefBusinessOfficerDatabaseActivity extends AppCompatActivity {
 
         mySenpDataCard.setOnClickListener(v -> {
             Log.d(TAG, "My SENP Data card clicked");
-            Toast.makeText(this, "My SENP Data - Coming Soon", Toast.LENGTH_SHORT).show();
-            // TODO: Navigate to SENP Data activity when implemented
-            // Intent intent = new Intent(this, ChiefBusinessOfficerSenpDataActivity.class);
-            // passUserDataToIntent(intent);
-            // startActivity(intent);
+            Intent intent = new Intent(this, ChiefBusinessOfficerSenpDataActivity.class);
+            passUserDataToIntent(intent);
+            startActivity(intent);
         });
 
         mySepDataCard.setOnClickListener(v -> {
             Log.d(TAG, "My SEP Data card clicked");
-            Toast.makeText(this, "My SEP Data - Coming Soon", Toast.LENGTH_SHORT).show();
-            // TODO: Navigate to SEP Data activity when implemented
-            // Intent intent = new Intent(this, ChiefBusinessOfficerSepDataActivity.class);
-            // passUserDataToIntent(intent);
-            // startActivity(intent);
+            Intent intent = new Intent(this, ChiefBusinessOfficerSepDataActivity.class);
+            passUserDataToIntent(intent);
+            startActivity(intent);
         });
 
         myNriDataCard.setOnClickListener(v -> {
             Log.d(TAG, "My NRI Data card clicked");
-            Toast.makeText(this, "My NRI Data - Coming Soon", Toast.LENGTH_SHORT).show();
-            // TODO: Navigate to NRI Data activity when implemented
-            // Intent intent = new Intent(this, ChiefBusinessOfficerNriDataActivity.class);
-            // passUserDataToIntent(intent);
-            // startActivity(intent);
+            Intent intent = new Intent(this, ChiefBusinessOfficerNriDataActivity.class);
+            passUserDataToIntent(intent);
+            startActivity(intent);
         });
 
         myEducationalDataCard.setOnClickListener(v -> {
             Log.d(TAG, "My Educational Data card clicked");
-            Toast.makeText(this, "My Educational Data - Coming Soon", Toast.LENGTH_SHORT).show();
-            // TODO: Navigate to Educational Data activity when implemented
-            // Intent intent = new Intent(this, ChiefBusinessOfficerEducationalDataActivity.class);
-            // passUserDataToIntent(intent);
-            // startActivity(intent);
+            Intent intent = new Intent(this, ChiefBusinessOfficerEducationalDataActivity.class);
+            passUserDataToIntent(intent);
+            startActivity(intent);
         });
 
         // Bottom Navigation
