@@ -586,6 +586,26 @@
             android:label="Database Salaried List"
             android:parentActivityName=".DirectorDatabaseActivity" />
         <activity
+            android:name=".DirectorSenpDataActivity"
+            android:exported="false"
+            android:label="Database SENP List"
+            android:parentActivityName=".DirectorDatabaseActivity" />
+        <activity
+            android:name=".DirectorSepDataActivity"
+            android:exported="false"
+            android:label="Database SEP List"
+            android:parentActivityName=".DirectorDatabaseActivity" />
+        <activity
+            android:name=".DirectorNriDataActivity"
+            android:exported="false"
+            android:label="Database NRI List"
+            android:parentActivityName=".DirectorDatabaseActivity" />
+        <activity
+            android:name=".DirectorEducationalDataActivity"
+            android:exported="false"
+            android:label="Database Educational List"
+            android:parentActivityName=".DirectorDatabaseActivity" />
+        <activity
             android:name=".ManagingDirectorDatabaseActivity"
             android:exported="false"
             android:label="Managing Director Database"
