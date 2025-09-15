@@ -344,11 +344,9 @@ public class RegionalBusinessHeadPanelActivity extends AppCompatActivity {
         if (cardTraining != null) {
             cardTraining.setOnClickListener(v -> {
                 android.util.Log.d("RBHPanel", "Training Card clicked!");
-                Toast.makeText(this, "Training - Coming Soon", Toast.LENGTH_SHORT).show();
-                // TODO: Navigate to Training activity when implemented
-                // Intent intent = new Intent(this, RegionalBusinessHeadTrainingActivity.class);
-                // passUserDataToIntent(intent);
-                // startActivity(intent);
+                Intent intent = new Intent(this, RegionalBusinessHeadTrainingActivity.class);
+                passUserDataToIntent(intent);
+                startActivity(intent);
             });
         }
     }

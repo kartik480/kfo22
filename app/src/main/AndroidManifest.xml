@@ -586,6 +586,26 @@
             android:label="Director Training Center"
             android:parentActivityName=".User10002PanelActivity" />
         <activity
+            android:name=".ManagingDirectorTrainingActivity"
+            android:exported="false"
+            android:label="Managing Director Training Center"
+            android:parentActivityName=".ManagingDirectorAgentPanelActivity" />
+        <activity
+            android:name=".RegionalBusinessHeadTrainingActivity"
+            android:exported="false"
+            android:label="Regional Business Head Training Center"
+            android:parentActivityName=".RegionalBusinessHeadPanelActivity" />
+        <activity
+            android:name=".ChiefBusinessOfficerTrainingActivity"
+            android:exported="false"
+            android:label="Chief Business Officer Training Center"
+            android:parentActivityName=".ChiefBusinessOfficerPanelActivity" />
+        <activity
+            android:name=".BusinessHeadTrainingActivity"
+            android:exported="false"
+            android:label="Business Head Training Center"
+            android:parentActivityName=".BusinessHeadPanelActivity" />
+        <activity
             android:name=".DirectorSalDataActivity"
             android:exported="false"
             android:label="Database Salaried List"

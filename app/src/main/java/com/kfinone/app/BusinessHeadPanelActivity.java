@@ -371,11 +371,9 @@ public class BusinessHeadPanelActivity extends AppCompatActivity {
 
         // Training
         cardTraining.setOnClickListener(v -> {
-            Toast.makeText(this, "Training - Coming Soon", Toast.LENGTH_SHORT).show();
-            // TODO: Navigate to Training activity when implemented
-            // Intent intent = new Intent(BusinessHeadPanelActivity.this, BusinessHeadTrainingActivity.class);
-            // passUserDataToIntent(intent);
-            // startActivity(intent);
+            Intent intent = new Intent(BusinessHeadPanelActivity.this, BusinessHeadTrainingActivity.class);
+            passUserDataToIntent(intent);
+            startActivity(intent);
         });
         
         // Compliance (Document Check List)

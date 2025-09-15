@@ -280,11 +280,9 @@ public class ChiefBusinessOfficerPanelActivity extends AppCompatActivity {
         });
 
         cardTraining.setOnClickListener(v -> {
-            Toast.makeText(this, "Training - Coming Soon", Toast.LENGTH_SHORT).show();
-            // TODO: Navigate to Training activity when implemented
-            // Intent intent = new Intent(this, ChiefBusinessOfficerTrainingActivity.class);
-            // passUserDataToIntent(intent);
-            // startActivity(intent);
+            Intent intent = new Intent(this, ChiefBusinessOfficerTrainingActivity.class);
+            passUserDataToIntent(intent);
+            startActivity(intent);
         });
     }
 
