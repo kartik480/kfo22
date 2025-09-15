@@ -108,8 +108,9 @@ public class ManagingDirectorTrainingActivity extends AppCompatActivity {
         });
 
         profileBox.setOnClickListener(v -> {
-            Toast.makeText(this, "Profile - Coming Soon", Toast.LENGTH_SHORT).show();
-            // TODO: Navigate to Profile activity when implemented
+            Intent intent = new Intent(this, ManagingDirectorProfileActivity.class);
+            passUserDataToIntent(intent);
+            startActivity(intent);
         });
 
         seminarsBox.setOnClickListener(v -> {

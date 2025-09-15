@@ -606,6 +606,26 @@
             android:label="Image Viewer"
             android:parentActivityName=".DirectorProfileActivity" />
         <activity
+            android:name=".ManagingDirectorProfileActivity"
+            android:exported="false"
+            android:label="Profile List"
+            android:parentActivityName=".ManagingDirectorTrainingActivity" />
+        <activity
+            android:name=".RegionalBusinessHeadProfileActivity"
+            android:exported="false"
+            android:label="Profile List"
+            android:parentActivityName=".RegionalBusinessHeadTrainingActivity" />
+        <activity
+            android:name=".ChiefBusinessOfficerProfileActivity"
+            android:exported="false"
+            android:label="Profile List"
+            android:parentActivityName=".ChiefBusinessOfficerTrainingActivity" />
+        <activity
+            android:name=".BusinessHeadProfileActivity"
+            android:exported="false"
+            android:label="Profile List"
+            android:parentActivityName=".BusinessHeadTrainingActivity" />
+        <activity
             android:name=".ManagingDirectorTrainingVideoActivity"
             android:exported="false"
             android:label="Training Video List"
