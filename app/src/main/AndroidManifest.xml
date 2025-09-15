@@ -596,6 +596,11 @@
             android:label="Training Video List"
             android:parentActivityName=".DirectorTrainingActivity" />
         <activity
+            android:name=".DirectorProfileActivity"
+            android:exported="false"
+            android:label="Profile List"
+            android:parentActivityName=".DirectorTrainingActivity" />
+        <activity
             android:name=".ManagingDirectorTrainingVideoActivity"
             android:exported="false"
             android:label="Training Video List"

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="12dp"
+    android:background="@android:color/white">
+
+    <!-- Vendor Bank Column -->
+    <TextView
+        android:id="@+id/vendorBankTextView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1.5"
+        android:text="Vendor Bank"
+        android:textColor="@android:color/black"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        android:maxLines="2"
+        android:ellipsize="end" />
+
+    <!-- Loan Type Column -->
+    <TextView
+        android:id="@+id/loanTypeTextView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1.5"
+        android:text="Loan Type"
+        android:textColor="@android:color/darker_gray"
+        android:textSize="12sp"
+        android:layout_marginStart="8dp"
+        android:maxLines="1"
+        android:ellipsize="end" />
+
+    <!-- Images Column -->
+    <TextView
+        android:id="@+id/imagesTextView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="Images"
+        android:textColor="@android:color/holo_blue_dark"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        android:layout_marginStart="8dp"
+        android:gravity="center" />
+
+    <!-- File Column -->
+    <TextView
+        android:id="@+id/fileTextView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="File"
+        android:textColor="@android:color/holo_green_dark"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        android:layout_marginStart="8dp"
+        android:gravity="center" />
+
+</LinearLayout>
