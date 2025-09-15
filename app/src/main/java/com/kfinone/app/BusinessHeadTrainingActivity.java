@@ -96,8 +96,9 @@ public class BusinessHeadTrainingActivity extends AppCompatActivity {
 
         // Training boxes click listeners
         typeOfLoanBox.setOnClickListener(v -> {
-            Toast.makeText(this, "Type of Loan - Coming Soon", Toast.LENGTH_SHORT).show();
-            // TODO: Navigate to Type of Loan activity when implemented
+            Intent intent = new Intent(this, BusinessHeadTypeOfLoanActivity.class);
+            passUserDataToIntent(intent);
+            startActivity(intent);
         });
 
         trainingVideoBox.setOnClickListener(v -> {

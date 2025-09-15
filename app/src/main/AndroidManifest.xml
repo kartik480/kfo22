@@ -591,6 +591,26 @@
             android:label="Type Of Loan Video List"
             android:parentActivityName=".DirectorTrainingActivity" />
         <activity
+            android:name=".ManagingDirectorTypeOfLoanActivity"
+            android:exported="false"
+            android:label="Type Of Loan Video List"
+            android:parentActivityName=".ManagingDirectorTrainingActivity" />
+        <activity
+            android:name=".RegionalBusinessHeadTypeOfLoanActivity"
+            android:exported="false"
+            android:label="Type Of Loan Video List"
+            android:parentActivityName=".RegionalBusinessHeadTrainingActivity" />
+        <activity
+            android:name=".ChiefBusinessOfficerTypeOfLoanActivity"
+            android:exported="false"
+            android:label="Type Of Loan Video List"
+            android:parentActivityName=".ChiefBusinessOfficerTrainingActivity" />
+        <activity
+            android:name=".BusinessHeadTypeOfLoanActivity"
+            android:exported="false"
+            android:label="Type Of Loan Video List"
+            android:parentActivityName=".BusinessHeadTrainingActivity" />
+        <activity
             android:name=".ManagingDirectorTrainingActivity"
             android:exported="false"
             android:label="Managing Director Training Center"

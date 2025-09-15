@@ -24,9 +24,9 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DirectorTypeOfLoanActivity extends AppCompatActivity {
+public class RegionalBusinessHeadTypeOfLoanActivity extends AppCompatActivity {
 
-    private static final String TAG = "DirectorTypeOfLoanActivity";
+    private static final String TAG = "RegionalBusinessHeadTypeOfLoanActivity";
     private static final String BASE_URL = "https://emp.kfinone.com/mobile/api/";
 
     // UI Elements
@@ -40,7 +40,7 @@ public class DirectorTypeOfLoanActivity extends AppCompatActivity {
     // Data
     private List<VendorBank> vendorBankList;
     private List<LoanType> loanTypeList;
-    private List<VideoItem> videoList;
+    private List<DirectorTypeOfLoanActivity.VideoItem> videoList;
     private VideoListAdapter videoAdapter;
 
     // User data
@@ -126,7 +126,7 @@ public class DirectorTypeOfLoanActivity extends AppCompatActivity {
         });
 
         videoListView.setOnItemClickListener((parent, view, position, id) -> {
-            VideoItem video = videoList.get(position);
+            DirectorTypeOfLoanActivity.VideoItem video = videoList.get(position);
             Toast.makeText(this, "Playing video: " + video.getName(), Toast.LENGTH_SHORT).show();
             // TODO: Implement video playback
         });
@@ -150,7 +150,7 @@ public class DirectorTypeOfLoanActivity extends AppCompatActivity {
                             vendorBankList.add(new VendorBank(id, name));
                         }
                         
-                        ArrayAdapter<VendorBank> adapter = new ArrayAdapter<VendorBank>(DirectorTypeOfLoanActivity.this,
+                        ArrayAdapter<VendorBank> adapter = new ArrayAdapter<VendorBank>(RegionalBusinessHeadTypeOfLoanActivity.this,
                             android.R.layout.simple_spinner_item, vendorBankList) {
                             @Override
                             public View getView(int position, View convertView, android.view.ViewGroup parent) {
@@ -172,7 +172,7 @@ public class DirectorTypeOfLoanActivity extends AppCompatActivity {
                         
                     } catch (JSONException e) {
                         Log.e(TAG, "Error parsing vendor banks JSON", e);
-                        Toast.makeText(DirectorTypeOfLoanActivity.this, "Error parsing vendor banks - using fallback data", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(RegionalBusinessHeadTypeOfLoanActivity.this, "Error parsing vendor banks - using fallback data", Toast.LENGTH_SHORT).show();
                         loadFallbackVendorBanks();
                     }
                 }
@@ -181,7 +181,7 @@ public class DirectorTypeOfLoanActivity extends AppCompatActivity {
                 @Override
                 public void onErrorResponse(VolleyError error) {
                     Log.e(TAG, "Error loading vendor banks", error);
-                    Toast.makeText(DirectorTypeOfLoanActivity.this, "Error loading vendor banks - using fallback data", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(RegionalBusinessHeadTypeOfLoanActivity.this, "Error loading vendor banks - using fallback data", Toast.LENGTH_SHORT).show();
                     loadFallbackVendorBanks();
                 }
             });
@@ -208,7 +208,7 @@ public class DirectorTypeOfLoanActivity extends AppCompatActivity {
                             loanTypeList.add(new LoanType(id, type));
                         }
                         
-                        ArrayAdapter<LoanType> adapter = new ArrayAdapter<LoanType>(DirectorTypeOfLoanActivity.this,
+                        ArrayAdapter<LoanType> adapter = new ArrayAdapter<LoanType>(RegionalBusinessHeadTypeOfLoanActivity.this,
                             android.R.layout.simple_spinner_item, loanTypeList) {
                             @Override
                             public View getView(int position, View convertView, android.view.ViewGroup parent) {
@@ -230,7 +230,7 @@ public class DirectorTypeOfLoanActivity extends AppCompatActivity {
                         
                     } catch (JSONException e) {
                         Log.e(TAG, "Error parsing loan types JSON", e);
-                        Toast.makeText(DirectorTypeOfLoanActivity.this, "Error parsing loan types - using fallback data", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(RegionalBusinessHeadTypeOfLoanActivity.this, "Error parsing loan types - using fallback data", Toast.LENGTH_SHORT).show();
                         loadFallbackLoanTypes();
                     }
                 }
@@ -239,7 +239,7 @@ public class DirectorTypeOfLoanActivity extends AppCompatActivity {
                 @Override
                 public void onErrorResponse(VolleyError error) {
                     Log.e(TAG, "Error loading loan types", error);
-                    Toast.makeText(DirectorTypeOfLoanActivity.this, "Error loading loan types - using fallback data", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(RegionalBusinessHeadTypeOfLoanActivity.this, "Error loading loan types - using fallback data", Toast.LENGTH_SHORT).show();
                     loadFallbackLoanTypes();
                 }
             });
@@ -265,14 +265,14 @@ public class DirectorTypeOfLoanActivity extends AppCompatActivity {
                             String loanType = jsonObject.getString("loan_type");
                             String videoUrl = jsonObject.getString("video_url");
                             
-                            videoList.add(new VideoItem(name, vendorBank, loanType, videoUrl));
+                            videoList.add(new DirectorTypeOfLoanActivity.VideoItem(name, vendorBank, loanType, videoUrl));
                         }
                         
                         videoAdapter.notifyDataSetChanged();
                         
                     } catch (JSONException e) {
                         Log.e(TAG, "Error parsing videos JSON", e);
-                        Toast.makeText(DirectorTypeOfLoanActivity.this, "Error parsing videos - using fallback data", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(RegionalBusinessHeadTypeOfLoanActivity.this, "Error parsing videos - using fallback data", Toast.LENGTH_SHORT).show();
                         loadFallbackVideos();
                     }
                 }
@@ -281,7 +281,7 @@ public class DirectorTypeOfLoanActivity extends AppCompatActivity {
                 @Override
                 public void onErrorResponse(VolleyError error) {
                     Log.e(TAG, "Error loading videos", error);
-                    Toast.makeText(DirectorTypeOfLoanActivity.this, "Error loading videos - using fallback data", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(RegionalBusinessHeadTypeOfLoanActivity.this, "Error loading videos - using fallback data", Toast.LENGTH_SHORT).show();
                     loadFallbackVideos();
                 }
             });
@@ -410,22 +410,4 @@ public class DirectorTypeOfLoanActivity extends AppCompatActivity {
         public String getType() { return type; }
     }
 
-    public static class VideoItem {
-        private String name;
-        private String vendorBank;
-        private String loanType;
-        private String videoUrl;
-
-        public VideoItem(String name, String vendorBank, String loanType, String videoUrl) {
-            this.name = name;
-            this.vendorBank = vendorBank;
-            this.loanType = loanType;
-            this.videoUrl = videoUrl;
-        }
-
-        public String getName() { return name; }
-        public String getVendorBank() { return vendorBank; }
-        public String getLoanType() { return loanType; }
-        public String getVideoUrl() { return videoUrl; }
-    }
 }
