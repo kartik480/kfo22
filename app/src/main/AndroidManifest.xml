@@ -601,6 +601,11 @@
             android:label="Profile List"
             android:parentActivityName=".DirectorTrainingActivity" />
         <activity
+            android:name=".DirectorSeminarActivity"
+            android:exported="false"
+            android:label="Seminar List"
+            android:parentActivityName=".DirectorTrainingActivity" />
+        <activity
             android:name=".ImageViewerActivity"
             android:exported="false"
             android:label="Image Viewer"
