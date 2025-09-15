@@ -365,11 +365,9 @@ public class User10002PanelActivity extends AppCompatActivity implements Navigat
         });
 
         trainingBox.setOnClickListener(v -> {
-            Toast.makeText(this, "Training - Coming Soon", Toast.LENGTH_SHORT).show();
-            // TODO: Navigate to Training activity when implemented
-            // Intent intent = new Intent(this, DirectorTrainingActivity.class);
-            // passUserDataToIntent(intent);
-            // startActivity(intent);
+            Intent intent = new Intent(this, DirectorTrainingActivity.class);
+            passUserDataToIntent(intent);
+            startActivity(intent);
         });
     }
 

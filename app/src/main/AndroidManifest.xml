@@ -581,6 +581,11 @@
             android:label="Director Database"
             android:parentActivityName=".User10002PanelActivity" />
         <activity
+            android:name=".DirectorTrainingActivity"
+            android:exported="false"
+            android:label="Director Training Center"
+            android:parentActivityName=".User10002PanelActivity" />
+        <activity
             android:name=".DirectorSalDataActivity"
             android:exported="false"
             android:label="Database Salaried List"
