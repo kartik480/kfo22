@@ -114,8 +114,9 @@ public class RegionalBusinessHeadTrainingActivity extends AppCompatActivity {
         });
 
         seminarsBox.setOnClickListener(v -> {
-            Toast.makeText(this, "Seminars - Coming Soon", Toast.LENGTH_SHORT).show();
-            // TODO: Navigate to Seminars activity when implemented
+            Intent intent = new Intent(this, RegionalBusinessHeadSeminarActivity.class);
+            passUserDataToIntent(intent);
+            startActivity(intent);
         });
 
         policyBox.setOnClickListener(v -> {

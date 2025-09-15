@@ -606,6 +606,26 @@
             android:label="Seminar List"
             android:parentActivityName=".DirectorTrainingActivity" />
         <activity
+            android:name=".ManagingDirectorSeminarActivity"
+            android:exported="false"
+            android:label="Seminar List"
+            android:parentActivityName=".ManagingDirectorTrainingActivity" />
+        <activity
+            android:name=".RegionalBusinessHeadSeminarActivity"
+            android:exported="false"
+            android:label="Seminar List"
+            android:parentActivityName=".RegionalBusinessHeadTrainingActivity" />
+        <activity
+            android:name=".ChiefBusinessOfficerSeminarActivity"
+            android:exported="false"
+            android:label="Seminar List"
+            android:parentActivityName=".ChiefBusinessOfficerTrainingActivity" />
+        <activity
+            android:name=".BusinessHeadSeminarActivity"
+            android:exported="false"
+            android:label="Seminar List"
+            android:parentActivityName=".BusinessHeadTrainingActivity" />
+        <activity
             android:name=".ImageViewerActivity"
             android:exported="false"
             android:label="Image Viewer"
