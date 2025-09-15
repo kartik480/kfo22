@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Endpoint Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 5px; }
+        .success { background-color: #d4edda; border-color: #c3e6cb; }
+        .error { background-color: #f8d7da; border-color: #f5c6cb; }
+        button { padding: 10px 20px; margin: 5px; cursor: pointer; }
+        pre { background-color: #f8f9fa; padding: 10px; border-radius: 3px; overflow-x: auto; }
+    </style>
+</head>
+<body>
+    <h1>API Endpoint Test</h1>
+    
+    <div class="test-section">
+        <h3>Test Vendor Banks API</h3>
+        <button onclick="testVendorBanks()">Test Vendor Banks</button>
+        <div id="vendorBanksResult"></div>
+    </div>
+    
+    <div class="test-section">
+        <h3>Test Loan Types API</h3>
+        <button onclick="testLoanTypes()">Test Loan Types</button>
+        <div id="loanTypesResult"></div>
+    </div>
+    
+    <div class="test-section">
+        <h3>Test Videos API</h3>
+        <button onclick="testVideos()">Test Videos</button>
+        <div id="videosResult"></div>
+    </div>
+
+    <script>
+        async function testVendorBanks() {
+            const resultDiv = document.getElementById('vendorBanksResult');
+            resultDiv.innerHTML = 'Testing...';
+            
+            try {
+                const response = await fetch('https://emp.kfinone.com/mobile/api/get_vendor_banks.php');
+                const data = await response.json();
+                
+                if (response.ok) {
+                    resultDiv.innerHTML = `<div class="success">
+                        <h4>✅ Success!</h4>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    </div>`;
+                } else {
+                    resultDiv.innerHTML = `<div class="error">
+                        <h4>❌ Error ${response.status}</h4>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    </div>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">
+                    <h4>❌ Network Error</h4>
+                    <pre>${error.message}</pre>
+                </div>`;
+            }
+        }
+        
+        async function testLoanTypes() {
+            const resultDiv = document.getElementById('loanTypesResult');
+            resultDiv.innerHTML = 'Testing...';
+            
+            try {
+                const response = await fetch('https://emp.kfinone.com/mobile/api/get_loan_types.php');
+                const data = await response.json();
+                
+                if (response.ok) {
+                    resultDiv.innerHTML = `<div class="success">
+                        <h4>✅ Success!</h4>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    </div>`;
+                } else {
+                    resultDiv.innerHTML = `<div class="error">
+                        <h4>❌ Error ${response.status}</h4>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    </div>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">
+                    <h4>❌ Network Error</h4>
+                    <pre>${error.message}</pre>
+                </div>`;
+            }
+        }
+        
+        async function testVideos() {
+            const resultDiv = document.getElementById('videosResult');
+            resultDiv.innerHTML = 'Testing...';
+            
+            try {
+                const response = await fetch('https://emp.kfinone.com/mobile/api/get_videos.php');
+                const data = await response.json();
+                
+                if (response.ok) {
+                    resultDiv.innerHTML = `<div class="success">
+                        <h4>✅ Success!</h4>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    </div>`;
+                } else {
+                    resultDiv.innerHTML = `<div class="error">
+                        <h4>❌ Error ${response.status}</h4>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    </div>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">
+                    <h4>❌ Network Error</h4>
+                    <pre>${error.message}</pre>
+                </div>`;
+            }
+        }
+    </script>
+</body>
+</html>

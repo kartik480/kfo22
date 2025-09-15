@@ -586,6 +586,11 @@
             android:label="Director Training Center"
             android:parentActivityName=".User10002PanelActivity" />
         <activity
+            android:name=".DirectorTypeOfLoanActivity"
+            android:exported="false"
+            android:label="Type Of Loan Video List"
+            android:parentActivityName=".DirectorTrainingActivity" />
+        <activity
             android:name=".ManagingDirectorTrainingActivity"
             android:exported="false"
             android:label="Managing Director Training Center"
