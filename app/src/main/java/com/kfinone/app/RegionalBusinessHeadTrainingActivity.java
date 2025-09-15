@@ -102,8 +102,9 @@ public class RegionalBusinessHeadTrainingActivity extends AppCompatActivity {
         });
 
         trainingVideoBox.setOnClickListener(v -> {
-            Toast.makeText(this, "Training Video - Coming Soon", Toast.LENGTH_SHORT).show();
-            // TODO: Navigate to Training Video activity when implemented
+            Intent intent = new Intent(this, RegionalBusinessHeadTrainingVideoActivity.class);
+            passUserDataToIntent(intent);
+            startActivity(intent);
         });
 
         profileBox.setOnClickListener(v -> {
