@@ -262,10 +262,10 @@ public class DirectorProfileActivity extends AppCompatActivity {
                             JSONObject jsonObject = response.getJSONObject(i);
                             String vendorBank = jsonObject.getString("vendor_bank");
                             String loanType = jsonObject.getString("loan_type");
-                            String images = jsonObject.getString("images");
+                            String image = jsonObject.getString("image");
                             String file = jsonObject.getString("file");
                             
-                            profileList.add(new ProfileItem(vendorBank, loanType, images, file));
+                            profileList.add(new ProfileItem(vendorBank, loanType, image, file));
                         }
                         
                         profileAdapter.notifyDataSetChanged();
@@ -413,19 +413,19 @@ public class DirectorProfileActivity extends AppCompatActivity {
     public static class ProfileItem {
         private String vendorBank;
         private String loanType;
-        private String images;
+        private String image;
         private String file;
 
-        public ProfileItem(String vendorBank, String loanType, String images, String file) {
+        public ProfileItem(String vendorBank, String loanType, String image, String file) {
             this.vendorBank = vendorBank;
             this.loanType = loanType;
-            this.images = images;
+            this.image = image;
             this.file = file;
         }
 
         public String getVendorBank() { return vendorBank; }
         public String getLoanType() { return loanType; }
-        public String getImages() { return images; }
+        public String getImage() { return image; }
         public String getFile() { return file; }
     }
 }

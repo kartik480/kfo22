@@ -43,7 +43,11 @@
         android:textSize="12sp"
         android:textStyle="bold"
         android:layout_marginStart="8dp"
-        android:gravity="center" />
+        android:gravity="center"
+        android:background="?android:attr/selectableItemBackground"
+        android:clickable="true"
+        android:focusable="true"
+        android:padding="8dp" />
 
     <!-- File Column -->
     <TextView
@@ -56,6 +60,10 @@
         android:textSize="12sp"
         android:textStyle="bold"
         android:layout_marginStart="8dp"
-        android:gravity="center" />
+        android:gravity="center"
+        android:background="?android:attr/selectableItemBackground"
+        android:clickable="true"
+        android:focusable="true"
+        android:padding="8dp" />
 
 </LinearLayout>

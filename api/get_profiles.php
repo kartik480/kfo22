@@ -18,21 +18,21 @@ try {
     $vendorBankId = isset($_GET['vendor_bank_id']) ? (int)$_GET['vendor_bank_id'] : null;
     $loanTypeId = isset($_GET['loan_type_id']) ? (int)$_GET['loan_type_id'] : null;
     
-    $sql = "SELECT vb.vendor_bank_name as vendor_bank, lt.loan_type, p.images, p.file 
-            FROM tbl_profiles p 
-            LEFT JOIN tbl_vendor_bank vb ON p.vendor_bank_id = vb.id 
-            LEFT JOIN tbl_loan_type lt ON p.loan_type_id = lt.id";
+    $sql = "SELECT tp.id, vb.vendor_bank_name as vendor_bank, lt.loan_type, tp.image, tp.file 
+            FROM tbl_training_profile tp 
+            LEFT JOIN tbl_vendor_bank vb ON tp.vendor_bank_id = vb.id 
+            LEFT JOIN tbl_loan_type lt ON tp.loan_type_id = lt.id";
     
     $params = [];
     $conditions = [];
     
     if ($vendorBankId && $vendorBankId > 0) {
-        $conditions[] = "p.vendor_bank_id = ?";
+        $conditions[] = "tp.vendor_bank_id = ?";
         $params[] = $vendorBankId;
     }
     
     if ($loanTypeId && $loanTypeId > 0) {
-        $conditions[] = "p.loan_type_id = ?";
+        $conditions[] = "tp.loan_type_id = ?";
         $params[] = $loanTypeId;
     }
     
