@@ -1,5 +1,6 @@
 package com.kfinone.app;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -43,19 +44,16 @@ public class DirectorOffersAdapter extends RecyclerView.Adapter<DirectorOffersAd
         holder.offerStatusText.setText(offer.getStatus());
         
         // Set status color based on status
-        switch (offer.getStatus().toLowerCase()) {
-            case "active":
-                holder.offerStatusText.setTextColor(context.getResources().getColor(android.R.color.holo_green_dark));
-                break;
-            case "inactive":
-                holder.offerStatusText.setTextColor(context.getResources().getColor(android.R.color.holo_orange_dark));
-                break;
-            case "expired":
-                holder.offerStatusText.setTextColor(context.getResources().getColor(android.R.color.holo_red_dark));
-                break;
-            default:
-                holder.offerStatusText.setTextColor(context.getResources().getColor(android.R.color.darker_gray));
-                break;
+        String status = offer.getStatus();
+        if ("1".equals(status)) {
+            holder.offerStatusText.setText("Active");
+            holder.offerStatusText.setTextColor(context.getResources().getColor(android.R.color.holo_green_dark));
+        } else if ("0".equals(status)) {
+            holder.offerStatusText.setText("Inactive");
+            holder.offerStatusText.setTextColor(context.getResources().getColor(android.R.color.holo_orange_dark));
+        } else {
+            holder.offerStatusText.setText(status);
+            holder.offerStatusText.setTextColor(context.getResources().getColor(android.R.color.darker_gray));
         }
         
         // Set image for offer
@@ -63,7 +61,10 @@ public class DirectorOffersAdapter extends RecyclerView.Adapter<DirectorOffersAd
             // Construct full image URL
             String imageUrl = "https://emp.kfinone.com/backPanel/uploads/offers/" + offer.getImageUrl();
             // Load image from URL
-            new LoadImageTask(holder.offerImage).execute(imageUrl);
+            new LoadImageTask(holder.offerImage, imageUrl).execute(imageUrl);
+            
+            // Set click listener for image popup
+            holder.offerImage.setOnClickListener(v -> showImagePopup(imageUrl, offer.getName()));
         } else {
             holder.offerImage.setImageResource(R.drawable.ic_offers);
         }
@@ -81,12 +82,38 @@ public class DirectorOffersAdapter extends RecyclerView.Adapter<DirectorOffersAd
         notifyDataSetChanged();
     }
 
+    // Method to show image popup
+    private void showImagePopup(String imageUrl, String offerName) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle(offerName);
+        
+        // Create ImageView for popup
+        ImageView popupImageView = new ImageView(context);
+        popupImageView.setLayoutParams(new ViewGroup.LayoutParams(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT
+        ));
+        popupImageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
+        popupImageView.setAdjustViewBounds(true);
+        
+        builder.setView(popupImageView);
+        builder.setPositiveButton("Close", (dialog, which) -> dialog.dismiss());
+        
+        AlertDialog dialog = builder.create();
+        dialog.show();
+        
+        // Load image for popup
+        new LoadImageTask(popupImageView, imageUrl).execute(imageUrl);
+    }
+
     // AsyncTask to load images from URL
     private static class LoadImageTask extends AsyncTask<String, Void, Bitmap> {
         private ImageView imageView;
+        private String imageUrl;
 
-        LoadImageTask(ImageView imageView) {
+        LoadImageTask(ImageView imageView, String imageUrl) {
             this.imageView = imageView;
+            this.imageUrl = imageUrl;
         }
 
         @Override

@@ -126,25 +126,35 @@ public class DirectorOffersActivity extends AppCompatActivity {
                     JSONObject jsonResponse = new JSONObject(response.toString());
                     boolean success = jsonResponse.getBoolean("success");
                     
-                    if (success) {
-                        JSONArray dataArray = jsonResponse.getJSONArray("data");
-                        List<DirectorOffersActivity.OfferItem> offersList = new ArrayList<>();
+                       if (success) {
+                           JSONArray dataArray = jsonResponse.getJSONArray("data");
+                           System.out.println("DEBUG: Total offers from API: " + dataArray.length());
+                           List<DirectorOffersActivity.OfferItem> offersList = new ArrayList<>();
                         
-                        for (int i = 0; i < dataArray.length(); i++) {
-                            JSONObject offerJson = dataArray.getJSONObject(i);
-                            int id = offerJson.getInt("id");
-                            String name = offerJson.getString("name");
-                            String image = offerJson.getString("image");
-                            String status = offerJson.getString("status");
-                            
-                            offersList.add(new DirectorOffersActivity.OfferItem(id, name, image, status));
-                        }
+                           for (int i = 0; i < dataArray.length(); i++) {
+                               JSONObject offerJson = dataArray.getJSONObject(i);
+                               int id = offerJson.getInt("id");
+                               String name = offerJson.getString("name");
+                               String image = offerJson.getString("image");
+                               String status = offerJson.getString("status");
+
+                               // Only add offers with status "1" (active), exclude status "0" (inactive)
+                               if ("1".equals(status)) {
+                                   System.out.println("DEBUG: Adding active offer - ID: " + id + ", Name: " + name + ", Status: '" + status + "'");
+                                   offersList.add(new DirectorOffersActivity.OfferItem(id, name, image, status));
+                               } else {
+                                   System.out.println("DEBUG: Skipping inactive offer - ID: " + id + ", Name: " + name + ", Status: '" + status + "'");
+                               }
+                           }
                         
                         // Update UI on main thread
                         runOnUiThread(() -> {
+                            System.out.println("DEBUG: Final offers list size: " + offersList.size());
                             offersAdapter.updateOffersList(offersList);
                             if (offersList.isEmpty()) {
                                 Toast.makeText(this, "No offers found", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(this, "Found " + offersList.size() + " offers", Toast.LENGTH_SHORT).show();
                             }
                         });
                         
