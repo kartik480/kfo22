@@ -125,8 +125,9 @@ public class BusinessHeadTrainingActivity extends AppCompatActivity {
         });
 
         offersBox.setOnClickListener(v -> {
-            Toast.makeText(this, "Offers - Coming Soon", Toast.LENGTH_SHORT).show();
-            // TODO: Navigate to Offers activity when implemented
+            Intent intent = new Intent(this, BusinessHeadOffersActivity.class);
+            passUserDataToIntent(intent);
+            startActivity(intent);
         });
 
         newsBox.setOnClickListener(v -> {
