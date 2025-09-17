@@ -260,6 +260,18 @@ public class SpecialPanelActivity extends AppCompatActivity implements Navigatio
             intent.putExtra("SOURCE_PANEL", "SPECIAL_PANEL");
             startActivity(intent);
         });
+
+        findViewById(R.id.trainingBox).setOnClickListener(v -> {
+            Intent intent = new Intent(this, ManagingDirectorTrainingActivity.class);
+            passUserDataToIntent(intent);
+            startActivity(intent);
+        });
+
+        findViewById(R.id.databaseBox).setOnClickListener(v -> {
+            Intent intent = new Intent(this, ManagingDirectorDatabaseActivity.class);
+            passUserDataToIntent(intent);
+            startActivity(intent);
+        });
     }
 
     private void passUserDataToIntent(Intent intent) {

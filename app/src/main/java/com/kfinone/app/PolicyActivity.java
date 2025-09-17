@@ -174,9 +174,7 @@ public class PolicyActivity extends AppCompatActivity {
             startActivity(intent);
             finish();
         } else if ("DIRECTOR_TRAINING".equals(sourcePanel)) {
-            Intent intent = new Intent(this, DirectorTrainingActivity.class);
-            passUserDataToIntent(intent);
-            startActivity(intent);
+            // Just finish this activity to go back to Director Training
             finish();
         } else {
             // Default to HomeActivity (KfinOne panel)

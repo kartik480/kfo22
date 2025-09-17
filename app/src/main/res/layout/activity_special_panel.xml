@@ -925,6 +925,68 @@
 
                         </LinearLayout>
 
+                        <!-- Training -->
+                        <LinearLayout
+                            android:id="@+id/trainingBox"
+                            android:layout_width="120dp"
+                            android:layout_height="120dp"
+                            android:orientation="vertical"
+                            android:background="#FFFFFF"
+                            android:padding="16dp"
+                            android:layout_marginEnd="12dp"
+                            android:elevation="3dp"
+                            android:gravity="center"
+                            android:backgroundTint="#E8F4FD">
+
+                            <ImageView
+                                android:layout_width="32dp"
+                                android:layout_height="32dp"
+                                android:src="@drawable/ic_training"
+                                android:tint="#1976D2"
+                                android:layout_marginBottom="8dp" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Training"
+                                android:textSize="12sp"
+                                android:textColor="#2C3E50"
+                                android:textStyle="bold"
+                                android:gravity="center" />
+
+                        </LinearLayout>
+
+                        <!-- Database -->
+                        <LinearLayout
+                            android:id="@+id/databaseBox"
+                            android:layout_width="120dp"
+                            android:layout_height="120dp"
+                            android:orientation="vertical"
+                            android:background="#FFFFFF"
+                            android:padding="16dp"
+                            android:layout_marginEnd="12dp"
+                            android:elevation="3dp"
+                            android:gravity="center"
+                            android:backgroundTint="#E0F2F1">
+
+                            <ImageView
+                                android:layout_width="32dp"
+                                android:layout_height="32dp"
+                                android:src="@drawable/ic_database"
+                                android:tint="#00695C"
+                                android:layout_marginBottom="8dp" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Database"
+                                android:textSize="12sp"
+                                android:textColor="#2C3E50"
+                                android:textStyle="bold"
+                                android:gravity="center" />
+
+                        </LinearLayout>
+
                     </LinearLayout>
 
                 </HorizontalScrollView>

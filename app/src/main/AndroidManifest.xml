@@ -606,6 +606,11 @@
             android:label="Seminar List"
             android:parentActivityName=".DirectorTrainingActivity" />
         <activity
+            android:name=".DirectorOffersActivity"
+            android:exported="false"
+            android:label="Offers List"
+            android:parentActivityName=".DirectorTrainingActivity" />
+        <activity
             android:name=".ManagingDirectorSeminarActivity"
             android:exported="false"
             android:label="Seminar List"
