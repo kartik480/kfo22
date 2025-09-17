@@ -21,18 +21,17 @@ try {
     $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $username, $password);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     
-    // Get request data
-    $input = json_decode(file_get_contents('php://input'), true);
-    $user_id = isset($input['user_id']) ? $input['user_id'] : '';
-    
-    // Validate user_id
-    if (empty($user_id)) {
-        echo json_encode([
-            'success' => false,
-            'message' => 'User ID is required'
-        ]);
-        exit();
+    // Get request data - support both GET and POST
+    $user_id = '';
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        $input = json_decode(file_get_contents('php://input'), true);
+        $user_id = isset($input['user_id']) ? $input['user_id'] : '';
+    } else {
+        // For GET requests, user_id is optional
+        $user_id = isset($_GET['user_id']) ? $_GET['user_id'] : '';
     }
+    
+    // Note: user_id is optional for this endpoint - we fetch all RBH users
     
     // Query to fetch only Regional Business Head users
     $query = "
@@ -73,11 +72,11 @@ try {
     $statsStmt->execute();
     $stats = $statsStmt->fetch(PDO::FETCH_ASSOC);
     
-    // Format response
+    // Format response - match Android code expectations
     $response = [
         'success' => true,
         'message' => 'Regional Business Head users fetched successfully',
-        'data' => $users,
+        'users' => $users,  // Changed from 'data' to 'users' to match Android code
         'statistics' => [
             'total_rbh_users' => (int)$stats['total_rbh_users'],
             'active_rbh_users' => (int)$stats['active_rbh_users'],

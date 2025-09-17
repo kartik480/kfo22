@@ -204,8 +204,8 @@ public class CBOTeamSdsaActivity extends AppCompatActivity {
         android.util.Log.d("CBOTeamSdsa", "Starting to fetch RBH users...");
         executorService.execute(() -> {
             try {
-                // Use main database API
-                String apiUrl = "https://emp.kfinone.com/mobile/api/get_rbh_users_for_dropdown.php";
+                // Use a simpler API that doesn't require user_id
+                String apiUrl = "https://emp.kfinone.com/mobile/api/fetch_sdsa_users_dropdown.php";
                 android.util.Log.d("CBOTeamSdsa", "Making API call to: " + apiUrl);
                 String response = makeGetRequest(apiUrl);
                 
@@ -215,30 +215,66 @@ public class CBOTeamSdsaActivity extends AppCompatActivity {
                         try {
                             JSONObject jsonResponse = new JSONObject(response);
                             android.util.Log.d("CBOTeamSdsa", "JSON parsed successfully");
-                            if (jsonResponse.getBoolean("success")) {
-                                JSONArray usersArray = jsonResponse.getJSONArray("users");
+                            
+                            // Handle both response formats (success/users or status/data)
+                            boolean isSuccess = false;
+                            JSONArray usersArray = null;
+                            
+                            if (jsonResponse.has("success")) {
+                                isSuccess = jsonResponse.getBoolean("success");
+                                if (jsonResponse.has("users")) {
+                                    usersArray = jsonResponse.getJSONArray("users");
+                                } else if (jsonResponse.has("data")) {
+                                    usersArray = jsonResponse.getJSONArray("data");
+                                }
+                            } else if (jsonResponse.has("status")) {
+                                isSuccess = "success".equals(jsonResponse.getString("status"));
+                                if (jsonResponse.has("data")) {
+                                    usersArray = jsonResponse.getJSONArray("data");
+                                }
+                            }
+                            
+                            if (isSuccess && usersArray != null) {
                                 rbhUserList.clear();
                                 
                                 for (int i = 0; i < usersArray.length(); i++) {
                                     JSONObject userObj = usersArray.getJSONObject(i);
-                                    RbhUser user = new RbhUser(
-                                        userObj.optString("id"),
-                                        userObj.optString("username"),
-                                        userObj.optString("firstName"),
-                                        userObj.optString("lastName"),
-                                        userObj.optString("designation_id"),
-                                        userObj.optString("designation_name"),
-                                        userObj.optString("fullName"),
-                                        userObj.optString("displayName")
-                                    );
+                                    
+                                    // Handle different response formats
+                                    String id = userObj.optString("id");
+                                    String username = userObj.optString("username", "");
+                                    String firstName = userObj.optString("firstName", "");
+                                    String lastName = userObj.optString("lastName", "");
+                                    String designationId = userObj.optString("designation_id", "");
+                                    String designationName = userObj.optString("designation_name", "");
+                                    String fullName = userObj.optString("fullName", firstName + " " + lastName);
+                                    String displayName = userObj.optString("displayName", fullName + " (" + designationName + ")");
+                                    
+                                    // If we only have fullName, parse it
+                                    if (fullName.contains("(") && fullName.contains(")")) {
+                                        displayName = fullName;
+                                        String[] parts = fullName.split("\\(");
+                                        if (parts.length > 0) {
+                                            String[] nameParts = parts[0].trim().split(" ");
+                                            if (nameParts.length >= 2) {
+                                                firstName = nameParts[0];
+                                                lastName = nameParts[1];
+                                            }
+                                        }
+                                        if (parts.length > 1) {
+                                            designationName = parts[1].replace(")", "").trim();
+                                        }
+                                    }
+                                    
+                                    RbhUser user = new RbhUser(id, username, firstName, lastName, designationId, designationName, fullName, displayName);
                                     rbhUserList.add(user);
                                 }
                                 
-                                android.util.Log.d("CBOTeamSdsa", "Setting up spinner with " + rbhUserList.size() + " users");
+                                android.util.Log.d("CBOTeamSdsa", "Setting up spinner with " + rbhUserList.size() + " RBH users");
                                 setupRbhUserSpinner();
-                                Toast.makeText(this, "Loaded " + rbhUserList.size() + " RBH users", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(this, "Loaded " + rbhUserList.size() + " Regional Business Head users", Toast.LENGTH_SHORT).show();
                             } else {
-                                String errorMessage = jsonResponse.getString("message");
+                                String errorMessage = jsonResponse.optString("message", "Unknown error");
                                 android.util.Log.e("CBOTeamSdsa", "API Error: " + errorMessage);
                                 Toast.makeText(this, "Error: " + errorMessage, Toast.LENGTH_SHORT).show();
                             }

@@ -32,19 +32,21 @@ try {
         }
     }
     
-    // Query to fetch users with specific designations for dropdown
-    // Using exact designation names: Chief Business Officer, Regional Business Head, Director
-    // Including ALL users regardless of status to see all available users
+    // Query to fetch only Regional Business Head users for CBO Team SDSA dropdown
     $sql = "SELECT 
                 u.id,
                 u.firstName,
                 u.lastName,
                 u.designation_id,
                 u.status,
-                d.designation_name
+                d.designation_name,
+                CONCAT(u.firstName, ' ', u.lastName) as fullName,
+                CONCAT(u.firstName, ' ', u.lastName, ' (', d.designation_name, ')') as displayName
             FROM tbl_user u
             INNER JOIN tbl_designation d ON u.designation_id = d.id
-            WHERE d.designation_name IN ('Chief Business Officer', 'Regional Business Head', 'Director')
+            WHERE d.designation_name = 'Regional Business Head'
+            AND (u.status = 'Active' OR u.status = 1 OR u.status IS NULL OR u.status = '')
+            AND u.firstName IS NOT NULL AND u.firstName != ''
             ORDER BY u.firstName ASC";
     
     $result = $conn->query($sql);
@@ -59,16 +61,20 @@ try {
         while($row = $result->fetch_assoc()) {
             $data[] = array(
                 'id' => $row['id'],
-                'fullName' => $row['firstName'] . ' ' . $row['lastName'] . ' (' . $row['designation_name'] . ')',
-                'status' => $row['status'],
-                'designation_name' => $row['designation_name']
+                'username' => $row['firstName'] . $row['lastName'], // Simple username
+                'firstName' => $row['firstName'],
+                'lastName' => $row['lastName'],
+                'designation_id' => $row['designation_id'],
+                'designation_name' => $row['designation_name'],
+                'fullName' => $row['fullName'],
+                'displayName' => $row['displayName']
             );
         }
         
         echo json_encode(array(
-            'status' => 'success',
-            'message' => 'Users with specific designations fetched successfully for dropdown',
-            'data' => $data,
+            'success' => true,
+            'message' => 'Regional Business Head users fetched successfully for CBO Team SDSA dropdown',
+            'users' => $data,
             'count' => count($data),
             'debug' => array(
                 'all_designations' => $all_designations,
@@ -77,9 +83,9 @@ try {
         ));
     } else {
         echo json_encode(array(
-            'status' => 'success',
-            'message' => 'No users found with specified designations',
-            'data' => array(),
+            'success' => true,
+            'message' => 'No Regional Business Head users found',
+            'users' => array(),
             'count' => 0,
             'debug' => array(
                 'all_designations' => $all_designations,
