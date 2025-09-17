@@ -131,13 +131,15 @@ public class BusinessHeadTrainingActivity extends AppCompatActivity {
         });
 
         newsBox.setOnClickListener(v -> {
-            Toast.makeText(this, "News - Coming Soon", Toast.LENGTH_SHORT).show();
-            // TODO: Navigate to News activity when implemented
+            Intent intent = new Intent(this, BusinessHeadNewsActivity.class);
+            passUserDataToIntent(intent);
+            startActivity(intent);
         });
 
         policyImagesBox.setOnClickListener(v -> {
-            Toast.makeText(this, "Policy Images - Coming Soon", Toast.LENGTH_SHORT).show();
-            // TODO: Navigate to Policy Images activity when implemented
+            Intent intent = new Intent(this, BusinessHeadPolicyImagesActivity.class);
+            passUserDataToIntent(intent);
+            startActivity(intent);
         });
     }
 

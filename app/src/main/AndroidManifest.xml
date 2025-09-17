@@ -611,6 +611,56 @@
             android:label="Offers List"
             android:parentActivityName=".DirectorTrainingActivity" />
         <activity
+            android:name=".DirectorNewsActivity"
+            android:exported="false"
+            android:label="News List"
+            android:parentActivityName=".DirectorTrainingActivity" />
+        <activity
+            android:name=".DirectorPolicyImagesActivity"
+            android:exported="false"
+            android:label="Policy List"
+            android:parentActivityName=".DirectorTrainingActivity" />
+        <activity
+            android:name=".ManagingDirectorPolicyImagesActivity"
+            android:exported="false"
+            android:label="Policy List"
+            android:parentActivityName=".ManagingDirectorTrainingActivity" />
+        <activity
+            android:name=".ChiefBusinessOfficerPolicyImagesActivity"
+            android:exported="false"
+            android:label="Policy List"
+            android:parentActivityName=".ChiefBusinessOfficerTrainingActivity" />
+        <activity
+            android:name=".BusinessHeadPolicyImagesActivity"
+            android:exported="false"
+            android:label="Policy List"
+            android:parentActivityName=".BusinessHeadTrainingActivity" />
+        <activity
+            android:name=".RegionalBusinessHeadPolicyImagesActivity"
+            android:exported="false"
+            android:label="Policy List"
+            android:parentActivityName=".RegionalBusinessHeadTrainingActivity" />
+        <activity
+            android:name=".ManagingDirectorNewsActivity"
+            android:exported="false"
+            android:label="News List"
+            android:parentActivityName=".ManagingDirectorTrainingActivity" />
+        <activity
+            android:name=".ChiefBusinessOfficerNewsActivity"
+            android:exported="false"
+            android:label="News List"
+            android:parentActivityName=".ChiefBusinessOfficerTrainingActivity" />
+        <activity
+            android:name=".BusinessHeadNewsActivity"
+            android:exported="false"
+            android:label="News List"
+            android:parentActivityName=".BusinessHeadTrainingActivity" />
+        <activity
+            android:name=".RegionalBusinessHeadNewsActivity"
+            android:exported="false"
+            android:label="News List"
+            android:parentActivityName=".RegionalBusinessHeadTrainingActivity" />
+        <activity
             android:name=".ManagingDirectorOffersActivity"
             android:exported="false"
             android:label="Offers List"
