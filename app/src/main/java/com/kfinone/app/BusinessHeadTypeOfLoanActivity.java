@@ -17,6 +17,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -127,8 +128,24 @@ public class BusinessHeadTypeOfLoanActivity extends AppCompatActivity {
 
         videoListView.setOnItemClickListener((parent, view, position, id) -> {
             DirectorTypeOfLoanActivity.VideoItem video = videoList.get(position);
-            Toast.makeText(this, "Playing video: " + video.getName(), Toast.LENGTH_SHORT).show();
-            // TODO: Implement video playback
+            String videoUrl = video.getVideoUrl();
+            
+            try {
+                // Create intent to play video
+                Intent videoIntent = new Intent(Intent.ACTION_VIEW);
+                videoIntent.setDataAndType(android.net.Uri.parse(videoUrl), "video/*");
+                videoIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                
+                // Check if there's an app that can handle video playback
+                if (videoIntent.resolveActivity(getPackageManager()) != null) {
+                    startActivity(videoIntent);
+                    Toast.makeText(this, "Opening video: " + video.getName(), Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(this, "No video player app found. URL: " + videoUrl, Toast.LENGTH_LONG).show();
+                }
+            } catch (Exception e) {
+                Toast.makeText(this, "Error opening video: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
         });
     }
 
@@ -249,26 +266,41 @@ public class BusinessHeadTypeOfLoanActivity extends AppCompatActivity {
     }
 
     private void loadVideoList() {
-        String url = BASE_URL + "get_videos.php";
+        String url = BASE_URL + "training_loan_type_video_api.php";
         
-        JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null,
-            new Response.Listener<JSONArray>() {
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
+            new Response.Listener<JSONObject>() {
                 @Override
-                public void onResponse(JSONArray response) {
+                public void onResponse(JSONObject response) {
                     try {
-                        videoList.clear();
+                        boolean success = response.getBoolean("success");
                         
-                        for (int i = 0; i < response.length(); i++) {
-                            JSONObject jsonObject = response.getJSONObject(i);
-                            String name = jsonObject.getString("name");
-                            String vendorBank = jsonObject.getString("vendor_bank");
-                            String loanType = jsonObject.getString("loan_type");
-                            String videoUrl = jsonObject.getString("video_url");
+                        if (success) {
+                            JSONArray dataArray = response.getJSONArray("data");
+                            videoList.clear();
                             
-                            videoList.add(new DirectorTypeOfLoanActivity.VideoItem(name, vendorBank, loanType, videoUrl));
+                            for (int i = 0; i < dataArray.length(); i++) {
+                                JSONObject jsonObject = dataArray.getJSONObject(i);
+                                int id = jsonObject.getInt("id");
+                                String videoName = jsonObject.getString("video_name");
+                                String videoImage = jsonObject.getString("video_image");
+                                String video = jsonObject.getString("video");
+                                int vendorBankId = jsonObject.getInt("vendor_bank_id");
+                                int loanTypeId = jsonObject.getInt("loan_type_id");
+                                String vendorBankName = jsonObject.getString("vendor_bank_name");
+                                String loanType = jsonObject.getString("loan_type");
+                                
+                                videoList.add(new DirectorTypeOfLoanActivity.VideoItem(id, videoName, videoImage, video, vendorBankId, loanTypeId, vendorBankName, loanType));
+                            }
+                            
+                            videoAdapter.notifyDataSetChanged();
+                            Toast.makeText(BusinessHeadTypeOfLoanActivity.this, "Loaded " + videoList.size() + " videos", Toast.LENGTH_SHORT).show();
+                            
+                        } else {
+                            String message = response.getString("message");
+                            Toast.makeText(BusinessHeadTypeOfLoanActivity.this, "API Error: " + message, Toast.LENGTH_SHORT).show();
+                            loadFallbackVideos();
                         }
-                        
-                        videoAdapter.notifyDataSetChanged();
                         
                     } catch (JSONException e) {
                         Log.e(TAG, "Error parsing videos JSON", e);

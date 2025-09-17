@@ -96,10 +96,13 @@ public class ProfileListAdapter extends BaseAdapter {
         return convertView;
     }
 
-    private void openImage(String imageUrl) {
+    private void openImage(String imageFileName) {
         try {
+            // Construct full image URL
+            String fullImageUrl = "https://emp.kfinone.com/backPanel/uploads/tr_profile/" + imageFileName;
+            
             Intent intent = new Intent(context, ImageViewerActivity.class);
-            intent.putExtra("image_url", imageUrl);
+            intent.putExtra("image_url", fullImageUrl);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(intent);
         } catch (Exception e) {
@@ -107,10 +110,13 @@ public class ProfileListAdapter extends BaseAdapter {
         }
     }
 
-    private void openFile(String fileUrl) {
+    private void openFile(String fileName) {
         try {
+            // Construct full file URL
+            String fullFileUrl = "https://emp.kfinone.com/backPanel/uploads/tr_profile/" + fileName;
+            
             Intent intent = new Intent(Intent.ACTION_VIEW);
-            intent.setData(Uri.parse(fileUrl));
+            intent.setData(Uri.parse(fullFileUrl));
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(intent);
         } catch (Exception e) {
