@@ -362,7 +362,7 @@ public class CBOTeamSdsaActivity extends AppCompatActivity {
         Toast.makeText(this, "Showing data for: " + rbhUser.getFullName(), Toast.LENGTH_SHORT).show();
         
         // Fetch and display reporting users
-        fetchReportingUsers(rbhUser.getId());
+        fetchUsersReportingToRbh(rbhUser.getId());
     }
     
     private void resetSelection() {
@@ -378,10 +378,13 @@ public class CBOTeamSdsaActivity extends AppCompatActivity {
         // Disable action buttons
         showDataButton.setEnabled(false);
         
+        // Hide reporting users section
+        reportingUsersSection.setVisibility(View.GONE);
+        
         // Load all users again
         fetchAllSdsaUsers();
         
-        Toast.makeText(this, "Selection reset successfully, showing all users", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Selection reset successfully, showing all SDSA users", Toast.LENGTH_SHORT).show();
     }
 
     private void goBack() {
@@ -392,7 +395,16 @@ public class CBOTeamSdsaActivity extends AppCompatActivity {
 
     private void refreshData() {
         Toast.makeText(this, "Refreshing team SDSA data...", Toast.LENGTH_SHORT).show();
-        loadTeamSdsaData(); // This will load all SDSA users
+        
+        if (selectedRbhUser != null) {
+            // If a user is selected, refresh their reporting users
+            fetchUsersReportingToRbh(selectedRbhUser.getId());
+        } else {
+            // If no user is selected, load all SDSA users
+            loadTeamSdsaData();
+        }
+        
+        // Always refresh the RBH dropdown
         fetchRbhUsers();
     }
 
@@ -576,76 +588,71 @@ public class CBOTeamSdsaActivity extends AppCompatActivity {
         goBack();
     }
 
-    private void fetchReportingUsers(String rbhUserId) {
+    private void fetchUsersReportingToRbh(String rbhUserId) {
+        android.util.Log.d("CBOTeamSdsa", "Fetching users reporting to RBH: " + rbhUserId);
         executorService.execute(() -> {
             try {
-                String apiUrl = "https://emp.kfinone.com/mobile/api/get_reporting_users.php?rbh_user_id=" + rbhUserId;
+                String apiUrl = "https://emp.kfinone.com/mobile/api/get_users_reporting_to_rbh.php?rbh_user_id=" + rbhUserId;
+                android.util.Log.d("CBOTeamSdsa", "Making API call to: " + apiUrl);
                 String response = makeGetRequest(apiUrl);
                 
-                if (response != null) {
-                    JSONObject jsonResponse = new JSONObject(response);
-                    boolean success = jsonResponse.getBoolean("success");
-                    
-                    if (success) {
-                        JSONArray usersArray = jsonResponse.getJSONArray("users");
-                        List<ReportingUser> reportingUsers = new ArrayList<>();
+                if (response != null && !response.isEmpty()) {
+                    try {
+                        JSONObject jsonResponse = new JSONObject(response);
+                        android.util.Log.d("CBOTeamSdsa", "JSON parsed successfully");
                         
-                                                 for (int i = 0; i < usersArray.length(); i++) {
-                             JSONObject userObj = usersArray.getJSONObject(i);
-                             ReportingUser user = new ReportingUser(
-                                 userObj.getString("id"),
-                                 userObj.getString("username"),
-                                 userObj.getString("first_name"),
-                                 userObj.getString("last_name"),
-                                 userObj.getString("email_id"),
-                                 userObj.getString("Phone_number"),
-                                 userObj.getString("designation"),
-                                 userObj.getString("department"),
-                                 userObj.getString("status")
-                             );
-                             
-                             // Set additional fields from joined tables
-                             user.setEmployeeNo(userObj.optString("employee_no"));
-                             user.setRank(userObj.optString("rank"));
-                             user.setCompanyName(userObj.optString("company_name"));
-                             user.setAlternativeMobileNumber(userObj.optString("alternative_mobile_number"));
-                             user.setOfficeAddress(userObj.optString("office_address"));
-                             user.setResidentialAddress(userObj.optString("residential_address"));
-                             user.setAadhaarNumber(userObj.optString("aadhaar_number"));
-                             user.setPanNumber(userObj.optString("pan_number"));
-                             user.setAccountNumber(userObj.optString("account_number"));
-                             user.setIfscCode(userObj.optString("ifsc_code"));
-                             user.setUserId(userObj.optString("user_id"));
-                             user.setCreatedBy(userObj.optString("createdBy"));
-                             user.setCreatedAt(userObj.optString("created_at"));
-                             user.setUpdatedAt(userObj.optString("updated_at"));
-                             user.setReportingTo(userObj.optString("reportingTo"));
-                             
-                             // Set fields from joined tables (actual names instead of IDs)
-                             // For simple API, these will be the direct values from tbl_sdsa_users
-                             user.setBranchState(userObj.optString("branchstate"));
-                             user.setBranchLocation(userObj.optString("branchloaction"));
-                             user.setBankName(userObj.optString("bank_name"));
-                             user.setAccountType(userObj.optString("account_type"));
-                             
-                             reportingUsers.add(user);
-                         }
+                        boolean success = jsonResponse.getBoolean("success");
                         
-                        // Update UI on main thread
-                        runOnUiThread(() -> displayReportingUsers(reportingUsers));
-                        
-                    } else {
-                        String message = jsonResponse.getString("message");
+                        if (success) {
+                            JSONArray usersArray = jsonResponse.getJSONArray("users");
+                            android.util.Log.d("CBOTeamSdsa", "Found " + usersArray.length() + " users reporting to RBH");
+                            
+                            List<ReportingUser> reportingUsers = new ArrayList<>();
+                            
+                            for (int i = 0; i < usersArray.length(); i++) {
+                                JSONObject userObj = usersArray.getJSONObject(i);
+                                
+                                // Create ReportingUser with the data from the new API
+                                ReportingUser user = new ReportingUser(
+                                    userObj.getString("id"),
+                                    userObj.optString("username", ""), // username
+                                    userObj.getString("first_name"),
+                                    userObj.getString("last_name"),
+                                    userObj.optString("email_id", ""), // email_id
+                                    userObj.optString("Phone_number", ""), // Phone_number
+                                    userObj.optString("designation", ""), // designation
+                                    userObj.optString("department", ""), // department
+                                    userObj.getString("status")
+                                );
+                                
+                                // Set additional fields
+                                user.setReportingTo(userObj.optString("reportingTo"));
+                                
+                                reportingUsers.add(user);
+                            }
+                            
+                            // Update UI on main thread
+                            runOnUiThread(() -> displayReportingUsers(reportingUsers));
+                            
+                        } else {
+                            String message = jsonResponse.getString("message");
+                            android.util.Log.e("CBOTeamSdsa", "API Error: " + message);
+                            runOnUiThread(() -> Toast.makeText(CBOTeamSdsaActivity.this, 
+                                "Error: " + message, Toast.LENGTH_SHORT).show());
+                        }
+                    } catch (JSONException e) {
+                        android.util.Log.e("CBOTeamSdsa", "JSON Parse Error: " + e.getMessage());
                         runOnUiThread(() -> Toast.makeText(CBOTeamSdsaActivity.this, 
-                            "Error: " + message, Toast.LENGTH_SHORT).show());
+                            "Error parsing response: " + e.getMessage(), Toast.LENGTH_SHORT).show());
                     }
                 } else {
+                    android.util.Log.e("CBOTeamSdsa", "No response from server");
                     runOnUiThread(() -> Toast.makeText(CBOTeamSdsaActivity.this, 
                         "No response from server", Toast.LENGTH_SHORT).show());
                 }
                 
             } catch (Exception e) {
-                android.util.Log.e("CBOTeamSdsa", "Error fetching reporting users: " + e.getMessage());
+                android.util.Log.e("CBOTeamSdsa", "Exception fetching reporting users: " + e.getMessage(), e);
                 runOnUiThread(() -> Toast.makeText(CBOTeamSdsaActivity.this, 
                     "Error fetching reporting users: " + e.getMessage(), Toast.LENGTH_SHORT).show());
             }
@@ -654,7 +661,7 @@ public class CBOTeamSdsaActivity extends AppCompatActivity {
     
     private void displayReportingUsers(List<ReportingUser> users) {
         if (users.isEmpty()) {
-            Toast.makeText(this, "No users found reporting to this RBH", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "No users found reporting to this Regional Business Head", Toast.LENGTH_SHORT).show();
             reportingUsersSection.setVisibility(View.GONE);
             return;
         }
@@ -662,7 +669,8 @@ public class CBOTeamSdsaActivity extends AppCompatActivity {
         // Update section title to show filtered users
         TextView sectionTitle = findViewById(R.id.reportingUsersTitle);
         if (sectionTitle != null) {
-            sectionTitle.setText("Users Reporting to Selected RBH:");
+            String rbName = selectedRbhUser != null ? selectedRbhUser.getFullName() : "Selected RBH";
+            sectionTitle.setText("Users Reporting to " + rbName + ":");
         }
         
         // Update summary information
@@ -674,6 +682,10 @@ public class CBOTeamSdsaActivity extends AppCompatActivity {
         
         // Show the reporting users section
         reportingUsersSection.setVisibility(View.VISIBLE);
+        
+        Toast.makeText(this, "Found " + users.size() + " users reporting to " + 
+            (selectedRbhUser != null ? selectedRbhUser.getFullName() : "selected RBH"), 
+            Toast.LENGTH_SHORT).show();
     }
     
     private void updateReportingUsersSummary(List<ReportingUser> users) {
