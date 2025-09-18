@@ -91,7 +91,7 @@ try {
         throw new Exception("User is not a Chief Business Officer or not found");
     }
     
-    // Query to fetch agent data created by this CBO user
+    // Query to fetch agent data created by this CBO user with state and location names
     $sql = "
         SELECT 
             a.id,
@@ -103,6 +103,8 @@ try {
             a.partnerType,
             a.state,
             a.location,
+            COALESCE(bs.branch_state_name, a.state) as branch_state_name,
+            COALESCE(bl.branch_location, a.location) as branch_location,
             a.address,
             a.visiting_card,
             a.created_user,
@@ -117,6 +119,8 @@ try {
             CONCAT(u.firstName, ' ', u.lastName) as created_by_name
         FROM tbl_agent_data a
         LEFT JOIN tbl_user u ON a.createdBy = u.username
+        LEFT JOIN tbl_branch_state bs ON CAST(a.state AS CHAR) = CAST(bs.id AS CHAR)
+        LEFT JOIN tbl_branch_location bl ON CAST(a.location AS CHAR) = CAST(bl.id AS CHAR)
         WHERE a.createdBy = :username
         ORDER BY a.created_at DESC
     ";
