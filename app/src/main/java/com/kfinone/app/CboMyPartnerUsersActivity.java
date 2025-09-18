@@ -108,7 +108,15 @@ public class CboMyPartnerUsersActivity extends AppCompatActivity {
         adapter = new PartnerUsersAdapter(this, partnerUsersList);
         partnerUsersListView.setAdapter(adapter);
         
-        // Set list item click listener
+        // Set up View Details button click listener
+        adapter.setOnViewDetailsClickListener(new PartnerUsersAdapter.OnViewDetailsClickListener() {
+            @Override
+            public void onViewDetailsClick(PartnerUser partnerUser) {
+                showPartnerUserDetails(partnerUser);
+            }
+        });
+        
+        // Set list item click listener (optional - for clicking anywhere on the item)
         partnerUsersListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -217,7 +225,12 @@ public class CboMyPartnerUsersActivity extends AppCompatActivity {
             partnerUser.setAliasName(userObj.optString("alias_name", ""));
             partnerUser.setFirstName(userObj.optString("first_name", ""));
             partnerUser.setLastName(userObj.optString("last_name", ""));
+            partnerUser.setPassword(userObj.optString("password", ""));
             partnerUser.setAlternativeMobileNumber(userObj.optString("alternative_mobile_number", ""));
+            partnerUser.setBranchStateNameId(userObj.optString("branch_state_name_id", ""));
+            partnerUser.setBranchLocationId(userObj.optString("branch_location_id", ""));
+            partnerUser.setBankId(userObj.optString("bank_id", ""));
+            partnerUser.setAccountTypeId(userObj.optString("account_type_id", ""));
             partnerUser.setBranchState(userObj.optString("branchstate", ""));
             partnerUser.setBranchLocation(userObj.optString("branchloaction", ""));
             partnerUser.setBankName(userObj.optString("bank_name", ""));
@@ -233,6 +246,12 @@ public class CboMyPartnerUsersActivity extends AppCompatActivity {
             partnerUser.setEmployeeNo(userObj.optString("employee_no", ""));
             partnerUser.setDepartment(userObj.optString("department", ""));
             partnerUser.setDesignation(userObj.optString("designation", ""));
+            partnerUser.setPartnerTypeId(userObj.optString("partner_type_id", ""));
+            partnerUser.setPanImg(userObj.optString("pan_img", ""));
+            partnerUser.setAadhaarImg(userObj.optString("aadhaar_img", ""));
+            partnerUser.setPhotoImg(userObj.optString("photo_img", ""));
+            partnerUser.setBankproofImg(userObj.optString("bankproof_img", ""));
+            partnerUser.setUserId(userObj.optString("user_id", ""));
             partnerUser.setUpdatedAt(userObj.optString("updated_at", ""));
             
             partnerUsers.add(partnerUser);
@@ -246,12 +265,21 @@ public class CboMyPartnerUsersActivity extends AppCompatActivity {
         StringBuilder details = new StringBuilder();
         details.append("👤 Partner User Details\n\n");
         details.append("📋 Basic Information:\n");
-        details.append("Name: ").append(partnerUser.getFullName()).append("\n");
+        details.append("ID: ").append(partnerUser.getId()).append("\n");
         details.append("Username: ").append(partnerUser.getUsername()).append("\n");
+        details.append("Alias Name: ").append(partnerUser.getAliasName()).append("\n");
+        details.append("First Name: ").append(partnerUser.getFirstName()).append("\n");
+        details.append("Last Name: ").append(partnerUser.getLastName()).append("\n");
+        details.append("Full Name: ").append(partnerUser.getFullName()).append("\n");
+        details.append("Password: ").append(partnerUser.getPassword()).append("\n");
         details.append("Employee No: ").append(partnerUser.getEmployeeNo()).append("\n");
         details.append("Department: ").append(partnerUser.getDepartment()).append("\n");
         details.append("Designation: ").append(partnerUser.getDesignation()).append("\n");
-        details.append("Status: ").append(partnerUser.getStatus()).append("\n\n");
+        details.append("Status: ").append(partnerUser.getStatus()).append("\n");
+        details.append("Rank: ").append(partnerUser.getRank()).append("\n");
+        details.append("Reporting To: ").append(partnerUser.getReportingTo()).append("\n");
+        details.append("Partner Type ID: ").append(partnerUser.getPartnerTypeId()).append("\n");
+        details.append("User ID: ").append(partnerUser.getUserId()).append("\n\n");
         
         details.append("📞 Contact Information:\n");
         details.append("Phone: ").append(partnerUser.getPhoneNumber()).append("\n");
@@ -260,10 +288,14 @@ public class CboMyPartnerUsersActivity extends AppCompatActivity {
         
         details.append("🏢 Company Information:\n");
         details.append("Company: ").append(partnerUser.getCompanyName()).append("\n");
+        details.append("Branch State Name ID: ").append(partnerUser.getBranchStateNameId()).append("\n");
+        details.append("Branch Location ID: ").append(partnerUser.getBranchLocationId()).append("\n");
         details.append("Branch State: ").append(partnerUser.getBranchState()).append("\n");
         details.append("Branch Location: ").append(partnerUser.getBranchLocation()).append("\n\n");
         
         details.append("🏦 Banking Information:\n");
+        details.append("Bank ID: ").append(partnerUser.getBankId()).append("\n");
+        details.append("Account Type ID: ").append(partnerUser.getAccountTypeId()).append("\n");
         details.append("Bank Name: ").append(partnerUser.getBankName()).append("\n");
         details.append("Account Type: ").append(partnerUser.getAccountType()).append("\n");
         details.append("Account Number: ").append(partnerUser.getAccountNumber()).append("\n");
@@ -276,6 +308,12 @@ public class CboMyPartnerUsersActivity extends AppCompatActivity {
         details.append("🆔 Identity Information:\n");
         details.append("Aadhaar Number: ").append(partnerUser.getAadhaarNumber()).append("\n");
         details.append("PAN Number: ").append(partnerUser.getPanNumber()).append("\n\n");
+        
+        details.append("📷 Image Files:\n");
+        details.append("PAN Image: ").append(partnerUser.getPanImg()).append("\n");
+        details.append("Aadhaar Image: ").append(partnerUser.getAadhaarImg()).append("\n");
+        details.append("Photo Image: ").append(partnerUser.getPhotoImg()).append("\n");
+        details.append("Bank Proof Image: ").append(partnerUser.getBankproofImg()).append("\n\n");
         
         details.append("📅 System Information:\n");
         details.append("Created By: ").append(partnerUser.getCreatedBy()).append("\n");
@@ -362,10 +400,15 @@ public class CboMyPartnerUsersActivity extends AppCompatActivity {
         private String firstName;
         private String lastName;
         private String fullName;
+        private String password;
         private String phoneNumber;
         private String email;
         private String alternativeMobileNumber;
         private String companyName;
+        private String branchStateNameId;
+        private String branchLocationId;
+        private String bankId;
+        private String accountTypeId;
         private String branchState;
         private String branchLocation;
         private String bankName;
@@ -382,6 +425,12 @@ public class CboMyPartnerUsersActivity extends AppCompatActivity {
         private String employeeNo;
         private String department;
         private String designation;
+        private String partnerTypeId;
+        private String panImg;
+        private String aadhaarImg;
+        private String photoImg;
+        private String bankproofImg;
+        private String userId;
         private String createdAt;
         private String createdBy;
         private String updatedAt;
@@ -408,10 +457,15 @@ public class CboMyPartnerUsersActivity extends AppCompatActivity {
         public String getFirstName() { return firstName; }
         public String getLastName() { return lastName; }
         public String getFullName() { return fullName; }
+        public String getPassword() { return password; }
         public String getPhoneNumber() { return phoneNumber; }
         public String getEmail() { return email; }
         public String getAlternativeMobileNumber() { return alternativeMobileNumber; }
         public String getCompanyName() { return companyName; }
+        public String getBranchStateNameId() { return branchStateNameId; }
+        public String getBranchLocationId() { return branchLocationId; }
+        public String getBankId() { return bankId; }
+        public String getAccountTypeId() { return accountTypeId; }
         public String getBranchState() { return branchState; }
         public String getBranchLocation() { return branchLocation; }
         public String getBankName() { return bankName; }
@@ -428,6 +482,12 @@ public class CboMyPartnerUsersActivity extends AppCompatActivity {
         public String getEmployeeNo() { return employeeNo; }
         public String getDepartment() { return department; }
         public String getDesignation() { return designation; }
+        public String getPartnerTypeId() { return partnerTypeId; }
+        public String getPanImg() { return panImg; }
+        public String getAadhaarImg() { return aadhaarImg; }
+        public String getPhotoImg() { return photoImg; }
+        public String getBankproofImg() { return bankproofImg; }
+        public String getUserId() { return userId; }
         public String getCreatedAt() { return createdAt; }
         public String getCreatedBy() { return createdBy; }
         public String getUpdatedAt() { return updatedAt; }
@@ -459,6 +519,17 @@ public class CboMyPartnerUsersActivity extends AppCompatActivity {
         public void setEmployeeNo(String employeeNo) { this.employeeNo = employeeNo; }
         public void setDepartment(String department) { this.department = department; }
         public void setDesignation(String designation) { this.designation = designation; }
+        public void setPassword(String password) { this.password = password; }
+        public void setBranchStateNameId(String branchStateNameId) { this.branchStateNameId = branchStateNameId; }
+        public void setBranchLocationId(String branchLocationId) { this.branchLocationId = branchLocationId; }
+        public void setBankId(String bankId) { this.bankId = bankId; }
+        public void setAccountTypeId(String accountTypeId) { this.accountTypeId = accountTypeId; }
+        public void setPartnerTypeId(String partnerTypeId) { this.partnerTypeId = partnerTypeId; }
+        public void setPanImg(String panImg) { this.panImg = panImg; }
+        public void setAadhaarImg(String aadhaarImg) { this.aadhaarImg = aadhaarImg; }
+        public void setPhotoImg(String photoImg) { this.photoImg = photoImg; }
+        public void setBankproofImg(String bankproofImg) { this.bankproofImg = bankproofImg; }
+        public void setUserId(String userId) { this.userId = userId; }
         public void setCreatedAt(String createdAt) { this.createdAt = createdAt; }
         public void setCreatedBy(String createdBy) { this.createdBy = createdBy; }
         public void setUpdatedAt(String updatedAt) { this.updatedAt = updatedAt; }

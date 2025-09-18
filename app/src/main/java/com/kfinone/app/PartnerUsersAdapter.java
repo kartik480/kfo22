@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
@@ -16,11 +17,20 @@ import java.util.Locale;
 public class PartnerUsersAdapter extends ArrayAdapter<CboMyPartnerUsersActivity.PartnerUser> {
     private Context context;
     private List<CboMyPartnerUsersActivity.PartnerUser> partnerUsers;
+    private OnViewDetailsClickListener onViewDetailsClickListener;
+
+    public interface OnViewDetailsClickListener {
+        void onViewDetailsClick(CboMyPartnerUsersActivity.PartnerUser partnerUser);
+    }
 
     public PartnerUsersAdapter(Context context, List<CboMyPartnerUsersActivity.PartnerUser> partnerUsers) {
         super(context, 0, partnerUsers);
         this.context = context;
         this.partnerUsers = partnerUsers;
+    }
+
+    public void setOnViewDetailsClickListener(OnViewDetailsClickListener listener) {
+        this.onViewDetailsClickListener = listener;
     }
 
     @Override
@@ -115,6 +125,16 @@ public class PartnerUsersAdapter extends ArrayAdapter<CboMyPartnerUsersActivity.
                 } else {
                     creatorText.setVisibility(View.GONE);
                 }
+            }
+
+            // Set up View Details button click listener
+            Button viewDetailsButton = convertView.findViewById(R.id.viewDetailsButton);
+            if (viewDetailsButton != null) {
+                viewDetailsButton.setOnClickListener(v -> {
+                    if (onViewDetailsClickListener != null) {
+                        onViewDetailsClickListener.onViewDetailsClick(partnerUser);
+                    }
+                });
             }
         }
 
