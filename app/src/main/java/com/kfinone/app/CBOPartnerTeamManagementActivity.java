@@ -96,6 +96,14 @@ public class CBOPartnerTeamManagementActivity extends AppCompatActivity {
         rbhUsersAdapter = new RbhUserAdapter(this, rbhUsersList);
         rbhUsersListView.setAdapter(rbhUsersAdapter);
         
+        // Set up View Details button click listener
+        rbhUsersAdapter.setOnViewDetailsClickListener(new RbhUserAdapter.OnViewDetailsClickListener() {
+            @Override
+            public void onViewDetailsClick(RbhUserItem userItem) {
+                showPartnerUserDetails(userItem.getId());
+            }
+        });
+        
         // Add some padding and styling to the ListView
         rbhUsersListView.setDivider(null);
         rbhUsersListView.setDividerHeight(0);
@@ -131,7 +139,7 @@ public class CBOPartnerTeamManagementActivity extends AppCompatActivity {
                 if (response != null) {
                     JSONObject jsonResponse = new JSONObject(response);
                     if (jsonResponse.getBoolean("success")) {
-                        JSONArray users = jsonResponse.getJSONArray("data");
+                        JSONArray users = jsonResponse.getJSONArray("users");
                         rbhUsersForDropdown.clear();
                         
                         for (int i = 0; i < users.length(); i++) {
@@ -593,6 +601,156 @@ public class CBOPartnerTeamManagementActivity extends AppCompatActivity {
                 });
             }
         });
+    }
+
+    private void showPartnerUserDetails(String partnerUserId) {
+        Log.d(TAG, "Fetching partner user details for ID: " + partnerUserId);
+        
+        executor.execute(() -> {
+            try {
+                String url = BASE_URL + "get_partner_user_details.php?partner_user_id=" + partnerUserId;
+                String response = makeGetRequest(url);
+                Log.d(TAG, "Partner user details API response: " + response);
+                
+                if (response != null) {
+                    JSONObject jsonResponse = new JSONObject(response);
+                    if (jsonResponse.getBoolean("success")) {
+                        JSONObject partnerUserObj = jsonResponse.getJSONObject("partner_user");
+                        
+                        // Create PartnerUserDetails object
+                        PartnerUserDetails partnerUser = new PartnerUserDetails();
+                        partnerUser.setId(partnerUserObj.optString("id", ""));
+                        partnerUser.setUsername(partnerUserObj.optString("username", ""));
+                        partnerUser.setAliasName(partnerUserObj.optString("alias_name", ""));
+                        partnerUser.setFirstName(partnerUserObj.optString("first_name", ""));
+                        partnerUser.setLastName(partnerUserObj.optString("last_name", ""));
+                        partnerUser.setPassword(partnerUserObj.optString("password", ""));
+                        partnerUser.setPhoneNumber(partnerUserObj.optString("Phone_number", ""));
+                        partnerUser.setEmailId(partnerUserObj.optString("email_id", ""));
+                        partnerUser.setAlternativeMobileNumber(partnerUserObj.optString("alternative_mobile_number", ""));
+                        partnerUser.setCompanyName(partnerUserObj.optString("company_name", ""));
+                        partnerUser.setBranchStateNameId(partnerUserObj.optString("branch_state_name_id", ""));
+                        partnerUser.setBranchLocationId(partnerUserObj.optString("branch_location_id", ""));
+                        partnerUser.setBankId(partnerUserObj.optString("bank_id", ""));
+                        partnerUser.setAccountTypeId(partnerUserObj.optString("account_type_id", ""));
+                        partnerUser.setOfficeAddress(partnerUserObj.optString("office_address", ""));
+                        partnerUser.setResidentialAddress(partnerUserObj.optString("residential_address", ""));
+                        partnerUser.setAadhaarNumber(partnerUserObj.optString("aadhaar_number", ""));
+                        partnerUser.setPanNumber(partnerUserObj.optString("pan_number", ""));
+                        partnerUser.setAccountNumber(partnerUserObj.optString("account_number", ""));
+                        partnerUser.setIfscCode(partnerUserObj.optString("ifsc_code", ""));
+                        partnerUser.setRank(partnerUserObj.optString("rank", ""));
+                        partnerUser.setStatus(partnerUserObj.optString("status", ""));
+                        partnerUser.setReportingTo(partnerUserObj.optString("reportingTo", ""));
+                        partnerUser.setEmployeeNo(partnerUserObj.optString("employee_no", ""));
+                        partnerUser.setDepartment(partnerUserObj.optString("department", ""));
+                        partnerUser.setDesignation(partnerUserObj.optString("designation", ""));
+                        partnerUser.setBranchstate(partnerUserObj.optString("branchstate", ""));
+                        partnerUser.setBranchloaction(partnerUserObj.optString("branchloaction", ""));
+                        partnerUser.setBankName(partnerUserObj.optString("bank_name", ""));
+                        partnerUser.setAccountType(partnerUserObj.optString("account_type", ""));
+                        partnerUser.setPartnerTypeId(partnerUserObj.optString("partner_type_id", ""));
+                        partnerUser.setPanImg(partnerUserObj.optString("pan_img", ""));
+                        partnerUser.setAadhaarImg(partnerUserObj.optString("aadhaar_img", ""));
+                        partnerUser.setPhotoImg(partnerUserObj.optString("photo_img", ""));
+                        partnerUser.setBankproofImg(partnerUserObj.optString("bankproof_img", ""));
+                        partnerUser.setCreatedAt(partnerUserObj.optString("created_at", ""));
+                        partnerUser.setCreatedBy(partnerUserObj.optString("createdBy", ""));
+                        partnerUser.setUpdatedAt(partnerUserObj.optString("updated_at", ""));
+                        
+                        // Update UI on main thread
+                        runOnUiThread(() -> displayPartnerUserDetails(partnerUser));
+                        
+                    } else {
+                        runOnUiThread(() -> {
+                            try {
+                                Toast.makeText(this, "Error: " + jsonResponse.getString("message"), Toast.LENGTH_SHORT).show();
+                            } catch (JSONException e) {
+                                Toast.makeText(this, "Error loading partner user details", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+                } else {
+                    runOnUiThread(() -> {
+                        Toast.makeText(this, "No response from server", Toast.LENGTH_SHORT).show();
+                    });
+                }
+            } catch (Exception e) {
+                Log.e(TAG, "Error fetching partner user details", e);
+                runOnUiThread(() -> {
+                    Toast.makeText(this, "Error loading partner user details: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                });
+            }
+        });
+    }
+    
+    private void displayPartnerUserDetails(PartnerUserDetails partnerUser) {
+        // Create a detailed message with all available information
+        StringBuilder details = new StringBuilder();
+        details.append("👤 Partner User Details\n\n");
+        
+        details.append("📋 Basic Information:\n");
+        details.append("ID: ").append(partnerUser.getId()).append("\n");
+        details.append("Username: ").append(partnerUser.getUsername()).append("\n");
+        details.append("Alias Name: ").append(partnerUser.getAliasName()).append("\n");
+        details.append("First Name: ").append(partnerUser.getFirstName()).append("\n");
+        details.append("Last Name: ").append(partnerUser.getLastName()).append("\n");
+        details.append("Full Name: ").append(partnerUser.getFullName()).append("\n");
+        details.append("Password: ").append(partnerUser.getPassword()).append("\n");
+        details.append("Employee No: ").append(partnerUser.getEmployeeNo()).append("\n");
+        details.append("Department: ").append(partnerUser.getDepartment()).append("\n");
+        details.append("Designation: ").append(partnerUser.getDesignation()).append("\n");
+        details.append("Status: ").append(partnerUser.getStatus()).append("\n");
+        details.append("Rank: ").append(partnerUser.getRank()).append("\n");
+        details.append("Reporting To: ").append(partnerUser.getReportingTo()).append("\n");
+        details.append("Partner Type ID: ").append(partnerUser.getPartnerTypeId()).append("\n\n");
+        
+        details.append("📞 Contact Information:\n");
+        details.append("Phone: ").append(partnerUser.getPhoneNumber()).append("\n");
+        details.append("Alternative Phone: ").append(partnerUser.getAlternativeMobileNumber()).append("\n");
+        details.append("Email: ").append(partnerUser.getEmailId()).append("\n\n");
+        
+        details.append("🏢 Company Information:\n");
+        details.append("Company: ").append(partnerUser.getCompanyName()).append("\n");
+        details.append("Branch State Name ID: ").append(partnerUser.getBranchStateNameId()).append("\n");
+        details.append("Branch Location ID: ").append(partnerUser.getBranchLocationId()).append("\n");
+        details.append("Branch State: ").append(partnerUser.getBranchstate()).append("\n");
+        details.append("Branch Location: ").append(partnerUser.getBranchloaction()).append("\n\n");
+        
+        details.append("🏦 Banking Information:\n");
+        details.append("Bank ID: ").append(partnerUser.getBankId()).append("\n");
+        details.append("Account Type ID: ").append(partnerUser.getAccountTypeId()).append("\n");
+        details.append("Bank Name: ").append(partnerUser.getBankName()).append("\n");
+        details.append("Account Type: ").append(partnerUser.getAccountType()).append("\n");
+        details.append("Account Number: ").append(partnerUser.getAccountNumber()).append("\n");
+        details.append("IFSC Code: ").append(partnerUser.getIfscCode()).append("\n\n");
+        
+        details.append("📍 Address Information:\n");
+        details.append("Office Address: ").append(partnerUser.getOfficeAddress()).append("\n");
+        details.append("Residential Address: ").append(partnerUser.getResidentialAddress()).append("\n\n");
+        
+        details.append("🆔 Identity Information:\n");
+        details.append("Aadhaar Number: ").append(partnerUser.getAadhaarNumber()).append("\n");
+        details.append("PAN Number: ").append(partnerUser.getPanNumber()).append("\n\n");
+        
+        details.append("📷 Image Files:\n");
+        details.append("PAN Image: ").append(partnerUser.getPanImg()).append("\n");
+        details.append("Aadhaar Image: ").append(partnerUser.getAadhaarImg()).append("\n");
+        details.append("Photo Image: ").append(partnerUser.getPhotoImg()).append("\n");
+        details.append("Bank Proof Image: ").append(partnerUser.getBankproofImg()).append("\n\n");
+        
+        details.append("📅 System Information:\n");
+        details.append("Created By: ").append(partnerUser.getCreatedBy()).append("\n");
+        details.append("Created At: ").append(partnerUser.getCreatedAt()).append("\n");
+        details.append("Updated At: ").append(partnerUser.getUpdatedAt()).append("\n");
+        
+        // Show in a dialog
+        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
+        builder.setTitle("Partner User Details");
+        builder.setMessage(details.toString());
+        builder.setPositiveButton("OK", null);
+        builder.setNegativeButton("Close", null);
+        builder.show();
     }
 
     private void passUserDataToIntent(Intent intent) {
