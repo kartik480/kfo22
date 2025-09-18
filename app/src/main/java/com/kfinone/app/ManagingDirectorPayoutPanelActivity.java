@@ -72,7 +72,7 @@ public class ManagingDirectorPayoutPanelActivity extends AppCompatActivity {
             startActivity(intent);
         });
         payoutTeamBox.setOnClickListener(v -> {
-            Intent intent = new Intent(this, PayoutTeamActivity.class);
+            Intent intent = new Intent(this, DirectorPayoutTeamActivity.class);
             startActivity(intent);
         });
     }

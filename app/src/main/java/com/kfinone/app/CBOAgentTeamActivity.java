@@ -264,8 +264,8 @@ public class CBOAgentTeamActivity extends AppCompatActivity {
                 URL url = new URL(urlString);
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                 connection.setRequestMethod("GET");
-                connection.setConnectTimeout(15000); // Increased timeout
-                connection.setReadTimeout(15000); // Increased timeout
+                connection.setConnectTimeout(10000); // Reduced timeout to prevent hanging
+                connection.setReadTimeout(10000); // Reduced timeout to prevent hanging
                 connection.setRequestProperty("Accept-Encoding", "gzip"); // Enable compression
 
                 int responseCode = connection.getResponseCode();
@@ -485,34 +485,22 @@ public class CBOAgentTeamActivity extends AppCompatActivity {
         agentListContainer.removeAllViews();
         
         if (agentList.isEmpty()) {
-            // Create a nice empty state
-            LinearLayout emptyStateLayout = new LinearLayout(this);
-            emptyStateLayout.setOrientation(LinearLayout.VERTICAL);
-            emptyStateLayout.setGravity(android.view.Gravity.CENTER);
-            emptyStateLayout.setPadding(40, 60, 40, 60);
-            
-            TextView emptyIcon = new TextView(this);
-            emptyIcon.setText("📋");
-            emptyIcon.setTextSize(48);
-            emptyIcon.setGravity(android.view.Gravity.CENTER);
-            emptyStateLayout.addView(emptyIcon);
-            
+            // Create a simple empty state to reduce UI complexity
             TextView emptyText = new TextView(this);
             emptyText.setText("No agents found");
             emptyText.setTextSize(16);
             emptyText.setTextColor(getResources().getColor(android.R.color.darker_gray));
             emptyText.setGravity(android.view.Gravity.CENTER);
-            emptyText.setPadding(0, 16, 0, 0);
-            emptyStateLayout.addView(emptyText);
+            emptyText.setPadding(40, 60, 40, 60);
             
-            agentListContainer.addView(emptyStateLayout);
+            agentListContainer.addView(emptyText);
             return;
         }
 
-        // Limit display to prevent memory issues - show only first 100 items
-        int displayLimit = Math.min(agentList.size(), 100);
+        // Limit display to prevent memory issues - show only first 50 items
+        int displayLimit = Math.min(agentList.size(), 50);
         
-        // Add agent rows with professional styling
+        // Add agent rows with optimized styling
         for (int i = 0; i < displayLimit; i++) {
             AgentItem agent = agentList.get(i);
             
@@ -577,32 +565,25 @@ public class CBOAgentTeamActivity extends AppCompatActivity {
             agentListContainer.addView(rowLayout);
         }
         
-        // Add message if there are more items
+        // Add simple message if there are more items
         if (agentList.size() > displayLimit) {
-            LinearLayout moreItemsLayout = new LinearLayout(this);
-            moreItemsLayout.setOrientation(LinearLayout.VERTICAL);
-            moreItemsLayout.setGravity(android.view.Gravity.CENTER);
-            moreItemsLayout.setPadding(20, 20, 20, 20);
-            moreItemsLayout.setBackgroundColor(getResources().getColor(android.R.color.background_light));
-            
             TextView moreItemsText = new TextView(this);
             moreItemsText.setText("Showing first " + displayLimit + " of " + agentList.size() + " agents");
-            moreItemsText.setTextSize(14);
+            moreItemsText.setTextSize(12);
             moreItemsText.setTextColor(getResources().getColor(android.R.color.darker_gray));
             moreItemsText.setGravity(android.view.Gravity.CENTER);
-            moreItemsText.setTypeface(null, android.graphics.Typeface.BOLD);
-            moreItemsLayout.addView(moreItemsText);
+            moreItemsText.setPadding(20, 20, 20, 20);
             
-            agentListContainer.addView(moreItemsLayout);
+            agentListContainer.addView(moreItemsText);
         }
     }
 
     private TextView createStyledTextView(String text, float weight) {
         TextView textView = new TextView(this);
         textView.setText(text != null ? text : "-");
-        textView.setTextSize(12);
+        textView.setTextSize(11); // Reduced font size
         textView.setTextColor(getResources().getColor(android.R.color.black));
-        textView.setPadding(8, 4, 8, 4);
+        textView.setPadding(4, 2, 4, 2); // Reduced padding
         textView.setSingleLine(true);
         textView.setEllipsize(android.text.TextUtils.TruncateAt.END);
         
@@ -614,17 +595,13 @@ public class CBOAgentTeamActivity extends AppCompatActivity {
 
     private Button createStyledButton(AgentItem agent) {
         Button button = new Button(this);
-        button.setText("👁️ View");
-        button.setTextSize(11);
+        button.setText("View"); // Removed emoji to reduce rendering complexity
+        button.setTextSize(10); // Reduced font size
         button.setTextColor(getResources().getColor(android.R.color.white));
-        button.setPadding(12, 8, 12, 8);
+        button.setPadding(8, 4, 8, 4); // Reduced padding
         
-        // Create gradient background
-        android.graphics.drawable.GradientDrawable gradientDrawable = new android.graphics.drawable.GradientDrawable();
-        gradientDrawable.setColor(getResources().getColor(android.R.color.holo_blue_light));
-        gradientDrawable.setCornerRadius(20);
-        gradientDrawable.setStroke(2, getResources().getColor(android.R.color.holo_blue_dark));
-        button.setBackground(gradientDrawable);
+        // Use simple background instead of gradient
+        button.setBackgroundColor(getResources().getColor(android.R.color.holo_blue_light));
         
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1.0f);
         button.setLayoutParams(params);

@@ -153,6 +153,8 @@ public class PolicyActivity extends AppCompatActivity {
     private void goBack() {
         // Check which panel we came from and go back accordingly
         String sourcePanel = getIntent().getStringExtra("SOURCE_PANEL");
+        Log.d(TAG, "Source panel: " + sourcePanel);
+        
         if ("SPECIAL_PANEL".equals(sourcePanel)) {
             Intent intent = new Intent(this, SpecialPanelActivity.class);
             passUserDataToIntent(intent);
@@ -175,6 +177,18 @@ public class PolicyActivity extends AppCompatActivity {
             finish();
         } else if ("DIRECTOR_TRAINING".equals(sourcePanel)) {
             // Just finish this activity to go back to Director Training
+            finish();
+        } else if ("MANAGING_DIRECTOR_TRAINING".equals(sourcePanel)) {
+            // Just finish this activity to go back to Managing Director Training
+            finish();
+        } else if ("CHIEF_BUSINESS_OFFICER_TRAINING".equals(sourcePanel)) {
+            // Just finish this activity to go back to Chief Business Officer Training
+            finish();
+        } else if ("BUSINESS_HEAD_TRAINING".equals(sourcePanel)) {
+            // Just finish this activity to go back to Business Head Training
+            finish();
+        } else if ("REGIONAL_BUSINESS_HEAD_TRAINING".equals(sourcePanel)) {
+            // Just finish this activity to go back to Regional Business Head Training
             finish();
         } else {
             // Default to HomeActivity (KfinOne panel)

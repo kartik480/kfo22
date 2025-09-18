@@ -120,8 +120,10 @@ public class ManagingDirectorTrainingActivity extends AppCompatActivity {
         });
 
         policyBox.setOnClickListener(v -> {
-            Toast.makeText(this, "Policy - Coming Soon", Toast.LENGTH_SHORT).show();
-            // TODO: Navigate to Policy activity when implemented
+            Intent intent = new Intent(this, PolicyActivity.class);
+            intent.putExtra("SOURCE_PANEL", "MANAGING_DIRECTOR_TRAINING");
+            passUserDataToIntent(intent);
+            startActivity(intent);
         });
 
         offersBox.setOnClickListener(v -> {
